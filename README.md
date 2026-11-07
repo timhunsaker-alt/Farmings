@@ -5,7 +5,7 @@ Fabric and NeoForge. It is about raising animals and growing crops the way a mod
 breed and a genome; barns, parlors, mills and tanks on Wildcatter's grid; field work by moving contraptions and conveyors,
 not tractors.
 
-Status: **design only.** No code yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
+Status: **skeleton.** The mod loads next to Wildcatter and does nothing else yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 | Doc | What it is |
 |---|---|
@@ -15,3 +15,13 @@ Status: **design only.** No code yet. See [docs/ROADMAP.md](docs/ROADMAP.md).
 | [PROGRESS.md](PROGRESS.md) | Short status notes |
 
 License: [CC0](LICENSE).
+
+## Building
+
+Needs a Java 25 JVM for Gradle (NeoForge's build tools also fetch a JDK 21). Requires Wildcatter 0.4.1, downloaded from its GitHub
+release as in Tailings.
+
+```bash
+./gradlew build
+./gradlew :neoforge:runServer   # dev server
+```

@@ -6,11 +6,11 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 ## Phase 0 — Set up — CURRENT
 1. Docs: CLAUDE.md, VISION.md, GENETICS.md, ROADMAP.md, PROGRESS.md. **Done 2026-11-07.**
 2. Skeleton: `common`, `fabric` and `neoforge` modules copied from Tailings, `mod_id=farmings`, group `dev.farmings`, CC0,
-   CI that runs `./gradlew build` and the game tests. Wildcatter is `compileOnly` and `runtimeOnly` for tests, as in Tailings.
-   `verifyPlainJava` covers `genetics`, `husbandry`, `feed` and `process`.
-3. A mod that loads on both loaders next to Wildcatter and does nothing yet.
-
-*Approval needed before step 2 (this is the next step).*
+   CI that runs `./gradlew build`. Wildcatter 0.4.1 is `compileOnly`, and `runtimeOnly` on NeoForge, as in Tailings.
+   `verifyPlainJava` covers `genetics`, `husbandry`, `feed` and `process`. **Done 2026-11-07.**
+3. A mod that loads on both loaders next to Wildcatter and does nothing yet. **NeoForge: loads next to Wildcatter 0.4.1 in a
+   dev server (2026-11-07). Fabric: builds, not yet run.**
+4. Game tests (a NeoForge game-test source set and a Fabric client game test), added when the first real feature needs them.
 
 ## Phase 1 — Cattle, one full chain
 - Species doc `docs/animals/cattle.md`: sexes, ages, gestation, lactation, feed intake, with sources.

@@ -1,6 +1,6 @@
 # Progress
 
-Phase 0 is current. Only the docs exist so far; there is no code, no build files and no art.
+Phase 0 is current. The docs and the loader skeleton exist; the mod loads and does nothing yet. No art.
 
 ## Phase 0
 
@@ -12,7 +12,16 @@ Phase 0 is current. Only the docs exist so far; there is no code, no build files
   - No tractors: field work uses moving contraptions and conveyors.
   - Genetics come from FarmChain's engine, **with no blockchain code**.
   - The repository is public.
-- Next: the skeleton (Phase 0 step 2), after Tim approves.
+- **2026-11-07: skeleton built.** Copied from Tailings: Gradle wrapper, `build-logic`, `common`/`fabric`/`neoforge` modules, CI
+  (`./gradlew build`). Package `dev.farmings`; plain-Java packages `genetics`, `husbandry`, `feed`, `process` (empty, with
+  `verifyPlainJava`). `Farmings.register` only logs. Wildcatter 0.4.1 is a hard dependency in `fabric.mod.json` and
+  `neoforge.mods.toml`.
+  - `./gradlew build` passes (needs a Java 25 JVM; there is none installed system-wide on this Mac).
+  - NeoForge dev server starts, loads Wildcatter 0.4.1 and logs "Farmings loaded; requires wildcatter".
+  - Fabric: jar builds; **not run in a game yet.**
+- Next: Phase 1, starting with `docs/animals/cattle.md` (plan first, then Tim approves).
 
 ## Known gaps
-None yet.
+- No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).
+- Fabric has not been launched.
+- No icon, no creative tab, no lang strings.
