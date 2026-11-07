@@ -19,7 +19,10 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - `./gradlew build` passes (needs a Java 25 JVM; there is none installed system-wide on this Mac).
   - NeoForge dev server starts, loads Wildcatter 0.4.1 and logs "Farmings loaded; requires wildcatter".
   - Fabric: jar builds; **not run in a game yet.**
-- Next: Phase 1, starting with `docs/animals/cattle.md` (plan first, then Tim approves).
+- **2026-11-07: Phase 1 begun.** Decided with Tim: time scale 1 game day = 30 real days; cattle breeds Holstein, Jersey, Brown Swiss,
+  Gyr, Angus and Wagyu; Wagyu drop more steaks than Angus (a written exception). `docs/animals/cattle.md` first draft written with
+  cited sources; many figures are marked TO VERIFY and five items are open DECISIONS. No code yet.
+- Next: Tim reviews `cattle.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
 
 ## Known gaps
 - No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).

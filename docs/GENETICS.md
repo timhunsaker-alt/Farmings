@@ -47,7 +47,7 @@ Farmings is CC0 (public domain). Porting the engine releases that code and its b
 itself is unchanged and keeps its own license. Tim confirmed the repository is public on 2026-11-07.
 
 ## Open decisions
-1. The breed list for the cattle start.
+1. ~~The breed list for the cattle start.~~ Decided 2026-11-07: Holstein, Jersey, Brown Swiss, Gyr (dairy, from FarmChain) plus Angus and Wagyu (beef, no FarmChain baseline; beef traits are open, see `docs/animals/cattle.md`).
 2. Sex-linked traits and what a male contributes beyond his genes.
 3. Extra per-species traits.
 4. Whether a plain-text genome code is ever built (see above).
