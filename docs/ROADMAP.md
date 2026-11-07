@@ -18,6 +18,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Barn and stalls, a hay feeder and a water trough. Cattle eat hay blocks.
 - Milking parlor and a bulk tank with a chiller on Wildcatter power. Spec in `docs/multiblocks/` first.
 - Milk goes into the tank, is chilled, and can be taken out as a product.
+- Manure collection in the barn (see `docs/waste.md`): a manure item, a dirty-stall rule, hand collection then a scraper.
 - Animal state survives save and chunk unload.
 
 ## Phase 2 — Genetics and breeding
@@ -29,6 +30,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Crops and hay: a field harvest contraption on rails (spec first), a baler, a conveyor line to a silo.
 - Feed mill and ration mixer: rations built from what the animal needs.
 - Processing: creamery and cheese room, built from distinct real parts on Wildcatter power.
+- Waste: composting and fertilizer, and a methane digester with a separator, either alone or one after the other (`docs/waste.md`).
 
 ## Phase 4 — More animals
 - Sheep (wool, meat, lambing) and chickens (eggs, hatchery, brooder), each with sexes, breeds and genes.

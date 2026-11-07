@@ -21,7 +21,8 @@ are for reading only.
 ## Sexes and stages
 - **Female:** calf, heifer, bred heifer, lactating cow, dry cow, retired. A heifer becomes a cow only by calving.
 - **Male:** bull calf, bull, steer (a castrated male raised for beef).
-- Calf sex is 50/50. FarmChain's tutorial guarantees (first two calves heifers) are **not** used here. **DECISION** if wanted.
+- Calf sex is 50/50, except FarmChain's tutorial guarantee carries over: **a player's first two calves are heifers** (decided
+  with Tim, 2026-11-07). FarmChain also made the third a bull; that part is **DECISION**.
 - A bull does not give milk. A steer does not breed.
 
 ## Reproduction
@@ -55,22 +56,23 @@ Well-fed heifers get there sooner.** Growth comes from the feed rules below.
   Source: [AIPL Tables 8A-8F](https://aipl.arsusda.gov/publish/dhi/dhi13/lasum.html). Brown Swiss milk is about 22,700 lb (about 10,300 kg)
   per standardized lactation for 2015 calvings, from the same tables.
 - Gyr, Angus and Wagyu figures: not found yet (**TO VERIFY**; see Breeds).
-- Milking is twice a day on a real farm; the game milks once per game day through the parlor and counts both milkings. **DECISION**
-  if per-milking cycles are wanted.
+- Milking is twice a day on a real farm; the game milks **once per game day** through the parlor and counts both milkings
+  (decided with Tim, 2026-11-07). How much a milking holds is tied to the output-per-game-day decision in `docs/waste.md`.
 
 ## Feed and water
 - **Hay:** a cow eats hay blocks (the vanilla hay block) from a feeder. Cattle eat nothing else in Phase 1.
 - **Intake:** forage-based planning figures are about 2.7% of body weight per day as dry matter for a lactating cow and about
   2.2% for a dry cow (a regional extension source). **TO VERIFY** against NRC dairy requirements; this is a forage-only
-  assumption, not a TMR figure. How many kg of dry matter one hay block holds is a **DECISION** (a real bale is
-  15-25 kg; a vanilla block is one block). It sets how fast a herd empties the feeder.
-- **Water:** the NRC (2001) equation: `35.25 + 1.58 x DMI(lb/day) + 0.90 x milk(lb/day) + 0.11 x sodium(g/day)` pounds
+  assumption, not a TMR figure. **One hay block = 100 kg** (decided with Tim, 2026-11-07; a real square bale is 15-25 kg and a
+  round bale about 500 kg, so 100 kg is a game size). Whether that is fresh weight or dry matter is **TO VERIFY**; it sets how
+  fast a herd empties the feeder.
+- **Water: use the UC Davis rule** (decided with Tim, 2026-11-07): `6 L per kg DMI + 1 L per L milk`, plus extra in heat. For
+  reference, the NRC (2001) equation: `35.25 + 1.58 x DMI(lb/day) + 0.90 x milk(lb/day) + 0.11 x sodium(g/day)` pounds
   of water per day, with a temperature term in some versions. A UC Davis fact sheet gives `6 L per kg DMI + 1 L per L milk`.
   Heat raises need a lot (120-200% in one source). Sources: [NMSU D107](https://pubs.nmsu.edu/_d/D107.pdf),
   [UC Davis](https://epakag.ucdavis.edu/livestock/factsheets/fs-live-AIP12-CowBuffaloWaterNeeds.pdf),
   [NDSU](https://www.ag.ndsu.edu/publications/livestock/water-needs-and-quality-guidelines-for-dairy-cattle/water-needs-and-quality-guidelines-for-dairy.pdf/@@download/file/Water%20Needs%20and%20Quality%20Guidelines%20for%20Dairy%20Cattle.pdf).
-  Phase 1 uses the NRC equation without the sodium term. The two sources disagree by a wide margin for the same cow, so the
-  water numbers are **TO VERIFY** and Tim approves the chosen equation.
+  The two sources disagree by a wide margin for the same cow; the UC Davis rule is chosen. The heat term is **TO VERIFY**.
 - **Underfeeding:** a cow that eats less than she needs gives less milk, grows slower and loses health. **She never dies from a
   missed day.** (The same rule FarmChain uses.)
 
@@ -110,12 +112,16 @@ beef traits, which are all **DECISIONS** to approve:
   milked at all is a **DECISION**.
 - Mature weights, gestation for Angus and Wagyu, and their breeding weights: not found yet. **TO VERIFY**.
 
+## Waste
+Cattle make manure that must be collected. See `docs/waste.md` (collection in the barn, then composting and a methane digester).
+
 ## Open decisions
-1. Per-milking cycles or one milking per game day.
-2. Kilograms of dry matter in one hay block.
-3. Which water equation, and whether heat adds to it.
-4. Beef traits and baseline scores for Angus and Wagyu; steak counts and grades per breed; whether beef cows can be milked.
-5. Whether to use FarmChain's "first two calves are heifers" tutorial guarantee.
+1. Beef traits and baseline scores for Angus and Wagyu; steak counts and grades per breed; whether beef cows can be milked.
+2. The third calf: bull as in FarmChain, or random.
+3. Output per game day (one real day's or thirty), and machine process times. See `docs/waste.md`.
+4. Fresh weight or dry matter for the 100 kg hay block.
+
+Decided 2026-11-07: one milking per game day, hay block = 100 kg, UC Davis water rule, first two calves heifers.
 
 ## To research before the barn and parlor specs
 Heat cycle length, space per animal, hay bale mass, Gyr figures, mature weights for all six breeds, peak and total milk yield

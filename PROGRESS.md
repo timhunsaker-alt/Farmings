@@ -22,7 +22,11 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - **2026-11-07: Phase 1 begun.** Decided with Tim: time scale 1 game day = 30 real days; cattle breeds Holstein, Jersey, Brown Swiss,
   Gyr, Angus and Wagyu; Wagyu drop more steaks than Angus (a written exception). `docs/animals/cattle.md` first draft written with
   cited sources; many figures are marked TO VERIFY and five items are open DECISIONS. No code yet.
-- Next: Tim reviews `cattle.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
+- **2026-11-07: more decisions.** One milking per game day; hay block = 100 kg; UC Davis water rule; first two calves are heifers.
+  Waste added (Tim's idea): manure is collected in the barn, then goes to composting/fertilizer, a methane digester, or both one
+  after the other. `docs/waste.md` first draft with cited figures; two big decisions open (output per game day, Wildcatter genset
+  burning biogas).
+- Next: Tim reviews `cattle.md` and `waste.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
 
 ## Known gaps
 - No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).
