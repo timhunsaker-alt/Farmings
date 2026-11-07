@@ -4,25 +4,25 @@
 figure from memory or from a source that is not the primary one, and must be checked before code uses it. A line marked
 **DECISION** is open: ask Tim, do not choose.
 
-## Time scale (decided with Tim, 2026-11-07)
-**1 game day = 30 real days.** A Minecraft day is 20 minutes, so a cow's whole year takes about 12 game days. The ratio is one
-config value (`TIME_SCALE_DAYS = 30`); every duration below is stored in real days and converted. Rounded game days
-are for reading only.
+## Time scale (decided with Tim, 2026-11-07; changed from 30:1 to 15:1 the same day)
+**1 game day = 15 real days.** A Minecraft day is 20 minutes, so a cow's whole year takes about 24 game days (8 real hours of
+play). The ratio is one config value (`TIME_SCALE_DAYS = 15`); every duration below is stored in real days and converted. Rounded
+game days are for reading only. Output per game day (milk, manure) is **one real day's output** (decided with Tim), not 15 days'.
 
-| Stage | Real | Game days at 1:30 |
+| Stage | Real | Game days at 1:15 |
 |---|---|---|
-| Heat cycle | ~21 days | 0.7 |
-| Gestation | ~283 days | 9.4 |
-| Lactation | 305 days | 10.2 |
-| Dry period | 60 days | 2 |
-| Calving interval (target) | 365 days | 12.2 |
-| First calving | ~24 months (~730 days) | 24.3 |
+| Heat cycle | ~21 days | 1.4 |
+| Gestation | ~283 days | 18.9 |
+| Lactation | 305 days | 20.3 |
+| Dry period | 60 days | 4 |
+| Calving interval (target) | 365 days | 24.3 |
+| First calving | ~24 months (~730 days) | 48.7 |
 
 ## Sexes and stages
 - **Female:** calf, heifer, bred heifer, lactating cow, dry cow, retired. A heifer becomes a cow only by calving.
 - **Male:** bull calf, bull, steer (a castrated male raised for beef).
 - Calf sex is 50/50, except FarmChain's tutorial guarantee carries over: **a player's first two calves are heifers** (decided
-  with Tim, 2026-11-07). FarmChain also made the third a bull; that part is **DECISION**.
+  with Tim, 2026-11-07). The **third calf is a bull**, as in FarmChain (recommended, 2026-11-07); after that, 50/50.
 - A bull does not give milk. A steer does not breed.
 
 ## Reproduction
@@ -64,8 +64,8 @@ Well-fed heifers get there sooner.** Growth comes from the feed rules below.
 - **Intake:** forage-based planning figures are about 2.7% of body weight per day as dry matter for a lactating cow and about
   2.2% for a dry cow (a regional extension source). **TO VERIFY** against NRC dairy requirements; this is a forage-only
   assumption, not a TMR figure. **One hay block = 100 kg** (decided with Tim, 2026-11-07; a real square bale is 15-25 kg and a
-  round bale about 500 kg, so 100 kg is a game size). Whether that is fresh weight or dry matter is **TO VERIFY**; it sets how
-  fast a herd empties the feeder.
+  round bale about 500 kg, so 100 kg is a game size). Recommended: **100 kg is fresh weight**, and the dry matter in it is the hay's dry-matter
+  share (about 85-90% for dry hay, **TO VERIFY** against a feed table). It sets how fast a herd empties the feeder.
 - **Water: use the UC Davis rule** (decided with Tim, 2026-11-07): `6 L per kg DMI + 1 L per L milk`, plus extra in heat. For
   reference, the NRC (2001) equation: `35.25 + 1.58 x DMI(lb/day) + 0.90 x milk(lb/day) + 0.11 x sodium(g/day)` pounds
   of water per day, with a temperature term in some versions. A UC Davis fact sheet gives `6 L per kg DMI + 1 L per L milk`.
@@ -107,21 +107,20 @@ beef traits, which are all **DECISIONS** to approve:
 - **Written exception (Tim's request, 2026-11-07): Wagyu drop more steaks than Angus.** In the real data the Wagyu advantage
   is marbling and grade, not carcass weight, and Angus grow faster. So this is a game rule, not a realism claim. Proposal,
   not decided: steak count comes from carcass weight and dressing percentage; marbling raises steak quality. Either way,
-  Wagyu's steak total is set higher by the breed baseline. **DECISION:** the exact steak counts per breed and the steak grades.
-- Beef breeds also give a cow and a calf, so a beef cow has a milk trait for raising her calf only. Whether beef cows can be
-  milked at all is a **DECISION**.
+  Wagyu's steak total is set higher by the breed baseline. The exact steak counts per breed and the steak grades are set in
+  the beef-traits section once the beef traits are researched (still a **DECISION**, not yet numbers).
+- Beef cows are **not milked** (recommended, 2026-11-07): their milk trait only raises their own calf.
 - Mature weights, gestation for Angus and Wagyu, and their breeding weights: not found yet. **TO VERIFY**.
 
 ## Waste
 Cattle make manure that must be collected. See `docs/waste.md` (collection in the barn, then composting and a methane digester).
 
 ## Open decisions
-1. Beef traits and baseline scores for Angus and Wagyu; steak counts and grades per breed; whether beef cows can be milked.
-2. The third calf: bull as in FarmChain, or random.
-3. Output per game day (one real day's or thirty), and machine process times. See `docs/waste.md`.
-4. Fresh weight or dry matter for the 100 kg hay block.
+1. Beef traits and baseline scores for Angus and Wagyu, and steak counts and grades per breed (research first).
+2. Whether a heat term is added to the UC Davis water rule, and its size.
 
-Decided 2026-11-07: one milking per game day, hay block = 100 kg, UC Davis water rule, first two calves heifers.
+Decided 2026-11-07: time scale 1 game day = 15 real days; one milking per game day, one real day's output; hay block = 100 kg
+(fresh weight); UC Davis water rule; first two calves heifers, third a bull; beef cows are not milked.
 
 ## To research before the barn and parlor specs
 Heat cycle length, space per animal, hay bale mass, Gyr figures, mature weights for all six breeds, peak and total milk yield

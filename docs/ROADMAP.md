@@ -18,7 +18,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Barn and stalls, a hay feeder and a water trough. Cattle eat hay blocks.
 - Milking parlor and a bulk tank with a chiller on Wildcatter power. Spec in `docs/multiblocks/` first.
 - Milk goes into the tank, is chilled, and can be taken out as a product.
-- Manure collection in the barn (see `docs/waste.md`): a manure item, a dirty-stall rule, hand collection then a scraper.
+- Manure collection in the barn (see `docs/waste.md`): a manure item, a dirty-stall rule, hand collection and a powered scraper on Wildcatter power.
 - Animal state survives save and chunk unload.
 
 ## Phase 2 — Genetics and breeding

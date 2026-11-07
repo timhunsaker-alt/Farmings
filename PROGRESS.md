@@ -26,6 +26,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   Waste added (Tim's idea): manure is collected in the barn, then goes to composting/fertilizer, a methane digester, or both one
   after the other. `docs/waste.md` first draft with cited figures; two big decisions open (output per game day, Wildcatter genset
   burning biogas).
+- **2026-11-07: time scale changed to 1 game day = 15 real days.** Output per game day = one real day's; machine times scaled 15:1;
+  powered manure scraper in Phase 1; fertilizer acts like bone meal; biogas genset proposed in Wildcatter's Ideas; third calf a
+  bull; beef cows not milked; hay block 100 kg fresh weight.
 - Next: Tim reviews `cattle.md` and `waste.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
 
 ## Known gaps

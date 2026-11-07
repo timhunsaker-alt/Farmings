@@ -26,8 +26,8 @@ become fertilizer. This follows how real farms use a digester and a solids separ
   Its own note says real values vary by 30% or more. Milk yield predicts manure output better than body weight does for lactating
   cows, and dry cows, heifers and bulls need their own values ([Nennich et al., ASAE 2003](https://core.ac.uk/download/188063935.pdf)).
   Game design values should come from the ASAE D384 table. **TO VERIFY.**
-- Collection is by hand or by machine, not magic. A scraper (a real barn alley scraper) pushes it to a pit. Hand-shoveling in
-  Phase 1, a powered scraper on Wildcatter power later. **DECISION:** which comes in Phase 1.
+- Collection is by hand or by machine, not magic. A scraper (a real barn alley scraper) pushes it to a pit. Both are in Phase 1:
+  hand-shoveling and a powered scraper on Wildcatter power (decided with Tim, 2026-11-07).
 - **If it is not collected**, the stall gets dirty. Dirty stalls lower the cow's health and milk quality, as on a real farm.
   She never dies from it. The size of the effect is **TO VERIFY** (needs a source on hygiene and mastitis).
 
@@ -52,7 +52,7 @@ become fertilizer. This follows how real farms use a digester and a solids separ
   next to what a real parlor needs, so one barn's digester feeds a few lights and fans, not a grid. Do not inflate it.
 - **Biogas into Wildcatter:** biogas burns in a gas engine-generator. Wildcatter already has gas gensets at 480 V three-phase. Whether a
   Wildcatter genset can burn a Farmings fuel, or Wildcatter needs a small change (as Tailings needed one for slurry on the pipe),
-  is a **DECISION** and goes in Wildcatter's ROADMAP Ideas. No Wildcatter code changes without it.
+  is **proposed under Wildcatter's ROADMAP Ideas** (2026-11-07). No Wildcatter code changes without Tim's go-ahead.
 - Digester parts as a multiblock of real parts (spec first): feed pit and pump, digester tank with heating and mixer, gas holder,
   gas conditioning, engine-generator. The spec file is `docs/multiblocks/digester.md` and does not exist yet.
 
@@ -60,18 +60,18 @@ become fertilizer. This follows how real farms use a digester and a solids separ
 A mechanical separator (a screw press or a centrifuge) splits digestate into solids and liquid. Solids go on to composting
 (route A); liquid is a liquid fertilizer. Digestate's own nitrogen content is **TO VERIFY**: the search found nothing specific.
 
-## Time and quantity
-The 1 game day = 30 real days rule (cattle.md) sets lifecycle durations. Whether a game day's output is **one real day's
-production** or **30 real days'** is a **DECISION** with a consequence for everything on this page:
-- *One real day per game day* (recommended): a cow still makes about 45 kg of manure and one real day's milk per game day, so
-  numbers stay the real ones and the machines are sized to real flows. A lactation then pays about 1/30 of real totals, and the
-  prices and recipes are tuned to that.
-- *Thirty real days per game day:* totals match reality but a single milking is about 900 kg, which is hard to carry in a
-  game.
-Machine process times (composting, digestion) are another **DECISION**: scaled by 30, or set in minutes.
+## Time and quantity (decided with Tim, 2026-11-07)
+- **Output per game day is one real day's production.** A cow makes about 45-50 kg of manure and one real day's milk per game day.
+  Machines are sized to real flows.
+- **Machine process times are scaled 15:1**, like the animals (`docs/animals/cattle.md`): a real 8-week compost takes about
+  3.7 game days; a real 21-day digester cycle takes 1.4 game days. The ratio is the same config value.
+- **Powered scraper is in Phase 1** with the barn, on Wildcatter power (spec first, with its real counterpart and voltage).
+- **Fertilizer works like bone meal:** using it on a crop advances its growth, as bone meal does in vanilla Minecraft. Amount per use
+  and what it works on (hay crops, wheat, grass) are **DECISIONS**; no invented numbers.
+- **Biogas fuel:** proposed in Wildcatter's ROADMAP Ideas (a genset that can burn biogas). No Wildcatter code change.
 
 ## Phasing
-- **Phase 1:** collection in the barn (manure item, dirty-stall rule, hand or scraper), because it is part of the barn. No
+- **Phase 1:** collection in the barn (manure item, dirty-stall rule, hand collection and a powered scraper), because it is part of the barn. No
   digester or composter yet.
 - **Phase 3:** digester, separator, composting and fertilizer, alongside the field and crop processing, since fertilizer feeds back
   into the field.
