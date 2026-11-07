@@ -40,5 +40,5 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Animal health and a vet cycle; disease and quarantine.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).
-- Contract buyers with quality thresholds, as in FarmChain.
 - A Field Manual.
+- **Easter egg: milk armor** (Tim, 2026-11-07). See `docs/milk-armor.md`.

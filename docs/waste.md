@@ -66,8 +66,9 @@ A mechanical separator (a screw press or a centrifuge) splits digestate into sol
 - **Machine process times are scaled 15:1**, like the animals (`docs/animals/cattle.md`): a real 8-week compost takes about
   3.7 game days; a real 21-day digester cycle takes 1.4 game days. The ratio is the same config value.
 - **Powered scraper is in Phase 1** with the barn, on Wildcatter power (spec first, with its real counterpart and voltage).
-- **Fertilizer works like bone meal:** using it on a crop advances its growth, as bone meal does in vanilla Minecraft. Amount per use
-  and what it works on (hay crops, wheat, grass) are **DECISIONS**; no invented numbers.
+- **Fertilizer works like bone meal:** using it advances growth as bone meal does in vanilla Minecraft, on all crops and trees. Amount per use
+  and what it works on are decided: **same as bone meal, on all crops and on trees** (Tim, 2026-11-07). The strength per use is that of
+  vanilla bone meal; do not invent numbers.
 - **Biogas fuel:** proposed in Wildcatter's ROADMAP Ideas (a genset that can burn biogas). No Wildcatter code change.
 
 ## Phasing

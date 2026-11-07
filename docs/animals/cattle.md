@@ -35,10 +35,12 @@ game days are for reading only. Output per game day (milk, manure) is **one real
 | First calving | about 24 months; 23-26 months is the usual range | [Wisconsin Extension](https://dairy.extension.wisc.edu/articles/weight-or-wait-how-defining-breeding-eligibility-of-heifers-impacts-first-lactation-milk-production); [Wynnstay](https://www.wynnstay.co.uk/blog/heifers-must-be-the-correct-body-size-as-well-as-age-at-first-calving/) |
 | First breeding | at 55-60% of mature weight, about 13-14 months; breeding weight Holstein 390 kg, Brown Swiss 390 kg, Jersey 260 kg | [Wynnstay](https://www.wynnstay.co.uk/blog/heifers-must-be-the-correct-body-size-as-well-as-age-at-first-calving/); [Engormix: dairy heifer development](https://en.engormix.com/dairy-cattle/articles/dairy-heifer-development-t35401.htm) |
 | Puberty | tied to weight (about 40% of mature weight), not age | [KALRO: rear your own heifers](https://kalro.org/navcdp/docs/livestock/Rear%20your%20own%20heifers.pdf) |
-| Heat cycle | about 21 days | **TO VERIFY** (not found in the first search; needs a source). |
+| Heat cycle | about 21 days (range 17-24); heats are short, a few to about 18 hours | [LSU AgCenter: the bovine estrous cycle](https://www.lsuagcenter.com/articles/page1678995149005); [Acta Univ. Agric. Silvic. Mendelianae Brun. 2018](https://actavia.mendelu.cz/pdfs/acu/2018/02/27.pdf). Heat duration is **TO VERIFY**: sources disagree (about 7-9 h in one study, 18-24 h in a slide deck). |
 
-Game rule from this: **a heifer can be bred when she reaches the breeding weight for her breed, which depends on her growth.
-Well-fed heifers get there sooner.** Growth comes from the feed rules below.
+**First breeding at 15 months (decided with Tim, 2026-11-07; read as the age a heifer is first bred).** For all six breeds a heifer
+can first be bred at 15 real months (30.4 game days) and calves about 9 months later, at roughly 24 months (about 49 game days).
+She must also have reached the breeding weight for her breed (55% of mature weight). An underfed heifer is delayed until she
+does; a well-fed one is never bred earlier than 15 months. Growth comes from the feed rules below.
 
 ## Milk
 - Yield follows a lactation curve (rises to a peak at 6-8 weeks, then declines). The curve shape and each breed's peak and
@@ -55,7 +57,8 @@ Well-fed heifers get there sooner.** Growth comes from the feed rules below.
 
   Source: [AIPL Tables 8A-8F](https://aipl.arsusda.gov/publish/dhi/dhi13/lasum.html). Brown Swiss milk is about 22,700 lb (about 10,300 kg)
   per standardized lactation for 2015 calvings, from the same tables.
-- Gyr, Angus and Wagyu figures: not found yet (**TO VERIFY**; see Breeds).
+- **Gyr** (the dairy-strain Gir): 1,225-2,268 kg per lactation in India, 240-380 days, fat 4.5-4.6% ([Indian Journal of Animal Sciences review](https://epubs.icar.org.in/index.php/IJAnS/article/download/119832/46085/337986)). A Tamil Nadu herd in hot, humid conditions gave 1,507 kg and 5.05% fat with a 447-day calving interval. Brazilian averages are quoted higher (about 3,500 kg) but only by a popular article, **TO VERIFY**.
+- **Lactation curve:** yield peaks about 4-8 weeks after calving. One Colombian Holstein herd averaged 5,830 kg per 305 days with a peak near 27.7 kg/day at 4.7 weeks ([Fitting lactation curves in a Colombian Holstein herd](https://agris.fao.org/search/en/records/6759909bc7a957febdfc71f9)); Wood's model is the practical curve ([Revista Facultad Nacional de Agronomia Medellin](https://revistas.unal.edu.co/index.php/refame/article/download/67424/65883/381784)). Per-breed peaks are **TO VERIFY**.
 - Milking is twice a day on a real farm; the game milks **once per game day** through the parlor and counts both milkings
   (decided with Tim, 2026-11-07). How much a milking holds is tied to the output-per-game-day decision in `docs/waste.md`.
 
@@ -73,12 +76,18 @@ Well-fed heifers get there sooner.** Growth comes from the feed rules below.
   [UC Davis](https://epakag.ucdavis.edu/livestock/factsheets/fs-live-AIP12-CowBuffaloWaterNeeds.pdf),
   [NDSU](https://www.ag.ndsu.edu/publications/livestock/water-needs-and-quality-guidelines-for-dairy-cattle/water-needs-and-quality-guidelines-for-dairy.pdf/@@download/file/Water%20Needs%20and%20Quality%20Guidelines%20for%20Dairy%20Cattle.pdf).
   The two sources disagree by a wide margin for the same cow; the UC Davis rule is chosen. The heat term is **TO VERIFY**.
+- **Hay dry matter:** the Victorian government's feed table assumes **85% dry matter** for hay bales ([Victoria: weight of hay bales](https://feedinglivestock.vic.gov.au/?p=197)),
+  so one 100 kg hay block holds **85 kg of dry matter**. A cow at about 20 kg of dry matter a day eats about a quarter of a hay block
+  each game day. (Hay alone is a forage ration; see the intake caveat above.)
 - **Underfeeding:** a cow that eats less than she needs gives less milk, grows slower and loses health. **She never dies from a
   missed day.** (The same rule FarmChain uses.)
 
 ## Housing
-- Space per animal (stall width, feeder length, trough length, pasture area) is **TO VERIFY**; not yet researched. It sets the
-  barn's capacity and is needed before the barn spec.
+- **Stall (Holstein, 1,000 lb cow):** 42 in (107 cm) wide centre-to-centre and 10 ft (3.1 m) long, plus 3-4 ft (91-122 cm) of lunge space.
+  A 2,000 lb cow wants 57 in (145 cm). Source: [Dairyland Initiative, UW-Madison](https://thedairylandinitiative.vetmed.wisc.edu/adult-cow-housing/freestall-design-and-dimensions/).
+- **Feed bunk:** about 75 cm per head for a 700 kg Holstein ([Lactanet](https://lactanet.ca/en/housing-newly-weaned-heifers-2/); a heifer-housing table, **TO VERIFY** for lactating cows).
+- **Alley: 3 m** (decided with Tim, 2026-11-07). The powered scraper runs along it. The scraper's own width is set in its spec.
+- Water trough length and pasture area per animal: **TO VERIFY**.
 
 ## Breeds (decided with Tim, 2026-11-07)
 Six cattle breeds to start. The first four are dairy and come from FarmChain's 30-breed registry
@@ -110,18 +119,42 @@ beef traits, which are all **DECISIONS** to approve:
   Wagyu's steak total is set higher by the breed baseline. The exact steak counts per breed and the steak grades are set in
   the beef-traits section once the beef traits are researched (still a **DECISION**, not yet numbers).
 - Beef cows are **not milked** (recommended, 2026-11-07): their milk trait only raises their own calf.
-- Mature weights, gestation for Angus and Wagyu, and their breeding weights: not found yet. **TO VERIFY**.
+- **Beef cows are not milked and their meat is food, not stock.** (No selling; see Economy.)
+- **Dressing percentage:** fed beef is usually 62-64% of live weight. The four main steak cuts (strip loin, tenderloin, sirloin, ribeye)
+  are about 8-12% of carcass weight; individual steak types are each under 3% ([Penn State: beef carcass yields](https://extension.psu.edu/understanding-beef-carcass-yields-and-losses-during-processing);
+  [South Dakota State](https://extension.sdstate.edu/how-much-meat-can-you-expect-fed-steer)). A 760 kg Wagyu steer (slaughter at about 29 months) at 62-64% gives roughly a 470-485 kg carcass and about 40-55 kg of the main steaks.
+- **Gestation:** Angus about 280 days (10,000+ records); Wagyu 283.8 days in a Brazilian herd and 286 days for Wagyu-sired calves
+  ([USDA ARS Lincoln](https://digitalcommons.unl.edu/hruskareports/378); [The sire effect on gestational length in Wagyu cattle](https://agris.fao.org/search/en/records/687a93589d6e0577321f4de6)).
+  Gyr: not found, **TO VERIFY**; 283 is used as a stand-in until then.
+
+### Mature cow weight (kg)
+| Breed | Weight | Source |
+|---|---|---|
+| Holstein | about 710 | Duplessis et al. 2014, via [Better Farming](https://betterfarming.com/flippingbook/betterfarming/2024/june-july/50) |
+| Jersey | about 470 | same |
+| Brown Swiss | about 600-612 | breed lists; secondary, **TO VERIFY** |
+| Gyr | about 313 (study) to 385 (breed profile) | [Animal Genetic Resources](https://www.cambridge.org/core/journals/animal-genetic-resources-resources-genetiques-animales-recursos-geneticos-animales/article/gir-cattle-breed-of-india-characteristics-and-present-status/A689843E8FCF994B31C3AF552CA0F356); [Oklahoma State](https://breeds.okstate.edu/cattle/gir-cattle). Indian figures; Brazilian dairy strain **TO VERIFY**. Game: use 385 until verified. |
+| Angus | about 550 | breed lists; secondary, **TO VERIFY** |
+| Wagyu (Japanese Black) | about 487 | Motoyama et al. 2014, via [Australian Wagyu Association](https://www.wagyu.org.au/wp-content/uploads/2021/03/Australian-Wagyu-Update-Ten-year-trends-PART-2.pdf) |
+
+Breeding weights follow as 55% of these (Holstein about 390 kg, Jersey about 260 kg; the Gyr, Angus, Wagyu and Brown Swiss ones are computed, not sourced).
+
+## Economy: nothing is sold (decided with Tim, 2026-11-07)
+Milk and beef are **not sold**. The player eats them, and the farm turns them into other items (cheese and other dairy and meat
+products, set out in the processing specs). There are no buyers, no contracts and no currency for animal products. FarmChain's
+buyer contracts are not ported. A breed's value is in what it makes and how well, not in a price.
 
 ## Waste
 Cattle make manure that must be collected. See `docs/waste.md` (collection in the barn, then composting and a methane digester).
 
 ## Open decisions
-1. Beef traits and baseline scores for Angus and Wagyu, and steak counts and grades per breed (research first).
-2. Whether a heat term is added to the UC Davis water rule, and its size.
+1. Beef traits and baseline scores for Angus and Wagyu, and steak counts and grades per breed. The research above (dressing 62-64%, steaks
+   8-12% of carcass, Wagyu marbling) is the basis; the numbers come next, with Tim's rule that Wagyu give more steaks.
+2. Whether a heat term is added to the UC Davis water rule, and its size (no — dropped, 2026-11-07, "no need").
 
 Decided 2026-11-07: time scale 1 game day = 15 real days; one milking per game day, one real day's output; hay block = 100 kg
 (fresh weight); UC Davis water rule; first two calves heifers, third a bull; beef cows are not milked.
 
-## To research before the barn and parlor specs
-Heat cycle length, space per animal, hay bale mass, Gyr figures, mature weights for all six breeds, peak and total milk yield
-by breed, and the primary NRC source for intake.
+## Still to research
+Per-breed peak and total milk yield, heat duration, a primary source for brown swiss and Angus weights, water trough and pasture
+space, Gyr gestation and Brazilian Gyr weight, and the primary NRC source for intake.

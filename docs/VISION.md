@@ -25,6 +25,7 @@ are real loads on a real supply.
   feed and health allow.
 - No "stack N identical blocks" buildings. A parlor or a mill is a multiblock of distinct parts.
 - No tractors or vehicles for field work.
+- No selling animal products: no buyers, contracts or prices for milk or beef. Products are food and ingredients.
 - Farmings is not a teaching tool and not veterinary or agronomy advice.
 
 ## Animals

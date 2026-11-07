@@ -29,6 +29,11 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - **2026-11-07: time scale changed to 1 game day = 15 real days.** Output per game day = one real day's; machine times scaled 15:1;
   powered manure scraper in Phase 1; fertilizer acts like bone meal; biogas genset proposed in Wildcatter's Ideas; third calf a
   bull; beef cows not milked; hay block 100 kg fresh weight.
+- **2026-11-07: research pass.** Heat cycle, stall and feed-bunk sizes, hay dry matter, mature weights, Gyr, Angus and Wagyu figures
+  and beef cut yields added to `cattle.md` with sources. Decided with Tim: alley 3 m; first breeding at 15 months; **nothing is
+  sold** (milk and beef are food and ingredients for cheese and other items); fertilizer works like bone meal on all crops and
+  trees; milk armor Easter egg (`docs/milk-armor.md`). Still to research: per-breed milk peaks and totals, Gyr gestation, beef
+  trait numbers.
 - Next: Tim reviews `cattle.md` and `waste.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
 
 ## Known gaps
