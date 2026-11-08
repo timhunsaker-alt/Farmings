@@ -11,7 +11,11 @@
  "block.farmings.stall_divider": "Stall Divider",
  "block.farmings.water_trough": "Water Trough",
  "entity.farmings.cattle": "Cattle",
+ "item.farmings.empty_straw": "Empty Straw",
  "item.farmings.manure": "Manure",
  "item.farmings.manure_fork": "Manure Fork",
- "itemGroup.farmings": "Farmings"
+ "item.farmings.semen_straw": "Semen Straw",
+ "itemGroup.farmings": "Farmings",
+ "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
+ "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty."
 }

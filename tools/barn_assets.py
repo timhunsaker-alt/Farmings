@@ -67,7 +67,10 @@ def texture(name, colour, centre_stripe=None):
 def item_texture(name, colour, fork):
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    if fork:
+    if fork == "straw":
+        d.line([(3, 13), (13, 3)], fill=(232, 224, 200), width=3)         # a thin tube
+        d.line([(3, 13), (6, 10)], fill=colour, width=3)                  # the plug end
+    elif fork:
         d.line([(3, 13), (11, 5)], fill=(120, 84, 48), width=2)          # the handle
         for x in (9, 11, 13):                                              # three tines
             d.line([(x, 1), (x, 6)], fill=(150, 150, 156))
@@ -91,7 +94,9 @@ def block_model(name, box):
 
 
 def main():
-    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "block.farmings.barn_controller": CONTROLLER[0]}
+    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "block.farmings.barn_controller": CONTROLLER[0],
+            "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
+            "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty."}
     for name, (title, colour, fp, boxes) in PARTS.items():
         lang["block.farmings." + name] = title
         texture(name, colour, (255, 214, 64) if name == "scraper_rail" else None)
@@ -119,9 +124,11 @@ def main():
     write(os.path.join(DATA, "loot_table", "blocks", "barn_controller.json"), loot("barn_controller"))
     # items: manure and the fork (placeholders)
     for name, title, colour, parent in (("manure", "Manure", (92, 64, 38), "minecraft:item/generated"),
-                                        ("manure_fork", "Manure Fork", (138, 120, 96), "minecraft:item/handheld")):
+                                        ("manure_fork", "Manure Fork", (138, 120, 96), "minecraft:item/handheld"),
+                                        ("empty_straw", "Empty Straw", (170, 170, 176), "minecraft:item/generated"),
+                                        ("semen_straw", "Semen Straw", (80, 130, 200), "minecraft:item/generated")):
         lang["item.farmings." + name] = title
-        item_texture(name, colour, name == "manure_fork")
+        item_texture(name, colour, "straw" if name.endswith("_straw") else name == "manure_fork")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_placeholder" % name}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})

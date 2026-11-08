@@ -18,6 +18,11 @@ public final class FarmingsItems {
 	 */
 	public static final Item MANURE_FORK = item("manure_fork", props -> new ManureForkItem(props.durability(250).stacksTo(1)));
 
+	/** An empty straw, collected into by right-clicking a grown bull (docs/animals/breeding.md). */
+	public static final Item EMPTY_STRAW = item("empty_straw", props -> new dev.farmings.item.StrawItem(props.stacksTo(64), false));
+	/** A straw holding one sire's genome; right-click a cow in heat to inseminate her. */
+	public static final Item SEMEN_STRAW = item("semen_straw", props -> new dev.farmings.item.StrawItem(props.stacksTo(16), true));
+
 	private FarmingsItems() {
 	}
 
@@ -29,5 +34,7 @@ public final class FarmingsItems {
 	public static void register() {
 		Registry.register(BuiltInRegistries.ITEM, Farmings.id("manure"), MANURE);
 		Registry.register(BuiltInRegistries.ITEM, Farmings.id("manure_fork"), MANURE_FORK);
+		Registry.register(BuiltInRegistries.ITEM, Farmings.id("empty_straw"), EMPTY_STRAW);
+		Registry.register(BuiltInRegistries.ITEM, Farmings.id("semen_straw"), SEMEN_STRAW);
 	}
 }

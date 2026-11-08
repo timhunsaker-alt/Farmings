@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -96,6 +96,7 @@ public class FarmingsGameTests {
 			helper.register(id("underfed_heifer_grows_slower"), loaded(FarmingsGameTests::underfedHeiferGrowsSlower));
 			helper.register(id("grown_cow_stops_growing"), loaded(FarmingsGameTests::grownCowStopsGrowing));
 			helper.register(id("weight_survives_save"), loaded(FarmingsGameTests::weightSurvivesSave));
+			helper.register(id("straw_inseminates"), loaded(FarmingsGameTests::strawInseminates));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -917,6 +918,38 @@ public class FarmingsGameTests {
 		copy.advanceForTest(100);
 		copy.settle(level);
 		helper.assertTrue(copy.weightKg() > w, Component.literal("and she keeps growing after the load"));
+		helper.succeed();
+	}
+
+	// ---- straws ----
+
+	private static void strawInseminates(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 81L, 1500, 800);
+		CattleEntity cow = founderAt(level, p, Sex.FEMALE, 82L, 500, 400);
+		net.minecraft.world.entity.player.Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+		net.minecraft.world.item.ItemStack empty = new net.minecraft.world.item.ItemStack(dev.farmings.FarmingsItems.EMPTY_STRAW, 2);
+		net.minecraft.world.InteractionHand hand = net.minecraft.world.InteractionHand.MAIN_HAND;
+		helper.assertTrue(empty.getItem().interactLivingEntity(empty, player, cow, hand) == net.minecraft.world.InteractionResult.FAIL,
+				Component.literal("a cow cannot fill a straw"));
+		helper.assertTrue(empty.getCount() == 2, Component.literal("and the empty straw is kept"));
+		helper.assertTrue(empty.getItem().interactLivingEntity(empty, player, bull, hand).consumesAction(), Component.literal("a bull fills one"));
+		helper.assertTrue(empty.getCount() == 1, Component.literal("it used one empty straw"));
+		net.minecraft.world.item.ItemStack full = null;
+		for (net.minecraft.world.item.ItemStack s : player.getInventory().getNonEquipmentItems()) {
+			if (s.is(dev.farmings.FarmingsItems.SEMEN_STRAW)) {
+				full = s;
+			}
+		}
+		helper.assertTrue(full != null && dev.farmings.item.StrawItem.genomeOf(full) != null, Component.literal("the full straw holds a genome"));
+		helper.assertTrue(full.getItem().interactLivingEntity(full, player, cow, hand) == net.minecraft.world.InteractionResult.FAIL && full.getCount() == 1,
+				Component.literal("a cow not in heat is not inseminated and keeps the straw out of use"));
+		cow.startHeatForDisplay();
+		helper.assertTrue(full.getItem().interactLivingEntity(full, player, cow, hand).consumesAction(), Component.literal("a cow in heat is inseminated"));
+		helper.assertTrue(cow.isInCalf() && cow.hasSire(), Component.literal("she is in calf by the straw's sire"));
+		helper.assertTrue(full.isEmpty(), Component.literal("the straw is used up"));
 		helper.succeed();
 	}
 }
