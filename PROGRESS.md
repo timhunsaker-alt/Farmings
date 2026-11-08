@@ -63,10 +63,20 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - **Not built, and why:** growth (no sourced weight-for-age curve, so weight is set, not grown), feeding and milking (barn and
     parlor), breeding (Phase 2), Angus and Wagyu animals (no baselines yet), spawn egg and a way for players to get cattle
     (`/summon farmings:cattle` for now).
+- **2026-11-07: cattle art for six breeds.** Concept art from Ludo (Holstein, Jersey, Brown Swiss, Angus approved as first drawn; Gyr
+  and Wagyu redone) approved by Tim; then a coat texture per breed on the vanilla cow model (`tools/cattle_textures.py`, drawn from
+  scratch, deterministic) and a Gyr model with a shoulder hump. Dairy cows that have bred show an udder; calves, heifers, bulls and
+  beef cattle do not (a second `_no_udder` texture per dairy breed). Holstein, Jersey, Brown Swiss and Angus are polled (horns
+  transparent); Gyr and Wagyu keep horns. The client reads breed and stage from two synced values.
+  - `tools/preview_cattle.py` renders a texture on the model without the game.
+  - **Fabric launched for the first time**: a Fabric client game test (`./gradlew :fabric:runClientGameTest`) builds a world, spawns
+    the six breeds, calves and bulls, and takes screenshots (in `fabric/build/run/clientGameTest/screenshots`). It passes.
+  - Calves use the vanilla baby model with the adult coat (no hump on a Gyr calf). Every breed is the same size; real size
+    differences would need per-breed models or a scale (not done).
 - Next: the barn blocks and multiblock (step 3).
 
 ## Known gaps
 - Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
-- NeoForge game tests exist (5 scenes). The Fabric client game test does not exist yet.
-- Fabric has not been launched; the cattle renderer has not been seen on screen on either loader.
-- No icon, no creative tab. Cattle use the vanilla cow model and texture (`CattleRenderer`, placeholder until Ludo art).
+- NeoForge game tests exist (5 scenes). The Fabric client game test takes screenshots only; it asserts nothing yet.
+- NeoForge has not been launched with a client; Fabric has (the cattle render).
+- No icon, no creative tab. Cattle art is textures on the vanilla cow model (plus the Gyr hump), not final 3D models.

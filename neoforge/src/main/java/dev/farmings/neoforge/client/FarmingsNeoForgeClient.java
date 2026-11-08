@@ -1,6 +1,7 @@
 package dev.farmings.neoforge.client;
 
 import dev.farmings.FarmingsEntities;
+import dev.farmings.client.CattleModels;
 import dev.farmings.client.CattleRenderer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -11,6 +12,8 @@ public final class FarmingsNeoForgeClient {
 	}
 
 	public static void init(IEventBus modBus) {
+		modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
+				event -> event.registerLayerDefinition(CattleModels.GYR, CattleModels::createGyrLayer));
 		modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
 				event -> event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new));
 	}

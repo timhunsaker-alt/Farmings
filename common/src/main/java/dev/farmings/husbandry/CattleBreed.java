@@ -46,6 +46,11 @@ public enum CattleBreed {
 		return matureWeightKg * Lifecycle.PUBERTY_WEIGHT_FRACTION;
 	}
 
+	/** The lowercase name used in asset file names: holstein, brown_swiss, gyr. */
+	public String assetName() {
+		return name().toLowerCase(java.util.Locale.ROOT);
+	}
+
 	public static CattleBreed byCode(String code) {
 		for (CattleBreed b : values()) {
 			if (b.code.equals(code)) {

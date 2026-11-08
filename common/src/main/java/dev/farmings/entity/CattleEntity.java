@@ -12,6 +12,9 @@ import dev.farmings.husbandry.Stage;
 import dev.farmings.husbandry.TimeScale;
 import java.util.OptionalDouble;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -49,6 +52,10 @@ import org.jspecify.annotations.Nullable;
  * out on purpose, because those come with the barn, the parlor and the genetics step. Its look is a vanilla cow until the Ludo art.
  */
 public class CattleEntity extends Animal {
+	/** Breed and stage, sent to the client so the renderer can pick the right coat, model and udder. */
+	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
+
 	private CattleBreed breed = CattleBreed.HOLSTEIN;
 	private Sex sex = Sex.FEMALE;
 	private @Nullable Genome genome;
@@ -65,6 +72,27 @@ public class CattleEntity extends Animal {
 
 	public CattleEntity(EntityType<? extends CattleEntity> type, Level level) {
 		super(type, level);
+	}
+
+	@Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(DATA_BREED, CattleBreed.HOLSTEIN.ordinal());
+		builder.define(DATA_STAGE, Stage.HEIFER.ordinal());
+	}
+
+	/** The breed as the client knows it. */
+	public CattleBreed syncedBreed() {
+		CattleBreed[] all = CattleBreed.values();
+		int i = entityData.get(DATA_BREED);
+		return all[Math.max(0, Math.min(all.length - 1, i))];
+	}
+
+	/** The stage as the client knows it. */
+	public Stage syncedStage() {
+		Stage[] all = Stage.values();
+		int i = entityData.get(DATA_STAGE);
+		return all[Math.max(0, Math.min(all.length - 1, i))];
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
@@ -103,6 +131,18 @@ public class CattleEntity extends Animal {
 		this.calvedTick = -1;
 		this.retired = false;
 		syncAge(nowTick);
+	}
+
+	/**
+	 * Shows this animal as another breed without giving it genes. For art checks and game tests only: Angus and Wagyu have no genetic
+	 * baselines yet, so they cannot be made with {@link #initFounder}.
+	 */
+	public void setBreedForDisplay(CattleBreed breed, Sex sex, double weightKg, boolean inCalf) {
+		this.breed = breed;
+		this.sex = sex;
+		this.weightKg = weightKg;
+		this.bredTick = inCalf ? level().getGameTime() : -1;
+		syncAge(level().getGameTime());
 	}
 
 	public CattleBreed breed() {
@@ -168,7 +208,10 @@ public class CattleEntity extends Animal {
 	 * ({@link #canAgeUp()}), so this is the only thing that moves it.
 	 */
 	private void syncAge(long nowTick) {
-		boolean calf = isCalfStage(stageAt(nowTick));
+		Stage stage = stageAt(nowTick);
+		entityData.set(DATA_BREED, breed.ordinal());
+		entityData.set(DATA_STAGE, stage.ordinal());
+		boolean calf = isCalfStage(stage);
 		if (calf != isBaby()) {
 			setAge(calf ? -1 : 0);
 		}
@@ -254,6 +297,8 @@ public class CattleEntity extends Animal {
 		hasCalved = input.getBooleanOr("HasCalved", false);
 		calvedTick = input.getLongOr("CalvedTick", -1L);
 		retired = input.getBooleanOr("Retired", false);
+		entityData.set(DATA_BREED, breed.ordinal());
+		entityData.set(DATA_STAGE, stageAt(level().getGameTime()).ordinal());
 	}
 
 	// --- sounds (the vanilla cow's, until there are our own) ---

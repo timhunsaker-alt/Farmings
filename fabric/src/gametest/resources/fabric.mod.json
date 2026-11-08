@@ -1,0 +1,17 @@
+{
+	"schemaVersion": 1,
+	"id": "farmings-gametest",
+	"version": "1.0.0",
+	"name": "Farmings client game tests",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"dev.farmings.fabric.gametest.FarmingsClientGameTest"
+		]
+	},
+	"depends": {
+		"farmings": "*",
+		"wildcatter": "*",
+		"fabric-api": "*"
+	}
+}
