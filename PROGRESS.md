@@ -125,7 +125,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     feed is not built yet).
   - **Not built:** milk (so no milk-dependent water or yield), health or growth effects from a shortfall (only recorded), the dirty-stall effect,
     the pipe-fed trough, lying down (cows stand on the bed), calves.
-- Next: the milking parlor and bulk tank spec (`docs/multiblocks/parlor.md`), which also needs the lactation curve research.
+- Step 5a (2026-11-08): `husbandry/Lactation` (Wood's curve scaled to the USDA 2019 totals; 6 unit tests). Stand-ins: Brown Swiss and Gyr shapes. Not built: first-lactation reduction, genome-to-yield link, milk in the entity.
+- Next: wire milk into the cow (days in milk, yield per game day), then the parlor blocks once Tim approves `docs/multiblocks/parlor.md`.
 
 ## Known gaps
 - Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only). Manure and fork icons are placeholders too.

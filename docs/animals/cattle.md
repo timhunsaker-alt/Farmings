@@ -63,9 +63,18 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
   [ADSA 2019 abstract M128](https://m.adsa.org/2019/abs/t/78869), Wisconsin test-day data. First lactation: Holstein a 16.13, b 0.235, c 0.0019;
   Jersey a 14.07, b 0.186, c 0.0021. Later lactations: Holstein a about 23.7, b 0.23-0.24, c 0.0032-0.0036; Jersey a about 19.2, b 0.17-0.19,
   c 0.0028-0.0032. Worked out by us (not in the source): Holstein later lactations peak near day 69 at about 51 kg and total about 13,200 kg in 305 days;
-  that is **higher than the USDA national average** (about 10,900 kg), so these parameters describe good herds, not the average. Jersey later:
+  the USDA national average is 12,558 kg (see below), so these parameters are only about 5% high. (An earlier note here said 10,900 kg; that was wrong.) Jersey later:
   peak day 60, about 33 kg, about 8,750 kg. **No Brown Swiss or Gyr parameters found.** The USDA AIPL links and the Brown Swiss papers
   (Turkey 2024, Slovenia 2013) could not be opened. Do not build milk yields until Tim picks a source.
+- **Decided with Tim, 2026-11-08: scale to the USDA average.** National standardized 305-day averages, 2019 calvings
+  ([CDCB tables 7B-7F](https://queries.uscdcb.com/publish/dhi/current/lasum.html)): Holstein 27,686 lb milk (12,558 kg), fat 3.90%, protein 3.15%;
+  Jersey 20,740 lb (9,408 kg), 4.82%, 3.68%; Brown Swiss 22,737 lb (10,313 kg), 4.07%, 3.36%. Herd averages for 2021 are close
+  ([DHI herd averages 2021](https://queries.uscdcb.com/publish/dhi/current/haall.html)). These replace the older component table above.
+  Built in `husbandry/Lactation`: Wood's shape from the ADSA midpoints (Holstein b 0.235 c 0.0034; Jersey b 0.18 c 0.0030), scale solved so
+  the 305-day sum equals the USDA total. That gives Holstein a peak near day 69 at about 48 kg, Jersey near day 60 at about 36 kg.
+  **Stand-ins (proposed):** Brown Swiss uses Holstein's shape; Gyr uses Jersey's shape with the middle of the Indian range (1,746.5 kg).
+  The first-lactation reduction (Wisconsin fits suggest about 15% less) is **not built**. The link from the genome's milk-yield trait to a yield
+  factor is **not built** (needs a decision); the function takes a factor, 1.0 = breed average.
 - Milking is twice a day on a real farm; the game milks **once per game day** through the parlor and counts both milkings
   (decided with Tim, 2026-11-07). How much a milking holds is tied to the output-per-game-day decision in `docs/waste.md`.
 
