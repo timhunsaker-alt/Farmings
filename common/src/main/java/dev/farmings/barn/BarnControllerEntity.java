@@ -346,6 +346,7 @@ public class BarnControllerEntity extends BlockEntity {
 				}
 			}
 		}
+		serve(level, herd);
 		setChanged();
 	}
 
@@ -396,6 +397,34 @@ public class BarnControllerEntity extends BlockEntity {
 	// ---- reading and saving --------------------------------------------------------------------------------------------
 
 	private int housed;
+	private java.util.UUID owner;
+
+	/** The first player to read the controller owns the barn: their calves count toward the first-two-heifers rule. */
+	public void claim(java.util.UUID player) {
+		if (owner == null) {
+			owner = player;
+			setChanged();
+		}
+	}
+
+	/** Natural service: a housed bull serves every housed cow that is in heat (breeding.md). */
+	private void serve(Level level, List<CattleEntity> herd) {
+		CattleEntity bull = null;
+		for (CattleEntity c : herd) {
+			if (c.stage() == Stage.BULL && c.genome() != null && worldPosition.equals(c.stallController())) {
+				bull = c;
+				break;
+			}
+		}
+		for (CattleEntity c : herd) {
+			if (owner != null && c.owner() == null) {
+				c.setOwner(owner);
+			}
+			if (bull != null && c != bull && worldPosition.equals(c.stallController()) && c.canConceive()) {
+				c.conceive(bull.genome(), level.getGameTime());
+			}
+		}
+	}
 
 	/** What the controller shows when read. */
 	public String readout() {
@@ -414,6 +443,9 @@ public class BarnControllerEntity extends BlockEntity {
 		super.saveAdditional(output);
 		output.putIntArray("Pass", pass.save());
 		output.putInt("SinceLastPass", sinceLastPass);
+		if (owner != null) {
+			output.putString("Owner", owner.toString());
+		}
 		output.putBoolean("Signal", signalWas);
 	}
 
@@ -422,6 +454,8 @@ public class BarnControllerEntity extends BlockEntity {
 		super.loadAdditional(input);
 		input.getIntArray("Pass").ifPresent(pass::load);
 		sinceLastPass = input.getIntOr("SinceLastPass", 0);
+		String own = input.getStringOr("Owner", "");
+		owner = own.isEmpty() ? null : java.util.UUID.fromString(own);
 		signalWas = input.getBooleanOr("Signal", false);
 	}
 }

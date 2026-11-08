@@ -1,4 +1,4 @@
-# Breeding and calving (DRAFT, not approved)
+# Breeding and calving (APPROVED by Tim 2026-11-08; natural service built)
 
 **Status: draft 2026-11-08. Nothing here is built.** *(proposed)* = a proposal. *(unverified)* = no good source yet. Figures already
 in [cattle.md](cattle.md) are cited there and only referred to here.
@@ -48,7 +48,13 @@ and at 55% of mature weight; first two calves heifers, the third a bull, then 50
 ## Game tests (to add with the code)
 `heifer_comes_into_heat`, `bull_serves_cow_in_heat`, `straw_inseminates`, `calf_is_born_beside_dam`, `first_two_calves_are_heifers`, `dam_lactates_after_calving`, `sire_survives_save`.
 
-## DECISIONS for Tim
+## Decided with Tim, 2026-11-08
+1 yes (0.75-day heat, 60-day wait). 2 yes (every service in heat conceives). 3 per player (the barn's owner is the first player to read its controller). 4 the bull has his own stall in the barn. 5 builder's choice: natural service first, straws after.
+
+## Built (2026-11-08): natural service and calving
+Heat (`husbandry/Breeding`), a housed bull serving housed cows in heat on the barn tend, conception (sire genome kept on the dam, due tick), calving (`Offspring.create`, calf beside the dam, her lactation starts), first-two-heifers rule per owner (`CalfCounts`, saved with the world), save/load. New proposals with no source: calf birth weight is 6% of the dam's mature weight (a Holstein calf about 43 kg, unverified). **Not built:** straws, calf growth (a newborn stays a calf: weight is still set, not grown), twins, stillbirths, beef crosses, a heat cue you can see.
+
+## Original decisions (kept for the record)
 1. Heat length of 0.75 real day *(proposed)*, and the 60-day waiting period *(proposed)*. Both lack a good source.
 2. Conception: every service in heat conceives *(proposed)*, or add a chance? A chance needs a sourced number.
 3. First-two-heifers counter: per world (proposed), per player, or per dam.

@@ -11,6 +11,7 @@ import dev.farmings.husbandry.Lifecycle;
 import dev.farmings.husbandry.Stage;
 import dev.farmings.husbandry.TimeScale;
 import java.util.OptionalDouble;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -70,6 +71,14 @@ public class CattleEntity extends Animal {
 	private long calvedTick = -1;
 	/** Milk in the udder, kg. One game day's production; unmilked milk is replaced, not stacked (proposed). */
 	private double milkKg;
+	/** The game tick the current or next heat window opens; -1 when she does not cycle. */
+	private long nextHeatTick = -1;
+	/** The sire's encoded genome while she is in calf; empty if none (an art/test cow in calf has no sire and never calves). */
+	private String sireGenome = "";
+	/** The game tick she calves. */
+	private long dueTick = -1;
+	/** The player whose barn houses her; calf counts for the tutorial sex rule are kept per player. */
+	private @Nullable UUID ownerId;
 	/** Game-day index since calving at which the udder was last refilled. */
 	private long lastMilkDay = -1;
 	private boolean retired;
@@ -308,6 +317,140 @@ public class CattleEntity extends Animal {
 		}
 	}
 
+	// --- breeding and calving (docs/animals/breeding.md) ---
+
+	public @Nullable UUID owner() {
+		return ownerId;
+	}
+
+	public void setOwner(@Nullable UUID owner) {
+		this.ownerId = owner;
+	}
+
+	public boolean inHeat() {
+		return sex == Sex.FEMALE && dev.farmings.husbandry.Breeding.inHeat(level().getGameTime(), nextHeatTick);
+	}
+
+	/** For game tests and art: opens a heat window now. */
+	public void startHeatForDisplay() {
+		this.nextHeatTick = level().getGameTime();
+	}
+
+	public boolean canConceive() {
+		return genome != null && inHeat() && bredTick < 0;
+	}
+
+	/** A service in heat conceives (decided 2026-11-08). The sire's genome is kept until the calf is born. */
+	public boolean conceive(Genome sire, long nowTick) {
+		if (!canConceive()) {
+			return false;
+		}
+		this.bredTick = nowTick;
+		this.sireGenome = sire.encode();
+		this.dueTick = nowTick + TimeScale.realDaysToTicks(breed.gestationDays);
+		this.nextHeatTick = -1;
+		syncAge(nowTick);
+		return true;
+	}
+
+	public boolean hasSire() {
+		return !sireGenome.isEmpty();
+	}
+
+	private void updateBreeding(ServerLevel level, long now) {
+		if (sex != Sex.FEMALE || genome == null) {
+			return;
+		}
+		if (bredTick >= 0) {
+			if (hasSire() && dueTick >= 0 && now >= dueTick) {
+				calve(level, now);
+			}
+			return;
+		}
+		double sinceCalving = hasCalved ? TimeScale.ticksToRealDays(now - calvedTick) : 0;
+		if (!dev.farmings.husbandry.Breeding.cycles(breed, stageAt(now), false, ageRealDays(), weightKg, sinceCalving)) {
+			nextHeatTick = -1;
+			return;
+		}
+		if (nextHeatTick < 0) {
+			long offset = Math.floorMod(genome.hash().hashCode(), dev.farmings.husbandry.Breeding.cycleTicks());
+			nextHeatTick = now + offset;
+		} else {
+			nextHeatTick = dev.farmings.husbandry.Breeding.nextHeatStart(now, nextHeatTick);
+		}
+	}
+
+	/** The calf is born beside her and her lactation starts. */
+	private void calve(ServerLevel level, long now) {
+		Genome sire = Genome.decode(sireGenome);
+		Sex forced = null;
+		CalfCounts counts = CalfCounts.get(level.getServer());
+		if (ownerId != null) {
+			forced = dev.farmings.husbandry.Breeding.forcedSex(counts.count(ownerId));
+		}
+		String eventId = "calving:" + getUUID() + ":" + now;
+		dev.farmings.genetics.Offspring.Result r = dev.farmings.genetics.Offspring.create(genome, sire, eventId,
+				Long.toString(level.getSeed()), Ruleset.defaults(), forced);
+		CattleEntity calf = dev.farmings.FarmingsEntities.CATTLE.create(level, EntitySpawnReason.BREEDING);
+		if (calf != null) {
+			calf.initCalf(r, now, breed.matureWeightKg);
+			calf.ownerId = ownerId;
+			calf.setPos(getX() + 0.8, getY(), getZ());
+			level.addFreshEntity(calf);
+		}
+		if (ownerId != null) {
+			counts.add(ownerId);
+		}
+		hasCalved = true;
+		calvedTick = now;
+		bredTick = -1;
+		sireGenome = "";
+		dueTick = -1;
+		nextHeatTick = -1;
+		lastMilkDay = -1;
+		syncAge(now);
+		updateMilk(now);
+	}
+
+	/** The once-a-second bookkeeping: age and stage, the udder, heat and calving. Game tests call it to skip waiting. */
+	public void settle(ServerLevel level) {
+		long now = level.getGameTime();
+		syncAge(now);
+		updateMilk(now);
+		updateBreeding(level, now);
+	}
+
+	/** For game tests: she is due now, so calving can be reached without waiting 18.9 game days. */
+	public void makeDueNow() {
+		this.dueTick = level().getGameTime();
+	}
+
+	/** A newborn from {@link dev.farmings.genetics.Offspring}: its breed is the largest share of its composition. */
+	public void initCalf(dev.farmings.genetics.Offspring.Result r, long nowTick, double damMatureWeightKg) {
+		String top = null;
+		int best = -1;
+		for (java.util.Map.Entry<String, Integer> e : r.genome().breedCompositionBp().entrySet()) {
+			if (e.getValue() > best) {
+				best = e.getValue();
+				top = e.getKey();
+			}
+		}
+		this.breed = CattleBreed.byCode(top);
+		this.sex = r.sex();
+		this.genome = r.genome();
+		for (Trait t : Trait.values()) {
+			this.scores[t.ordinal()] = r.phenotype().score(t);
+		}
+		this.birthTick = nowTick;
+		this.weightKg = damMatureWeightKg * dev.farmings.husbandry.Breeding.BIRTH_WEIGHT_FRACTION;
+		this.castrated = false;
+		this.bredTick = -1;
+		this.hasCalved = false;
+		this.calvedTick = -1;
+		this.retired = false;
+		syncAge(nowTick);
+	}
+
 	public CattleBreed breed() {
 		return breed;
 	}
@@ -401,8 +544,7 @@ public class CattleEntity extends Animal {
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
 		if (tickCount % 20 == 0) {
-			syncAge(level.getGameTime());
-			updateMilk(level.getGameTime());
+			settle(level);
 		}
 	}
 
@@ -437,6 +579,12 @@ public class CattleEntity extends Animal {
 		output.putBoolean("HasCalved", hasCalved);
 		output.putLong("CalvedTick", calvedTick);
 		output.putDouble("MilkKg", milkKg);
+		output.putLong("NextHeat", nextHeatTick);
+		output.putString("Sire", sireGenome);
+		output.putLong("Due", dueTick);
+		if (ownerId != null) {
+			output.putString("Owner", ownerId.toString());
+		}
 		output.putLong("LastMilkDay", lastMilkDay);
 		output.putBoolean("Retired", retired);
 		output.putLong("StallStand", stallStand == null ? Long.MIN_VALUE : stallStand.asLong());
@@ -471,6 +619,11 @@ public class CattleEntity extends Animal {
 		hasCalved = input.getBooleanOr("HasCalved", false);
 		calvedTick = input.getLongOr("CalvedTick", -1L);
 		milkKg = input.getDoubleOr("MilkKg", 0);
+		nextHeatTick = input.getLongOr("NextHeat", -1L);
+		sireGenome = input.getStringOr("Sire", "");
+		dueTick = input.getLongOr("Due", -1L);
+		String own = input.getStringOr("Owner", "");
+		ownerId = own.isEmpty() ? null : java.util.UUID.fromString(own);
 		lastMilkDay = input.getLongOr("LastMilkDay", -1L);
 		retired = input.getBooleanOr("Retired", false);
 		long stand = input.getLongOr("StallStand", Long.MIN_VALUE);

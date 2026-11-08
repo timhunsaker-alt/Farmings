@@ -36,6 +36,7 @@ public class BarnControllerBlock extends BaseEntityBlock {
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof BarnControllerEntity controller) {
+			controller.claim(player.getUUID());
 			controller.refresh(level);
 			player.sendOverlayMessage(Component.literal(controller.readout()));
 		}

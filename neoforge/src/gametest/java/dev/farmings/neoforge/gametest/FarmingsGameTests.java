@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -87,6 +87,11 @@ public class FarmingsGameTests {
 			helper.register(id("cow_walks_in_from_the_pit_end"), loaded(FarmingsGameTests::cowWalksInFromThePitEnd));
 			helper.register(id("cow_stall_survives_save"), loaded(FarmingsGameTests::cowStallSurvivesSave));
 			helper.register(id("cow_gives_milk"), loaded(FarmingsGameTests::cowGivesMilk));
+			helper.register(id("heifer_comes_into_heat"), loaded(FarmingsGameTests::heiferComesIntoHeat));
+			helper.register(id("bull_serves_cow_in_heat"), loaded(FarmingsGameTests::bullServesCowInHeat));
+			helper.register(id("calf_is_born_beside_dam"), loaded(FarmingsGameTests::calfIsBornBesideDam));
+			helper.register(id("first_two_calves_are_heifers"), loaded(FarmingsGameTests::firstTwoCalvesAreHeifers));
+			helper.register(id("sire_survives_save"), loaded(FarmingsGameTests::sireSurvivesSave));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -711,6 +716,128 @@ public class FarmingsGameTests {
 		beef.setBreedForDisplay(CattleBreed.ANGUS, Sex.FEMALE, 550, false);
 		beef.setCalvedForDisplay(60);
 		helper.assertTrue(beef.milkKg() == 0, Component.literal("a beef cow is not milked"));
+		helper.succeed();
+	}
+
+	// ---- breeding and calving ----
+
+	private static CattleEntity founderAt(ServerLevel level, BlockPos near, Sex sex, long seed, double ageDays, double weightKg) {
+		CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+		c.setPos(near.getX() + 0.5, near.getY() + 0.2, near.getZ() + 0.5);
+		c.initFounder(CattleBreed.HOLSTEIN, sex, seed, ageDays, weightKg, level.getGameTime());
+		c.setNoAi(true);
+		level.addFreshEntity(c);
+		return c;
+	}
+
+	private static void heiferComesIntoHeat(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity young = founderAt(level, p, Sex.FEMALE, 11L, 300, 300);
+		young.settle(level);
+		helper.assertTrue(!young.inHeat() && !young.canConceive(), Component.literal("a young heifer does not cycle"));
+		CattleEntity heifer = founderAt(level, p, Sex.FEMALE, 12L, 500, 400);
+		helper.assertTrue(heifer.stage() == Stage.HEIFER, Component.literal("a heifer at 15 months and 400 kg, got " + heifer.stage()));
+		heifer.settle(level);
+		helper.assertTrue(!heifer.canConceive() || heifer.inHeat(), Component.literal("consistent"));
+		heifer.startHeatForDisplay();
+		helper.assertTrue(heifer.inHeat() && heifer.canConceive(), Component.literal("she is in heat when a window opens"));
+		heifer.settle(level);
+		helper.assertTrue(heifer.inHeat(), Component.literal("settling keeps the open window"));
+		helper.succeed();
+	}
+
+	private static void bullServesCowInHeat(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		BarnControllerEntity ctl = controller(helper, C);
+		CattleEntity bull = founderAt(level, c.offset(-4, -1, -1), Sex.MALE, 21L, 1500, 800);
+		CattleEntity cow = founderAt(level, c.offset(-3, -1, -1), Sex.FEMALE, 22L, 500, 400);
+		CattleEntity other = founderAt(level, c.offset(-2, -1, -1), Sex.FEMALE, 23L, 500, 400);
+		helper.assertTrue(bull.stage() == Stage.BULL, Component.literal("a bull, got " + bull.stage()));
+		cow.startHeatForDisplay();
+		ctl.tend(level, 20);
+		helper.assertTrue(bull.stallStand() != null && cow.stallStand() != null, Component.literal("both are housed (the bull has his own stall)"));
+		helper.assertTrue(cow.isInCalf() && cow.hasSire(), Component.literal("the bull served the cow in heat"));
+		helper.assertTrue(!other.isInCalf(), Component.literal("a cow not in heat is not served"));
+		helper.assertTrue(!cow.inHeat(), Component.literal("heat ends once she is in calf"));
+		helper.succeed();
+	}
+
+	private static CattleEntity calveOnce(ServerLevel level, CattleEntity dam, CattleEntity sire) {
+		dam.startHeatForDisplay();
+		if (!dam.conceive(sire.genome(), level.getGameTime())) {
+			return null;
+		}
+		java.util.Set<java.util.UUID> before = new java.util.HashSet<>();
+		for (CattleEntity e : level.getEntitiesOfClass(CattleEntity.class, dam.getBoundingBox().inflate(6))) {
+			before.add(e.getUUID());
+		}
+		dam.makeDueNow();
+		dam.settle(level);
+		for (CattleEntity e : level.getEntitiesOfClass(CattleEntity.class, dam.getBoundingBox().inflate(6))) {
+			if (!before.contains(e.getUUID())) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	private static void calfIsBornBesideDam(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 31L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 32L, 500, 400);
+		dam.setOwner(java.util.UUID.randomUUID());
+		CattleEntity calf = calveOnce(level, dam, bull);
+		helper.assertTrue(calf != null, Component.literal("a calf is born"));
+		helper.assertTrue(calf.stage() == Stage.CALF && calf.isBaby(), Component.literal("a newborn is a calf, got " + calf.stage()));
+		helper.assertTrue(calf.genome() != null && calf.genome().generation() == 1, Component.literal("the calf has a bred genome, one generation on"));
+		helper.assertTrue(calf.sex() == Sex.FEMALE, Component.literal("the owner's first calf is a heifer"));
+		helper.assertTrue(calf.distanceTo(dam) < 3, Component.literal("it appears beside her"));
+		helper.assertTrue(dam.stage() == Stage.LACTATING_COW && !dam.isInCalf() && !dam.hasSire(), Component.literal("she now gives milk, got " + dam.stage()));
+		helper.assertTrue(dam.milkKg() > 0, Component.literal("her udder fills"));
+		helper.succeed();
+	}
+
+	private static void firstTwoCalvesAreHeifers(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 41L, 1500, 800);
+		java.util.UUID player = java.util.UUID.randomUUID();
+		Sex[] got = new Sex[3];
+		for (int i = 0; i < 3; i++) {
+			CattleEntity dam = founderAt(level, p, Sex.FEMALE, 50L + i, 500, 400);
+			dam.setOwner(player);
+			CattleEntity calf = calveOnce(level, dam, bull);
+			helper.assertTrue(calf != null, Component.literal("calf " + (i + 1) + " is born"));
+			got[i] = calf.sex();
+		}
+		helper.assertTrue(got[0] == Sex.FEMALE && got[1] == Sex.FEMALE && got[2] == Sex.MALE,
+				Component.literal("heifer, heifer, bull; got " + java.util.Arrays.toString(got)));
+		helper.succeed();
+	}
+
+	private static void sireSurvivesSave(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 61L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 62L, 500, 400);
+		java.util.UUID player = java.util.UUID.randomUUID();
+		dam.setOwner(player);
+		dam.startHeatForDisplay();
+		helper.assertTrue(dam.conceive(bull.genome(), level.getGameTime()), Component.literal("conceives"));
+		net.minecraft.util.ProblemReporter reporter = net.minecraft.util.ProblemReporter.DISCARDING;
+		net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, level.registryAccess());
+		dam.saveWithoutId(out);
+		CattleEntity copy = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
+		copy.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(copy.isInCalf() && copy.hasSire() && player.equals(copy.owner()), Component.literal("her pregnancy, sire and owner survive a save"));
 		helper.succeed();
 	}
 }

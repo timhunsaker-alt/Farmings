@@ -241,6 +241,53 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+	private static void calving(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			for (int x = cx - 8; x <= cx + 8; x++) {
+				for (int z = cz - 8; z <= cz + 8; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+					for (int h = 0; h < 5; h++) {
+						level.setBlockAndUpdate(new BlockPos(x, y + h, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					}
+				}
+			}
+			CattleEntity bull = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+			bull.initFounder(CattleBreed.HOLSTEIN, Sex.MALE, 7L, 1500, 800, level.getGameTime());
+			bull.setPos(cx - 3 + 0.5, y, cz + 0.5);
+			bull.setNoAi(true);
+			level.addFreshEntity(bull);
+			CattleEntity dam = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+			dam.initFounder(CattleBreed.HOLSTEIN, Sex.FEMALE, 8L, 500, 400, level.getGameTime());
+			dam.setPos(cx + 0.5, y, cz + 0.5);
+			dam.setNoAi(true);
+			dam.setOwner(java.util.UUID.randomUUID());
+			level.addFreshEntity(dam);
+			dam.startHeatForDisplay();
+			dam.conceive(bull.genome(), level.getGameTime());
+		});
+		context.waitTicks(40);
+		server.runCommand("tp @p " + (cx + 1) + " " + (y + 3) + " " + (cz + 5) + " 180 30");
+		context.waitTicks(20);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "calving"));
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-calving-before");
+		server.runOnServer(srv -> {
+			for (CattleEntity c : srv.overworld().getEntitiesOfClass(CattleEntity.class, new net.minecraft.world.phys.AABB(cx - 5, y - 1, cz - 5, cx + 5, y + 4, cz + 5))) {
+				if (c.isInCalf()) {
+					c.makeDueNow();
+					c.settle(srv.overworld());
+				}
+			}
+		});
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-calving-after");
+		context.waitTicks(60);
+		film.stop();
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
@@ -250,6 +297,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			server.runCommand("time set noon");
 			server.runCommand("weather clear");
 			server.runCommand("gamemode spectator @p");
+			if ("calving".equals(System.getenv("FARMINGS_ONLY"))) {
+				context.waitTicks(200);
+				calving(context, server, y);
+				return;
+			}
 			if ("herd".equals(System.getenv("FARMINGS_ONLY"))) {
 				context.waitTicks(200);
 				herd(context, server, y);
