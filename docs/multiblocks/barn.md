@@ -49,6 +49,13 @@ Small breeds (Jersey, 470 kg) still use a whole stall in this version. *(propose
 Power: only the `scraper_drive` (and a later trough heater) draws power. It takes Wildcatter's three-phase at 480 V (NA) or 400 V
 (IEC), read from the world's standard, through the usual motor box. Nothing else in the barn needs power.
 
+## Correction (2026-11-07, found while writing the forming code)
+The sketch below drew the beds shoulder to shoulder (`B B B B`, 4 cells for 4 stalls) but also put a divider between every pair of beds
+(`D . D . D . D . D`, 9 positions). Both cannot be true: a divider needs its own cell. **A stall takes two cells along the barn: one for
+the bed and one for the divider after it, plus a divider at the start. So n stalls a side take 2n+1 cells** (4 stalls: 9 cells,
+8 cows). The alley, rail and floor are the same 2n+1 long. Everything else in the sketch stands. The forming code and its tests
+(`husbandry/barn/BarnLayout`) use this. Tell Tim if he would rather have stalls one cell wide with the dividers drawn on the beds.
+
 ## Layout (a sketch, tail-to-tail, facing north)
 One bay, 4 stalls long per side, so 8 cows. A barn is as many stalls long as the player builds (2 to 12 per side *(proposed)*).
 

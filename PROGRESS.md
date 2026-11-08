@@ -73,7 +73,15 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     the six breeds, calves and bulls, and takes screenshots (in `fabric/build/run/clientGameTest/screenshots`). It passes.
   - Calves use the vanilla baby model with the adult coat (no hump on a Gyr calf). Every breed is the same size; real size
     differences would need per-breed models or a scale (not done).
-- Next: the barn blocks and multiblock (step 3).
+- **2026-11-07: Phase 1 step 3a: the barn's forming rules, as plain Java** (`husbandry/barn`: `BarnLayout`, `BarnGrid`, `BarnPart`,
+  `Orientation`). It reads the world through a small interface, tries all eight ways the barn can lie (4 turns, mirrored or not),
+  and either forms or names the first thing wrong ("Stall 3 north has no divider on its near side"). 12 unit tests: perfect barns
+  of 2 to 12 stalls a side, each rule broken in turn, and all eight orientations.
+  - **Spec error found and fixed:** the barn sketch could not be built as drawn (no cell for a divider between two beds). A stall now
+    takes 2 cells, so n stalls a side take 2n+1 along the barn. Recorded in `barn.md`; Tim to confirm.
+  - Not built yet: the blocks themselves (11 parts, built on Wildcatter's big-part system), the controller block entity, the scraper,
+    pit and manure, and the game tests that need them.
+- Next: the barn blocks (step 3b), then the scraper, pit and manure (3c).
 
 ## Known gaps
 - Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
