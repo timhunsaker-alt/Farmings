@@ -37,7 +37,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - **2026-11-07: barn spec drafted** (`docs/multiblocks/barn.md`): tail-to-tail freestall barn, 3 m scrape alley, powered scraper at
   480 V, collection pit, hay feeders, troughs. Eight open decisions (scraper motor size and passes per day, feeder capacity,
   trough count, water source, roof, stall sizes, manure fork, manure item weight), each with a proposal. No code.
-- Next: Tim reviews `barn.md`, `cattle.md` and `waste.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
+- **2026-11-07: barn spec approved.** Water from a pipe and a bucket; no roof or walls in the structure; a new manure fork tool;
+  motor 2.2 kW and one pass a day stand.
+- Next: Tim approves the Phase 1 code plan (cattle entity first, then the barn); then research the TO VERIFY list, then the barn, feeder and parlor specs.
 
 ## Known gaps
 - No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).

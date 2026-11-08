@@ -1,9 +1,14 @@
-# The freestall barn (DRAFT, 2026-11-07, not yet approved by Tim)
+# The freestall barn (APPROVED by Tim 2026-11-07)
 
 Where cattle live, eat, drink and lie down, and where their manure is collected. A **freestall barn** is a row of individual
 stalls the cows come and go from, a feed bunk with hay, water, and an alley that a **powered scraper** pushes clean into a
 **collection pit**. The cattle are in [../animals/cattle.md](../animals/cattle.md), the manure's next steps in [../waste.md](../waste.md),
 and the parlor is a separate spec (`parlor.md`, not written).
+
+**Decided with Tim, 2026-11-07:** scraper motor 2.2 kW and one pass per game day; water comes from **both** a Wildcatter pipe and a
+bucket; a roof and walls are **not** part of the structure for now; the manure fork is a **new tool**. The other proposals
+(feeder holds 4 hay blocks a cell, one trough per row, same stalls for every breed, 50 kg per manure item, 64 manure items a pit
+cell) stand as approved unless Tim changes them.
 
 A figure marked *(proposed)* is a proposal or a scaled value. A figure marked *(unverified)* has no good source yet. Nothing marked
 *(proposed)* or *(unverified)* is built until Tim approves it.
@@ -129,11 +134,5 @@ the pit.
 - `cow_state_survives_save`: a cow in a barn through a save and a chunk unload.
 
 ## Open decisions
-1. The scraper's motor size and the scrapes per game day (the 2.2 kW and 1-a-day numbers are proposals, not facts).
-2. Hay-feeder capacity per cell (proposed 4 blocks).
-3. How many cows a water trough serves (proposed 1 per row; no source).
-4. Where water comes from: a Wildcatter pipe, a bucket, or both.
-5. Whether a roof and walls are part of the structure (proposed: no; the barn forms without them, and weather effects are for later).
-6. Whether big cows (Holstein, 710 kg) and small ones (Jersey, 470 kg) need different stalls (proposed: no).
-7. The manure fork: a new tool, or a vanilla shovel.
-8. What one manure item weighs (proposed 50 kg).
+None. All eight were settled on 2026-11-07 (see the top of this file). The *(unverified)* tags remain: the scraper motor size has no
+source, the trough ratio has no source, and the dirty-stall effect size has no source. Each is revisited when a source is found.
