@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -92,6 +92,10 @@ public class FarmingsGameTests {
 			helper.register(id("calf_is_born_beside_dam"), loaded(FarmingsGameTests::calfIsBornBesideDam));
 			helper.register(id("first_two_calves_are_heifers"), loaded(FarmingsGameTests::firstTwoCalvesAreHeifers));
 			helper.register(id("sire_survives_save"), loaded(FarmingsGameTests::sireSurvivesSave));
+			helper.register(id("calf_grows_to_heifer"), loaded(FarmingsGameTests::calfGrowsToHeifer));
+			helper.register(id("underfed_heifer_grows_slower"), loaded(FarmingsGameTests::underfedHeiferGrowsSlower));
+			helper.register(id("grown_cow_stops_growing"), loaded(FarmingsGameTests::grownCowStopsGrowing));
+			helper.register(id("weight_survives_save"), loaded(FarmingsGameTests::weightSurvivesSave));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -838,6 +842,81 @@ public class FarmingsGameTests {
 		CattleEntity copy = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
 		copy.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
 		helper.assertTrue(copy.isInCalf() && copy.hasSire() && player.equals(copy.owner()), Component.literal("her pregnancy, sire and owner survive a save"));
+		helper.succeed();
+	}
+
+	// ---- growth ----
+
+	private static CattleEntity newborn(ServerLevel level, BlockPos p, long seed) {
+		CattleEntity c = founderAt(level, p, Sex.FEMALE, seed, 0, dev.farmings.husbandry.Growth.targetKg(CattleBreed.HOLSTEIN, 0));
+		c.settle(level);
+		return c;
+	}
+
+	private static void calfGrowsToHeifer(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity calf = newborn(level, p, 71L);
+		helper.assertTrue(calf.stage() == Stage.CALF, Component.literal("born a calf, got " + calf.stage()));
+		calf.advanceForTest(456);
+		calf.settle(level);
+		helper.assertTrue(Math.abs(calf.weightKg() - 425) < 1, Component.literal("a Holstein is 425 kg at 15 months, got " + calf.weightKg()));
+		helper.assertTrue(calf.stage() == Stage.HEIFER, Component.literal("she is a heifer by then, got " + calf.stage()));
+		helper.succeed();
+	}
+
+	private static void underfedHeiferGrowsSlower(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		double start = dev.farmings.husbandry.Growth.targetKg(CattleBreed.HOLSTEIN, 500);
+		CattleEntity fed = founderAt(level, p, Sex.FEMALE, 72L, 500, start);
+		CattleEntity hungry = founderAt(level, p, Sex.FEMALE, 73L, 500, start);
+		helper.assertTrue(hungry.stage() != Stage.CALF, Component.literal("old enough to need feed, got " + hungry.stage()));
+		hungry.assignStall(p, p.offset(1, 0, 0), p.offset(2, 0, 0));
+		hungry.settle(level);
+		fed.settle(level);
+		hungry.recordTending(0, 0, 0.5, 1);
+		hungry.advanceForTest(400);
+		hungry.settle(level);
+		fed.advanceForTest(400);
+		fed.settle(level);
+		helper.assertTrue(hungry.weightKg() < fed.weightKg() - 5,
+				Component.literal("the half-fed heifer is lighter: " + hungry.weightKg() + " vs " + fed.weightKg()));
+		helper.assertTrue(hungry.weightKg() > start + 10, Component.literal("but she still grows"));
+		helper.succeed();
+	}
+
+	private static void grownCowStopsGrowing(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity cow = founderAt(level, p, Sex.FEMALE, 74L, 2000, 710);
+		cow.settle(level);
+		cow.advanceForTest(300);
+		cow.settle(level);
+		helper.assertTrue(cow.weightKg() == 710, Component.literal("a grown cow keeps 710 kg, got " + cow.weightKg()));
+		helper.succeed();
+	}
+
+	private static void weightSurvivesSave(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity calf = newborn(level, p, 75L);
+		calf.advanceForTest(100);
+		calf.settle(level);
+		double w = calf.weightKg();
+		net.minecraft.util.ProblemReporter reporter = net.minecraft.util.ProblemReporter.DISCARDING;
+		net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, level.registryAccess());
+		calf.saveWithoutId(out);
+		CattleEntity copy = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
+		copy.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(Math.abs(copy.weightKg() - w) < 1e-9 && w > 50, Component.literal("weight survives a save: " + w + " vs " + copy.weightKg()));
+		copy.advanceForTest(100);
+		copy.settle(level);
+		helper.assertTrue(copy.weightKg() > w, Component.literal("and she keeps growing after the load"));
 		helper.succeed();
 	}
 }

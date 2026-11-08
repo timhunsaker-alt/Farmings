@@ -1,6 +1,6 @@
-# Growth: how calves and heifers gain weight (DRAFT, not approved)
+# Growth: how calves and heifers gain weight (APPROVED by Tim 2026-11-08, built)
 
-**Status: draft 2026-11-08. Nothing here is built.** *(proposed)* = a proposal. *(unverified)* = no good source yet.
+**Status: approved and built 2026-11-08** (curve points as proposed, feeding option 1, slower growth the only effect of underfeeding). *(proposed)* = a proposal. *(unverified)* = no good source yet.
 
 ## Why
 Weight is still set by hand, so a calf born in the game never grows up (cattle.md stages and the breeding rules read weight:
@@ -42,7 +42,11 @@ Calves eat no hay yet (`Hay.dryMatterIntakeOrStandIn`). Options:
 `calf_grows_to_heifer`, `underfed_heifer_grows_slower`, `grown_cow_stops_growing`, `weight_survives_save`; plain-Java `GrowthTest`
 (Holstein at 456 days = 425 kg, Jersey 297, Brown Swiss 379; mature at 1,460 days).
 
-## DECISIONS for Tim
-1. The curve points above (birth 6%, 48 months to maturity) and the other breeds using Holstein's 0.60.
-2. Feeding calves: option 1 (recommended), 2 or 3.
-3. Whether an underfed heifer's slower growth is the only effect (recommended), or health also drops (needs a sourced effect first).
+## Built
+`husbandry/Growth` (plain Java, `GrowthTest`), `CattleEntity.grow` in the once-a-second bookkeeping. A calf needs no feed; housed older animals grow by
+their last fed fraction; animals outside the barn grow at 100%. Gain over a step is the curve's gain across it, so long gaps are right. Saved as
+GrowthMarked/GrowthTick; an older saved cow starts counting from the load. Game tests: `calf_grows_to_heifer`, `underfed_heifer_grows_slower`,
+`grown_cow_stops_growing`, `weight_survives_save`. Still unsourced: birth 6%, maturity at 48 months, Holstein's 0.60 for other breeds.
+
+## Decisions
+All three settled 2026-11-08: curve points as proposed; option 1; slower growth is the only effect.

@@ -68,6 +68,9 @@ public class CattleEntity extends Animal {
 	/** Game time she was bred, or -1 when she is not in calf. */
 	private long bredTick = -1;
 	private boolean hasCalved;
+	/** Game tick up to which growth has been counted; valid only when {@link #growthMarked}. */
+	private long growthTick;
+	private boolean growthMarked;
 	private long calvedTick = -1;
 	/** Milk in the udder, kg. One game day's production; unmilked milk is replaced, not stacked (proposed). */
 	private double milkKg;
@@ -415,9 +418,41 @@ public class CattleEntity extends Animal {
 	/** The once-a-second bookkeeping: age and stage, the udder, heat and calving. Game tests call it to skip waiting. */
 	public void settle(ServerLevel level) {
 		long now = level.getGameTime();
+		grow(now);
 		syncAge(now);
 		updateMilk(now);
 		updateBreeding(level, now);
+	}
+
+	/**
+	 * Gains weight on the growth curve (docs/animals/growth.md): housed animals by how well they were fed (a calf needs no feed), animals
+	 * outside the barn at 100%. Counts from the first time it runs, so a loaded older cow starts from now.
+	 */
+	private void grow(long now) {
+		if (!growthMarked) {
+			growthMarked = true;
+			growthTick = now;
+			return;
+		}
+		double span = TimeScale.ticksToRealDays(now - growthTick);
+		growthTick = now;
+		if (span <= 0) {
+			return;
+		}
+		double age = ageRealDays();
+		boolean housed = stallController != null && stage() != Stage.CALF;
+		double fed = housed ? lastFed : 1;
+		double gain = dev.farmings.husbandry.Growth.gainKg(breed, age - span, span, fed);
+		if (gain > 0 && weightKg < breed.matureWeightKg) {
+			weightKg = Math.min(breed.matureWeightKg, weightKg + gain);
+		}
+	}
+
+	/** For game tests: she is {@code realDays} older and has been growing that long. */
+	public void advanceForTest(double realDays) {
+		long ticks = TimeScale.realDaysToTicks(realDays);
+		birthTick -= ticks;
+		growthTick -= ticks;
 	}
 
 	/** For game tests: she is due now, so calving can be reached without waiting 18.9 game days. */
@@ -574,6 +609,8 @@ public class CattleEntity extends Animal {
 		output.putIntArray("Scores", scores.clone());
 		output.putLong("BirthTick", birthTick);
 		output.putDouble("WeightKg", weightKg);
+		output.putBoolean("GrowthMarked", growthMarked);
+		output.putLong("GrowthTick", growthTick);
 		output.putBoolean("Castrated", castrated);
 		output.putLong("BredTick", bredTick);
 		output.putBoolean("HasCalved", hasCalved);
@@ -614,6 +651,8 @@ public class CattleEntity extends Animal {
 		});
 		birthTick = input.getLongOr("BirthTick", 0L);
 		weightKg = input.getDoubleOr("WeightKg", 0.0);
+		growthMarked = input.getBooleanOr("GrowthMarked", false);
+		growthTick = input.getLongOr("GrowthTick", 0L);
 		castrated = input.getBooleanOr("Castrated", false);
 		bredTick = input.getLongOr("BredTick", -1L);
 		hasCalved = input.getBooleanOr("HasCalved", false);
