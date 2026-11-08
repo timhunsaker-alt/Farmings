@@ -31,6 +31,12 @@ From FarmChain, with the source value copied and cited, not invented:
   only draws what the genome allows.
 - **Determinism tests.** The same input gives the same output. These tests come across with the code.
 
+## Status of the port (2026-11-07)
+Built in `common/.../genetics` with unit tests: the eight core traits, breed composition, Mendelian transmission, heterosis,
+inbreeding, trait expression, deterministic offspring and the canonical genome hash. The tests check the results against FarmChain's
+own TypeScript on fixed inputs. **Not built yet:** visual loci and the visual recipe, discrete loci (CSN2/CSN3/POLLED/defects),
+tier bands, the large statistical gates. The breeding seed uses a world-derived key where FarmChain uses a server secret.
+
 ## What changes for Minecraft
 - **Sex.** Every animal is male or female. FarmChain's dairy MVP was females; Farmings adds males, mating and sire choice.
   The sex-linked parts of the model are a **DECISION** to settle in the cattle doc.

@@ -39,9 +39,22 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   trough count, water source, roof, stall sizes, manure fork, manure item weight), each with a proposal. No code.
 - **2026-11-07: barn spec approved.** Water from a pipe and a bucket; no roof or walls in the structure; a new manure fork tool;
   motor 2.2 kW and one pass a day stand.
-- Next: Tim approves the Phase 1 code plan (cattle entity first, then the barn); then research the TO VERIFY list, then the barn, feeder and parlor specs.
+- **2026-11-07: Phase 1 step 1 built** (plain Java, no Minecraft code): the genetics port and the husbandry rules, with 35 unit tests
+  passing and `./gradlew build` green.
+  - `genetics`: eight traits, breed composition (basis points, sums to 10,000), allele pool, heterosis, inbreeding, trait expression,
+    deterministic offspring, generation-0 founders, canonical genome string and SHA-256 hash. Keyed by the world seed instead of a
+    server secret. Not ported yet: visual and discrete loci, tiers, the Monte Carlo gate.
+  - Parity with FarmChain: the tests compare against values produced by FarmChain's own TypeScript (RNG, breeding seed, composition
+    averaging, and three whole calves with fixed parents and seeds: alleles, sex and all eight trait scores match).
+  - `husbandry`: 15:1 time scale, the six breeds (weight, gestation), stages, first-breeding rule (15 months and 55% weight),
+    due and lactation days, first-three-calves rule. `feed`: hay block 85 kg dry matter, intake fractions, UC Davis water rule.
+  - **Not built, and why:** the lactation curve (no per-breed peak or total is sourced), intake for calves, heifers and bulls (no
+    sourced figure), and Angus and Wagyu baselines (open decision). Stand-in values are marked in `CattleBreed.java`.
+  - Founders draw alleles uniformly from the seven-allele pool: that is new in Farmings, not FarmChain's.
+- Next: the cattle entity in the game (step 2), then the barn blocks and multiblock (step 3).
 
 ## Known gaps
+- Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
 - No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).
 - Fabric has not been launched.
 - No icon, no creative tab, no lang strings.
