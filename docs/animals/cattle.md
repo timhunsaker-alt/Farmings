@@ -59,6 +59,13 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
   per standardized lactation for 2015 calvings, from the same tables.
 - **Gyr** (the dairy-strain Gir): 1,225-2,268 kg per lactation in India, 240-380 days, fat 4.5-4.6% ([Indian Journal of Animal Sciences review](https://epubs.icar.org.in/index.php/IJAnS/article/download/119832/46085/337986)). A Tamil Nadu herd in hot, humid conditions gave 1,507 kg and 5.05% fat with a 447-day calving interval. Brazilian averages are quoted higher (about 3,500 kg) but only by a popular article, **TO VERIFY**.
 - **Lactation curve:** yield peaks about 4-8 weeks after calving. One Colombian Holstein herd averaged 5,830 kg per 305 days with a peak near 27.7 kg/day at 4.7 weeks ([Fitting lactation curves in a Colombian Holstein herd](https://agris.fao.org/search/en/records/6759909bc7a957febdfc71f9)); Wood's model is the practical curve ([Revista Facultad Nacional de Agronomia Medellin](https://revistas.unal.edu.co/index.php/refame/article/download/67424/65883/381784)). Per-breed peaks are **TO VERIFY**.
+- **Wood's curve research, 2026-11-08 (all *(unverified)*, from a conference abstract):** yield on day t is `a * t^b * e^(-c*t)` kg/day.
+  [ADSA 2019 abstract M128](https://m.adsa.org/2019/abs/t/78869), Wisconsin test-day data. First lactation: Holstein a 16.13, b 0.235, c 0.0019;
+  Jersey a 14.07, b 0.186, c 0.0021. Later lactations: Holstein a about 23.7, b 0.23-0.24, c 0.0032-0.0036; Jersey a about 19.2, b 0.17-0.19,
+  c 0.0028-0.0032. Worked out by us (not in the source): Holstein later lactations peak near day 69 at about 51 kg and total about 13,200 kg in 305 days;
+  that is **higher than the USDA national average** (about 10,900 kg), so these parameters describe good herds, not the average. Jersey later:
+  peak day 60, about 33 kg, about 8,750 kg. **No Brown Swiss or Gyr parameters found.** The USDA AIPL links and the Brown Swiss papers
+  (Turkey 2024, Slovenia 2013) could not be opened. Do not build milk yields until Tim picks a source.
 - Milking is twice a day on a real farm; the game milks **once per game day** through the parlor and counts both milkings
   (decided with Tim, 2026-11-07). How much a milking holds is tied to the output-per-game-day decision in `docs/waste.md`.
 
