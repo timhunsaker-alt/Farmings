@@ -4,6 +4,8 @@ import dev.farmings.barn.BarnControllerBlock;
 import dev.farmings.barn.BarnControllerEntity;
 import dev.farmings.barn.BarnPartBlock;
 import dev.farmings.barn.BarnPartEntity;
+import dev.farmings.barn.DriveEntity;
+import dev.farmings.barn.PitEntity;
 import dev.farmings.barn.BarnParts;
 import dev.wildcatter.item.BigPartItem;
 import java.util.HashSet;
@@ -34,10 +36,23 @@ public final class FarmingsBlocks {
 		}
 	}
 
-	public static final BlockEntityType<BarnPartEntity> PART_ENTITY = new BlockEntityType<>(BarnPartEntity::new, new HashSet<>(Set.of(PARTS)));
+	public static final BlockEntityType<BarnPartEntity> PART_ENTITY = new BlockEntityType<>(BarnPartEntity::new, others());
+	public static final BlockEntityType<PitEntity> PIT_ENTITY = new BlockEntityType<>(PitEntity::new, Set.of(part(BarnParts.COLLECTION_PIT)));
+	public static final BlockEntityType<DriveEntity> DRIVE_ENTITY = new BlockEntityType<>(DriveEntity::new, Set.of(part(BarnParts.SCRAPER_DRIVE)));
 	public static final BlockEntityType<BarnControllerEntity> CONTROLLER_ENTITY = new BlockEntityType<>(BarnControllerEntity::new, Set.of(BARN_CONTROLLER));
 
 	private FarmingsBlocks() {
+	}
+
+	/** Every part whose main cell only remembers it has grown: all but the pit and the drive, which have their own entities. */
+	private static Set<Block> others() {
+		Set<Block> out = new HashSet<>();
+		for (BarnParts kind : BarnParts.values()) {
+			if (kind != BarnParts.COLLECTION_PIT && kind != BarnParts.SCRAPER_DRIVE) {
+				out.add(PARTS[kind.ordinal()]);
+			}
+		}
+		return out;
 	}
 
 	public static Block part(BarnParts kind) {
@@ -67,6 +82,8 @@ public final class FarmingsBlocks {
 	/** Every item the creative tab shows. The tab itself is built in each loader, which has the builder that takes no argument. */
 	public static void creativeTab(java.util.function.Consumer<net.minecraft.world.level.ItemLike> output) {
 		output.accept(BARN_CONTROLLER);
+		output.accept(FarmingsItems.MANURE_FORK);
+		output.accept(FarmingsItems.MANURE);
 		for (BarnParts kind : BarnParts.values()) {
 			output.accept(part(kind));
 		}
@@ -79,5 +96,8 @@ public final class FarmingsBlocks {
 		}
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("barn_part"), PART_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("barn_controller"), CONTROLLER_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("pit"), PIT_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("scraper_drive"), DRIVE_ENTITY);
+		FarmingsItems.register();
 	}
 }

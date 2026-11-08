@@ -11,5 +11,7 @@
  "block.farmings.stall_divider": "Stall Divider",
  "block.farmings.water_trough": "Water Trough",
  "entity.farmings.cattle": "Cattle",
+ "item.farmings.manure": "Manure",
+ "item.farmings.manure_fork": "Manure Fork",
  "itemGroup.farmings": "Farmings"
 }

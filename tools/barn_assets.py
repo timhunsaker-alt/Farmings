@@ -64,6 +64,23 @@ def texture(name, colour, centre_stripe=None):
     img.save(path)
 
 
+def item_texture(name, colour, fork):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    if fork:
+        d.line([(3, 13), (11, 5)], fill=(120, 84, 48), width=2)          # the handle
+        for x in (9, 11, 13):                                              # three tines
+            d.line([(x, 1), (x, 6)], fill=(150, 150, 156))
+        d.line([(9, 6), (13, 6)], fill=(150, 150, 156))
+    else:
+        d.ellipse([3, 6, 13, 13], fill=colour)
+        d.ellipse([5, 4, 11, 9], fill=tuple(min(255, c + 18) for c in colour))
+        d.ellipse([6, 8, 9, 10], fill=tuple(max(0, c - 22) for c in colour))
+    path = os.path.join(ASSETS, "textures", "item", name + "_placeholder.png")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    img.save(path)
+
+
 def block_model(name, box):
     x1, y1, z1, x2, y2, z2 = box
     return {
@@ -100,6 +117,13 @@ def main():
     write(os.path.join(ASSETS, "blockstates", "barn_controller.json"), {"variants": {"": {"model": "farmings:block/barn_controller"}}})
     write(os.path.join(ASSETS, "items", "barn_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/barn_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "barn_controller.json"), loot("barn_controller"))
+    # items: manure and the fork (placeholders)
+    for name, title, colour, parent in (("manure", "Manure", (92, 64, 38), "minecraft:item/generated"),
+                                        ("manure_fork", "Manure Fork", (138, 120, 96), "minecraft:item/handheld")):
+        lang["item.farmings." + name] = title
+        item_texture(name, colour, name == "manure_fork")
+        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_placeholder" % name}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     print("wrote", len(PARTS) + 1, "blocks")
 

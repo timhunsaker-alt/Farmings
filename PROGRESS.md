@@ -92,10 +92,24 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     simple collision box. Real models and textures are a separate step for Tim's approval.
   - **Not built:** the scraper moving, the pit holding manure, the drive drawing Wildcatter power, manure, the fork tool (step 3c);
     cows using the barn (stalls, feeding, drinking); crafting recipes; mining tags; the milking parlor.
-- Next: 3c, the scraper, pit and manure.
+- **2026-11-08: Phase 1 step 3c: the scraper, pit and manure.**
+  - **Manure** item (50 kg) and the **manure fork** (right-click: gathers manure within two blocks, one wear per use).
+  - **Scraper pass** (`ScraperPass`, plain Java, 9 unit tests): the blade moves a cell at a time pushing manure ahead of it, empties into
+    the pit at the end, returns. One pass per game day, or on a redstone signal into the controller. It moves only while the drive is
+    powered; it stops with NO POWER, PIT FULL, BLOCKED or NO SCRAPER, and the controller's readout says which.
+  - **Drive** = a real Wildcatter motor (3-phase, industrial voltage, 2.2 kW), wired like Tailings' pump. **Pit** stores up to 384 manure;
+    an empty hand takes a stack of 64, a click with an item just reads it.
+  - Game tests (NeoForge, **16 scenes pass**): `barn_scraper_pass` (15 manure all reach the pit, blade back at rest), `barn_scraper_no_power`,
+    `barn_scraper_blocked` (stops in front of a block, finishes when cleared), `barn_scraper_pit_full`, `manure_fork`, `pit_gives_manure`.
+  - Evidence: Fabric client scene with a screen recording and four screenshots (`FARMINGS_ONLY=scraper ./gradlew :fabric:runClientGameTest`;
+    recording in `fabric/build/scene-videos/scraper-pass.mov`).
+  - **Proposals with no source:** blade speed (20 ticks a cell), fork durability 250, drive 2.2 kW (already in the spec).
+  - **Not built:** the drive has not been run on a real Wildcatter grid (tests force it on; no-power is tested), no blade-moving animation
+    between cells (it steps a block at a time), manure is dropped by hand until cows exist, dirty-stall health effect (needs cows).
+- Next: cows living in the barn (stall choice, eating hay, drinking, making manure), then the milking parlor spec.
 
 ## Known gaps
-- Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only).
+- Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only). Manure and fork icons are placeholders too.
 - Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
 - NeoForge game tests exist (5 scenes). The Fabric client game test takes screenshots only; it asserts nothing yet.
 - NeoForge has not been launched with a client; Fabric has (the cattle render).

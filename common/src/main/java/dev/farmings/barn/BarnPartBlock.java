@@ -1,6 +1,13 @@
 package dev.farmings.barn;
 
-import dev.farmings.FarmingsBlocks;
+import dev.farmings.FarmingsItems;
+import dev.wildcatter.energy.Inspectable;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import dev.wildcatter.block.BigPartBlock;
 import dev.wildcatter.multiblock.BigParts;
 import net.minecraft.core.BlockPos;
@@ -36,7 +43,36 @@ public class BarnPartBlock extends BigPartBlock {
 
 	@Override
 	protected BlockEntity createMain(BlockPos pos, BlockState state) {
-		return new BarnPartEntity(pos, state);
+		return switch (kind) {
+			case COLLECTION_PIT -> new PitEntity(pos, state);
+			case SCRAPER_DRIVE -> new DriveEntity(pos, state);
+			default -> new BarnPartEntity(pos, state);
+		};
+	}
+
+	/**
+	 * A click on any cell goes to the part's main cell. The pit gives its manure to an empty hand (up to a stack) and otherwise says
+	 * how full it is; the drive says what its motor is doing.
+	 */
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide()) {
+			return InteractionResult.SUCCESS;
+		}
+		BlockEntity be = level.getBlockEntity(BigParts.main(pos, state));
+		if (be instanceof PitEntity pit) {
+			if (player.getMainHandItem().isEmpty() && pit.manure() > 0) {
+				int taken = pit.take(64);
+				ItemStack stack = new ItemStack(FarmingsItems.MANURE, taken);
+				if (!player.getInventory().add(stack)) {
+					level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), stack));   // a full inventory: it lands at the player's feet
+				}
+			}
+			player.sendOverlayMessage(Component.literal("Collection pit: " + pit.manure() + " / " + PitEntity.CAPACITY + " manure"));
+		} else if (be instanceof Inspectable machine) {
+			player.sendOverlayMessage(machine.inspect());
+		}
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -58,17 +94,7 @@ public class BarnPartBlock extends BigPartBlock {
 		return new double[] {x1, b[1], z1, x2, b[4], z2};
 	}
 
-	/** Used by the block registry to keep the type unreachable from outside this package. */
-	static Block register(Properties properties, BarnParts kind) {
-		return new BarnPartBlock(properties, kind);
-	}
-
 	static boolean isPart(BlockState state) {
 		return state.getBlock() instanceof BarnPartBlock;
-	}
-
-	@SuppressWarnings("unused")
-	private static void keep() {
-		FarmingsBlocks.PART_ENTITY.getClass();
 	}
 }

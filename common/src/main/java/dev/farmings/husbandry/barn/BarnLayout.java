@@ -58,7 +58,7 @@ public final class BarnLayout {
 
 		if (g.at(cx, cy, cz) != BarnPart.CONTROLLER) {
 			problems.add("No barn controller here");
-			return new BarnCheck(false, 0, problems, orientation);
+			return new BarnCheck(false, 0, problems, orientation, BarnCheck.NO_DRIVE);
 		}
 		// the pit: its top layer is 2 long (along the barn) and 3 wide (across), the controller on its near column
 		for (int dx = 0; dx < PIT_LENGTH; dx++) {
@@ -81,17 +81,17 @@ public final class BarnLayout {
 		}
 		if (xd == Integer.MIN_VALUE) {
 			problems.add("No scraper drive at the far end of the alley");
-			return new BarnCheck(false, 0, problems, orientation);
+			return new BarnCheck(false, 0, problems, orientation, BarnCheck.NO_DRIVE);
 		}
 		int length = cx - xd;                       // cells from the drive to the one before the pit
 		if (length % 2 == 0) {
 			problems.add("The alley is " + length + " cells long; a barn of n stalls a side takes 2n+1");
-			return new BarnCheck(false, 0, problems, orientation);
+			return new BarnCheck(false, 0, problems, orientation, xd - cx);
 		}
 		int stalls = (length - 1) / 2;
 		if (stalls < MIN_STALLS_PER_SIDE) {
 			problems.add("A barn needs at least " + MIN_STALLS_PER_SIDE + " stalls a side; this one has " + stalls);
-			return new BarnCheck(false, stalls, problems, orientation);
+			return new BarnCheck(false, stalls, problems, orientation, xd - cx);
 		}
 
 		// the alley: rail down the middle, floor either side
@@ -150,7 +150,7 @@ public final class BarnLayout {
 				problems.add("The " + row + " row has no water trough");
 			}
 		}
-		return new BarnCheck(problems.isEmpty(), stalls, problems, orientation);
+		return new BarnCheck(problems.isEmpty(), stalls, problems, orientation, xd - cx);
 	}
 
 	/** Whether {@code len} cells across (starting {@code dir * k} from the centre line) are {@code part}, {@code high} layers up. */

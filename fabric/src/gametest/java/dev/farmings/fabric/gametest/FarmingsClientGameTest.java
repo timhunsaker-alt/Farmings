@@ -2,7 +2,13 @@ package dev.farmings.fabric.gametest;
 
 import dev.farmings.FarmingsBlocks;
 import dev.farmings.FarmingsEntities;
+import dev.farmings.FarmingsItems;
+import dev.farmings.barn.BarnControllerEntity;
 import dev.farmings.barn.BarnParts;
+import dev.farmings.barn.DriveEntity;
+import dev.farmings.barn.PitEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import dev.wildcatter.block.BigPartBlock;
 import dev.wildcatter.multiblock.BigParts;
 import net.minecraft.core.Direction;
@@ -75,7 +81,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() - 1));
 			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() + 1));
 		}
-		barnPart(level, BarnParts.MANURE_SCRAPER, new BlockPos(xd + 2, c.getY(), c.getZ()));
+		barnPart(level, BarnParts.MANURE_SCRAPER, new BlockPos(xd + 1, c.getY(), c.getZ()));
 		for (int dir = -1; dir <= 1; dir += 2) {
 			int firstZ = dir < 0 ? c.getZ() - 4 : c.getZ() + 2;
 			for (int j = 0; j <= stalls; j++) {
@@ -125,6 +131,55 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-barn-missing-divider");
 	}
 
+	/** A powered scraper pushes manure along a 4-stall barn's alley into the pit. Filmed, with screenshots before, during and after. */
+	private static void scraper(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		BlockPos controller = new BlockPos(cx, y + 1, cz);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			for (int x = cx - 16; x <= cx + 6; x++) {
+				for (int z = cz - 10; z <= cz + 10; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+					for (int h = 0; h < 6; h++) {
+						level.setBlockAndUpdate(new BlockPos(x, y + h, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					}
+				}
+			}
+			buildBarn(level, controller, 4);
+			((DriveEntity) BigParts.entity(level, new BlockPos(cx - 9, y + 1, cz))).forceRunning(true);
+			int[][] spots = {{-7, 0}, {-6, -1}, {-5, 1}, {-5, 0}, {-4, -1}, {-3, 1}, {-3, 0}, {-2, -1}, {-2, 1}};
+			for (int[] s : spots) {
+				ItemEntity e = new ItemEntity(level, cx + s[0] + 0.5, y + 0.3, cz + s[1] + 0.5, new ItemStack(FarmingsItems.MANURE, 8));
+				e.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+				level.addFreshEntity(e);
+			}
+		});
+		context.waitTicks(40);
+		server.runCommand("tp @p " + (cx + 5) + " " + (y + 6) + " " + cz + " 90 40");
+		context.waitTicks(40);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "scraper-pass"));
+		context.waitTicks(30);
+		context.takeScreenshot("farmings-scraper-before");
+		server.runOnServer(srv -> ((BarnControllerEntity) srv.overworld().getBlockEntity(controller)).startPass(srv.overworld()));
+		for (int i = 0; i < 22; i++) {
+			context.waitTicks(20);
+			String text = server.computeOnServer(srv -> {
+				BarnControllerEntity c = (BarnControllerEntity) srv.overworld().getBlockEntity(controller);
+				return c.readout() + "   |   pit " + c.pit(srv.overworld()).manure() + " / " + PitEntity.CAPACITY;
+			});
+			server.runCommand("title @p actionbar \"" + text + "\"");
+			if (i == 3) {
+				context.takeScreenshot("farmings-scraper-pushing");
+			}
+			if (i == 11) {
+				context.takeScreenshot("farmings-scraper-returning");
+			}
+		}
+		context.takeScreenshot("farmings-scraper-after");
+		film.stop();
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
@@ -134,6 +189,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			server.runCommand("time set noon");
 			server.runCommand("weather clear");
 			server.runCommand("gamemode spectator @p");
+			if ("scraper".equals(System.getenv("FARMINGS_ONLY"))) {
+				context.waitTicks(200);
+				scraper(context, server, y);
+				return;
+			}
 			if ("barn".equals(System.getenv("FARMINGS_ONLY"))) {
 				context.waitTicks(200);
 				barn(context, server, y);

@@ -140,6 +140,10 @@ the pit.
 - `barn_scraper_blocked_and_full`: a block on the rail, and a full pit.
 - `cow_state_survives_save`: a cow in a barn through a save and a chunk unload.
 
+## Built (2026-11-08)
+The scraper pass, drive motor, pit store, manure item and fork are built as above. Proposals added with no source: the blade crosses a cell
+in 20 ticks, and the fork has 250 uses. The scraper rests in the first alley cell beside the drive.
+
 ## Open decisions
 None. All eight were settled on 2026-11-07 (see the top of this file). The *(unverified)* tags remain: the scraper motor size has no
 source, the trough ratio has no source, and the dirty-stall effect size has no source. Each is revisited when a source is found.

@@ -9,6 +9,16 @@ import dev.farmings.husbandry.barn.BarnCheck;
 import dev.wildcatter.block.BigPartBlock;
 import dev.wildcatter.multiblock.BigParts;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import dev.farmings.FarmingsItems;
+import dev.farmings.barn.DriveEntity;
+import dev.farmings.barn.PitEntity;
+import dev.farmings.husbandry.barn.ScraperPass;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import dev.farmings.entity.CattleEntity;
@@ -45,7 +55,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -58,12 +68,18 @@ public class FarmingsGameTests {
 			helper.register(id("barn_missing_part"), loaded(FarmingsGameTests::barnMissingPart));
 			helper.register(id("barn_part_breaks_whole"), loaded(FarmingsGameTests::barnPartBreaksWhole));
 			helper.register(id("barn_usual_orientation"), loaded(FarmingsGameTests::barnUsualOrientation));
+			helper.register(id("barn_scraper_pass"), loaded(FarmingsGameTests::barnScraperPass));
+			helper.register(id("barn_scraper_no_power"), loaded(FarmingsGameTests::barnScraperNoPower));
+			helper.register(id("barn_scraper_blocked"), loaded(FarmingsGameTests::barnScraperBlocked));
+			helper.register(id("barn_scraper_pit_full"), loaded(FarmingsGameTests::barnScraperPitFull));
+			helper.register(id("manure_fork"), loaded(FarmingsGameTests::manureFork));
+			helper.register(id("pit_gives_manure"), loaded(FarmingsGameTests::pitGivesManure));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
 			for (String scene : SCENES) {
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
-						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), 200, 1, true,
+						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") ? 1200 : 200, 1, true,
 								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 40)));
 			}
 		});
@@ -192,7 +208,7 @@ public class FarmingsGameTests {
 			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() - 1), n);
 			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() + 1), n);
 		}
-		barnPart(level, BarnParts.MANURE_SCRAPER, new BlockPos(xd + 2, c.getY(), c.getZ()), n);
+		barnPart(level, BarnParts.MANURE_SCRAPER, new BlockPos(xd + 1, c.getY(), c.getZ()), n);
 		for (int dir = -1; dir <= 1; dir += 2) {
 			int firstZ = dir < 0 ? c.getZ() - 4 : c.getZ() + 2;
 			for (int j = 0; j <= stalls; j++) {
@@ -222,7 +238,7 @@ public class FarmingsGameTests {
 		helper.assertTrue(e.formed(), Component.literal("a whole barn should form, got: " + e.readout()));
 		helper.assertTrue(e.check().stallsPerSide() == 3, Component.literal("3 stalls a side, got " + e.check().stallsPerSide()));
 		helper.assertTrue(e.check().stalls() == 6, Component.literal("6 cows"));
-		helper.assertTrue(e.readout().equals("Barn: FORMED, 3 stalls a side (6 cows)"), Component.literal("readout: " + e.readout()));
+		helper.assertTrue(e.readout().equals("Barn: FORMED, 3 stalls a side (6 cows), scraper idle"), Component.literal("readout: " + e.readout()));
 		helper.succeed();
 	}
 
@@ -274,6 +290,162 @@ public class FarmingsGameTests {
 		BarnControllerEntity e = controller(helper, c);
 		helper.assertTrue(e.formed() && e.check().orientation().turns() == 0 && !e.check().orientation().mirror(),
 				Component.literal("a barn drawn the usual way reads as turns 0, not mirrored; got " + e.check().orientation()));
+		helper.succeed();
+	}
+
+	// ---- the scraper, the pit and manure ----
+
+	private static final BlockPos C = new BlockPos(14, 4, 8);      // the controller, relative to the test
+
+	private static void dropManure(ServerLevel level, BlockPos at, int count) {
+		ItemEntity e = new ItemEntity(level, at.getX() + 0.5, at.getY() + 0.3, at.getZ() + 0.5, new ItemStack(FarmingsItems.MANURE, count));
+		e.setDeltaMovement(Vec3.ZERO);
+		level.addFreshEntity(e);
+	}
+
+	private static int manureOnFloor(ServerLevel level, BlockPos around) {
+		int n = 0;
+		for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(around).inflate(14, 4, 8), i -> i.getItem().is(FarmingsItems.MANURE))) {
+			n += e.getItem().getCount();
+		}
+		return n;
+	}
+
+	private static DriveEntity driveOf(GameTestHelper helper, int stalls) {
+		BlockPos drive = helper.absolutePos(C).offset(-(2 * stalls + 1), 0, 0);
+		return (DriveEntity) BigParts.entity(helper.getLevel(), drive);
+	}
+
+	/** A powered scraper pushes every manure item along the alley into the pit and comes back to rest beside the drive. */
+	private static void barnScraperPass(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 3);
+		driveOf(helper, 3).forceRunning(true);
+		BarnControllerEntity ctl = controller(helper, C);
+		PitEntity pit = (PitEntity) BigParts.entity(level, c.below());
+		int fl = c.getY() - 1;
+		int xd = c.getX() - 7;
+		dropManure(level, new BlockPos(xd + 3, fl, c.getZ()), 7);
+		dropManure(level, new BlockPos(xd + 5, fl, c.getZ() - 1), 5);
+		dropManure(level, new BlockPos(xd + 6, fl, c.getZ() + 1), 3);
+		helper.assertTrue(ctl.startPass(level), Component.literal("a pass should start, got " + ctl.readout()));
+		helper.succeedWhen(() -> {
+			helper.assertTrue(pit.manure() == 15, Component.literal("all 15 manure should reach the pit, it holds " + pit.manure() + "; " + ctl.readout()));
+			helper.assertTrue(manureOnFloor(level, c) == 0, Component.literal("no manure should be left on the floor"));
+			helper.assertTrue(!ctl.pass().running(), Component.literal("the pass should be over"));
+			helper.assertTrue(level.getBlockState(c.offset(-6, 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER),
+					Component.literal("the blade should be back beside the drive"));
+			helper.assertTrue(ctl.readout().endsWith("scraper idle"), Component.literal("readout: " + ctl.readout()));
+		});
+	}
+
+	/** With no power the blade does not move at all, and the controller says NO POWER. */
+	private static void barnScraperNoPower(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 3);
+		BarnControllerEntity ctl = controller(helper, C);
+		dropManure(level, c.offset(-4, -1, 0), 4);
+		helper.assertTrue(ctl.startPass(level), Component.literal("a pass starts even unpowered (it then waits)"));
+		helper.runAfterDelay(120, () -> {
+			helper.assertTrue(level.getBlockState(c.offset(-6, 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER), Component.literal("the blade must not have moved"));
+			helper.assertTrue(ctl.readout().contains("NO POWER"), Component.literal("readout: " + ctl.readout()));
+			helper.assertTrue(((PitEntity) BigParts.entity(level, c.below())).manure() == 0, Component.literal("nothing reaches the pit"));
+			helper.succeed();
+		});
+	}
+
+	/** A block on the rail stops the blade in front of it; take it away and the pass finishes. */
+	private static void barnScraperBlocked(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 3);
+		driveOf(helper, 3).forceRunning(true);
+		BarnControllerEntity ctl = controller(helper, C);
+		PitEntity pit = (PitEntity) BigParts.entity(level, c.below());
+		dropManure(level, c.offset(-2, -1, 0), 9);
+		BlockPos obstacle = c.offset(-4, 0, 0);          // two cells ahead of where the blade will stop
+		level.setBlock(obstacle, Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+		ctl.startPass(level);
+		helper.runAfterDelay(200, () -> {
+			helper.assertTrue(ctl.readout().contains("BLOCKED"), Component.literal("readout: " + ctl.readout()));
+			helper.assertTrue(level.getBlockState(c.offset(-5, 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER), Component.literal("the blade stops in front of the block"));
+			level.setBlock(obstacle, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+			helper.succeedWhen(() -> {
+				helper.assertTrue(pit.manure() == 9, Component.literal("the manure should reach the pit once cleared, it holds " + pit.manure()));
+				helper.assertTrue(!ctl.pass().running(), Component.literal("the pass should finish"));
+			});
+		});
+	}
+
+	/** A full pit stops a pass from starting and the controller says PIT FULL; nothing is lost. */
+	private static void barnScraperPitFull(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 3);
+		driveOf(helper, 3).forceRunning(true);
+		BarnControllerEntity ctl = controller(helper, C);
+		PitEntity pit = (PitEntity) BigParts.entity(level, c.below());
+		helper.assertTrue(pit.add(1000) == PitEntity.CAPACITY, Component.literal("the pit holds 384"));
+		helper.assertTrue(pit.add(1) == 0, Component.literal("a full pit takes nothing more"));
+		dropManure(level, c.offset(-3, -1, 0), 5);
+		helper.assertTrue(!ctl.startPass(level), Component.literal("no pass should start into a full pit"));
+		helper.assertTrue(ctl.pass().fault() == ScraperPass.Fault.PIT_FULL, Component.literal("fault " + ctl.pass().fault()));
+		helper.assertTrue(manureOnFloor(level, c) == 5, Component.literal("the manure stays on the floor"));
+		helper.assertTrue(ctl.readout().contains("PIT FULL"), Component.literal("readout: " + ctl.readout()));
+		helper.succeed();
+	}
+
+	/** The manure fork gathers manure lying around a click into the inventory and wears by one. */
+	private static void manureFork(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);    // creative players do not wear their tools
+		BlockPos at = helper.absolutePos(new BlockPos(4, 2, 4));
+		level.setBlock(at.below(), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+		dropManure(level, at, 3);
+		dropManure(level, at.offset(1, 0, 1), 4);
+		dropManure(level, at.offset(9, 0, 9), 6);       // too far: stays
+		ItemStack fork = new ItemStack(FarmingsItems.MANURE_FORK);
+		player.setItemInHand(InteractionHand.MAIN_HAND, fork);
+		BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(at.below()), Direction.UP, at.below(), false);
+		FarmingsItems.MANURE_FORK.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+		int held = 0;
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (player.getInventory().getItem(i).is(FarmingsItems.MANURE)) {
+				held += player.getInventory().getItem(i).getCount();
+			}
+		}
+		helper.assertTrue(held == 7, Component.literal("the fork should gather 7 manure, got " + held));
+		int far = 0;
+		for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(at.offset(9, 0, 9)).inflate(1.5), i -> i.getItem().is(FarmingsItems.MANURE))) {
+			far += e.getItem().getCount();
+		}
+		helper.assertTrue(far == 6, Component.literal("the far manure stays, found " + far));
+		helper.assertTrue(fork.getDamageValue() == 1, Component.literal("one use, one wear, got " + fork.getDamageValue()));
+		helper.succeed();
+	}
+
+	/** An empty hand on the pit takes up to a stack of manure; a hand with an item only reads the pit. */
+	private static void pitGivesManure(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		PitEntity pit = (PitEntity) BigParts.entity(level, c.below());
+		pit.add(100);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(c.below()), Direction.UP, c.below(), false);
+		BlockState state = level.getBlockState(c.below());
+		state.useWithoutItem(level, player, hit);
+		helper.assertTrue(pit.manure() == 36, Component.literal("a stack of 64 comes out, leaving 36, got " + pit.manure()));
+		int held = 0;
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (player.getInventory().getItem(i).is(FarmingsItems.MANURE)) {
+				held += player.getInventory().getItem(i).getCount();
+			}
+		}
+		helper.assertTrue(held == 64, Component.literal("the player should hold 64, got " + held));
 		helper.succeed();
 	}
 }
