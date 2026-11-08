@@ -126,7 +126,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - **Not built:** milk (so no milk-dependent water or yield), health or growth effects from a shortfall (only recorded), the dirty-stall effect,
     the pipe-fed trough, lying down (cows stand on the bed), calves.
 - Step 5a (2026-11-08): `husbandry/Lactation` (Wood's curve scaled to the USDA 2019 totals; 6 unit tests). Stand-ins: Brown Swiss and Gyr shapes. Not built: first-lactation reduction, genome-to-yield link, milk in the entity.
-- Next: wire milk into the cow (days in milk, yield per game day), then the parlor blocks once Tim approves `docs/multiblocks/parlor.md`.
+- Step 5b (2026-11-08): milk in the cow. `Lactation.yieldFactor` (milk-yield score over the breed baseline, clamped 0.5-1.5, proposed), `producedKg` (times the less of fed and watered, proposed). The cow has days in milk and an udder that refills once per game day (unmilked milk is replaced, not stacked, proposed), saved with her. 26 of 26 game tests (new: `cow_gives_milk`). Bug found: the "has she calved" check used `calvedTick >= 0`, wrong early in a world; now the flag.
+  Not built: calving itself (a cow only calves through the test/display call), a right-click readout, the parlor.
+- Next: calving (bred heifer to calf, first lactation), then the parlor blocks once Tim approves `docs/multiblocks/parlor.md`.
 
 ## Known gaps
 - Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only). Manure and fork icons are placeholders too.

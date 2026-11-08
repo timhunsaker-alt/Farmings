@@ -51,4 +51,29 @@ class LactationTest {
 	void yieldFactorScalesTheDay() {
 		assertEquals(1.1 * Lactation.dailyKg(CattleBreed.JERSEY, 100, 1), Lactation.dailyKg(CattleBreed.JERSEY, 100, 1.1), 1e-9);
 	}
+
+	@Test
+	void factorFollowsTheGenomeScoreAndIsClamped() {
+		// Holstein baseline 95 -> 950.
+		assertEquals(1.0, Lactation.yieldFactor(CattleBreed.HOLSTEIN, 950), 1e-9);
+		assertEquals(1.1, Lactation.yieldFactor(CattleBreed.HOLSTEIN, 1045), 1e-9);
+		assertEquals(Lactation.MAX_FACTOR, Lactation.yieldFactor(CattleBreed.HOLSTEIN, 1000 * 3), 1e-9);
+		assertEquals(Lactation.MIN_FACTOR, Lactation.yieldFactor(CattleBreed.HOLSTEIN, 10), 1e-9);
+		assertEquals(1.0, Lactation.yieldFactor(CattleBreed.ANGUS, 500), 1e-9);
+	}
+
+	@Test
+	void shortfallCutsMilkInStep() {
+		double full = Lactation.producedKg(CattleBreed.HOLSTEIN, 69, 950, 1, 1);
+		assertEquals(full / 2, Lactation.producedKg(CattleBreed.HOLSTEIN, 69, 950, 0.5, 1), 1e-9);
+		assertEquals(full / 4, Lactation.producedKg(CattleBreed.HOLSTEIN, 69, 950, 1, 0.25), 1e-9);
+		assertEquals(0, Lactation.producedKg(CattleBreed.HOLSTEIN, 69, 950, 0, 1), 1e-9);
+	}
+
+	@Test
+	void daysInMilkCountsTheCalvingDayAsOne() {
+		assertEquals(1, Lactation.daysInMilk(0));
+		assertEquals(1, Lactation.daysInMilk(0.99));
+		assertEquals(70, Lactation.daysInMilk(69.2));
+	}
 }

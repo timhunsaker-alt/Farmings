@@ -65,4 +65,36 @@ public final class Lactation {
 	public static double dailyKg(CattleBreed breed, int daysInMilk, double yieldFactor) {
 		return of(breed).yieldKg(daysInMilk) * yieldFactor;
 	}
+
+	/** Yield factor limits (proposed): a cow gives between half and one and a half times her breed's average. */
+	public static final double MIN_FACTOR = 0.5;
+	public static final double MAX_FACTOR = 1.5;
+
+	/**
+	 * The yield factor from the genome (proposed, decided as a default with Tim 2026-11-08): her milk-yield score over the breed's
+	 * baseline score (the 0-100 baseline times 10, on the 0-1000 scale), kept between {@link #MIN_FACTOR} and {@link #MAX_FACTOR}.
+	 * A breed with no milk baseline gives 1.
+	 */
+	public static double yieldFactor(CattleBreed breed, int milkYieldScore) {
+		int baseline = dev.farmings.genetics.Breeds.known(breed.code)
+				? dev.farmings.genetics.Breeds.baseline(breed.code, dev.farmings.genetics.Trait.MILK_YIELD) * 10 : 0;
+		if (baseline <= 0) {
+			return 1;
+		}
+		return Math.max(MIN_FACTOR, Math.min(MAX_FACTOR, (double) milkYieldScore / baseline));
+	}
+
+	/** Which real day of the lactation it is, counting the calving day as 1. */
+	public static int daysInMilk(double realDaysSinceCalving) {
+		return (int) Math.floor(realDaysSinceCalving) + 1;
+	}
+
+	/**
+	 * Milk made in one real day (the output of one game day, decided with Tim): the curve times the genome factor times the less of
+	 * the fed and watered fractions of her last tending (proposed: milk falls in step with the shortfall; she never dies).
+	 */
+	public static double producedKg(CattleBreed breed, int daysInMilk, int milkYieldScore, double fed, double watered) {
+		double shortfall = Math.max(0, Math.min(1, Math.min(fed, watered)));
+		return dailyKg(breed, daysInMilk, yieldFactor(breed, milkYieldScore)) * shortfall;
+	}
 }

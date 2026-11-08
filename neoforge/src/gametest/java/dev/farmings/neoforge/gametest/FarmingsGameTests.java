@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -86,6 +86,7 @@ public class FarmingsGameTests {
 			helper.register(id("cow_walks_to_stall"), loaded(FarmingsGameTests::cowWalksToStall));
 			helper.register(id("cow_walks_in_from_the_pit_end"), loaded(FarmingsGameTests::cowWalksInFromThePitEnd));
 			helper.register(id("cow_stall_survives_save"), loaded(FarmingsGameTests::cowStallSurvivesSave));
+			helper.register(id("cow_gives_milk"), loaded(FarmingsGameTests::cowGivesMilk));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -680,6 +681,36 @@ public class FarmingsGameTests {
 		b.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
 		helper.assertTrue(a.stallStand().equals(b.stallStand()) && a.stallBunk().equals(b.stallBunk()) && a.stallController().equals(b.stallController()),
 				Component.literal("her stall should survive a save"));
+		helper.succeed();
+	}
+
+	private static void cowGivesMilk(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		CattleEntity cow = cow(helper, CattleBreed.HOLSTEIN, Sex.FEMALE, 5L, 900, 650);
+		helper.assertTrue(cow.milkKg() == 0, Component.literal("a heifer has no milk"));
+		cow.setCalvedForDisplay(69);
+		helper.assertTrue(cow.stage() == Stage.LACTATING_COW, Component.literal("she is lactating, got " + cow.stage()));
+		helper.assertTrue(cow.daysInMilk() == 70, Component.literal("day 70, got " + cow.daysInMilk()));
+		double kg = cow.milkKg();
+		double expected = dev.farmings.husbandry.Lactation.producedKg(CattleBreed.HOLSTEIN, 70, cow.score(Trait.MILK_YIELD), 1, 1);
+		helper.assertTrue(kg > 15 && kg < 80 && Math.abs(kg - expected) < 0.01, Component.literal("peak-week milk should be " + expected + ", got " + kg));
+		// The udder survives a save.
+		net.minecraft.util.ProblemReporter reporter = net.minecraft.util.ProblemReporter.DISCARDING;
+		net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, level.registryAccess());
+		cow.saveWithoutId(out);
+		CattleEntity copy = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
+		copy.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(Math.abs(copy.milkKg() - kg) < 1e-9, Component.literal("her milk should survive a save"));
+		// A milking machine takes it all.
+		helper.assertTrue(Math.abs(cow.takeMilk() - kg) < 1e-9 && cow.milkKg() == 0, Component.literal("milking empties the udder"));
+		// A dry cow, a bull and a beef cow give none.
+		CattleEntity dry = cow(helper, CattleBreed.JERSEY, Sex.FEMALE, 6L, 1500, 450);
+		dry.setCalvedForDisplay(400);
+		helper.assertTrue(dry.stage() == Stage.DRY_COW && dry.milkKg() == 0, Component.literal("a dry cow gives no milk"));
+		CattleEntity beef = cow(helper, CattleBreed.HOLSTEIN, Sex.FEMALE, 7L, 900, 650);
+		beef.setBreedForDisplay(CattleBreed.ANGUS, Sex.FEMALE, 550, false);
+		beef.setCalvedForDisplay(60);
+		helper.assertTrue(beef.milkKg() == 0, Component.literal("a beef cow is not milked"));
 		helper.succeed();
 	}
 }

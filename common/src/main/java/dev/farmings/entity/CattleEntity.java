@@ -68,6 +68,10 @@ public class CattleEntity extends Animal {
 	private long bredTick = -1;
 	private boolean hasCalved;
 	private long calvedTick = -1;
+	/** Milk in the udder, kg. One game day's production; unmilked milk is replaced, not stacked (proposed). */
+	private double milkKg;
+	/** Game-day index since calving at which the udder was last refilled. */
+	private long lastMilkDay = -1;
 	private boolean retired;
 	/** Her stall in a barn: where she stands, the bunk she faces, and the controller of her barn. All null when she is not housed. */
 	private @Nullable BlockPos stallStand;
@@ -258,6 +262,52 @@ public class CattleEntity extends Animal {
 		syncAge(level().getGameTime());
 	}
 
+	/** Marks her as having calved this many real days ago. For art checks and game tests: calving itself is not built yet. */
+	public void setCalvedForDisplay(double realDaysAgo) {
+		long now = level().getGameTime();
+		this.hasCalved = true;
+		this.bredTick = -1;
+		this.calvedTick = now - TimeScale.realDaysToTicks(realDaysAgo);
+		this.lastMilkDay = -1;
+		syncAge(now);
+		updateMilk(now);
+	}
+
+	/** Real days since calving, or 0 if she has not calved. */
+	public double realDaysSinceCalving() {
+		return hasCalved ? TimeScale.ticksToRealDays(level().getGameTime() - calvedTick) : 0;
+	}
+
+	public int daysInMilk() {
+		return Lifecycle.givesMilk(stage()) ? dev.farmings.husbandry.Lactation.daysInMilk(realDaysSinceCalving()) : 0;
+	}
+
+	public double milkKg() {
+		return milkKg;
+	}
+
+	/** The milk a milking machine takes: all of it. */
+	public double takeMilk() {
+		double taken = milkKg;
+		milkKg = 0;
+		return taken;
+	}
+
+	/** Refills the udder once per game day while she is lactating, from the curve, her genome and her last tending. */
+	private void updateMilk(long nowTick) {
+		if (sex != Sex.FEMALE || stageAt(nowTick) != Stage.LACTATING_COW) {
+			milkKg = 0;
+			return;
+		}
+		long day = (nowTick - calvedTick) / TimeScale.TICKS_PER_GAME_DAY;
+		if (day != lastMilkDay) {
+			lastMilkDay = day;
+			double realDays = TimeScale.ticksToRealDays(nowTick - calvedTick);
+			milkKg = dev.farmings.husbandry.Lactation.producedKg(breed, dev.farmings.husbandry.Lactation.daysInMilk(realDays),
+					score(Trait.MILK_YIELD), lastFed, lastWatered);
+		}
+	}
+
 	public CattleBreed breed() {
 		return breed;
 	}
@@ -307,7 +357,7 @@ public class CattleEntity extends Animal {
 			return Lifecycle.maleStage(breed, weightKg, castrated);
 		}
 		boolean pregnant = bredTick >= 0;
-		double sinceCalving = calvedTick >= 0 ? TimeScale.ticksToRealDays(nowTick - calvedTick) : 0;
+		double sinceCalving = hasCalved ? TimeScale.ticksToRealDays(nowTick - calvedTick) : 0;
 		OptionalDouble toDue = pregnant ? OptionalDouble.of(breed.gestationDays - TimeScale.ticksToRealDays(nowTick - bredTick)) : OptionalDouble.empty();
 		return Lifecycle.femaleStage(breed, weightKg, hasCalved, pregnant, sinceCalving, toDue, retired);
 	}
@@ -352,6 +402,7 @@ public class CattleEntity extends Animal {
 		super.customServerAiStep(level);
 		if (tickCount % 20 == 0) {
 			syncAge(level.getGameTime());
+			updateMilk(level.getGameTime());
 		}
 	}
 
@@ -385,6 +436,8 @@ public class CattleEntity extends Animal {
 		output.putLong("BredTick", bredTick);
 		output.putBoolean("HasCalved", hasCalved);
 		output.putLong("CalvedTick", calvedTick);
+		output.putDouble("MilkKg", milkKg);
+		output.putLong("LastMilkDay", lastMilkDay);
 		output.putBoolean("Retired", retired);
 		output.putLong("StallStand", stallStand == null ? Long.MIN_VALUE : stallStand.asLong());
 		output.putLong("StallBunk", stallBunk == null ? Long.MIN_VALUE : stallBunk.asLong());
@@ -417,6 +470,8 @@ public class CattleEntity extends Animal {
 		bredTick = input.getLongOr("BredTick", -1L);
 		hasCalved = input.getBooleanOr("HasCalved", false);
 		calvedTick = input.getLongOr("CalvedTick", -1L);
+		milkKg = input.getDoubleOr("MilkKg", 0);
+		lastMilkDay = input.getLongOr("LastMilkDay", -1L);
 		retired = input.getBooleanOr("Retired", false);
 		long stand = input.getLongOr("StallStand", Long.MIN_VALUE);
 		long bunk = input.getLongOr("StallBunk", Long.MIN_VALUE);
