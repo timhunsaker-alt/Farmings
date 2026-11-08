@@ -7,6 +7,8 @@ import dev.farmings.barn.BarnControllerEntity;
 import dev.farmings.barn.BarnParts;
 import dev.farmings.barn.DriveEntity;
 import dev.farmings.barn.PitEntity;
+import dev.farmings.barn.FeederEntity;
+import dev.farmings.barn.TroughEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import dev.wildcatter.block.BigPartBlock;
@@ -180,6 +182,65 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+	/** Six cows let into a 4-stall barn with hay and water: they take stalls and walk to them. Filmed, with screenshots. */
+	private static void herd(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		BlockPos controller = new BlockPos(cx, y + 1, cz);
+		CattleEntity[] cows = new CattleEntity[6];
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			for (int x = cx - 16; x <= cx + 6; x++) {
+				for (int z = cz - 10; z <= cz + 10; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+					for (int h = 0; h < 6; h++) {
+						level.setBlockAndUpdate(new BlockPos(x, y + h, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					}
+				}
+			}
+			buildBarn(level, controller, 4);
+			for (int dir = -1; dir <= 1; dir += 2) {
+				((TroughEntity) BigParts.entity(level, new BlockPos(cx + 1, y, cz + dir * 2))).pourBucket();
+				for (int i = 0; i < 4; i++) {
+					FeederEntity f = (FeederEntity) BigParts.entity(level, new BlockPos(cx - 8 + 2 * i, y + 1, cz + dir * 5));
+					f.addBlock();
+					f.addBlock();
+				}
+			}
+			CattleBreed[] breeds = {CattleBreed.HOLSTEIN, CattleBreed.JERSEY, CattleBreed.BROWN_SWISS, CattleBreed.GYR, CattleBreed.HOLSTEIN, CattleBreed.JERSEY};
+			double[][] spots = {{-2.5, 0.5}, {-4.5, -0.5}, {-6.5, 0.5}, {2.5, -2.5}, {3.5, 2.5}, {-3.5, 0.5}};
+			for (int i = 0; i < cows.length; i++) {
+				CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+				c.setBreedForDisplay(breeds[i], Sex.FEMALE, breeds[i].matureWeightKg, true);
+				c.setPos(cx + spots[i][0] + 0.5, y + 0.2, cz + spots[i][1] + 0.5);
+				cows[i] = c;
+				level.addFreshEntity(c);
+			}
+		});
+		context.waitTicks(40);
+		server.runCommand("tp @p " + (cx + 5) + " " + (y + 6) + " " + cz + " 90 40");
+		context.waitTicks(20);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "cows-take-stalls"));
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-herd-start");
+		for (int i = 0; i < 24; i++) {
+			context.waitTicks(20);
+			String text = server.computeOnServer(srv -> {
+				BarnControllerEntity c = (BarnControllerEntity) srv.overworld().getBlockEntity(controller);
+				return c.readout();
+			});
+			server.runCommand("title @p actionbar \"" + text + "\"");
+			if (i == 4) {
+				context.takeScreenshot("farmings-herd-walking");
+			}
+		}
+		context.takeScreenshot("farmings-herd-in-stalls");
+		server.runCommand("tp @p " + (cx - 12) + " " + (y + 4) + " " + (cz - 9) + " -50 28");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-herd-in-stalls-corner");
+		film.stop();
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
@@ -189,6 +250,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			server.runCommand("time set noon");
 			server.runCommand("weather clear");
 			server.runCommand("gamemode spectator @p");
+			if ("herd".equals(System.getenv("FARMINGS_ONLY"))) {
+				context.waitTicks(200);
+				herd(context, server, y);
+				return;
+			}
 			if ("scraper".equals(System.getenv("FARMINGS_ONLY"))) {
 				context.waitTicks(200);
 				scraper(context, server, y);

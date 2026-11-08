@@ -5,6 +5,8 @@ import dev.farmings.barn.BarnControllerEntity;
 import dev.farmings.barn.BarnPartBlock;
 import dev.farmings.barn.BarnPartEntity;
 import dev.farmings.barn.DriveEntity;
+import dev.farmings.barn.FeederEntity;
+import dev.farmings.barn.TroughEntity;
 import dev.farmings.barn.PitEntity;
 import dev.farmings.barn.BarnParts;
 import dev.wildcatter.item.BigPartItem;
@@ -37,6 +39,8 @@ public final class FarmingsBlocks {
 	}
 
 	public static final BlockEntityType<BarnPartEntity> PART_ENTITY = new BlockEntityType<>(BarnPartEntity::new, others());
+	public static final BlockEntityType<FeederEntity> FEEDER_ENTITY = new BlockEntityType<>(FeederEntity::new, Set.of(part(BarnParts.HAY_FEEDER)));
+	public static final BlockEntityType<TroughEntity> TROUGH_ENTITY = new BlockEntityType<>(TroughEntity::new, Set.of(part(BarnParts.WATER_TROUGH)));
 	public static final BlockEntityType<PitEntity> PIT_ENTITY = new BlockEntityType<>(PitEntity::new, Set.of(part(BarnParts.COLLECTION_PIT)));
 	public static final BlockEntityType<DriveEntity> DRIVE_ENTITY = new BlockEntityType<>(DriveEntity::new, Set.of(part(BarnParts.SCRAPER_DRIVE)));
 	public static final BlockEntityType<BarnControllerEntity> CONTROLLER_ENTITY = new BlockEntityType<>(BarnControllerEntity::new, Set.of(BARN_CONTROLLER));
@@ -48,7 +52,7 @@ public final class FarmingsBlocks {
 	private static Set<Block> others() {
 		Set<Block> out = new HashSet<>();
 		for (BarnParts kind : BarnParts.values()) {
-			if (kind != BarnParts.COLLECTION_PIT && kind != BarnParts.SCRAPER_DRIVE) {
+			if (kind != BarnParts.COLLECTION_PIT && kind != BarnParts.SCRAPER_DRIVE && kind != BarnParts.HAY_FEEDER && kind != BarnParts.WATER_TROUGH) {
 				out.add(PARTS[kind.ordinal()]);
 			}
 		}
@@ -98,6 +102,8 @@ public final class FarmingsBlocks {
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("barn_controller"), CONTROLLER_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("pit"), PIT_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("scraper_drive"), DRIVE_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("hay_feeder"), FEEDER_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("water_trough"), TROUGH_ENTITY);
 		FarmingsItems.register();
 	}
 }

@@ -4,6 +4,8 @@ import dev.farmings.Farmings;
 import dev.farmings.FarmingsBlocks;
 import dev.farmings.FarmingsEntities;
 import dev.farmings.barn.BarnControllerEntity;
+import dev.farmings.barn.FeederEntity;
+import dev.farmings.barn.TroughEntity;
 import dev.farmings.barn.BarnParts;
 import dev.farmings.husbandry.barn.BarnCheck;
 import dev.wildcatter.block.BigPartBlock;
@@ -12,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -55,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -74,12 +77,21 @@ public class FarmingsGameTests {
 			helper.register(id("barn_scraper_pit_full"), loaded(FarmingsGameTests::barnScraperPitFull));
 			helper.register(id("manure_fork"), loaded(FarmingsGameTests::manureFork));
 			helper.register(id("pit_gives_manure"), loaded(FarmingsGameTests::pitGivesManure));
+			helper.register(id("cows_take_stalls"), loaded(FarmingsGameTests::cowsTakeStalls));
+			helper.register(id("cow_eats_and_drinks"), loaded(FarmingsGameTests::cowEatsAndDrinks));
+			helper.register(id("cow_makes_manure"), loaded(FarmingsGameTests::cowMakesManure));
+			helper.register(id("cow_hungry_without_hay"), loaded(FarmingsGameTests::cowHungryWithoutHay));
+			helper.register(id("feeder_takes_hay_blocks"), loaded(FarmingsGameTests::feederTakesHayBlocks));
+			helper.register(id("trough_takes_bucket"), loaded(FarmingsGameTests::troughTakesBucket));
+			helper.register(id("cow_walks_to_stall"), loaded(FarmingsGameTests::cowWalksToStall));
+			helper.register(id("cow_walks_in_from_the_pit_end"), loaded(FarmingsGameTests::cowWalksInFromThePitEnd));
+			helper.register(id("cow_stall_survives_save"), loaded(FarmingsGameTests::cowStallSurvivesSave));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
 			for (String scene : SCENES) {
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
-						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") ? 1200 : 200, 1, true,
+						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("cow_walks") ? 1200 : 200, 1, true,
 								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 40)));
 			}
 		});
@@ -89,8 +101,8 @@ public class FarmingsGameTests {
 	private static Consumer<GameTestHelper> loaded(Consumer<GameTestHelper> scene) {
 		return helper -> {
 			ChunkPos origin = ChunkPos.containing(helper.absolutePos(BlockPos.ZERO));
-			for (int dx = -1; dx <= 1; dx++) {
-				for (int dz = -1; dz <= 1; dz++) {
+			for (int dx = -1; dx <= 2; dx++) {
+				for (int dz = -1; dz <= 2; dz++) {
 					helper.getLevel().setChunkForced(origin.x() + dx, origin.z() + dz, true);
 				}
 			}
@@ -238,7 +250,7 @@ public class FarmingsGameTests {
 		helper.assertTrue(e.formed(), Component.literal("a whole barn should form, got: " + e.readout()));
 		helper.assertTrue(e.check().stallsPerSide() == 3, Component.literal("3 stalls a side, got " + e.check().stallsPerSide()));
 		helper.assertTrue(e.check().stalls() == 6, Component.literal("6 cows"));
-		helper.assertTrue(e.readout().equals("Barn: FORMED, 3 stalls a side (6 cows), scraper idle"), Component.literal("readout: " + e.readout()));
+		helper.assertTrue(e.readout().equals("Barn: FORMED, 3 stalls a side (6 cows), scraper idle, 0 housed"), Component.literal("readout: " + e.readout()));
 		helper.succeed();
 	}
 
@@ -336,7 +348,7 @@ public class FarmingsGameTests {
 			helper.assertTrue(!ctl.pass().running(), Component.literal("the pass should be over"));
 			helper.assertTrue(level.getBlockState(c.offset(-6, 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER),
 					Component.literal("the blade should be back beside the drive"));
-			helper.assertTrue(ctl.readout().endsWith("scraper idle"), Component.literal("readout: " + ctl.readout()));
+			helper.assertTrue(ctl.readout().contains("scraper idle"), Component.literal("readout: " + ctl.readout()));
 		});
 	}
 
@@ -446,6 +458,228 @@ public class FarmingsGameTests {
 			}
 		}
 		helper.assertTrue(held == 64, Component.literal("the player should hold 64, got " + held));
+		helper.succeed();
+	}
+
+	// ---- cows in the barn ----
+
+	/** A heifer (stage with a dry-cow style intake) standing in the alley of the test barn, no AI unless asked. */
+	private static CattleEntity barnCow(ServerLevel level, BlockPos near, double weightKg, boolean ai) {
+		CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+		c.setPos(near.getX() + 0.5, near.getY() + 0.2, near.getZ() + 0.5);
+		c.setBreedForDisplay(CattleBreed.HOLSTEIN, Sex.FEMALE, weightKg, false);
+		c.setNoAi(!ai);
+		level.addFreshEntity(c);
+		return c;
+	}
+
+	private static FeederEntity feederAt(ServerLevel level, BlockPos bunk) {
+		return (FeederEntity) BigParts.entity(level, bunk.above());
+	}
+
+	private static TroughEntity anyTrough(ServerLevel level, BlockPos c) {
+		return (TroughEntity) BigParts.entity(level, c.offset(1, -1, -2));
+	}
+
+	private static void fillBarn(ServerLevel level, BlockPos c) {
+		for (int dir = -1; dir <= 1; dir += 2) {
+			((TroughEntity) BigParts.entity(level, c.offset(1, -1, dir * 2))).pourBucket();
+		}
+	}
+
+	/** Five cows and four stalls: each stall goes to one cow, the fifth has none. */
+	private static void cowsTakeStalls(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		BarnControllerEntity ctl = controller(helper, C);
+		java.util.List<CattleEntity> cows = new java.util.ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			cows.add(barnCow(level, c.offset(-4 + (i % 4), -1, i < 3 ? 0 : 1), 650, false));
+		}
+		ctl.tend(level, 20);
+		java.util.Set<BlockPos> stands = new java.util.HashSet<>();
+		int housed = 0;
+		for (CattleEntity cow : cows) {
+			if (cow.stallStand() != null) {
+				housed++;
+				stands.add(cow.stallStand());
+				helper.assertTrue(level.getBlockState(cow.stallStand()).getBlock() == FarmingsBlocks.part(BarnParts.STALL_BED), Component.literal("a stall stand should be a bed cell"));
+				helper.assertTrue(ctl.pit(level) != null && cow.stallController().equals(c), Component.literal("she belongs to this barn"));
+			}
+		}
+		helper.assertTrue(housed == 4, Component.literal("4 stalls house 4 cows, got " + housed));
+		helper.assertTrue(stands.size() == 4, Component.literal("each stall holds one cow, got " + stands.size() + " distinct"));
+		helper.assertTrue(ctl.stallsTaken(level) == 4, Component.literal("the controller counts 4"));
+		helper.succeed();
+	}
+
+	/** A day of tending takes exactly a day's intake out of the feeder and the trough (the dry-cow rate: 2.2% of 700 kg, 6 L per kg). */
+	private static void cowEatsAndDrinks(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		fillBarn(level, c);
+		BarnControllerEntity ctl = controller(helper, C);
+		CattleEntity cow = barnCow(level, c.offset(-4, -1, -1), 700, false);
+		ctl.tend(level, 20);
+		helper.assertTrue(cow.stallStand() != null, Component.literal("she should have a stall"));
+		FeederEntity feeder = feederAt(level, cow.stallBunk());
+		feeder.addBlock();
+		feeder.addBlock();
+		double hayBefore = feeder.dryMatterKg();
+		TroughEntity trough = (TroughEntity) BigParts.entity(level, c.offset(1, -1, cow.stallBunk().getZ() < c.getZ() ? -2 : 2));
+		double waterBefore = trough.litres();
+		cow.setWeightKg(700);
+		ctl.tend(level, 24_000);
+		double dmi = 0.022 * 700;
+		helper.assertTrue(Math.abs((hayBefore - feeder.dryMatterKg()) - dmi) < 0.01, Component.literal("a day takes " + dmi + " kg, took " + (hayBefore - feeder.dryMatterKg())));
+		helper.assertTrue(Math.abs((waterBefore - trough.litres()) - 6 * dmi) < 0.01, Component.literal("a day drinks " + 6 * dmi + " L, drank " + (waterBefore - trough.litres())));
+		helper.assertTrue(cow.lastFed() == 1.0 && cow.lastWatered() == 1.0, Component.literal("fully fed and watered"));
+		helper.assertTrue(Math.abs(cow.hayEatenKg() - dmi) < 0.01, Component.literal("her own count agrees"));
+		helper.succeed();
+	}
+
+	/** Manure follows what she ate (2.23 kg per kg of dry matter): the first day is short of an item, the second makes one in the alley. */
+	private static void cowMakesManure(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		fillBarn(level, c);
+		BarnControllerEntity ctl = controller(helper, C);
+		CattleEntity cow = barnCow(level, c.offset(-4, -1, -1), 700, false);
+		ctl.tend(level, 20);
+		FeederEntity feeder = feederAt(level, cow.stallBunk());
+		for (int i = 0; i < 4; i++) {
+			feeder.addBlock();
+		}
+		ctl.tend(level, 24_000);
+		helper.assertTrue(manureOnFloor(level, c) == 0, Component.literal("34 kg is not yet an item"));
+		ctl.tend(level, 24_000);
+		helper.assertTrue(manureOnFloor(level, c) == 1, Component.literal("69 kg makes one 50 kg item, found " + manureOnFloor(level, c)));
+		helper.succeed();
+	}
+
+	/** No hay and no water: she eats and drinks nothing, says so, makes no manure, and lives. */
+	private static void cowHungryWithoutHay(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		BarnControllerEntity ctl = controller(helper, C);
+		CattleEntity cow = barnCow(level, c.offset(-4, -1, -1), 700, false);
+		ctl.tend(level, 20);
+		ctl.tend(level, 24_000);
+		helper.assertTrue(cow.lastFed() == 0.0 && cow.lastWatered() == 0.0, Component.literal("nothing to eat or drink: " + cow.lastFed() + ", " + cow.lastWatered()));
+		helper.assertTrue(manureOnFloor(level, c) == 0, Component.literal("no manure without feed"));
+		helper.assertTrue(cow.isAlive(), Component.literal("she never dies from a missed day"));
+		helper.succeed();
+	}
+
+	/** A hay block goes into a feeder up to 4, and the fifth is refused and kept. */
+	private static void feederTakesHayBlocks(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.getAbilities().instabuild = false;     // a creative player's items are not used up
+		BlockPos bunk = c.offset(-4, -1, -5);
+		BlockPos feederCell = bunk.above();
+		FeederEntity feeder = (FeederEntity) BigParts.entity(level, feederCell);
+		ItemStack hay = new ItemStack(net.minecraft.world.item.Items.HAY_BLOCK, 5);
+		player.setItemInHand(InteractionHand.MAIN_HAND, hay);
+		BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(feederCell), Direction.UP, feederCell, false);
+		for (int i = 0; i < 5; i++) {
+			level.getBlockState(feederCell).useItemOn(player.getMainHandItem(), level, player, InteractionHand.MAIN_HAND, hit);
+		}
+		helper.assertTrue(Math.abs(feeder.dryMatterKg() - 340) < 1e-6, Component.literal("4 blocks of 85 kg: " + feeder.dryMatterKg()));
+		helper.assertTrue(player.getMainHandItem().getCount() == 1, Component.literal("the fifth block is kept, hand holds " + player.getMainHandItem().getCount()));
+		helper.succeed();
+	}
+
+	/** A water bucket fills a trough with 1,000 L and comes back empty; a full trough refuses the next. */
+	private static void troughTakesBucket(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.getAbilities().instabuild = false;
+		BlockPos troughCell = c.offset(1, -1, -2);
+		TroughEntity trough = (TroughEntity) BigParts.entity(level, troughCell);
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.WATER_BUCKET));
+		BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(troughCell), Direction.UP, troughCell, false);
+		level.getBlockState(troughCell).useItemOn(player.getMainHandItem(), level, player, InteractionHand.MAIN_HAND, hit);
+		helper.assertTrue(trough.litres() == 1000, Component.literal("a bucket is 1,000 L, trough has " + trough.litres()));
+		helper.assertTrue(player.getMainHandItem().is(net.minecraft.world.item.Items.BUCKET), Component.literal("the bucket comes back empty"));
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.WATER_BUCKET));
+		level.getBlockState(troughCell).useItemOn(player.getMainHandItem(), level, player, InteractionHand.MAIN_HAND, hit);
+		helper.assertTrue(player.getMainHandItem().is(net.minecraft.world.item.Items.WATER_BUCKET), Component.literal("a full trough keeps the bucket full"));
+		helper.succeed();
+	}
+
+	/** A cow with her own AI, put in the alley, walks to her stall and stands there. */
+	private static void cowWalksToStall(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		// real barns stand on ground, and the pathfinder needs solid ground below the floor to find a way
+		for (int x = c.getX() - 8; x <= c.getX() + 3; x++) {
+			for (int z = c.getZ() - 6; z <= c.getZ() + 6; z++) {
+				boolean pit = x >= c.getX() && x <= c.getX() + 1 && z >= c.getZ() - 1 && z <= c.getZ() + 1;
+				if (!pit) {
+					level.setBlock(new BlockPos(x, c.getY() - 2, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+				}
+			}
+		}
+		buildBarn(level, c, 2);
+		controller(helper, C);
+		CattleEntity cow = barnCow(level, c.offset(-2, -1, 0), 650, true);
+		helper.succeedWhen(() -> {
+			BarnControllerEntity ctl = (BarnControllerEntity) level.getBlockEntity(c);
+			helper.assertTrue(cow.stallStand() != null, Component.literal("she should be given a stall; ctl=" + (ctl == null ? "none" : ctl.readout()) + " cow=" + cow.position() + " alive=" + cow.isAlive()
+					+ " removed=" + cow.isRemoved() + " ctlPos=" + c + " chunkTicking=" + level.isPositionEntityTicking(cow.blockPosition())));
+			BlockPos stand = cow.stallStand();
+			double d = cow.distanceToSqr(stand.getX() + 0.5, stand.getY() + 0.25, stand.getZ() + 0.5);
+			helper.assertTrue(d < 0.8 * 0.8, Component.literal("she should stand in her stall; she is " + Math.sqrt(d) + " away at " + cow.position()));
+		});
+	}
+
+	/** The only way into the alley is over the pit end: a cow outside the barn, beside the pit, must be able to walk in to her stall. */
+	private static void cowWalksInFromThePitEnd(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		for (int x = c.getX() - 8; x <= c.getX() + 6; x++) {
+			for (int z = c.getZ() - 7; z <= c.getZ() + 7; z++) {
+				boolean pit = x >= c.getX() && x <= c.getX() + 1 && z >= c.getZ() - 1 && z <= c.getZ() + 1;
+				if (!pit) {
+					level.setBlock(new BlockPos(x, c.getY() - 2, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+				}
+			}
+		}
+		buildBarn(level, c, 2);
+		controller(helper, C);
+		CattleEntity cow = barnCow(level, c.offset(3, -1, -2), 650, true);     // east of the pit and the troughs, outside the barn
+		helper.succeedWhen(() -> {
+			BlockPos stand = cow.stallStand();
+			helper.assertTrue(stand != null, Component.literal("she should be given a stall (the barn box reaches past the pit)"));
+			double d = cow.distanceToSqr(stand.getX() + 0.5, stand.getY() + 0.25, stand.getZ() + 0.5);
+			helper.assertTrue(d < 0.8 * 0.8, Component.literal("she should walk in from the pit end; she is " + Math.sqrt(d) + " from her stall at " + cow.position()));
+		});
+	}
+
+	private static void cowStallSurvivesSave(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		BarnControllerEntity ctl = controller(helper, C);
+		CattleEntity a = barnCow(level, c.offset(-4, -1, -1), 650, false);
+		ctl.tend(level, 20);
+		helper.assertTrue(a.stallStand() != null, Component.literal("housed"));
+		net.minecraft.util.ProblemReporter reporter = net.minecraft.util.ProblemReporter.DISCARDING;
+		net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, level.registryAccess());
+		a.saveWithoutId(out);
+		CattleEntity b = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
+		b.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(a.stallStand().equals(b.stallStand()) && a.stallBunk().equals(b.stallBunk()) && a.stallController().equals(b.stallController()),
+				Component.literal("her stall should survive a save"));
 		helper.succeed();
 	}
 }

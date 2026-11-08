@@ -35,6 +35,19 @@ public final class Hay {
 		};
 	}
 
+	/**
+	 * Dry-matter intake for any stage that eats hay, in kg a day. Lactating and dry cows use the sourced figures above. Heifers, bred heifers,
+	 * retired cows, bulls and steers have no sourced figure, so they use the dry cow's {@link #DRY_INTAKE_FRACTION} as a stand-in
+	 * *(proposed, no source)*. Calves are milk-fed and eat no hay yet (empty).
+	 */
+	public static OptionalDouble dryMatterIntakeOrStandIn(Stage stage, double weightKg) {
+		return switch (stage) {
+			case CALF, BULL_CALF -> OptionalDouble.empty();
+			case LACTATING_COW -> OptionalDouble.of(weightKg * LACTATING_INTAKE_FRACTION);
+			default -> OptionalDouble.of(weightKg * DRY_INTAKE_FRACTION);
+		};
+	}
+
 	/** Hay blocks a cow eats in one day, from the dry matter she needs. */
 	public static double blocksPerDay(double dryMatterKg) {
 		return dryMatterKg / blockDryMatterKg();

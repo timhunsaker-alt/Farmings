@@ -144,6 +144,11 @@ the pit.
 The scraper pass, drive motor, pit store, manure item and fork are built as above. Proposals added with no source: the blade crosses a cell
 in 20 ticks, and the fork has 250 uses. The scraper rests in the first alley cell beside the drive.
 
+## Built, step 4 (2026-11-08)
+Cows take stalls, eat from the feeder and drink from a trough, and make manure from what they ate. Proposals added with no source: a trough
+holds 1,000 L (a bucket); stages with no sourced intake eat at the dry cow's 2.2% of body weight. The pipe-fed trough, lying down, the
+dirty-stall effect and milk are not built.
+
 ## Open decisions
 None. All eight were settled on 2026-11-07 (see the top of this file). The *(unverified)* tags remain: the scraper motor size has no
 source, the trough ratio has no source, and the dirty-stall effect size has no source. Each is revisited when a source is found.

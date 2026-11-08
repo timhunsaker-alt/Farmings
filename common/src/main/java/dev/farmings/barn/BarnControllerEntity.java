@@ -2,6 +2,14 @@ package dev.farmings.barn;
 
 import dev.farmings.FarmingsBlocks;
 import dev.farmings.FarmingsItems;
+import dev.farmings.entity.CattleEntity;
+import dev.farmings.feed.Hay;
+import dev.farmings.feed.Intake;
+import dev.farmings.husbandry.Stage;
+import dev.farmings.husbandry.barn.BarnStalls;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import dev.farmings.husbandry.TimeScale;
 import dev.farmings.husbandry.barn.BarnCheck;
 import dev.farmings.husbandry.barn.BarnPart;
@@ -46,6 +54,7 @@ public class BarnControllerEntity extends BlockEntity {
 
 	public void refresh(Level level) {
 		check = BarnWorld.check(level, worldPosition);
+		housed = stallsTaken(level);
 	}
 
 	/** The last check, or null before the first one. */
@@ -131,7 +140,7 @@ public class BarnControllerEntity extends BlockEntity {
 	// ---- running -------------------------------------------------------------------------------------------------------
 
 	public void serverTick(Level level) {
-		if (check == null || (level.getGameTime() + worldPosition.hashCode()) % CHECK_TICKS == 0) {
+		if (check == null || Math.floorMod(level.getGameTime() + worldPosition.hashCode(), (long) CHECK_TICKS) == 0) {
 			refresh(level);
 		}
 		if (!formed()) {
@@ -149,6 +158,9 @@ public class BarnControllerEntity extends BlockEntity {
 			}
 		}
 		signalWas = signal;
+		if (Math.floorMod(level.getGameTime() + worldPosition.hashCode(), (long) CHECK_TICKS) == 1) {
+			tend(level, CHECK_TICKS);
+		}
 		DriveEntity drive = drive(level);
 		if (drive != null) {
 			drive.setDemand(pass.running());
@@ -239,7 +251,151 @@ public class BarnControllerEntity extends BlockEntity {
 		BigParts.grow(level, newMain, placed);
 	}
 
+	// ---- the herd ---------------------------------------------------------------------------------------------------------
+
+	private BlockPos standPos(BarnStalls.Stall s) {
+		return at(s.x(), floorY(), s.bedZ());
+	}
+
+	private BlockPos bunkPos(BarnStalls.Stall s) {
+		return at(s.x(), floorY(), s.bunkZ());
+	}
+
+	/** The cattle inside the barn's walls that live in stalls: not calves. */
+	private List<CattleEntity> herd(Level level) {
+		BlockPos a = at(check.driveX() - 1, floorY() - 1, -6);
+		BlockPos b = at(3, floorY() + 4, 6);
+		AABB box = new AABB(Math.min(a.getX(), b.getX()), floorY() - 1, Math.min(a.getZ(), b.getZ()),
+				Math.max(a.getX(), b.getX()) + 1, floorY() + 4, Math.max(a.getZ(), b.getZ()) + 1);
+		return level.getEntitiesOfClass(CattleEntity.class, box, c -> !c.isBaby() && c.isAlive());
+	}
+
+	/** The cows in stalls: how many stalls there are, and how many are taken. */
+	public int stallsTaken(Level level) {
+		if (!formed()) {
+			return 0;
+		}
+		int n = 0;
+		for (CattleEntity c : herd(level)) {
+			if (worldPosition.equals(c.stallController())) {
+				n++;
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * Tends the herd for {@code ticks} of time: gives each unhoused cow the nearest free stall (one cow a stall), and each housed cow eats from
+	 * the hay feeder at her stall and drinks from a trough in her row, in the amounts of {@link Intake}. Manure drops in the alley in front of her
+	 * stall once she has made 50 kg. Run once a second by the controller; tests give it a longer stretch to stand for a day.
+	 */
+	public void tend(Level level, int ticks) {
+		if (!formed()) {
+			return;
+		}
+		List<BarnStalls.Stall> stalls = BarnStalls.of(check.driveX(), check.stallsPerSide());
+		List<CattleEntity> herd = herd(level);
+		Set<Integer> taken = new HashSet<>();
+		List<CattleEntity> homeless = new ArrayList<>();
+		for (CattleEntity cow : herd) {
+			BarnStalls.Stall mine = null;
+			if (worldPosition.equals(cow.stallController()) && cow.stallStand() != null) {
+				for (BarnStalls.Stall s : stalls) {
+					if (standPos(s).equals(cow.stallStand()) && !taken.contains(s.id())) {
+						mine = s;
+					}
+				}
+			}
+			if (mine == null) {
+				if (cow.stallController() != null && worldPosition.equals(cow.stallController())) {
+					cow.clearStall();
+				}
+				if (cow.stallController() == null) {
+					homeless.add(cow);
+				}
+			} else {
+				taken.add(mine.id());
+			}
+		}
+		for (CattleEntity cow : homeless) {
+			BarnStalls.Stall best = null;
+			double bestD = Double.MAX_VALUE;
+			for (BarnStalls.Stall s : stalls) {
+				if (taken.contains(s.id())) {
+					continue;
+				}
+				BlockPos p = standPos(s);
+				double d = cow.distanceToSqr(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
+				if (d < bestD) {
+					bestD = d;
+					best = s;
+				}
+			}
+			if (best != null) {
+				taken.add(best.id());
+				cow.assignStall(worldPosition, standPos(best), bunkPos(best));
+			}
+		}
+		for (CattleEntity cow : herd) {
+			if (!worldPosition.equals(cow.stallController())) {
+				continue;
+			}
+			for (BarnStalls.Stall s : stalls) {
+				if (standPos(s).equals(cow.stallStand())) {
+					feed(level, cow, s, ticks);
+				}
+			}
+		}
+		setChanged();
+	}
+
+	private void feed(Level level, CattleEntity cow, BarnStalls.Stall s, int ticks) {
+		double dmi = cow.dryMatterIntakeKgPerDay();
+		BlockPos feederPos = at(s.x(), floorY() + 1, s.bunkZ());
+		FeederEntity feeder = BigParts.entity(level, feederPos) instanceof FeederEntity f ? f : null;
+		TroughEntity trough = troughFor(level, s);
+		double hay = feeder == null ? 0 : feeder.dryMatterKg();
+		double water = trough == null ? 0 : trough.litres();
+		Intake.Result r = Intake.step(dmi, 0, ticks, hay, water);
+		if (feeder != null) {
+			feeder.take(r.eatenKg());
+		}
+		if (trough != null) {
+			trough.take(r.drunkL());
+		}
+		cow.recordTending(r.eatenKg(), r.drunkL(), r.fed(), r.watered());
+		int items = cow.collectManureItems(r.manureKg());
+		if (items > 0) {
+			Vec3 spot = Vec3.atCenterOf(at(s.x(), floorY(), s.alleyZ()));
+			net.minecraft.world.item.ItemStack stack = new net.minecraft.world.item.ItemStack(FarmingsItems.MANURE, items);
+			ItemEntity e = new ItemEntity(level, spot.x, floorY() + 0.3, spot.z, stack);
+			e.setDeltaMovement(Vec3.ZERO);
+			level.addFreshEntity(e);
+		}
+	}
+
+	/** A trough in her row: the first with water in it, or else the first there is. */
+	private TroughEntity troughFor(Level level, BarnStalls.Stall s) {
+		TroughEntity first = null;
+		for (int ax = check.driveX() - 3; ax <= 4; ax++) {
+			for (int k = 2; k <= 4; k++) {
+				BlockPos p = at(ax, floorY(), s.side() * k);
+				if (BigParts.entity(level, p) instanceof TroughEntity t) {
+					if (first == null) {
+						first = t;
+					}
+					if (t.litres() > 0) {
+						return t;
+					}
+				}
+			}
+		}
+		return first;
+	}
+
 	// ---- reading and saving --------------------------------------------------------------------------------------------
+
+	private int housed;
 
 	/** What the controller shows when read. */
 	public String readout() {
@@ -250,7 +406,7 @@ public class BarnControllerEntity extends BlockEntity {
 			return "Barn: " + check.status();
 		}
 		String scraper = pass.running() ? "scraper " + pass.fault().label : (pass.fault() == ScraperPass.Fault.NONE ? "scraper idle" : "scraper " + pass.fault().label);
-		return "Barn: FORMED, " + check.stallsPerSide() + " stalls a side (" + check.stalls() + " cows), " + scraper;
+		return "Barn: FORMED, " + check.stallsPerSide() + " stalls a side (" + check.stalls() + " cows), " + scraper + ", " + housed + " housed";
 	}
 
 	@Override

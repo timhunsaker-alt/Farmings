@@ -69,6 +69,16 @@ public class CattleEntity extends Animal {
 	private boolean hasCalved;
 	private long calvedTick = -1;
 	private boolean retired;
+	/** Her stall in a barn: where she stands, the bunk she faces, and the controller of her barn. All null when she is not housed. */
+	private @Nullable BlockPos stallStand;
+	private @Nullable BlockPos stallBunk;
+	private @Nullable BlockPos stallController;
+	/** Manure made but not yet dropped, and what she has eaten and drunk in all, and how well the last tending went (0 to 1). */
+	private double manureKg;
+	private double hayEatenKg;
+	private double waterDrunkL;
+	private double lastFed = 1;
+	private double lastWatered = 1;
 
 	public CattleEntity(EntityType<? extends CattleEntity> type, Level level) {
 		super(type, level);
@@ -100,9 +110,112 @@ public class CattleEntity extends Animal {
 		return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, 0.2F);
 	}
 
+	// ---- the barn ----
+
+	public @Nullable BlockPos stallStand() {
+		return stallStand;
+	}
+
+	public @Nullable BlockPos stallBunk() {
+		return stallBunk;
+	}
+
+	public @Nullable BlockPos stallController() {
+		return stallController;
+	}
+
+	public void assignStall(BlockPos controller, BlockPos stand, BlockPos bunk) {
+		this.stallController = controller;
+		this.stallStand = stand;
+		this.stallBunk = bunk;
+	}
+
+	public void clearStall() {
+		this.stallController = null;
+		this.stallStand = null;
+		this.stallBunk = null;
+	}
+
+	/** Records one tending: what she ate and drank, and how well it met her need. Her manure goes through {@link #collectManureItems}. */
+	public void recordTending(double eatenKg, double drunkL, double fed, double watered) {
+		hayEatenKg += eatenKg;
+		waterDrunkL += drunkL;
+		lastFed = fed;
+		lastWatered = watered;
+	}
+
+	/** Adds manure and returns how many whole 50 kg items are now ready to drop; the rest stays. */
+	public int collectManureItems(double addKg) {
+		manureKg += addKg;
+		int items = (int) Math.floor(manureKg / dev.farmings.feed.Intake.MANURE_ITEM_KG);
+		manureKg -= items * dev.farmings.feed.Intake.MANURE_ITEM_KG;
+		return items;
+	}
+
+	public double hayEatenKg() {
+		return hayEatenKg;
+	}
+
+	public double waterDrunkL() {
+		return waterDrunkL;
+	}
+
+	public double lastFed() {
+		return lastFed;
+	}
+
+	public double lastWatered() {
+		return lastWatered;
+	}
+
+	/** Dry matter she should eat in a day at her stage and weight (0 for a calf). */
+	public double dryMatterIntakeKgPerDay() {
+		return dev.farmings.feed.Hay.dryMatterIntakeOrStandIn(stage(), weightKg).orElse(0);
+	}
+
+	/** Walks to her stall and stays there, facing her bunk. While she has a stall nothing else moves her (it outranks strolling). */
+	private static final class StallGoal extends net.minecraft.world.entity.ai.goal.Goal {
+		private final CattleEntity cow;
+
+		StallGoal(CattleEntity cow) {
+			this.cow = cow;
+			setFlags(java.util.EnumSet.of(Flag.MOVE, Flag.LOOK));
+		}
+
+		@Override
+		public boolean canUse() {
+			return cow.stallStand != null && !cow.isBaby();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return canUse();
+		}
+
+		@Override
+		public void tick() {
+			BlockPos stand = cow.stallStand;
+			if (stand == null) {
+				return;
+			}
+			double x = stand.getX() + 0.5;
+			double z = stand.getZ() + 0.5;
+			double y = stand.getY() + 0.25;       // the bed is a low slab
+			if (cow.distanceToSqr(x, y, z) > 0.25) {
+				cow.getNavigation().moveTo(x, y, z, 1.0);
+			} else {
+				cow.getNavigation().stop();
+				if (cow.stallBunk != null) {
+					cow.getLookControl().setLookAt(cow.stallBunk.getX() + 0.5, cow.getEyeY(), cow.stallBunk.getZ() + 0.5);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
+		this.goalSelector.addGoal(2, new StallGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -273,6 +386,14 @@ public class CattleEntity extends Animal {
 		output.putBoolean("HasCalved", hasCalved);
 		output.putLong("CalvedTick", calvedTick);
 		output.putBoolean("Retired", retired);
+		output.putLong("StallStand", stallStand == null ? Long.MIN_VALUE : stallStand.asLong());
+		output.putLong("StallBunk", stallBunk == null ? Long.MIN_VALUE : stallBunk.asLong());
+		output.putLong("StallController", stallController == null ? Long.MIN_VALUE : stallController.asLong());
+		output.putDouble("ManureKg", manureKg);
+		output.putDouble("HayEatenKg", hayEatenKg);
+		output.putDouble("WaterDrunkL", waterDrunkL);
+		output.putDouble("LastFed", lastFed);
+		output.putDouble("LastWatered", lastWatered);
 	}
 
 	@Override
@@ -297,6 +418,17 @@ public class CattleEntity extends Animal {
 		hasCalved = input.getBooleanOr("HasCalved", false);
 		calvedTick = input.getLongOr("CalvedTick", -1L);
 		retired = input.getBooleanOr("Retired", false);
+		long stand = input.getLongOr("StallStand", Long.MIN_VALUE);
+		long bunk = input.getLongOr("StallBunk", Long.MIN_VALUE);
+		long controller = input.getLongOr("StallController", Long.MIN_VALUE);
+		stallStand = stand == Long.MIN_VALUE ? null : BlockPos.of(stand);
+		stallBunk = bunk == Long.MIN_VALUE ? null : BlockPos.of(bunk);
+		stallController = controller == Long.MIN_VALUE ? null : BlockPos.of(controller);
+		manureKg = input.getDoubleOr("ManureKg", 0);
+		hayEatenKg = input.getDoubleOr("HayEatenKg", 0);
+		waterDrunkL = input.getDoubleOr("WaterDrunkL", 0);
+		lastFed = input.getDoubleOr("LastFed", 1);
+		lastWatered = input.getDoubleOr("LastWatered", 1);
 		entityData.set(DATA_BREED, breed.ordinal());
 		entityData.set(DATA_STAGE, stageAt(level().getGameTime()).ordinal());
 	}

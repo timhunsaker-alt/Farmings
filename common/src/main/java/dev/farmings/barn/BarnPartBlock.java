@@ -46,8 +46,40 @@ public class BarnPartBlock extends BigPartBlock {
 		return switch (kind) {
 			case COLLECTION_PIT -> new PitEntity(pos, state);
 			case SCRAPER_DRIVE -> new DriveEntity(pos, state);
+			case HAY_FEEDER -> new FeederEntity(pos, state);
+			case WATER_TROUGH -> new TroughEntity(pos, state);
 			default -> new BarnPartEntity(pos, state);
 		};
+	}
+
+	/** A hay block into the feeder, a water bucket into the trough. Anything else falls through to a plain click. */
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand,
+			BlockHitResult hit) {
+		BlockEntity be = level.getBlockEntity(BigParts.main(pos, state));
+		if (be instanceof FeederEntity feeder && stack.is(net.minecraft.world.item.Items.HAY_BLOCK)) {
+			if (!level.isClientSide()) {
+				if (feeder.addBlock()) {
+					if (!player.hasInfiniteMaterials()) {
+						stack.shrink(1);
+					}
+				} else {
+					player.sendOverlayMessage(Component.literal("The hay feeder holds " + FeederEntity.MAX_BLOCKS + " blocks and is full"));
+				}
+			}
+			return InteractionResult.SUCCESS;
+		}
+		if (be instanceof TroughEntity trough && stack.is(net.minecraft.world.item.Items.WATER_BUCKET)) {
+			if (!level.isClientSide()) {
+				if (trough.pourBucket()) {
+					player.setItemInHand(hand, net.minecraft.world.item.ItemUtils.createFilledResult(stack, player, new ItemStack(net.minecraft.world.item.Items.BUCKET)));
+				} else {
+					player.sendOverlayMessage(Component.literal("The trough is full"));
+				}
+			}
+			return InteractionResult.SUCCESS;
+		}
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	/**
@@ -69,6 +101,11 @@ public class BarnPartBlock extends BigPartBlock {
 				}
 			}
 			player.sendOverlayMessage(Component.literal("Collection pit: " + pit.manure() + " / " + PitEntity.CAPACITY + " manure"));
+		} else if (be instanceof FeederEntity feeder) {
+			player.sendOverlayMessage(Component.literal("Hay feeder: " + Math.round(feeder.dryMatterKg()) + " kg dry matter (" + String.format("%.1f", feeder.blocks()) + " of "
+					+ FeederEntity.MAX_BLOCKS + " blocks)"));
+		} else if (be instanceof TroughEntity trough) {
+			player.sendOverlayMessage(Component.literal("Water trough: " + Math.round(trough.litres()) + " / " + Math.round(TroughEntity.CAPACITY_LITRES) + " L"));
 		} else if (be instanceof Inspectable machine) {
 			player.sendOverlayMessage(machine.inspect());
 		}
@@ -79,6 +116,19 @@ public class BarnPartBlock extends BigPartBlock {
 	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		int piece = Math.min(state.getValue(piece()), shapes[0].length - 1);
 		return shapes[Math.floorMod(BigParts.turns(state), 4)][piece];
+	}
+
+	/**
+	 * Cattle must not plan a route through a part they cannot pass. A thin divider is not a full block, so the pathfinder would call its cell
+	 * walkable and the cow would press against the panel for ever (the way vanilla fences say no). Walkable are the surfaces: the stall bed,
+	 * the alley floor, the rail and the pit's top. Everything else stops a cow.
+	 */
+	@Override
+	protected boolean isPathfindable(BlockState state, net.minecraft.world.level.pathfinder.PathComputationType type) {
+		return switch (kind) {
+			case STALL_BED, ALLEY_FLOOR, SCRAPER_RAIL, COLLECTION_PIT -> super.isPathfindable(state, type);
+			default -> false;
+		};
 	}
 
 	/** A box in sixteenths turned quarter turns clockwise (seen from above) about the cell's centre, as Wildcatter turns its own. */

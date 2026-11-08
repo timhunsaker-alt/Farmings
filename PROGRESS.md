@@ -106,7 +106,26 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - **Proposals with no source:** blade speed (20 ticks a cell), fork durability 250, drive 2.2 kW (already in the spec).
   - **Not built:** the drive has not been run on a real Wildcatter grid (tests force it on; no-power is tested), no blade-moving animation
     between cells (it steps a block at a time), manure is dropped by hand until cows exist, dirty-stall health effect (needs cows).
-- Next: cows living in the barn (stall choice, eating hay, drinking, making manure), then the milking parlor spec.
+- **2026-11-08: Phase 1 step 4: cows live in the barn.**
+  - **Stalls:** the controller gives each housed cow the nearest free stall (one cow a stall; calves are not housed). She walks to it, stands on
+    the bed and faces her bunk, and nothing else moves her. The stall is saved with the cow.
+  - **Feeding:** a player puts hay blocks in a feeder (up to 4, 85 kg dry matter each) and a water bucket in a trough (1,000 L). Each second the
+    controller tends the herd: a cow eats her day's dry matter and drinks (UC Davis rule) from the feeder at her stall and a trough in her row.
+    A shortfall is recorded on the cow and never kills her. Manure is made from what she ate (2.23 kg per kg of dry matter, the Florida study in
+    waste.md) and drops in the alley in front of her stall as 50 kg items, which the scraper collects.
+  - **Found and fixed:** (1) the controller's once-a-second tending never ran for barns whose block position hashes negative (`%` of a negative
+    number); now `Math.floorMod`. (2) Cattle planned routes straight through the thin stall dividers because the pathfinder thinks a non-full block is
+    walkable; dividers, bunks, feeders, troughs, the drive and the blade now say they cannot be walked through. Both found by tests.
+  - Game tests: **25 NeoForge scenes pass, 4 runs out of 4 after the fixes** (new: `cows_take_stalls`, `cow_eats_and_drinks`, `cow_makes_manure`,
+    `cow_hungry_without_hay`, `feeder_takes_hay_blocks`, `trough_takes_bucket`, `cow_walks_to_stall`, `cow_walks_in_from_the_pit_end`,
+    `cow_stall_survives_save`). 10 new plain unit tests (feeding step, stall layout).
+  - Evidence: a screen recording and screenshots of six cows walking into a 4-stall barn (`FARMINGS_ONLY=herd ./gradlew :fabric:runClientGameTest`).
+  - **Proposals with no source:** trough capacity 1,000 L (one bucket; one cell is a metre); heifers, bred heifers, retired cows, bulls and steers
+    eat at the dry cow's 2.2% of body weight (no figure was found for them); a trough with no water is filled by bucket only (the Wildcatter pipe
+    feed is not built yet).
+  - **Not built:** milk (so no milk-dependent water or yield), health or growth effects from a shortfall (only recorded), the dirty-stall effect,
+    the pipe-fed trough, lying down (cows stand on the bed), calves.
+- Next: the milking parlor and bulk tank spec (`docs/multiblocks/parlor.md`), which also needs the lactation curve research.
 
 ## Known gaps
 - Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only). Manure and fork icons are placeholders too.
