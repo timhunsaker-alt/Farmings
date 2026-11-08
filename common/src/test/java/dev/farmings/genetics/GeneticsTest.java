@@ -249,4 +249,14 @@ class GeneticsTest {
 		assertTrue(Breeds.known("HOL") && Breeds.known("JER") && Breeds.known("BSW") && Breeds.known("GYR"));
 		assertTrue(!Breeds.known("ANG") && !Breeds.known("WAG"));
 	}
+
+	@Test
+	void savedGenomeComesBackExactly() {
+		Offspring.Result r = Offspring.create(dam(comp("HOL", 7500, "JER", 2500)), sire(comp("BSW", 10000)), 42L, RULES, null);
+		Genome back = Genome.decode(r.genome().encode());
+		assertEquals(r.genome(), back);
+		assertEquals(r.genome().hash(), back.hash());
+		assertEquals(r.genome().coreGenome().get(Trait.BUTTERFAT), back.coreGenome().get(Trait.BUTTERFAT), "allele order kept");
+		org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> Genome.decode("garbage"));
+	}
 }

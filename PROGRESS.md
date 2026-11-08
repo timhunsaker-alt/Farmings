@@ -51,10 +51,22 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - **Not built, and why:** the lactation curve (no per-breed peak or total is sourced), intake for calves, heifers and bulls (no
     sourced figure), and Angus and Wagyu baselines (open decision). Stand-in values are marked in `CattleBreed.java`.
   - Founders draw alleles uniformly from the seven-allele pool: that is new in Farmings, not FarmChain's.
-- Next: the cattle entity in the game (step 2), then the barn blocks and multiblock (step 3).
+- **2026-11-07: Phase 1 step 2 built: the cattle entity.** `CattleEntity` (an `Animal`) holds breed, sex, genome, trait scores,
+  birth time, weight, pregnancy and calving state, and saves all of it with the world. Age is counted in game ticks and read
+  through the 15:1 scale; the vanilla baby flag is driven from our stage (vanilla's own growth timer is off). Vanilla breeding,
+  bucket milking and wheat-tempting are off. Registered on both loaders (attributes, renderer, lang). A spawned animal is a
+  Holstein adult that can be bred today.
+  - NeoForge game-test source set added (`./gradlew :neoforge:runGameTestServer`, also run in CI). 5 scenes pass: `registers`,
+    `cattle_spawns`, `cattle_state_survives_save`, `calf_grows_up`, `bull_does_not_milk`.
+  - `cattle_state_survives_save` saves through the same write/read path a chunk unload uses and loads into a new entity; it does
+    not unload a real chunk.
+  - **Not built, and why:** growth (no sourced weight-for-age curve, so weight is set, not grown), feeding and milking (barn and
+    parlor), breeding (Phase 2), Angus and Wagyu animals (no baselines yet), spawn egg and a way for players to get cattle
+    (`/summon farmings:cattle` for now).
+- Next: the barn blocks and multiblock (step 3).
 
 ## Known gaps
 - Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
-- No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).
-- Fabric has not been launched.
-- No icon, no creative tab, no lang strings.
+- NeoForge game tests exist (5 scenes). The Fabric client game test does not exist yet.
+- Fabric has not been launched; the cattle renderer has not been seen on screen on either loader.
+- No icon, no creative tab. Cattle use the vanilla cow model and texture (`CattleRenderer`, placeholder until Ludo art).

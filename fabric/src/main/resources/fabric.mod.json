@@ -12,6 +12,9 @@
 	"entrypoints": {
 		"main": [
 			"dev.farmings.fabric.FarmingsFabric"
+		],
+		"client": [
+			"dev.farmings.fabric.client.FarmingsFabricClient"
 		]
 	},
 	"depends": {

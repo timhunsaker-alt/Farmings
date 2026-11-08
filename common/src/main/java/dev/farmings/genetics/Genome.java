@@ -59,6 +59,63 @@ public record Genome(String schema, int generation, Map<String, Integer> breedCo
 		}
 	}
 
+	/**
+	 * A compact single-line form for saving on an animal: {@code schema;generation;ruleset;HOL:5000,JER:5000;trait=A,B|trait=A,B}.
+	 * Unlike {@link #canonical()} it keeps the allele order (which parent gave which), so a saved animal comes back exactly as it was.
+	 */
+	public String encode() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(schema).append(';').append(generation).append(';').append(rulesetVersion).append(';');
+		boolean first = true;
+		for (Map.Entry<String, Integer> e : breedCompositionBp.entrySet()) {
+			sb.append(first ? "" : ",").append(e.getKey()).append(':').append(e.getValue());
+			first = false;
+		}
+		sb.append(';');
+		first = true;
+		for (Trait t : Trait.values()) {
+			AllelePair p = coreGenome.get(t);
+			if (p != null) {
+				sb.append(first ? "" : "|").append(t.id).append('=').append(p.first()).append(',').append(p.second());
+				first = false;
+			}
+		}
+		return sb.toString();
+	}
+
+	/** Reads {@link #encode()} back. Throws {@link IllegalArgumentException} on text that is not a genome. */
+	public static Genome decode(String text) {
+		String[] parts = text.split(";", -1);
+		if (parts.length != 5 || !SCHEMA_V1.equals(parts[0])) {
+			throw new IllegalArgumentException("not a Farmings genome: " + text);
+		}
+		try {
+			Map<String, Integer> composition = new TreeMap<>();
+			for (String item : parts[3].split(",")) {
+				String[] kv = item.split(":");
+				composition.put(kv[0], Integer.parseInt(kv[1]));
+			}
+			Map<Trait, AllelePair> core = new EnumMap<>(Trait.class);
+			for (String item : parts[4].split("\\|")) {
+				String[] kv = item.split("=");
+				String[] alleles = kv[1].split(",");
+				Trait trait = null;
+				for (Trait t : Trait.values()) {
+					if (t.id.equals(kv[0])) {
+						trait = t;
+					}
+				}
+				if (trait == null || alleles.length != 2) {
+					throw new IllegalArgumentException("bad locus " + item);
+				}
+				core.put(trait, new AllelePair(alleles[0], alleles[1]));
+			}
+			return new Genome(parts[0], Integer.parseInt(parts[1]), composition, core, parts[2]);
+		} catch (RuntimeException e) {
+			throw new IllegalArgumentException("not a Farmings genome: " + text, e);
+		}
+	}
+
 	public List<String> breedCodes() {
 		return new ArrayList<>(breedCompositionBp.keySet());
 	}

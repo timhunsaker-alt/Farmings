@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The mod, the same on every loader. Each loader's entry point calls {@link #register(String)} while the registries are open.
- * Nothing is registered yet: Phase 0 only proves the mod loads next to Wildcatter.
+ * Registers the animals; blocks, items and machines follow with the barn.
  */
 public final class Farmings {
 	public static final String MOD_ID = "farmings";
@@ -21,6 +21,7 @@ public final class Farmings {
 
 	/** {@code requiredMod} is Wildcatter's mod id, read off the Wildcatter jar on the compile classpath. */
 	public static void register(String requiredMod) {
+		FarmingsEntities.register();
 		LOGGER.info("Farmings loaded; requires {}", requiredMod);
 	}
 }
