@@ -34,7 +34,10 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   sold** (milk and beef are food and ingredients for cheese and other items); fertilizer works like bone meal on all crops and
   trees; milk armor Easter egg (`docs/milk-armor.md`). Still to research: per-breed milk peaks and totals, Gyr gestation, beef
   trait numbers.
-- Next: Tim reviews `cattle.md` and `waste.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
+- **2026-11-07: barn spec drafted** (`docs/multiblocks/barn.md`): tail-to-tail freestall barn, 3 m scrape alley, powered scraper at
+  480 V, collection pit, hay feeders, troughs. Eight open decisions (scraper motor size and passes per day, feeder capacity,
+  trough count, water source, roof, stall sizes, manure fork, manure item weight), each with a proposal. No code.
+- Next: Tim reviews `barn.md`, `cattle.md` and `waste.md`; then research the TO VERIFY list, then the barn, feeder and parlor specs.
 
 ## Known gaps
 - No game tests yet (Tailings has a NeoForge game-test server and a Fabric client game test; they come with the first feature).
