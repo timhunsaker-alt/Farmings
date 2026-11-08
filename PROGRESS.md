@@ -81,9 +81,21 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     takes 2 cells, so n stalls a side take 2n+1 along the barn. Recorded in `barn.md`; Tim to confirm.
   - Not built yet: the blocks themselves (11 parts, built on Wildcatter's big-part system), the controller block entity, the scraper,
     pit and manure, and the game tests that need them.
-- Next: the barn blocks (step 3b), then the scraper, pit and manure (3c).
+- **2026-11-08: Phase 1 step 3b: the barn blocks.** Ten true-size parts on Wildcatter's big-part system (stall bed 1x1x3, divider 1x2x3,
+  feed bunk, hay feeder, water trough 2x1x1, alley floor, scraper rail, manure scraper 1x1x3, scraper drive, collection pit 2x2x3),
+  the barn controller, and its block entity that runs the forming check once a second. Right-click the controller to read it
+  ("Barn: FORMED, 3 stalls a side (6 cows)" or the first thing wrong). A creative tab holds everything (no recipes yet).
+  - Game tests (NeoForge, 10 scenes now pass): `barn_forms`, `barn_missing_part`, `barn_part_breaks_whole`, `barn_usual_orientation`.
+  - Screenshots from a real Fabric client (`FARMINGS_ONLY=barn ./gradlew :fabric:runClientGameTest`): overview, down the alley,
+    corner, and one divider missing. Per Tim's rule (2026-11-08) tests are shown with screenshots and moving things with recordings.
+  - **Placeholders:** every block uses a one-box model and a flat `*_placeholder` texture (`tools/barn_assets.py` writes them) and a
+    simple collision box. Real models and textures are a separate step for Tim's approval.
+  - **Not built:** the scraper moving, the pit holding manure, the drive drawing Wildcatter power, manure, the fork tool (step 3c);
+    cows using the barn (stalls, feeding, drinking); crafting recipes; mining tags; the milking parlor.
+- Next: 3c, the scraper, pit and manure.
 
 ## Known gaps
+- Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only).
 - Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
 - NeoForge game tests exist (5 scenes). The Fabric client game test takes screenshots only; it asserts nothing yet.
 - NeoForge has not been launched with a client; Fabric has (the cattle render).

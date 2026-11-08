@@ -1,9 +1,13 @@
 package dev.farmings.neoforge;
 
 import dev.farmings.Farmings;
+import dev.farmings.FarmingsBlocks;
 import dev.farmings.FarmingsEntities;
 import dev.farmings.entity.CattleEntity;
 import dev.wildcatter.Wildcatter;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -21,6 +25,11 @@ public final class FarmingsNeoForge {
 			if (!registered) {
 				registered = true;
 				Farmings.register(Wildcatter.MOD_ID);
+				Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Farmings.id("farmings"), CreativeModeTab.builder()
+						.title(FarmingsBlocks.tabTitle())
+						.icon(FarmingsBlocks::tabIcon)
+						.displayItems((parameters, output) -> FarmingsBlocks.creativeTab(output::accept))
+						.build());
 			}
 		});
 		modBus.addListener(EntityAttributeCreationEvent.class,

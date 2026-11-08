@@ -1,3 +1,15 @@
 {
-	"entity.farmings.cattle": "Cattle"
+ "block.farmings.alley_floor": "Alley Floor",
+ "block.farmings.barn_controller": "Barn Controller",
+ "block.farmings.collection_pit": "Collection Pit",
+ "block.farmings.feed_bunk": "Feed Bunk",
+ "block.farmings.hay_feeder": "Hay Feeder",
+ "block.farmings.manure_scraper": "Manure Scraper",
+ "block.farmings.scraper_drive": "Scraper Drive",
+ "block.farmings.scraper_rail": "Scraper Rail",
+ "block.farmings.stall_bed": "Stall Bed",
+ "block.farmings.stall_divider": "Stall Divider",
+ "block.farmings.water_trough": "Water Trough",
+ "entity.farmings.cattle": "Cattle",
+ "itemGroup.farmings": "Farmings"
 }

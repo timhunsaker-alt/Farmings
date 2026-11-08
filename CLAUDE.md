@@ -53,6 +53,11 @@ conflict and ask before doing anything.
 - Final textures come from Ludo sources, processed by a tools script, as in Wildcatter and Tailings.
 - Textures drawn by script are placeholders: name them `*_placeholder` and list them in PROGRESS.md under Known gaps.
 
+## Showing tests (Tim's rule, 2026-11-08)
+- Every feature test that can be seen is shown with real in-game **screenshots** (the Fabric client game test takes them).
+- Anything that **moves** (conveyors, the scraper, animals, machines running) also gets a **short screen recording**. Recording
+  runs under `caffeinate` so the display stays awake (`Filming.java` does this). Send the files to Tim; do not just say "passed".
+
 ## Definition of done
-- `./gradlew build` and the game tests pass and cover the new feature.
+- `./gradlew build` and the game tests pass and cover the new feature, with screenshots (and a recording for motion) shown to Tim.
 - PROGRESS.md updated. Field Manual page added or updated once the Field Manual exists.

@@ -21,6 +21,7 @@ public final class Farmings {
 
 	/** {@code requiredMod} is Wildcatter's mod id, read off the Wildcatter jar on the compile classpath. */
 	public static void register(String requiredMod) {
+		FarmingsBlocks.register();
 		FarmingsEntities.register();
 		LOGGER.info("Farmings loaded; requires {}", requiredMod);
 	}

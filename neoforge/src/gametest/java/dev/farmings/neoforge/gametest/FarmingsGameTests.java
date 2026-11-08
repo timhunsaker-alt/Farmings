@@ -1,7 +1,16 @@
 package dev.farmings.neoforge.gametest;
 
 import dev.farmings.Farmings;
+import dev.farmings.FarmingsBlocks;
 import dev.farmings.FarmingsEntities;
+import dev.farmings.barn.BarnControllerEntity;
+import dev.farmings.barn.BarnParts;
+import dev.farmings.husbandry.barn.BarnCheck;
+import dev.wildcatter.block.BigPartBlock;
+import dev.wildcatter.multiblock.BigParts;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import dev.farmings.entity.CattleEntity;
 import dev.farmings.genetics.Sex;
 import dev.farmings.genetics.Trait;
@@ -36,7 +45,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -45,6 +54,10 @@ public class FarmingsGameTests {
 			helper.register(id("cattle_state_survives_save"), loaded(FarmingsGameTests::cattleStateSurvivesSave));
 			helper.register(id("calf_grows_up"), loaded(FarmingsGameTests::calfGrowsUp));
 			helper.register(id("bull_does_not_milk"), loaded(FarmingsGameTests::bullDoesNotMilk));
+			helper.register(id("barn_forms"), loaded(FarmingsGameTests::barnForms));
+			helper.register(id("barn_missing_part"), loaded(FarmingsGameTests::barnMissingPart));
+			helper.register(id("barn_part_breaks_whole"), loaded(FarmingsGameTests::barnPartBreaksWhole));
+			helper.register(id("barn_usual_orientation"), loaded(FarmingsGameTests::barnUsualOrientation));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -152,6 +165,115 @@ public class FarmingsGameTests {
 		CattleEntity bull = cow(helper, CattleBreed.BROWN_SWISS, Sex.MALE, 99L, 800, 600);
 		helper.assertTrue(bull.stage() == Stage.BULL, Component.literal("a mature male is a bull, got " + bull.stage()));
 		helper.assertTrue(!Lifecycle.givesMilk(bull.stage()), Component.literal("a bull gives no milk"));
+		helper.succeed();
+	}
+
+	// ---- the barn ----
+
+	private static void barnPart(ServerLevel level, BarnParts kind, BlockPos main, Direction facing) {
+		BlockState state = FarmingsBlocks.part(kind).defaultBlockState().setValue(BigPartBlock.FACING, facing);
+		level.setBlock(main, state, Block.UPDATE_ALL);
+		BigParts.grow(level, main, state);
+	}
+
+	/**
+	 * A whole barn, alley east-west, pit at the east end, controller at {@code c}: n stalls a side take 2n+1 cells along the alley.
+	 * Everything is placed facing north, as the footprints are drawn.
+	 */
+	private static void buildBarn(ServerLevel level, BlockPos c, int stalls) {
+		int fl = c.getY() - 1;
+		int xd = c.getX() - (2 * stalls + 1);
+		Direction n = Direction.NORTH;
+		barnPart(level, BarnParts.COLLECTION_PIT, new BlockPos(c.getX(), fl - 1, c.getZ()), n);
+		level.setBlock(c, FarmingsBlocks.BARN_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+		barnPart(level, BarnParts.SCRAPER_DRIVE, new BlockPos(xd, c.getY(), c.getZ()), n);
+		for (int x = xd; x < c.getX(); x++) {
+			barnPart(level, BarnParts.SCRAPER_RAIL, new BlockPos(x, fl, c.getZ()), n);
+			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() - 1), n);
+			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() + 1), n);
+		}
+		barnPart(level, BarnParts.MANURE_SCRAPER, new BlockPos(xd + 2, c.getY(), c.getZ()), n);
+		for (int dir = -1; dir <= 1; dir += 2) {
+			int firstZ = dir < 0 ? c.getZ() - 4 : c.getZ() + 2;
+			for (int j = 0; j <= stalls; j++) {
+				barnPart(level, BarnParts.STALL_DIVIDER, new BlockPos(xd + 2 * j, fl, firstZ), n);
+			}
+			for (int i = 0; i < stalls; i++) {
+				int x = xd + 1 + 2 * i;
+				barnPart(level, BarnParts.STALL_BED, new BlockPos(x, fl, firstZ), n);
+				barnPart(level, BarnParts.FEED_BUNK, new BlockPos(x, fl, c.getZ() + dir * 5), n);
+				barnPart(level, BarnParts.HAY_FEEDER, new BlockPos(x, fl + 1, c.getZ() + dir * 5), n);
+			}
+			barnPart(level, BarnParts.WATER_TROUGH, new BlockPos(c.getX() + 1, fl, c.getZ() + dir * 2), n);
+		}
+	}
+
+	private static BarnControllerEntity controller(GameTestHelper helper, BlockPos relative) {
+		helper.assertTrue(helper.getLevel().getBlockEntity(helper.absolutePos(relative)) instanceof BarnControllerEntity, Component.literal("the controller block entity is missing"));
+		BarnControllerEntity e = (BarnControllerEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
+		e.refresh(helper.getLevel());
+		return e;
+	}
+
+	private static void barnForms(GameTestHelper helper) {
+		BlockPos c = new BlockPos(14, 4, 8);
+		buildBarn(helper.getLevel(), helper.absolutePos(c), 3);
+		BarnControllerEntity e = controller(helper, c);
+		helper.assertTrue(e.formed(), Component.literal("a whole barn should form, got: " + e.readout()));
+		helper.assertTrue(e.check().stallsPerSide() == 3, Component.literal("3 stalls a side, got " + e.check().stallsPerSide()));
+		helper.assertTrue(e.check().stalls() == 6, Component.literal("6 cows"));
+		helper.assertTrue(e.readout().equals("Barn: FORMED, 3 stalls a side (6 cows)"), Component.literal("readout: " + e.readout()));
+		helper.succeed();
+	}
+
+	private static void barnMissingPart(GameTestHelper helper) {
+		BlockPos c = new BlockPos(14, 4, 8);
+		ServerLevel level = helper.getLevel();
+		buildBarn(level, helper.absolutePos(c), 3);
+		// the divider between stall 2 and stall 3 on the north side: x = xd + 4, its cells run from z = cz - 4 for 3 cells, 2 high
+		int xd = c.getX() - 7;
+		BlockPos divider = helper.absolutePos(new BlockPos(xd + 4, c.getY() - 1, c.getZ() - 4));
+		helper.assertTrue(level.getBlockState(divider).getBlock() == FarmingsBlocks.part(BarnParts.STALL_DIVIDER), Component.literal("the divider should be where the test thinks"));
+		level.destroyBlock(divider, false);
+		helper.runAfterDelay(5, () -> {
+			BarnControllerEntity e = controller(helper, c);
+			helper.assertTrue(!e.formed(), Component.literal("a barn missing a divider should not form"));
+			helper.assertTrue(e.check().problems().size() == 1, Component.literal("only the divider should be wrong, got " + e.check().problems()));
+			helper.assertTrue(e.check().status().equals("Stall 3 north has no divider on its near side"), Component.literal("status: " + e.check().status()));
+			// the rest still stands: every other part is where it was
+			helper.assertTrue(level.getBlockState(helper.absolutePos(new BlockPos(xd + 5, c.getY() - 1, c.getZ() - 4))).getBlock() == FarmingsBlocks.part(BarnParts.STALL_BED),
+					Component.literal("the bed next to the missing divider should still stand"));
+			helper.succeed();
+		});
+	}
+
+	/** Breaking any one cell of a big part takes the whole part (Wildcatter's rule): every cell of a stall divider goes. */
+	private static void barnPartBreaksWhole(GameTestHelper helper) {
+		BlockPos c = new BlockPos(14, 4, 8);
+		ServerLevel level = helper.getLevel();
+		buildBarn(level, helper.absolutePos(c), 2);
+		int xd = c.getX() - 5;
+		BlockPos main = helper.absolutePos(new BlockPos(xd + 2, c.getY() - 1, c.getZ() + 2));
+		// break the topmost cell of the far end of the divider
+		level.destroyBlock(main.offset(0, 1, 2), false);
+		helper.runAfterDelay(5, () -> {
+			for (int dy = 0; dy < 2; dy++) {
+				for (int dz = 0; dz < 3; dz++) {
+					helper.assertTrue(level.getBlockState(main.offset(0, dy, dz)).isAir(), Component.literal("every cell of the divider should be gone, " + main.offset(0, dy, dz) + " stayed"));
+				}
+			}
+			helper.succeed();
+		});
+	}
+
+	/** A barn built the way it is drawn reads as turned 0, not mirrored. (All eight orientations are covered by the plain-Java unit tests.) */
+	private static void barnUsualOrientation(GameTestHelper helper) {
+		BlockPos c = new BlockPos(14, 4, 8);
+		ServerLevel level = helper.getLevel();
+		buildBarn(level, helper.absolutePos(c), 2);
+		BarnControllerEntity e = controller(helper, c);
+		helper.assertTrue(e.formed() && e.check().orientation().turns() == 0 && !e.check().orientation().mirror(),
+				Component.literal("a barn drawn the usual way reads as turns 0, not mirrored; got " + e.check().orientation()));
 		helper.succeed();
 	}
 }
