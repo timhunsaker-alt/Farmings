@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -97,12 +97,20 @@ public class FarmingsGameTests {
 			helper.register(id("grown_cow_stops_growing"), loaded(FarmingsGameTests::grownCowStopsGrowing));
 			helper.register(id("weight_survives_save"), loaded(FarmingsGameTests::weightSurvivesSave));
 			helper.register(id("straw_inseminates"), loaded(FarmingsGameTests::strawInseminates));
+			helper.register(id("parlor_forms"), loaded(FarmingsGameTests::parlorForms));
+			helper.register(id("parlor_missing_part"), loaded(FarmingsGameTests::parlorMissingPart));
+			helper.register(id("parlor_milks_cow"), loaded(FarmingsGameTests::parlorMilksCow));
+			helper.register(id("parlor_no_power_no_milk"), loaded(FarmingsGameTests::parlorNoPowerNoMilk));
+			helper.register(id("tank_cools_and_warms"), loaded(FarmingsGameTests::tankCoolsAndWarms));
+			helper.register(id("bucket_takes_milk"), loaded(FarmingsGameTests::bucketTakesMilk));
+			helper.register(id("parlor_state_survives_save"), loaded(FarmingsGameTests::parlorStateSurvivesSave));
+			helper.register(id("parlor_cow_walks_and_is_milked"), loaded(FarmingsGameTests::parlorCowWalks));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
 			for (String scene : SCENES) {
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
-						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("cow_walks") ? 1200 : 200, 1, true,
+						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") ? 1200 : 200, 1, true,
 								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 40)));
 			}
 		});
@@ -951,5 +959,173 @@ public class FarmingsGameTests {
 		helper.assertTrue(cow.isInCalf() && cow.hasSire(), Component.literal("she is in calf by the straw's sire"));
 		helper.assertTrue(full.isEmpty(), Component.literal("the straw is used up"));
 		helper.succeed();
+	}
+
+	// ---- the milking parlor ----
+
+	private static void parlorPart(ServerLevel level, dev.farmings.parlor.ParlorParts kind, BlockPos main) {
+		BlockState state = FarmingsBlocks.parlorPart(kind).defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
+		level.setBlock(main, state, Block.UPDATE_ALL);
+		BigParts.grow(level, main, state);
+	}
+
+	/** A whole parlor, row east-west, tank at the east end, stalls to the south: controller at {@code c}, n stalls. Ground is laid under it. */
+	private static void buildParlor(ServerLevel level, BlockPos c, int stalls) {
+		int fl = c.getY() - 1;
+		for (int x = c.getX() - stalls - 4; x <= c.getX() + 4; x++) {
+			for (int z = c.getZ() - 3; z <= c.getZ() + 6; z++) {
+				level.setBlock(new BlockPos(x, fl - 1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+			}
+		}
+		level.setBlock(c, FarmingsBlocks.PARLOR_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+		parlorPart(level, dev.farmings.parlor.ParlorParts.BULK_TANK, new BlockPos(c.getX() + 1, fl, c.getZ()));
+		int xp = c.getX() - stalls - 1;
+		parlorPart(level, dev.farmings.parlor.ParlorParts.VACUUM_PUMP, new BlockPos(xp, fl, c.getZ()));
+		for (int x = xp + 1; x <= c.getX(); x++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.MILK_LINE, new BlockPos(x, fl, c.getZ()));
+		}
+		for (int x = xp + 1; x < c.getX(); x++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.MILKING_UNIT, new BlockPos(x, c.getY(), c.getZ()));
+			parlorPart(level, dev.farmings.parlor.ParlorParts.PARLOR_STALL, new BlockPos(x, fl, c.getZ() + 1));
+		}
+	}
+
+	private static dev.farmings.parlor.ParlorControllerEntity parlorController(GameTestHelper helper, BlockPos relative) {
+		helper.assertTrue(helper.getLevel().getBlockEntity(helper.absolutePos(relative)) instanceof dev.farmings.parlor.ParlorControllerEntity,
+				Component.literal("the parlor controller block entity is missing"));
+		dev.farmings.parlor.ParlorControllerEntity e = (dev.farmings.parlor.ParlorControllerEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
+		e.refresh(helper.getLevel());
+		return e;
+	}
+
+	private static CattleEntity milkingCow(ServerLevel level, BlockPos near, long seed) {
+		CattleEntity cow = founderAt(level, near, Sex.FEMALE, seed, 900, 650);
+		cow.setCalvedForDisplay(30);
+		cow.settle(level);
+		return cow;
+	}
+
+	private static void parlorForms(GameTestHelper helper) {
+		buildParlor(helper.getLevel(), helper.absolutePos(C), 3);
+		dev.farmings.parlor.ParlorControllerEntity e = parlorController(helper, C);
+		helper.assertTrue(e.formed(), Component.literal("a whole parlor should form, got: " + e.readout(helper.getLevel())));
+		helper.assertTrue(e.check().stalls() == 3, Component.literal("3 stalls, got " + e.check().stalls()));
+		helper.assertTrue(e.readout(helper.getLevel()).startsWith("Parlor: FORMED, 3 stalls, tank 0 L at 4.0 C"), Component.literal("readout: " + e.readout(helper.getLevel())));
+		helper.succeed();
+	}
+
+	private static void parlorMissingPart(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		BlockPos unit = c.offset(-2, 0, 0);
+		helper.assertTrue(level.getBlockState(unit).getBlock() == FarmingsBlocks.parlorPart(dev.farmings.parlor.ParlorParts.MILKING_UNIT), Component.literal("the unit should be where the test thinks"));
+		level.destroyBlock(unit, false);
+		helper.runAfterDelay(5, () -> {
+			dev.farmings.parlor.ParlorControllerEntity e = parlorController(helper, C);
+			helper.assertTrue(!e.formed(), Component.literal("a parlor missing a unit should not form"));
+			helper.assertTrue(e.check().status().equals("Stall 2 has no milking unit"), Component.literal("status: " + e.check().status()));
+			helper.succeed();
+		});
+	}
+
+	private static void parlorMilksCow(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		dev.farmings.parlor.TankEntity tank = ctl.tank(level);
+		tank.forceChilling(true);
+		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 91L);
+		double kg = cow.milkKg();
+		helper.assertTrue(kg > 5, Component.literal("a cow 30 days in milk has milk, got " + kg));
+		ctl.milk(level, 20);
+		helper.assertTrue(cow.milkingStand() != null, Component.literal("she is called to a stall"));
+		BlockPos stand = cow.milkingStand();
+		cow.setPos(stand.getX() + 0.5, stand.getY() + 0.25, stand.getZ() + 0.5);
+		ctl.milk(level, 20);
+		helper.assertTrue(cow.milkKg() == 0 && cow.milkingStand() == null, Component.literal("she is milked and sent home"));
+		helper.assertTrue(Math.abs(tank.tank().litres() - kg / 1.03) < 1e-6, Component.literal("the tank got her milk in litres: " + tank.tank().litres() + " vs " + kg / 1.03));
+		helper.assertTrue(tank.tank().tempC() == 35, Component.literal("the milk comes in at 35 C, got " + tank.tank().tempC()));
+		ctl.milk(level, 7_200);
+		helper.assertTrue(tank.tank().tempC() < 35 && tank.tank().tempC() > 4, Component.literal("then it cools, got " + tank.tank().tempC()));
+		helper.succeed();
+	}
+
+	private static void parlorNoPowerNoMilk(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 92L);
+		ctl.milk(level, 20);
+		helper.assertTrue(cow.milkingStand() == null && cow.milkKg() > 0, Component.literal("with no power she is not called and keeps her milk"));
+		helper.assertTrue(ctl.fault().equals("NO POWER"), Component.literal("fault: " + ctl.fault()));
+		helper.assertTrue(ctl.tank(level).tank().litres() == 0, Component.literal("the tank stays empty"));
+		helper.succeed();
+	}
+
+	private static void tankCoolsAndWarms(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		dev.farmings.parlor.TankEntity tank = ctl.tank(level);
+		tank.tank().add(100, 35);
+		helper.assertTrue(tank.tank().warm(), Component.literal("fresh milk makes the tank warm"));
+		ctl.milk(level, 20);
+		helper.assertTrue(ctl.fault().equals("TANK WARM"), Component.literal("fault: " + ctl.fault()));
+		tank.forceChilling(true);
+		ctl.milk(level, 14_400);
+		helper.assertTrue(Math.abs(tank.tank().tempC() - 4) < 1e-6 && !tank.tank().warm(), Component.literal("the chiller brings it to 4 C, got " + tank.tank().tempC()));
+		helper.succeed();
+	}
+
+	private static void bucketTakesMilk(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		dev.farmings.parlor.TankEntity tank = parlorController(helper, C).tank(level);
+		tank.tank().add(25, 4);
+		net.minecraft.world.entity.player.Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.BUCKET));
+		BlockPos tankCell = c.offset(1, -1, 0);
+		FarmingsBlocks.parlorPart(dev.farmings.parlor.ParlorParts.BULK_TANK).defaultBlockState();
+		level.getBlockState(tankCell).useItemOn(player.getMainHandItem(), level, player, InteractionHand.MAIN_HAND,
+				new BlockHitResult(Vec3.atCenterOf(tankCell), Direction.UP, tankCell, false));
+		helper.assertTrue(player.getMainHandItem().is(net.minecraft.world.item.Items.MILK_BUCKET), Component.literal("a bucket becomes a milk bucket, got " + player.getMainHandItem()));
+		helper.assertTrue(Math.abs(tank.tank().litres() - 15) < 1e-9, Component.literal("it took 10 L, left " + tank.tank().litres()));
+		helper.succeed();
+	}
+
+	private static void parlorStateSurvivesSave(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		dev.farmings.parlor.TankEntity tank = parlorController(helper, C).tank(level);
+		tank.tank().add(120, 20);
+		net.minecraft.nbt.CompoundTag tag = tank.saveWithFullMetadata(level.registryAccess());
+		net.minecraft.world.level.block.entity.BlockEntity copy = net.minecraft.world.level.block.entity.BlockEntity.loadStatic(tank.getBlockPos(), tank.getBlockState(), tag, level.registryAccess());
+		helper.assertTrue(copy instanceof dev.farmings.parlor.TankEntity t && Math.abs(t.tank().litres() - 120) < 1e-9 && Math.abs(t.tank().tempC() - 20) < 1e-9,
+				Component.literal("the tank's milk and temperature survive a save"));
+		helper.succeed();
+	}
+
+	private static void parlorCowWalks(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		ctl.tank(level).forceChilling(true);
+		CattleEntity cow = milkingCow(level, c.offset(-1, -1, 5), 93L);
+		cow.setNoAi(false);
+		helper.succeedWhen(() -> {
+			ctl.milk(level, 20);
+			helper.assertTrue(ctl.tank(level).tank().litres() > 5, Component.literal("she walks in and is milked; tank " + ctl.tank(level).tank().litres() + " L, cow at " + cow.position()
+					+ ", stand " + cow.milkingStand() + ", fault " + ctl.fault()));
+		});
 	}
 }

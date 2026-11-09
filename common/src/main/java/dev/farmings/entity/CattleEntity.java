@@ -68,6 +68,8 @@ public class CattleEntity extends Animal {
 	/** Game time she was bred, or -1 when she is not in calf. */
 	private long bredTick = -1;
 	private boolean hasCalved;
+	/** Where the parlor has sent her to be milked, or null. Not saved: the controller sends her again. */
+	private @Nullable BlockPos milkingStand;
 	/** Game tick up to which growth has been counted; valid only when {@link #growthMarked}. */
 	private long growthTick;
 	private boolean growthMarked;
@@ -228,8 +230,45 @@ public class CattleEntity extends Animal {
 		}
 	}
 
+	/** Walks to the parlor stall she was sent to and stands there until she is milked (it outranks her barn stall). */
+	private static final class MilkingGoal extends net.minecraft.world.entity.ai.goal.Goal {
+		private final CattleEntity cow;
+
+		MilkingGoal(CattleEntity cow) {
+			this.cow = cow;
+			setFlags(java.util.EnumSet.of(Flag.MOVE, Flag.LOOK));
+		}
+
+		@Override
+		public boolean canUse() {
+			return cow.milkingStand != null && !cow.isBaby();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return canUse();
+		}
+
+		@Override
+		public void tick() {
+			BlockPos stand = cow.milkingStand;
+			if (stand == null) {
+				return;
+			}
+			double x = stand.getX() + 0.5;
+			double z = stand.getZ() + 0.5;
+			double y = stand.getY() + 0.25;
+			if (cow.distanceToSqr(x, y, z) > 0.25) {
+				cow.getNavigation().moveTo(x, y, z, 1.0);
+			} else {
+				cow.getNavigation().stop();
+			}
+		}
+	}
+
 	@Override
 	protected void registerGoals() {
+		this.goalSelector.addGoal(1, new MilkingGoal(this));
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(2, new StallGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
@@ -296,6 +335,14 @@ public class CattleEntity extends Animal {
 
 	public double milkKg() {
 		return milkKg;
+	}
+
+	public @Nullable BlockPos milkingStand() {
+		return milkingStand;
+	}
+
+	public void setMilkingStand(@Nullable BlockPos stand) {
+		this.milkingStand = stand;
 	}
 
 	/** The milk a milking machine takes: all of it. */

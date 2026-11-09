@@ -23,8 +23,15 @@ PARTS = {
     "manure_scraper": ("Manure Scraper", (212, 170, 40), (1, 1, 3, 0, 1), [(4, 0, 0, 12, 6, 16)]),
     "scraper_drive": ("Scraper Drive", (60, 120, 80), (1, 1, 1, 0, 0), [(1, 0, 1, 15, 16, 15)]),
     "collection_pit": ("Collection Pit", (64, 60, 56), (2, 2, 3, 0, 1), [(0, 0, 0, 16, 16, 16), (0, 0, 0, 16, 2, 16)]),
+    # the milking parlor (docs/multiblocks/parlor.md)
+    "parlor_stall": ("Parlor Stall", (150, 150, 156), (1, 1, 2, 0, 0), [(0, 0, 0, 16, 4, 16)]),
+    "milking_unit": ("Milking Unit", (180, 180, 186), (1, 1, 1, 0, 0), [(4, 0, 4, 12, 12, 12)]),
+    "vacuum_pump": ("Vacuum Pump", (70, 100, 150), (1, 1, 1, 0, 0), [(1, 0, 1, 15, 14, 15)]),
+    "milk_line": ("Milk Line", (200, 200, 205), (1, 1, 1, 0, 0), [(0, 0, 5, 16, 5, 11)]),
+    "bulk_tank": ("Bulk Tank", (205, 208, 214), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
 }
 CONTROLLER = ("Barn Controller", (200, 110, 40))
+PARLOR_CONTROLLER = ("Parlor Controller", (60, 110, 190))
 
 
 def pieces(fp):
@@ -122,6 +129,13 @@ def main():
     write(os.path.join(ASSETS, "blockstates", "barn_controller.json"), {"variants": {"": {"model": "farmings:block/barn_controller"}}})
     write(os.path.join(ASSETS, "items", "barn_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/barn_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "barn_controller.json"), loot("barn_controller"))
+    texture("parlor_controller", PARLOR_CONTROLLER[1], (40, 40, 40))
+    lang["block.farmings.parlor_controller"] = PARLOR_CONTROLLER[0]
+    write(os.path.join(ASSETS, "models", "block", "parlor_controller.json"),
+          {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/parlor_controller_placeholder"}})
+    write(os.path.join(ASSETS, "blockstates", "parlor_controller.json"), {"variants": {"": {"model": "farmings:block/parlor_controller"}}})
+    write(os.path.join(ASSETS, "items", "parlor_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/parlor_controller"}})
+    write(os.path.join(DATA, "loot_table", "blocks", "parlor_controller.json"), loot("parlor_controller"))
     # items: manure and the fork (placeholders)
     for name, title, colour, parent in (("manure", "Manure", (92, 64, 38), "minecraft:item/generated"),
                                         ("manure_fork", "Manure Fork", (138, 120, 96), "minecraft:item/handheld"),

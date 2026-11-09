@@ -9,6 +9,13 @@ import dev.farmings.barn.FeederEntity;
 import dev.farmings.barn.TroughEntity;
 import dev.farmings.barn.PitEntity;
 import dev.farmings.barn.BarnParts;
+import dev.farmings.parlor.ParlorControllerBlock;
+import dev.farmings.parlor.ParlorControllerEntity;
+import dev.farmings.parlor.ParlorPartBlock;
+import dev.farmings.parlor.ParlorPartEntity;
+import dev.farmings.parlor.ParlorParts;
+import dev.farmings.parlor.PumpEntity;
+import dev.farmings.parlor.TankEntity;
 import dev.wildcatter.item.BigPartItem;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +37,8 @@ import net.minecraft.world.level.material.MapColor;
 /** The barn's blocks, items and block entities. Registered with the other content while the registries are open. */
 public final class FarmingsBlocks {
 	public static final Block BARN_CONTROLLER = block("barn_controller", props -> new BarnControllerBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL)));
+	public static final Block PARLOR_CONTROLLER = block("parlor_controller", props -> new ParlorControllerBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL)));
+	private static final Block[] PARLOR_PARTS = new Block[ParlorParts.values().length];
 	private static final Block[] PARTS = new Block[BarnParts.values().length];
 
 	static {
@@ -38,6 +47,16 @@ public final class FarmingsBlocks {
 		}
 	}
 
+	static {
+		for (ParlorParts kind : ParlorParts.values()) {
+			PARLOR_PARTS[kind.ordinal()] = block(kind.id, props -> new ParlorPartBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL), kind));
+		}
+	}
+
+	public static final BlockEntityType<ParlorPartEntity> PARLOR_PART_ENTITY = new BlockEntityType<>(ParlorPartEntity::new, parlorOthers());
+	public static final BlockEntityType<PumpEntity> PUMP_ENTITY = new BlockEntityType<>(PumpEntity::new, Set.of(parlorPart(ParlorParts.VACUUM_PUMP)));
+	public static final BlockEntityType<TankEntity> TANK_ENTITY = new BlockEntityType<>(TankEntity::new, Set.of(parlorPart(ParlorParts.BULK_TANK)));
+	public static final BlockEntityType<ParlorControllerEntity> PARLOR_CONTROLLER_ENTITY = new BlockEntityType<>(ParlorControllerEntity::new, Set.of(PARLOR_CONTROLLER));
 	public static final BlockEntityType<BarnPartEntity> PART_ENTITY = new BlockEntityType<>(BarnPartEntity::new, others());
 	public static final BlockEntityType<FeederEntity> FEEDER_ENTITY = new BlockEntityType<>(FeederEntity::new, Set.of(part(BarnParts.HAY_FEEDER)));
 	public static final BlockEntityType<TroughEntity> TROUGH_ENTITY = new BlockEntityType<>(TroughEntity::new, Set.of(part(BarnParts.WATER_TROUGH)));
@@ -59,6 +78,20 @@ public final class FarmingsBlocks {
 		return out;
 	}
 
+	private static Set<Block> parlorOthers() {
+		Set<Block> out = new HashSet<>();
+		for (ParlorParts kind : ParlorParts.values()) {
+			if (kind != ParlorParts.VACUUM_PUMP && kind != ParlorParts.BULK_TANK) {
+				out.add(PARLOR_PARTS[kind.ordinal()]);
+			}
+		}
+		return out;
+	}
+
+	public static Block parlorPart(ParlorParts kind) {
+		return PARLOR_PARTS[kind.ordinal()];
+	}
+
 	public static Block part(BarnParts kind) {
 		return PARTS[kind.ordinal()];
 	}
@@ -72,7 +105,7 @@ public final class FarmingsBlocks {
 		Registry.register(BuiltInRegistries.BLOCK, Farmings.id(name), block);
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Farmings.id(name));
 		Item.Properties properties = new Item.Properties().setId(itemKey).useBlockDescriptionPrefix();
-		Registry.register(BuiltInRegistries.ITEM, itemKey, block instanceof BarnPartBlock ? new BigPartItem(block, properties) : new BlockItem(block, properties));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, block instanceof BarnPartBlock || block instanceof ParlorPartBlock ? new BigPartItem(block, properties) : new BlockItem(block, properties));
 	}
 
 	public static Component tabTitle() {
@@ -91,6 +124,10 @@ public final class FarmingsBlocks {
 		for (BarnParts kind : BarnParts.values()) {
 			output.accept(part(kind));
 		}
+		output.accept(PARLOR_CONTROLLER);
+		for (ParlorParts kind : ParlorParts.values()) {
+			output.accept(parlorPart(kind));
+		}
 	}
 
 	public static void register() {
@@ -98,6 +135,14 @@ public final class FarmingsBlocks {
 		for (BarnParts kind : BarnParts.values()) {
 			add(kind.id, part(kind));
 		}
+		add("parlor_controller", PARLOR_CONTROLLER);
+		for (ParlorParts kind : ParlorParts.values()) {
+			add(kind.id, parlorPart(kind));
+		}
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("parlor_part"), PARLOR_PART_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("parlor_controller"), PARLOR_CONTROLLER_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("vacuum_pump"), PUMP_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("bulk_tank"), TANK_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("barn_part"), PART_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("barn_controller"), CONTROLLER_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("pit"), PIT_ENTITY);

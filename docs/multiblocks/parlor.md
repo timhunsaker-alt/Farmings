@@ -1,6 +1,6 @@
-# The milking parlor and bulk tank (DRAFT, not approved)
+# The milking parlor and bulk tank (APPROVED by Tim 2026-11-08, built)
 
-**Status: draft 2026-11-08. Nothing here is built.** *(proposed)* = a proposal. *(unverified)* = no good source yet.
+**Status: approved 2026-11-08 (sizes and whole spec), built the same day.** *(proposed)* = a proposal. *(unverified)* = no good source yet.
 Milk is food and an ingredient; it is never sold (VISION).
 
 ## Real counterparts
@@ -32,6 +32,20 @@ Milk is food and an ingredient; it is never sold (VISION).
 - **Parlor stall spacing:** manufacturers use 80 to 115 cm between cows, centre to centre: [DeLaval HB30](https://delaval.com/globalassets/inriverresources/pdfs/h/hb30-hb50-new-4page-can.pdf) 45 in (115 cm) and HB50 31.5 in (80 cm), [BouMatic HD2](https://boumatic.com/products/hd2/) 115 cm, [GEA EuroClass 1200](https://www.gea.com/en/products/milking-farming-barn/dairyparlor-milking-parlor/herringbone-parlors/herringbone-parlor-euroclass-1200re.jsp) 120 cm. At 1 cell = 1 m that is **1 cell per cow** *(proposed, same rounding as the barn's stalls)*.
 - **Vacuum pump motors:** a milking-equipment dealer lists pump sets at [3 kW and 4 kW](https://res.cloudinary.com/milking-equipment-solutions/image/upload/v1692797180/Milking%20Equipment%20Solutions%20Images/Exploded%20diagrams/Technical_Information_-_Vaccum_Pump_Sets_n74i0p.pdf) (flow columns not readable). That agrees with our own arithmetic of about 5 hp (3.7 kW) for 6 units, so a **4 kW three-phase pump motor** is a reasonable *(proposed)* figure.
 - **Bulk tank refrigeration:** no hp-per-size table found. One data point: a small [Paul Mueller open tank](https://genemco.com/cdn/shop/files/SPPP260paulmuellerprocessor.pdf) needs a condensing unit of about 1.97 hp (66,000 BTU/h). The [R-1000](https://www.paulmueller.com/milk-cooling-and-storage/milk-cooling-tanks/mueller-model-r-open-tank) uses a three-phase 400 V reciprocating compressor. A real figure needs a manufacturer datasheet for a stated tank size; until then pick one *(proposed)*, e.g. a 2.2 kW chiller for the 2 x 2 x 2 tank.
+
+## Layout *(proposed; the approved spec listed parts but no geometry)*
+Drawn with the controller at the origin and the tank to the east; it may lie any of the barn's eight ways (the controller finds the one that forms).
+- Floor: the vacuum pump at the far end, then a milk line one cell per stall running to the controller.
+- Level above: a milking unit over the line at each stall; the controller at the tank end.
+- Under each unit a parlor stall (1 wide, 2 long, a low platform) on the south side: one cow each. 2 to 12 stalls.
+- The bulk tank (2 x 2 x 2) east of the controller.
+
+## Built (2026-11-08)
+Plain Java `husbandry/parlor` (layout check, `BulkTank`, tests); blocks and entities in `dev.farmings.parlor`. Once a second the controller
+calls each lactating cow with milk (within 24 blocks *(proposed)*) to a free stall, she walks there (`CattleEntity.MilkingGoal`), is milked
+into the tank (1.03 kg per litre, 35 C), and goes home. Pump 4 kW, chiller 2.2 kW, tank 1,000 L (all Tim's, 2026-11-08). The tank cools
+35 C to 4 C in 14,400 ticks (the manufacturer's 3 h, scaled 15:1); above 10 C the tank is WARM and milking stops *(proposed)*. Faults: NO POWER,
+TANK FULL, TANK WARM. An empty bucket on the tank takes 10 L as a milk bucket *(proposed)*. Not built: spoilage, processing, models.
 
 ## DECISIONS for Tim
 1. ~~Which lactation source?~~ Decided 2026-11-08: scale to the USDA average; built in `husbandry/Lactation`. (Was: The Wisconsin Wood's parameters above give Holstein about 13,200 kg per lactation, above the national average. Options: (a) use them as is, (b) scale to the USDA average, (c) find a better source first. No Brown Swiss or Gyr shapes exist yet.)
