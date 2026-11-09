@@ -67,6 +67,7 @@ ITEMS = [
     ("cream_bottle", "Cream", (250, 244, 220), "bottle"),
     ("skim_milk_bottle", "Skim Milk", (232, 238, 246), "bottle"),
     ("buttermilk_bottle", "Buttermilk", (244, 240, 214), "bottle"),
+    ("whey_bottle", "Whey", (226, 228, 170), "bottle"),
     ("butter", "Butter", (246, 220, 110), "blob"),
     ("cheddar_wheel", "Cheddar Wheel", (232, 168, 60), "blob"),
     ("cheddar", "Cheddar", (240, 180, 70), "blob"),

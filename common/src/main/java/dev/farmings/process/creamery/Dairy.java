@@ -53,4 +53,13 @@ public final class Dairy {
 	public static double cheeseKg(double milkL, double fat, double protein) {
 		return milkL * MILK_KG_PER_L * vanSlykePer100(fat, protein) / 100;
 	}
+
+	/**
+	 * Whey left by a cheese make, in litres: the milk's mass less the cheese's (the mass balance used in cheddar yield work, e.g. SDSU,
+	 * "Evaluation of yield and quality of Cheddar cheese"), at the milk's 1.03 kg per litre *(proposed: whey is a little lighter, about
+	 * 1.02-1.03)*. About 9 kg of whey per kg of cheddar at a 10% yield.
+	 */
+	public static double wheyL(double milkL, double cheeseKg) {
+		return Math.max(0, milkL * MILK_KG_PER_L - cheeseKg) / MILK_KG_PER_L;
+	}
 }

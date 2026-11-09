@@ -75,4 +75,24 @@ controller). The parlor's bulk tank now tracks fat and protein by volume, and th
 9.1 kg of butter, or about 20.5 kg of cheddar (two 10 kg wheels and some curd left over). 9 game tests, all passing.
 
 ## Not built
-Hoppers or pipes for the products, whey, other cheeses, yogurt, ice cream, spoilage of products.
+Pipes for the products, other cheeses, yogurt, ice cream.
+
+## Whey (built 2026-11-09)
+- **How much:** a cheese make leaves whey: the milk's mass less the cheese's. This is the mass balance used in cheddar yield work
+  ([SDSU](https://openprairie.sdstate.edu/etd/1291)), at the milk's 1.03 kg a litre *(proposed: whey is a little lighter)*. 200 L of
+  Holstein milk gives about 20.5 kg of cheddar and **about 180 L of whey**, about 9 kg of whey per kg of cheese at a 10% yield.
+- **Where it goes:** whey goes to the bottler's store like the other liquids (store 1,000 L; a full store stops the vat with BOTTLER FULL). It
+  bottles after buttermilk, as `whey_bottle`: 1 hunger *(proposed)*. It is kept as a future pig feed.
+- **Old saves:** the creamery's save marks the layout with whey; older saves still load, with no whey.
+
+## Hoppers (built 2026-11-09)
+A vanilla hopper works on three parts. It must be against the part's main cell, the bottom cell where it was placed:
+
+| Part | Hopper below takes | Hopper on top or a side puts in |
+|---|---|---|
+| `bottler` | filled bottles, in the hand order (milk, cream, skim, buttermilk, whey), one per glass bottle | empty glass bottles, kept in the bottler (up to 64; they drop if it is broken) |
+| `butter_churn` | butter, 0.5 kg blocks | nothing |
+| `aging_shelf` | aged cheddar wheels | nothing |
+
+The products are read from the creamery each time, so nothing is held twice. A hopper that takes an item it cannot hold puts it back.
+Taking by hand still works. Game tests: hopper_takes_butter_and_wheels, hopper_bottles_with_glass, whey_from_cheese.

@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -133,12 +133,15 @@ public class FarmingsGameTests {
 			helper.register(id("cows_wait_in_pen"), loaded(FarmingsGameTests::cowsWaitInPen));
 			helper.register(id("cow_walks_lane_and_return"), loaded(FarmingsGameTests::cowWalksLaneAndReturn));
 			helper.register(id("coat_inherited"), loaded(FarmingsGameTests::coatInherited));
+			helper.register(id("hopper_takes_butter_and_wheels"), loaded(FarmingsGameTests::hopperTakesButterAndWheels));
+			helper.register(id("hopper_bottles_with_glass"), loaded(FarmingsGameTests::hopperBottlesWithGlass));
+			helper.register(id("whey_from_cheese"), loaded(FarmingsGameTests::wheyFromCheese));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
 			for (String scene : SCENES) {
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
-						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") ? 1200 : 200, 1, true,
+						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") || scene.startsWith("hopper") ? 1200 : 200, 1, true,
 								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 40)));
 			}
 		});
@@ -1783,6 +1786,87 @@ public class FarmingsGameTests {
 		helper.succeed();
 	}
 
+	// ---- whey and hoppers (2026-11-09) ----
+
+	private static int countIn(net.minecraft.world.Container box, net.minecraft.world.item.Item item) {
+		int n = 0;
+		for (int i = 0; i < box.getContainerSize(); i++) {
+			if (box.getItem(i).is(item)) {
+				n += box.getItem(i).getCount();
+			}
+		}
+		return n;
+	}
+
+	private static net.minecraft.world.level.block.entity.HopperBlockEntity hopperAt(ServerLevel level, BlockPos pos) {
+		level.setBlock(pos, Blocks.HOPPER.defaultBlockState(), Block.UPDATE_ALL);
+		return (net.minecraft.world.level.block.entity.HopperBlockEntity) level.getBlockEntity(pos);
+	}
+
+	/** A hopper under the churn takes the butter, and one under the aging shelf takes the aged wheels, with nobody there. */
+	private static void hopperTakesButterAndWheels(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.BUTTER);
+		ctl.creamery().addMilk(200, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		int blocks = (int) Math.floor(ctl.creamery().butterKg() / 0.5);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
+		ctl.creamery().addMilk(200, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PRESS_TICKS + dev.farmings.process.creamery.Creamery.AGE_TICKS + 60);
+		int wheels = ctl.creamery().agedWheels();
+		helper.assertTrue(blocks >= 17 && wheels == 2, Component.literal("butter " + blocks + ", wheels " + wheels));
+		var churnHopper = hopperAt(level, partPos(c, dev.farmings.creamery.CreameryParts.BUTTER_CHURN).below());
+		var shelfHopper = hopperAt(level, partPos(c, dev.farmings.creamery.CreameryParts.AGING_SHELF).below());
+		helper.succeedWhen(() -> {
+			helper.assertTrue(countIn(churnHopper, FarmingsItems.BUTTER) == blocks, Component.literal("the churn's hopper holds " + countIn(churnHopper, FarmingsItems.BUTTER) + " of " + blocks));
+			helper.assertTrue(countIn(shelfHopper, FarmingsItems.CHEDDAR_WHEEL) == 2, Component.literal("the shelf's hopper holds " + countIn(shelfHopper, FarmingsItems.CHEDDAR_WHEEL) + " wheels"));
+			helper.assertTrue(ctl.creamery().butterKg() < 0.5 && ctl.creamery().agedWheels() == 0, Component.literal("and the creamery is empty of them"));
+		});
+	}
+
+	/** Glass bottles fed from a hopper on top of the bottler come out filled into a hopper below, one bottle a litre. */
+	private static void hopperBottlesWithGlass(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.BOTTLE);
+		ctl.creamery().addMilk(10, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		helper.assertTrue(ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.MILK) >= 10 - 1e-9, Component.literal("10 L ready to bottle"));
+		BlockPos bottler = partPos(c, dev.farmings.creamery.CreameryParts.BOTTLER);
+		var below = hopperAt(level, bottler.below());
+		var above = hopperAt(level, bottler.above());
+		above.setItem(0, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE, 6));
+		helper.succeedWhen(() -> {
+			helper.assertTrue(countIn(below, FarmingsItems.BOTTLED_MILK) == 6, Component.literal("6 glass bottles make 6 bottles of milk, got " + countIn(below, FarmingsItems.BOTTLED_MILK)
+					+ "; glass left above " + countIn(above, net.minecraft.world.item.Items.GLASS_BOTTLE)));
+			helper.assertTrue(Math.abs(ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.MILK) - 4) < 1e-6, Component.literal("4 L left in the store"));
+		});
+	}
+
+	/** Cheddar leaves whey (milk less cheese by mass): about 180 L from 200 L, bottled like the other products. */
+	private static void wheyFromCheese(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
+		ctl.creamery().addMilk(200, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		double whey = ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.WHEY);
+		helper.assertTrue(whey > 175 && whey < 185, Component.literal("about 180 L of whey, got " + whey));
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.BOTTLER), new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.WHEY_BOTTLE) == 1, Component.literal("a glass bottle fills with whey"));
+		helper.assertTrue(ctl.readout().contains("whey"), Component.literal("readout: " + ctl.readout()));
+		helper.succeed();
+	}
+
 	private static void cheeseYieldAndAging(GameTestHelper helper) {
 		ServerLevel level = helper.getLevel();
 		BlockPos c = helper.absolutePos(K);
@@ -1854,7 +1938,7 @@ public class FarmingsGameTests {
 	/** Every block and every hand-made item has a recipe; animal and machine products (manure, filled straws, raw steaks, dairy) do not. */
 	private static void recipesCoverAllItems(GameTestHelper helper) {
 		java.util.Set<String> madeElsewhere = java.util.Set.of("manure", "semen_straw", "select_steak", "choice_steak", "prime_steak", "bottled_milk",
-				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "butter", "cheddar_wheel");
+				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel");
 		net.minecraft.world.item.crafting.RecipeManager recipes = helper.getLevel().getServer().getRecipeManager();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		int checked = 0;

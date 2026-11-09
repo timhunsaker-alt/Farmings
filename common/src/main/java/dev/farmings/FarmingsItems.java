@@ -65,6 +65,9 @@ public final class FarmingsItems {
 			.food(food(2, 0.2F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 	public static final Item BUTTERMILK_BOTTLE = item("buttermilk_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(2, 0.3F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
+	/** Whey from the cheese vat (creamery.md): a weak drink *(proposed food value)*; pigs will eat it when pigs come. */
+	public static final Item WHEY_BOTTLE = item("whey_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(1, 0.1F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 	public static final Item BUTTER = item("butter", p -> new Item(p.food(food(3, 0.6F))));
 	public static final Item CHEDDAR_WHEEL = item("cheddar_wheel", p -> new Item(p.stacksTo(16)));
 	public static final Item CHEDDAR = item("cheddar", p -> new Item(p.food(food(3, 0.7F))));
@@ -75,6 +78,7 @@ public final class FarmingsItems {
 			case CREAM -> CREAM_BOTTLE;
 			case SKIM -> SKIM_MILK_BOTTLE;
 			case BUTTERMILK -> BUTTERMILK_BOTTLE;
+			case WHEY -> WHEY_BOTTLE;
 		};
 	}
 
@@ -101,6 +105,7 @@ public final class FarmingsItems {
 		ALL.put("cream_bottle", CREAM_BOTTLE);
 		ALL.put("skim_milk_bottle", SKIM_MILK_BOTTLE);
 		ALL.put("buttermilk_bottle", BUTTERMILK_BOTTLE);
+		ALL.put("whey_bottle", WHEY_BOTTLE);
 		ALL.put("butter", BUTTER);
 		ALL.put("cheddar_wheel", CHEDDAR_WHEEL);
 		ALL.put("cheddar", CHEDDAR);

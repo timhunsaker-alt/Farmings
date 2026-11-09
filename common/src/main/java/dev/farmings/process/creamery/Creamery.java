@@ -23,7 +23,7 @@ public final class Creamery {
 
 	/** The bottler's products, in the order a glass bottle is filled. */
 	public enum Bottle {
-		MILK, CREAM, SKIM, BUTTERMILK
+		MILK, CREAM, SKIM, BUTTERMILK, WHEY
 	}
 
 	public record Power(boolean heater, boolean separator, boolean churn, boolean vat) {
@@ -198,7 +198,14 @@ public final class Creamery {
 					fault = "SHELF FULL";
 					return false;
 				}
-				curdKg += Dairy.cheeseKg(batchL, batchFat, batchProtein);
+				double cheese = Dairy.cheeseKg(batchL, batchFat, batchProtein);
+				double whey = Dairy.wheyL(batchL, cheese);
+				if (bottles[Bottle.WHEY.ordinal()] + whey > STORE_L) {
+					fault = "BOTTLER FULL";
+					return false;
+				}
+				curdKg += cheese;
+				bottles[Bottle.WHEY.ordinal()] += whey;
 				return true;
 			}
 		}
@@ -253,6 +260,29 @@ public final class Creamery {
 		return null;
 	}
 
+	/** Puts back one litre a hopper took but could not hold. */
+	public void returnBottle(Bottle b) {
+		bottles[b.ordinal()] += 1;
+	}
+
+	/** What a glass bottle would be filled with now, or null. */
+	public Bottle nextBottle() {
+		for (Bottle b : Bottle.values()) {
+			if (bottles[b.ordinal()] >= 1) {
+				return b;
+			}
+		}
+		return null;
+	}
+
+	public void returnButter(int blocks) {
+		butterKg += blocks * BUTTER_ITEM_KG;
+	}
+
+	public void returnWheels(int n) {
+		agedWheels += n;
+	}
+
 	public double butterKg() {
 		return butterKg;
 	}
@@ -288,9 +318,12 @@ public final class Creamery {
 
 	// ---- saving: a flat array of numbers, so the Minecraft side need not know the fields ----
 
+	/** Marks the save layout with whey (version 2); a first value of -2 cannot be a raw-milk volume, so older saves still read. */
+	private static final double SAVE_V2 = -2;
+
 	public double[] save() {
-		double[] head = {rawL, rawFat, rawProtein, mode.ordinal(), phase.ordinal(), phaseTicks, batchL, batchFat, batchProtein,
-				bottles[0], bottles[1], bottles[2], bottles[3], butterKg, curdKg, pressing, agedWheels, inPress, aging.size()};
+		double[] head = {SAVE_V2, rawL, rawFat, rawProtein, mode.ordinal(), phase.ordinal(), phaseTicks, batchL, batchFat, batchProtein,
+				bottles[0], bottles[1], bottles[2], bottles[3], bottles[4], butterKg, curdKg, pressing, agedWheels, inPress, aging.size()};
 		double[] out = new double[head.length + aging.size()];
 		System.arraycopy(head, 0, out, 0, head.length);
 		for (int i = 0; i < aging.size(); i++) {
@@ -300,6 +333,18 @@ public final class Creamery {
 	}
 
 	public void load(double[] d) {
+		if (d.length > 0 && d[0] == SAVE_V2) {
+			// version 2: the old layout with a leading marker and whey after buttermilk
+			if (d.length < 21) {
+				return;
+			}
+			double[] old = new double[d.length - 2];
+			System.arraycopy(d, 1, old, 0, 13);
+			System.arraycopy(d, 15, old, 13, d.length - 15);
+			load(old);
+			bottles[Bottle.WHEY.ordinal()] = d[14];
+			return;
+		}
 		if (d.length < 19) {
 			return;
 		}
@@ -315,6 +360,7 @@ public final class Creamery {
 		for (int i = 0; i < 4; i++) {
 			bottles[i] = d[9 + i];
 		}
+		bottles[Bottle.WHEY.ordinal()] = 0;
 		butterKg = d[13];
 		curdKg = d[14];
 		pressing = (long) d[15];
@@ -328,8 +374,8 @@ public final class Creamery {
 	}
 
 	public String summary() {
-		return String.format(java.util.Locale.ROOT, "%s, raw %.0f L (%.2f%% fat), pasteurizer %s; milk %.0f L, cream %.0f L, skim %.0f L, buttermilk %.0f L, butter %.1f kg, curd %.1f kg, wheels aging %d, aged %d",
-				mode, rawL, rawFat, phase.name().toLowerCase(java.util.Locale.ROOT), bottles[0], bottles[1], bottles[2], bottles[3], butterKg, curdKg,
+		return String.format(java.util.Locale.ROOT, "%s, raw %.0f L (%.2f%% fat), pasteurizer %s; milk %.0f L, cream %.0f L, skim %.0f L, buttermilk %.0f L, whey %.0f L, butter %.1f kg, curd %.1f kg, wheels aging %d, aged %d",
+				mode, rawL, rawFat, phase.name().toLowerCase(java.util.Locale.ROOT), bottles[0], bottles[1], bottles[2], bottles[3], bottles[4], butterKg, curdKg,
 				aging.size() + inPress, agedWheels);
 	}
 }

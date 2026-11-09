@@ -51,6 +51,40 @@ class CreameryTest {
 	}
 
 	@Test
+	void cheeseLeavesWhey() {
+		Creamery k = new Creamery();
+		k.setMode(Creamery.Mode.CHEESE);
+		k.addMilk(200, 3.72, 3.06);
+		run(k, Creamery.PHASE_TICKS * 3 + 40, Creamery.Power.ALL);
+		double cheese = Dairy.cheeseKg(200, 3.72, 3.06);
+		double whey = k.bottled(Creamery.Bottle.WHEY);
+		assertEquals((200 * 1.03 - cheese) / 1.03, whey, 1e-6, "milk less cheese, by mass");
+		assertTrue(whey > 175 && whey < 185, "about 180 L of whey from 200 L, got " + whey);
+		assertEquals(9.0, (200 * 1.03 - cheese) / cheese, 0.6, "about 9 kg of whey per kg of cheddar");
+		assertEquals(Creamery.Bottle.WHEY, k.nextBottle());
+		assertEquals(Creamery.Bottle.WHEY, k.takeBottle());
+		k.returnBottle(Creamery.Bottle.WHEY);
+		assertEquals(whey, k.bottled(Creamery.Bottle.WHEY), 1e-9);
+	}
+
+	@Test
+	void anOlderSaveWithoutWheyStillLoads() {
+		Creamery c = new Creamery();
+		c.setMode(Creamery.Mode.BOTTLE);
+		c.addMilk(300, 3.9, 3.1);
+		run(c, Creamery.PHASE_TICKS * 3 + 40, Creamery.Power.ALL);
+		double[] v2 = c.save();
+		// the layout before whey: no marker, and no whey after buttermilk
+		double[] v1 = new double[v2.length - 2];
+		System.arraycopy(v2, 1, v1, 0, 13);
+		System.arraycopy(v2, 15, v1, 13, v2.length - 15);
+		Creamery d = new Creamery();
+		d.load(v1);
+		assertArrayEquals(c.save(), d.save());
+		assertEquals(c.bottled(Creamery.Bottle.MILK), d.bottled(Creamery.Bottle.MILK), 1e-9);
+	}
+
+	@Test
 	void saveAndLoad() {
 		Creamery c = new Creamery();
 		c.setMode(Creamery.Mode.CHEESE);
