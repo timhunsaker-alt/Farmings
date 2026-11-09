@@ -13,6 +13,8 @@ and cheddar wheels (from the creamery). The game test `recipes_cover_all_items` 
 | batch_pasteurizer | `SBS / SRS / SCS` | B bucket, C copper ingot, R redstone, S steel ingot (Wildcatter) | 1 |
 | bottler | `IGI / IRI / III` | G glass, I iron ingot, R redstone | 1 |
 | bulk_tank | `SSS / SBS / SCS` | B bucket, C copper ingot, S steel ingot (Wildcatter) | 1 |
+| cow_lane | `N N / KKK` | K gray concrete, N iron bars | 6 |
+| holding_pen | `NNN / KKK` | K gray concrete, N iron bars | 6 |
 | butter_churn | `WSW / WCW / WRW` | C copper ingot, R redstone, S steel ingot (Wildcatter), W planks | 1 |
 | cheddar | shapeless | farmings:cheddar_wheel | 8 |
 | cheese_press | `WIW / W.W / WWW` | I iron ingot, W planks | 1 |

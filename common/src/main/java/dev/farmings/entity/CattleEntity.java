@@ -70,6 +70,12 @@ public class CattleEntity extends Animal {
 	private boolean hasCalved;
 	/** Where the parlor has sent her to be milked, or null. Not saved: the controller sends her again. */
 	private @Nullable BlockPos milkingStand;
+	/** The cow lane she is walking (docs/multiblocks/parlor.md), waypoint by waypoint; not saved: the parlor calls her again. */
+	private java.util.@Nullable List<BlockPos> route;
+	private int routeIndex;
+	private boolean routeHome;
+	/** The holding-pen cell she waits on for a parlor stall. */
+	private @Nullable BlockPos penSpot;
 	/** Game tick up to which growth has been counted; valid only when {@link #growthMarked}. */
 	private long growthTick;
 	private boolean growthMarked;
@@ -250,7 +256,7 @@ public class CattleEntity extends Animal {
 
 		@Override
 		public boolean canUse() {
-			return cow.milkingStand != null && !cow.isBaby();
+			return (cow.milkingStand != null || cow.route != null || cow.penSpot != null) && !cow.isBaby();
 		}
 
 		@Override
@@ -260,7 +266,27 @@ public class CattleEntity extends Animal {
 
 		@Override
 		public void tick() {
-			BlockPos stand = cow.milkingStand;
+			// first the lane, waypoint by waypoint
+			if (cow.route != null) {
+				if (cow.routeIndex >= cow.route.size()) {
+					cow.route = null;
+					cow.routeHome = false;
+					return;
+				}
+				BlockPos w = cow.route.get(cow.routeIndex);
+				double dx = cow.getX() - (w.getX() + 0.5);
+				double dz = cow.getZ() - (w.getZ() + 0.5);
+				double d2 = dx * dx + dz * dz;
+				// a waypoint counts as reached within a block, or within a block and a half once the pathfinder says it is there
+				// (it stops short of a cell's centre for a cow this wide)
+				if (d2 < 1.0 || (d2 < 2.25 && cow.getNavigation().isDone())) {
+					cow.routeIndex++;
+				} else {
+					cow.getNavigation().moveTo(w.getX() + 0.5, w.getY() + 0.2, w.getZ() + 0.5, 1.0);
+				}
+				return;
+			}
+			BlockPos stand = cow.milkingStand != null ? cow.milkingStand : cow.penSpot;
 			if (stand == null) {
 				return;
 			}
@@ -351,8 +377,53 @@ public class CattleEntity extends Animal {
 		return milkingStand;
 	}
 
+	/**
+	 * Sends her along a cow lane: towards the parlor (ending on {@code penSpot} to wait) or home to the barn ({@code home}, after which her
+	 * stall goal takes her back to her stall). She starts from the waypoint nearest her, so a cow part way along does not turn back.
+	 */
+	public void walkRoute(java.util.List<BlockPos> waypoints, @Nullable BlockPos penSpot, boolean home) {
+		java.util.List<dev.farmings.husbandry.lane.LanePath.Pos> ps = new java.util.ArrayList<>();
+		for (BlockPos b : waypoints) {
+			ps.add(new dev.farmings.husbandry.lane.LanePath.Pos(b.getX(), b.getY(), b.getZ()));
+		}
+		this.route = waypoints.isEmpty() ? null : java.util.List.copyOf(waypoints);
+		this.routeIndex = waypoints.isEmpty() ? 0 : dev.farmings.husbandry.lane.LanePath.startIndex(ps, getX(), getZ());
+		this.routeHome = home;
+		this.penSpot = home ? null : penSpot;
+	}
+
+	/** The waypoint she is heading for on the lane, or null. */
+	public @Nullable BlockPos routeTarget() {
+		return route != null && routeIndex < route.size() ? route.get(routeIndex) : null;
+	}
+
+	public boolean onRoute() {
+		return route != null;
+	}
+
+	public boolean walkingHome() {
+		return route != null && routeHome;
+	}
+
+	public @Nullable BlockPos penSpot() {
+		return penSpot;
+	}
+
+	/** Stops any lane walk and pen wait. */
+	public void clearRoute() {
+		this.route = null;
+		this.routeHome = false;
+		this.penSpot = null;
+	}
+
 	public void setMilkingStand(@Nullable BlockPos stand) {
 		this.milkingStand = stand;
+		if (stand != null) {
+			// called from the pen to a stall: the lane walk is over
+			this.penSpot = null;
+			this.route = null;
+			this.routeHome = false;
+		}
 	}
 
 	/** Fat percent of her milk: her breed's, moved by her butterfat score (husbandry.MilkComponents). */

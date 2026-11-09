@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -128,6 +128,10 @@ public class FarmingsGameTests {
 			helper.register(id("milk_line_from_parlor"), loaded(FarmingsGameTests::milkLineFromParlor));
 			helper.register(id("creamery_state_survives_save"), loaded(FarmingsGameTests::creameryStateSurvivesSave));
 			helper.register(id("recipes_cover_all_items"), loaded(FarmingsGameTests::recipesCoverAllItems));
+			helper.register(id("lane_links_barn_and_parlor"), loaded(FarmingsGameTests::laneLinksBarnAndParlor));
+			helper.register(id("no_lane_no_milking"), loaded(FarmingsGameTests::noLaneNoMilking));
+			helper.register(id("cows_wait_in_pen"), loaded(FarmingsGameTests::cowsWaitInPen));
+			helper.register(id("cow_walks_lane_and_return"), loaded(FarmingsGameTests::cowWalksLaneAndReturn));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -1173,8 +1177,38 @@ public class FarmingsGameTests {
 		BigParts.grow(level, main, state);
 	}
 
-	/** A whole parlor, row east-west, tank at the east end, stalls to the south: controller at {@code c}, n stalls. Ground is laid under it. */
+	/**
+	 * A whole parlor, row east-west, tank at the east end, stalls to the south: controller at {@code c}, n stalls. Ground is laid under it.
+	 * Behind the stalls a 2-row holding pen, and from its west end a 4-cell cow lane west to a stub of barn alley (two floor cells) with a
+	 * barn controller beside it: enough for the parlor to find "its barn" ({@link #barnStub}). The full barn-to-parlor walk is in
+	 * cows_walk_lane_and_return.
+	 */
 	private static void buildParlor(ServerLevel level, BlockPos c, int stalls) {
+		buildParlorOnly(level, c, stalls);
+		int fl = c.getY() - 1;
+		int xp = c.getX() - stalls - 1;
+		for (int x = xp + 1; x < c.getX(); x++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, fl, c.getZ() + 3));
+			parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, fl, c.getZ() + 4));
+		}
+		for (int x = xp - 3; x <= xp; x++) {
+			level.setBlock(new BlockPos(x, fl - 1, c.getZ() + 3), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+			parlorPart(level, dev.farmings.parlor.ParlorParts.COW_LANE, new BlockPos(x, fl, c.getZ() + 3));
+		}
+		for (int x = xp - 5; x <= xp - 4; x++) {
+			level.setBlock(new BlockPos(x, fl - 1, c.getZ() + 3), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+			barnPart(level, BarnParts.ALLEY_FLOOR, new BlockPos(x, fl, c.getZ() + 3), Direction.NORTH);
+		}
+		level.setBlock(barnStub(c, stalls), FarmingsBlocks.BARN_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+	}
+
+	/** The barn controller of {@link #buildParlor}'s stub barn. */
+	private static BlockPos barnStub(BlockPos c, int stalls) {
+		return new BlockPos(c.getX() - stalls - 7, c.getY(), c.getZ() + 3);
+	}
+
+	/** The parlor's own parts, with no pen, lane or barn. */
+	private static void buildParlorOnly(ServerLevel level, BlockPos c, int stalls) {
 		int fl = c.getY() - 1;
 		for (int x = c.getX() - stalls - 4; x <= c.getX() + 4; x++) {
 			for (int z = c.getZ() - 3; z <= c.getZ() + 6; z++) {
@@ -1202,8 +1236,10 @@ public class FarmingsGameTests {
 		return e;
 	}
 
-	private static CattleEntity milkingCow(ServerLevel level, BlockPos near, long seed) {
+	/** A cow 30 days in milk, housed in the stub barn of the parlor at {@code parlor} (so that parlor milks her), her stall where she stands. */
+	private static CattleEntity milkingCow(ServerLevel level, BlockPos near, long seed, BlockPos parlor, int stalls) {
 		CattleEntity cow = founderAt(level, near, Sex.FEMALE, seed, 900, 650);
+		cow.assignStall(barnStub(parlor, stalls), near, null);
 		cow.setCalvedForDisplay(30);
 		cow.settle(level);
 		return cow;
@@ -1241,7 +1277,7 @@ public class FarmingsGameTests {
 		ctl.pump(level).forceRunning(true);
 		dev.farmings.parlor.TankEntity tank = ctl.tank(level);
 		tank.forceChilling(true);
-		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 91L);
+		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 91L, c, 3);
 		double kg = cow.milkKg();
 		helper.assertTrue(kg > 5, Component.literal("a cow 30 days in milk has milk, got " + kg));
 		ctl.milk(level, 20);
@@ -1262,7 +1298,7 @@ public class FarmingsGameTests {
 		BlockPos c = helper.absolutePos(C);
 		buildParlor(level, c, 3);
 		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
-		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 92L);
+		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 92L, c, 3);
 		ctl.milk(level, 20);
 		helper.assertTrue(cow.milkingStand() == null && cow.milkKg() > 0, Component.literal("with no power she is not called and keeps her milk"));
 		helper.assertTrue(ctl.fault().equals("NO POWER"), Component.literal("fault: " + ctl.fault()));
@@ -1326,7 +1362,7 @@ public class FarmingsGameTests {
 		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
 		ctl.pump(level).forceRunning(true);
 		ctl.tank(level).forceChilling(true);
-		CattleEntity cow = milkingCow(level, c.offset(-1, -1, 5), 93L);
+		CattleEntity cow = milkingCow(level, c.offset(-1, -1, 5), 93L, c, 3);
 		cow.setNoAi(false);
 		helper.succeedWhen(() -> {
 			ctl.milk(level, 20);
@@ -1345,7 +1381,7 @@ public class FarmingsGameTests {
 		ctl.tank(level).forceChilling(true);
 		CattleEntity[] cows = new CattleEntity[4];
 		for (int i = 0; i < cows.length; i++) {
-			cows[i] = milkingCow(level, c.offset(-4 + i, -1, 5), 94L + i);
+			cows[i] = milkingCow(level, c.offset(-4 + i, -1, 3), 94L + i, c, 4);     // waiting in the pen
 		}
 		for (int round = 0; round < 3; round++) {
 			ctl.milk(level, 20);
@@ -1361,6 +1397,139 @@ public class FarmingsGameTests {
 			helper.assertTrue(cow.milkKg() == 0, Component.literal("every cow is milked in one session, fault " + ctl.fault() + ", tank " + ctl.tank(level).tank().litres() + " L"));
 		}
 		helper.succeed();
+	}
+
+	// ---- the cow lane and holding pen (2026-11-09) ----
+
+	/**
+	 * A real 2-stall barn (controller at C) and, north of it, a 2-stall parlor (controller at P) with a 2 x 2 holding pen behind its stalls.
+	 * A 7-cell cow lane runs from the pen south to the barn's north alley edge, in the pit-end open stretch. Returns P (absolute).
+	 */
+	private static BlockPos buildDairy(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		// solid ground under it all, as in cow_walks_to_stall: the pathfinder needs it below the floor
+		for (int x = c.getX() - 12; x <= c.getX() + 4; x++) {
+			for (int z = c.getZ() - 17; z <= c.getZ() + 6; z++) {
+				boolean pit = x >= c.getX() && x <= c.getX() + 1 && z >= c.getZ() - 1 && z <= c.getZ() + 1;
+				if (!pit) {
+					level.setBlock(new BlockPos(x, c.getY() - 2, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+				}
+			}
+		}
+		buildBarn(level, c, 2);
+		BlockPos p = c.offset(0, 0, -13);
+		buildParlorOnly(level, p, 2);
+		int fl = c.getY() - 1;
+		for (int x = p.getX() - 2; x <= p.getX() - 1; x++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, fl, p.getZ() + 3));
+			parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, fl, p.getZ() + 4));
+		}
+		for (int z = p.getZ() + 5; z <= c.getZ() - 2; z++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.COW_LANE, new BlockPos(p.getX() - 2, fl, z));
+		}
+		return p;
+	}
+
+	private static void laneLinksBarnAndParlor(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos p = buildDairy(helper);
+		dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) level.getBlockEntity(p);
+		ctl.refresh(level);
+		helper.assertTrue(ctl.formed(), Component.literal("the parlor forms: " + ctl.readout(level)));
+		helper.assertTrue(controller(helper, C).formed(), Component.literal("the barn forms"));
+		helper.assertTrue(ctl.linked(), Component.literal("the lane links them: " + ctl.link().problem()));
+		helper.assertTrue(ctl.barn().equals(helper.absolutePos(C)), Component.literal("its barn is the barn at C, got " + ctl.barn()));
+		helper.assertTrue(ctl.link().route().size() == 9, Component.literal("alley exit, 7 lane cells, pen entry: " + ctl.link().route()));
+		helper.assertTrue(ctl.link().penCapacity() == 2, Component.literal("4 m2 of pen holds 2 cows at 15 sq ft"));
+		helper.assertTrue(ctl.readout(level).contains("linked to the barn"), Component.literal("readout: " + ctl.readout(level)));
+		helper.succeed();
+	}
+
+	private static void noLaneNoMilking(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 3);
+		// take the lane's first cell away: the pen is cut off from the barn
+		level.destroyBlock(new BlockPos(c.getX() - 4, c.getY() - 1, c.getZ() + 3), false);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		ctl.tank(level).forceChilling(true);
+		CattleEntity cow = milkingCow(level, c.offset(-3, -1, 3), 95L, c, 3);
+		ctl.milk(level, 20);
+		helper.assertTrue(ctl.fault().equals("NO LANE TO BARN: No cow lane leaves the holding pen"), Component.literal("fault: " + ctl.fault()));
+		helper.assertTrue(cow.milkingStand() == null && cow.penSpot() == null && cow.milkKg() > 0, Component.literal("she is not called and keeps her milk"));
+		helper.succeed();
+	}
+
+	/** Four cows, two stalls: two are milked while two wait in the pen, then those two. */
+	private static void cowsWaitInPen(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 2);
+		for (int x = c.getX() - 2; x < c.getX(); x++) {      // a third pen row: 6 cells hold 4 cows
+			level.setBlock(new BlockPos(x, c.getY() - 2, c.getZ() + 5), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+			parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, c.getY() - 1, c.getZ() + 5));
+		}
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		ctl.tank(level).forceChilling(true);
+		helper.assertTrue(ctl.link().penCapacity() == 4, Component.literal("pen holds " + ctl.link().penCapacity()));
+		CattleEntity[] cows = new CattleEntity[4];
+		for (int i = 0; i < 4; i++) {
+			cows[i] = milkingCow(level, c.offset(-2 + i % 2, -1, 3 + i / 2), 96L + i, c, 2);
+		}
+		ctl.milk(level, 20);
+		int atStall = 0;
+		int inPen = 0;
+		for (CattleEntity cow : cows) {
+			atStall += cow.milkingStand() != null ? 1 : 0;
+			inPen += cow.milkingStand() == null && cow.penSpot() != null ? 1 : 0;
+		}
+		helper.assertTrue(atStall == 2 && inPen == 2, Component.literal("2 at the stalls, 2 waiting in the pen; got " + atStall + " and " + inPen));
+		for (int round = 0; round < 3; round++) {
+			for (CattleEntity cow : cows) {
+				BlockPos stand = cow.milkingStand();
+				if (stand != null) {
+					cow.setPos(stand.getX() + 0.5, stand.getY() + 0.25, stand.getZ() + 0.5);
+				}
+			}
+			ctl.milk(level, 20);
+		}
+		for (CattleEntity cow : cows) {
+			helper.assertTrue(cow.milkKg() == 0, Component.literal("each cow is milked in her turn"));
+			helper.assertTrue(cow.walkingHome(), Component.literal("and sent home along the lane"));
+		}
+		helper.succeed();
+	}
+
+	/** The whole walk with the cow's own AI: stall, alley, lane, pen, parlor stall, milked, then back along the lane to her stall. */
+	private static void cowWalksLaneAndReturn(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos p = buildDairy(helper);
+		BlockPos c = helper.absolutePos(C);
+		BarnControllerEntity barn = controller(helper, C);
+		dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) level.getBlockEntity(p);
+		ctl.refresh(level);
+		ctl.pump(level).forceRunning(true);
+		ctl.tank(level).forceChilling(true);
+		CattleEntity cow = founderAt(level, c.offset(-8, -1, 0), Sex.FEMALE, 99L, 900, 650);
+		cow.setCalvedForDisplay(30);
+		cow.settle(level);
+		barn.tend(level, 20);
+		helper.assertTrue(cow.stallController() != null, Component.literal("she takes a stall in the barn"));
+		BlockPos home = cow.stallStand();
+		cow.setNoAi(false);
+		boolean[] milked = {false};
+		helper.succeedWhen(() -> {
+			if (cow.milkKg() == 0 && ctl.tank(level).tank().litres() > 5) {
+				milked[0] = true;
+			}
+			helper.assertTrue(milked[0], Component.literal("she walks the lane and is milked; at " + cow.blockPosition() + ", stand " + cow.milkingStand()
+					+ ", pen " + cow.penSpot() + ", on route " + cow.onRoute() + " to " + cow.routeTarget() + " (barn " + c + ", parlor " + p + "), nav done " + cow.getNavigation().isDone() + ", fault " + ctl.fault()));
+			helper.assertTrue(!cow.onRoute() && cow.distanceToSqr(home.getX() + 0.5, home.getY() + 0.25, home.getZ() + 0.5) < 1.0,
+					Component.literal("then she walks back to her stall; at " + cow.blockPosition() + ", home " + home));
+		});
 	}
 
 	// ---- herd book, piped trough, milk armor (2026-11-09) ----

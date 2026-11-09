@@ -56,3 +56,41 @@ TANK FULL, TANK WARM. An empty bucket on the tank takes 10 L as a milk bucket *(
 ## Built later (2026-11-09)
 The bulk tank tracks the milk's fat and protein by volume. Each cow's milk goes in with her own fat (her breed's, moved by her butterfat
 score) for the creamery. A run of milk_line from the bulk tank to a creamery's receiving tank pipes the milk across (creamery.md).
+
+## The cow lane and holding pen (Tim, 2026-11-09: "can the barn and parlor be connected"; he chose a lane plus a holding pen)
+**Real counterpart:** cows walk from the barn along a return/travel lane to a **holding area** (the collecting yard) beside the parlor,
+wait there, enter the parlor stalls, and walk back along the lane after milking.
+
+**Parts** (two new parlor parts, one cell each, walked on, collision 2/16 high):
+| Part | Real counterpart |
+|---|---|
+| `cow_lane` | a concrete travel lane with side rails |
+| `holding_pen` | the holding area floor |
+
+**How they link** (`husbandry/lane/LanePath`, plain Java, tested on drawn grids):
+- The **pen** is every holding-pen cell joined (side by side) to one that touches a parlor stall. It must give each parlor stall
+  **15 sq ft (1.39 m2)**, the low end of the Dairyland Initiative's 15-20 sq ft per cow
+  ([Hoard's Dairyman](https://hoards.com/article-36289-Fit-your-facilities-to-your-herd.html)), so one parlor turn can wait in it.
+  2 stalls need 3 cells, 3 need 5, 12 need 17. The pen holds floor(cells / 1.39) cows.
+- The **lane** is the shortest run of `cow_lane` cells from the pen to a cell beside a barn's scrape alley, up to **64 cells**
+  *(proposed)*. It may step up or down one block between cells. It leaves the alley from one of the open stretches at the alley's ends
+  (barn.md), the only alley edge not taken by stalls.
+- The **barn** is the barn whose controller stands at the end of that alley.
+
+**How it runs:**
+- The parlor milks **only the cows housed in its linked barn** (the 24-block calling radius is gone).
+- Once a second, while it can milk, it calls lactating cows with milk along the lane to the pen, as many as the pen holds. Each cow
+  walks the lane waypoint by waypoint (alley exit, every lane cell, the pen cell), starting from the waypoint nearest her.
+- A free stall takes the nearest cow that has reached the pen; the others wait in the pen.
+- After milking she walks the lane back to the alley, then to her own stall. Her stall stays hers while she is away.
+- No pen, lane or barn: the fault is `NO LANE TO BARN: <what is missing>` and no cow is called. No power or a full or warm tank: the
+  cows waiting in the pen go home.
+
+**Recipes:** cow lane: iron bars, gray concrete (6); holding pen: iron bars, gray concrete (6). See recipes.md.
+
+**Game tests:** lane_links_barn_and_parlor, no_lane_no_milking, cows_wait_in_pen, cow_walks_lane_and_return (a real barn, lane, pen and
+parlor; the cow walks it with her own AI, is milked and returns to her stall). The older parlor tests build a pen, a short lane and a
+stub barn alley.
+
+**Not built:** collision rails on the lane (cows follow it by waypoints, so the rails are drawn but low), crowd gates, a return lane
+separate from the entry lane.

@@ -34,6 +34,8 @@ PARTS = {
     "vacuum_pump": ("Vacuum Pump", (70, 100, 150), (1, 1, 1, 0, 0), [(1, 0, 1, 15, 14, 15)]),
     "milk_line": ("Milk Line", (200, 200, 205), (1, 1, 1, 0, 0), [(0, 0, 5, 16, 5, 11)]),
     "bulk_tank": ("Bulk Tank", (205, 208, 214), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
+    "cow_lane": ("Cow Lane", (120, 120, 116), (1, 1, 1, 0, 0), [(0, 0, 0, 16, 2, 16)]),
+    "holding_pen": ("Holding Pen", (110, 112, 108), (1, 1, 1, 0, 0), [(0, 0, 0, 16, 2, 16)]),
     # the creamery (docs/multiblocks/creamery.md)
     "receiving_tank": ("Receiving Tank", (200, 204, 210), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
     "batch_pasteurizer": ("Batch Pasteurizer", (190, 196, 204), (1, 2, 1, 0, 0), [(1, 0, 1, 15, 16, 15)]),
@@ -280,6 +282,8 @@ SHAPED = {
     "vacuum_pump": (["SCS", "CRC", "SSS"], 1),
     "milk_line": (["SGS"], 6),
     "bulk_tank": (["SSS", "SBS", "SCS"], 1),
+    "cow_lane": (["N N", "KKK"], 6),
+    "holding_pen": (["NNN", "KKK"], 6),
     # creamery
     "creamery_controller": (["SRS", "GCG", "SSS"], 1),
     "receiving_tank": (["SSS", "SBS", "SSS"], 1),

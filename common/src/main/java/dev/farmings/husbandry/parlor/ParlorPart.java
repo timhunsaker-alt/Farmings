@@ -7,7 +7,9 @@ public enum ParlorPart {
 	MILKING_UNIT("milking unit"),
 	VACUUM_PUMP("vacuum pump"),
 	MILK_LINE("milk line"),
-	BULK_TANK("bulk tank");
+	BULK_TANK("bulk tank"),
+	COW_LANE("cow lane"),
+	HOLDING_PEN("holding pen");
 
 	public final String label;
 

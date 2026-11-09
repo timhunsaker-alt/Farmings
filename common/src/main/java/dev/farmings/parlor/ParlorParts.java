@@ -14,7 +14,11 @@ public enum ParlorParts {
 	MILKING_UNIT("milking_unit", ParlorPart.MILKING_UNIT, Footprint.box(1, 1, 1, 0, 0), List.of(box(4, 0, 4, 12, 12, 12))),
 	VACUUM_PUMP("vacuum_pump", ParlorPart.VACUUM_PUMP, Footprint.box(1, 1, 1, 0, 0), List.of(box(1, 0, 1, 15, 14, 15))),
 	MILK_LINE("milk_line", ParlorPart.MILK_LINE, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 5, 16, 5, 11))),
-	BULK_TANK("bulk_tank", ParlorPart.BULK_TANK, Footprint.box(2, 2, 2, 0, 0), List.of(box(0, 0, 0, 16, 16, 16)));
+	BULK_TANK("bulk_tank", ParlorPart.BULK_TANK, Footprint.box(2, 2, 2, 0, 0), List.of(box(0, 0, 0, 16, 16, 16))),
+	/** A floor cell of the lane cows walk between the barn and the parlor; it is walked on, so it is low. */
+	COW_LANE("cow_lane", ParlorPart.COW_LANE, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 0, 16, 2, 16))),
+	/** A floor cell of the holding pen where cows wait for a parlor stall. */
+	HOLDING_PEN("holding_pen", ParlorPart.HOLDING_PEN, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 0, 16, 2, 16)));
 
 	public final String id;
 	public final ParlorPart part;

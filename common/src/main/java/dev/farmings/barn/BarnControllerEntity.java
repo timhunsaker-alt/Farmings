@@ -253,6 +253,9 @@ public class BarnControllerEntity extends BlockEntity {
 
 	// ---- the herd ---------------------------------------------------------------------------------------------------------
 
+	/** How far a housed cow may be (out on the cow lane, in the parlor) and still keep her stall: the lane's 64 cells plus a parlor. */
+	private static final int AWAY_RADIUS = 96;
+
 	private BlockPos standPos(BarnStalls.Stall s) {
 		return at(s.x(), floorY(), s.bedZ());
 	}
@@ -315,6 +318,15 @@ public class BarnControllerEntity extends BlockEntity {
 				}
 			} else {
 				taken.add(mine.id());
+			}
+		}
+		// her stall stays hers while she is out on the cow lane or in the parlor (docs/multiblocks/parlor.md)
+		for (CattleEntity cow : level.getEntitiesOfClass(CattleEntity.class, new AABB(worldPosition).inflate(AWAY_RADIUS, 8, AWAY_RADIUS),
+				c -> c.isAlive() && worldPosition.equals(c.stallController()) && !herd.contains(c))) {
+			for (BarnStalls.Stall s : stalls) {
+				if (standPos(s).equals(cow.stallStand())) {
+					taken.add(s.id());
+				}
 			}
 		}
 		for (CattleEntity cow : homeless) {

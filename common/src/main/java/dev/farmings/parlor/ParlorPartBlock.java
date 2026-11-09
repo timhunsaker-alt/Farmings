@@ -86,10 +86,10 @@ public class ParlorPartBlock extends BigPartBlock {
 		return shapes[Math.floorMod(BigParts.turns(state), 4)][piece];
 	}
 
-	/** Only the parlor stall's top is walkable; everything else stops a cow. */
+	/** The parlor stall, cow lane and holding pen are walked on; everything else stops a cow. */
 	@Override
 	protected boolean isPathfindable(BlockState state, net.minecraft.world.level.pathfinder.PathComputationType type) {
-		return kind == ParlorParts.PARLOR_STALL && super.isPathfindable(state, type);
+		return (kind == ParlorParts.PARLOR_STALL || kind == ParlorParts.COW_LANE || kind == ParlorParts.HOLDING_PEN) && super.isPathfindable(state, type);
 	}
 
 	public static double[] turnBox(double[] b, int turns) {

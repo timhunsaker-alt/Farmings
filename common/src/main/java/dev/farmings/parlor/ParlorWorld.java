@@ -28,6 +28,33 @@ public final class ParlorWorld {
 		};
 	}
 
+	/** What a cell is to the cow lane's path finder: lane, pen, parlor stall, barn alley or barn controller. */
+	public static dev.farmings.husbandry.lane.LanePath.Grid laneGrid(Level level) {
+		return (x, y, z) -> {
+			BlockPos at = new BlockPos(x, y, z);
+			if (!level.isLoaded(at)) {
+				return dev.farmings.husbandry.lane.LanePath.Cell.OTHER;
+			}
+			BlockState state = level.getBlockState(at);
+			ParlorPart p = partOf(state);
+			if (p == ParlorPart.COW_LANE) {
+				return dev.farmings.husbandry.lane.LanePath.Cell.LANE;
+			}
+			if (p == ParlorPart.HOLDING_PEN) {
+				return dev.farmings.husbandry.lane.LanePath.Cell.PEN;
+			}
+			if (p == ParlorPart.PARLOR_STALL) {
+				return dev.farmings.husbandry.lane.LanePath.Cell.STALL;
+			}
+			dev.farmings.husbandry.barn.BarnPart b = dev.farmings.barn.BarnWorld.partOf(state);
+			if (b == dev.farmings.husbandry.barn.BarnPart.ALLEY_FLOOR || b == dev.farmings.husbandry.barn.BarnPart.SCRAPER_RAIL) {
+				return dev.farmings.husbandry.lane.LanePath.Cell.ALLEY;
+			}
+			return b == dev.farmings.husbandry.barn.BarnPart.CONTROLLER ? dev.farmings.husbandry.lane.LanePath.Cell.BARN_CONTROLLER
+					: dev.farmings.husbandry.lane.LanePath.Cell.OTHER;
+		};
+	}
+
 	public static ParlorCheck check(Level level, BlockPos pos) {
 		return ParlorLayout.find(grid(level), pos.getX(), pos.getY(), pos.getZ());
 	}
