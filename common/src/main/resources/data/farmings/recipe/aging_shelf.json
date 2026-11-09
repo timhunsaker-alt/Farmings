@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WWW",
+  "T T",
+  "WWW"
+ ],
+ "key": {
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:aging_shelf",
+  "count": 1
+ }
+}

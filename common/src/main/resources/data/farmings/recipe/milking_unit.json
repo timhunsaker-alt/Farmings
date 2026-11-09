@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "IGI",
+  "SBS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "G": "minecraft:glass",
+  "I": "minecraft:iron_ingot",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:milking_unit",
+  "count": 1
+ }
+}

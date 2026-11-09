@@ -88,7 +88,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Game tests (NeoForge, 10 scenes now pass): `barn_forms`, `barn_missing_part`, `barn_part_breaks_whole`, `barn_usual_orientation`.
   - Screenshots from a real Fabric client (`FARMINGS_ONLY=barn ./gradlew :fabric:runClientGameTest`): overview, down the alley,
     corner, and one divider missing. Per Tim's rule (2026-11-08) tests are shown with screenshots and moving things with recordings.
-  - **Placeholders:** every block uses a one-box model and a flat `*_placeholder` texture (`tools/barn_assets.py` writes them) and a
+  - **Placeholders:** every block uses a one-box model and a flat `*_placeholder` texture (`tools/make_assets.py (was barn_assets.py)` writes them) and a
     simple collision box. Real models and textures are a separate step for Tim's approval.
   - **Not built:** the scraper moving, the pit holding manure, the drive drawing Wildcatter power, manure, the fork tool (step 3c);
     cows using the barn (stalls, feeding, drinking); crafting recipes; mining tags; the milking parlor.

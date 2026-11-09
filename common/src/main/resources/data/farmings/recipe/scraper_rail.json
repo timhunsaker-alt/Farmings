@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "S S",
+  "SRS",
+  "S S"
+ ],
+ "key": {
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:scraper_rail",
+  "count": 8
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "M M",
+  "MMM",
+  "MMM"
+ ],
+ "key": {
+  "M": "minecraft:milk_bucket"
+ },
+ "result": {
+  "id": "farmings:milk_chestplate",
+  "count": 1
+ }
+}

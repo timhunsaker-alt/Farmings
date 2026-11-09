@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SRS",
+  "CGC",
+  "SSS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "G": "minecraft:glass",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:parlor_controller",
+  "count": 1
+ }
+}

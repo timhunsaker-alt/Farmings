@@ -1,0 +1,15 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "K K",
+  "KKK"
+ ],
+ "key": {
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:feed_bunk",
+  "count": 1
+ }
+}

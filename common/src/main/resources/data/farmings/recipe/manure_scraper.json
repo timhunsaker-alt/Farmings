@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SSS",
+  "III"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:manure_scraper",
+  "count": 1
+ }
+}

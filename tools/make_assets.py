@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Writes the barn's placeholder assets: blockstates, block models, item definitions, loot tables, lang names and 16x16 placeholder
 textures (named *_placeholder). Placeholders only; the real models and textures replace them (PROGRESS.md, Known gaps).
-    python3 tools/barn_assets.py
+    python3 tools/make_assets.py
 """
 import json
 import os
@@ -229,7 +229,83 @@ def main():
             img.save(path)
     write(os.path.join(DATA, "tags", "item", "repairs_milk_armor.json"), {"values": ["minecraft:milk_bucket"]})
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
+    recipes()
     print("wrote", len(PARTS) + 1, "blocks")
+
+
+# Crafting recipes (docs/recipes.md). S Wildcatter steel ingot, I iron ingot, C copper ingot, R redstone, G glass, B bucket,
+# K gray concrete, W planks, N iron bars, L wool, M milk bucket.
+KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecraft:copper_ingot", "R": "minecraft:redstone",
+        "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
+        "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick"}
+SHAPED = {
+    # barn
+    "barn_controller": (["SRS", "CIC", "SSS"], 1),
+    "stall_bed": (["LLL", "KKK"], 1),
+    "stall_divider": (["SSS", "S S", "S S"], 1),
+    "feed_bunk": (["K K", "KKK"], 1),
+    "hay_feeder": (["NNN", "N N", "SSS"], 1),
+    "water_trough": (["SBS", "SSS"], 1),
+    "alley_floor": (["KK", "KK"], 4),
+    "scraper_rail": (["S S", "SRS", "S S"], 8),
+    "manure_scraper": (["SSS", "III"], 1),
+    "scraper_drive": (["SCS", "CRC", "SIS"], 1),
+    "collection_pit": (["K K", "K K", "KKK"], 1),
+    # parlor
+    "parlor_controller": (["SRS", "CGC", "SSS"], 1),
+    "parlor_stall": (["S S", "S S", "KKK"], 1),
+    "milking_unit": (["IGI", "SBS"], 1),
+    "vacuum_pump": (["SCS", "CRC", "SSS"], 1),
+    "milk_line": (["SGS"], 6),
+    "bulk_tank": (["SSS", "SBS", "SCS"], 1),
+    # creamery
+    "creamery_controller": (["SRS", "GCG", "SSS"], 1),
+    "receiving_tank": (["SSS", "SBS", "SSS"], 1),
+    "batch_pasteurizer": (["SBS", "SRS", "SCS"], 1),
+    "cream_separator": (["SGS", "CRC", "SIS"], 1),
+    "butter_churn": (["WSW", "WCW", "WRW"], 1),
+    "cheese_vat": (["S S", "SBS", "SCS"], 1),
+    "cheese_press": (["WIW", "W W", "WWW"], 1),
+    "aging_shelf": (["WWW", "T T", "WWW"], 1),
+    "bottler": (["IGI", "IRI", "III"], 1),
+    # tools and the easter egg
+    "manure_fork": (["I I", " T ", " T "], 1),
+    "milk_helmet": (["MMM", "M M"], 1),
+    "milk_chestplate": (["M M", "MMM", "MMM"], 1),
+    "milk_leggings": (["MMM", "M M", "M M"], 1),
+    "milk_boots": (["M M", "M M"], 1),
+}
+SHAPELESS = {
+    "empty_straw": (["wildcatter:plastic_sheet"], 8),
+    "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
+    "cheddar": (["farmings:cheddar_wheel"], 8),
+}
+COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak"}
+
+
+def ingredient(ref):
+    return ref   # 26.x recipes take an item id or "#tag" string
+
+
+def recipes():
+    out = os.path.join(DATA, "recipe")
+    for name, (pattern, count) in SHAPED.items():
+        used = sorted({c for row in pattern for c in row if c != " "})
+        write(os.path.join(out, name + ".json"), {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": pattern,
+              "key": {c: ingredient(KEYS[c]) for c in used}, "result": {"id": "farmings:" + name, "count": count}})
+    for name, (items, count) in SHAPELESS.items():
+        write(os.path.join(out, name + ".json"), {"type": "minecraft:crafting_shapeless", "category": "misc",
+              "ingredients": [ingredient(i) for i in items], "result": {"id": "farmings:" + name, "count": count}})
+    for raw, cooked in COOKING.items():
+        for kind, time in (("smelting", 200), ("smoking", 100), ("campfire_cooking", 600)):
+            write(os.path.join(out, "%s_from_%s.json" % (cooked, kind)), {"type": "minecraft:" + kind, "category": "food",
+                  "ingredient": "farmings:" + raw, "result": {"id": "farmings:" + cooked}, "experience": 0.35, "cookingtime": time})
+    # no two shaped recipes may share a pattern and key
+    seen = {}
+    for name, (pattern, _) in SHAPED.items():
+        sig = json.dumps([[KEYS.get(c, " ") for c in row] for row in pattern])
+        assert sig not in seen, "%s and %s have the same recipe" % (name, seen[sig])
+        seen[sig] = name
 
 
 def loot(name):

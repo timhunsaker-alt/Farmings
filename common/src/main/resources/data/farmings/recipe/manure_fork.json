@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "I I",
+  " T ",
+  " T "
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:manure_fork",
+  "count": 1
+ }
+}

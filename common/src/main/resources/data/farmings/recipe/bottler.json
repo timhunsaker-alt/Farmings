@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "IGI",
+  "IRI",
+  "III"
+ ],
+ "key": {
+  "G": "minecraft:glass",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone"
+ },
+ "result": {
+  "id": "farmings:bottler",
+  "count": 1
+ }
+}

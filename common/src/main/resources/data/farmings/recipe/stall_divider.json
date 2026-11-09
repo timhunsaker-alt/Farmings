@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SSS",
+  "S S",
+  "S S"
+ ],
+ "key": {
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:stall_divider",
+  "count": 1
+ }
+}

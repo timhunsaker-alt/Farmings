@@ -1,0 +1,11 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:cheddar_wheel"
+ ],
+ "result": {
+  "id": "farmings:cheddar",
+  "count": 8
+ }
+}

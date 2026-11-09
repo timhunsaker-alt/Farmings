@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:campfire_cooking",
+ "category": "food",
+ "ingredient": "farmings:prime_steak",
+ "result": {
+  "id": "farmings:cooked_prime_steak"
+ },
+ "experience": 0.35,
+ "cookingtime": 600
+}

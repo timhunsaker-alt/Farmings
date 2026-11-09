@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SSS",
+  "SBS",
+  "SCS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "C": "minecraft:copper_ingot",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:bulk_tank",
+  "count": 1
+ }
+}

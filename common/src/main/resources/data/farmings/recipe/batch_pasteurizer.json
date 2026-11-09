@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SBS",
+  "SRS",
+  "SCS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "C": "minecraft:copper_ingot",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:batch_pasteurizer",
+  "count": 1
+ }
+}

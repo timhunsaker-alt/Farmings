@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "K K",
+  "K K",
+  "KKK"
+ ],
+ "key": {
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:collection_pit",
+  "count": 1
+ }
+}

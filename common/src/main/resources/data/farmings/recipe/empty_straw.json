@@ -1,0 +1,11 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "wildcatter:plastic_sheet"
+ ],
+ "result": {
+  "id": "farmings:empty_straw",
+  "count": 8
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "NNN",
+  "N N",
+  "SSS"
+ ],
+ "key": {
+  "N": "minecraft:iron_bars",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:hay_feeder",
+  "count": 1
+ }
+}

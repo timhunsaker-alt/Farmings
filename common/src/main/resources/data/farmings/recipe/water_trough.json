@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SBS",
+  "SSS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:water_trough",
+  "count": 1
+ }
+}

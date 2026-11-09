@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SCS",
+  "CRC",
+  "SIS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:scraper_drive",
+  "count": 1
+ }
+}

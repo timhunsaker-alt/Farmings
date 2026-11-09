@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "S S",
+  "S S",
+  "KKK"
+ ],
+ "key": {
+  "K": "minecraft:gray_concrete",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:parlor_stall",
+  "count": 1
+ }
+}

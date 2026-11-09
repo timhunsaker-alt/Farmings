@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SCS",
+  "CRC",
+  "SSS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:vacuum_pump",
+  "count": 1
+ }
+}
