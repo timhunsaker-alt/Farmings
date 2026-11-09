@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/milk_line_0"
+  "model": "farmings:block/milk_line/item"
  }
 }

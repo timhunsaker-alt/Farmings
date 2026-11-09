@@ -316,12 +316,33 @@ BREEDS = {"holstein": (holstein, True), "jersey": (jersey, True), "brown_swiss":
           "angus": (angus, False), "wagyu": (wagyu, False)}
 
 
+HAIR = os.path.join(os.path.dirname(__file__), "..", "art", "final", "hair.png")
+
+
+def with_hair(img):
+    """Lays the Ludo cow-hair swatch (art/final/hair.png, from tools/process_art.py) over the coat as a light-and-shade grain, so the
+    approved colours and patterns stay and the hide reads as hair. Horns and the transparent parts are left alone."""
+    if not os.path.exists(HAIR):
+        return img
+    hair = Image.open(HAIR).convert("L").resize(img.size)
+    mean = sum(hair.getdata()) / (hair.width * hair.height)
+    px, hp = img.load(), hair.load()
+    for x in range(img.width):
+        for y in range(img.height):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+            k = 1 + 0.35 * (hp[x, y] - mean) / 128
+            px[x, y] = (clamp(r * k), clamp(g * k), clamp(b * k), a)
+    return img
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     for name, (fn, dairy) in BREEDS.items():
-        fn(True).save(os.path.join(OUT, name + ".png"))
+        with_hair(fn(True)).save(os.path.join(OUT, name + ".png"))
         if dairy:
-            fn(False).save(os.path.join(OUT, name + "_no_udder.png"))
+            with_hair(fn(False)).save(os.path.join(OUT, name + "_no_udder.png"))
     print("wrote", sorted(os.listdir(OUT)))
 
 

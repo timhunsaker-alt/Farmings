@@ -3,7 +3,7 @@
 Exactly one phase is marked **CURRENT**. A phase is done when `./gradlew build` and the game tests pass with new coverage for
 the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a page for each new system.
 
-## Phase 0 — Set up — CURRENT
+## Phase 0 — Set up — done
 1. Docs: CLAUDE.md, VISION.md, GENETICS.md, ROADMAP.md, PROGRESS.md. **Done 2026-11-07.**
 2. Skeleton: `common`, `fabric` and `neoforge` modules copied from Tailings, `mod_id=farmings`, group `dev.farmings`, CC0,
    CI that runs `./gradlew build`. Wildcatter 0.4.1 is `compileOnly`, and `runtimeOnly` on NeoForge, as in Tailings.
@@ -12,7 +12,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
    dev server (2026-11-07). Fabric: builds, not yet run.**
 4. Game tests (a NeoForge game-test source set and a Fabric client game test), added when the first real feature needs them.
 
-## Phase 1 — Cattle, one full chain
+## Phase 1 — Cattle, one full chain — done 2026-11-09
 - Species doc `docs/animals/cattle.md`: sexes, ages, gestation, lactation, feed intake, with sources.
 - Cattle with a sex, an age, a breed and a basic genome. A small set of breeds (open decision in GENETICS.md).
 - Barn and stalls, a hay feeder and a water trough. Cattle eat hay blocks.
@@ -21,18 +21,18 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Manure collection in the barn (see `docs/waste.md`): a manure item, a dirty-stall rule, hand collection and a powered scraper on Wildcatter power.
 - Animal state survives save and chunk unload.
 
-## Phase 2 — Genetics and breeding
+## Phase 2 — Genetics and breeding — done for cattle 2026-11-09 (the visual coat recipe is not built)
 - Port the plain-Java `genetics` package from FarmChain (see GENETICS.md), with the determinism tests.
 - Mating, pregnancy, calving. Sire and dam choice. Breed composition and labels. Visual recipe for coat and markings.
 - Records: a herd book showing parents, breed composition and traits.
 
-## Phase 3 — Fields and processing
+## Phase 3 — Fields and processing — the creamery is done (2026-11-09); fields, feed mill and waste are not
 - Crops and hay: a field harvest contraption on rails (spec first), a baler, a conveyor line to a silo.
 - Feed mill and ration mixer: rations built from what the animal needs.
 - Processing: creamery and cheese room, built from distinct real parts on Wildcatter power.
 - Waste: composting and fertilizer, and a methane digester with a separator, either alone or one after the other (`docs/waste.md`).
 
-## Phase 4 — More animals
+## Phase 4 — More animals — CURRENT (sheep next)
 - Sheep (wool, meat, lambing) and chickens (eggs, hatchery, brooder), each with sexes, breeds and genes.
 
 ## Ideas (not scheduled, not in code)

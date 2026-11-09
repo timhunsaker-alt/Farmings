@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/stall_divider_0"
+  "model": "farmings:block/stall_divider/item"
  }
 }

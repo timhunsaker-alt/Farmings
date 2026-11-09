@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/vacuum_pump_0"
+  "model": "farmings:block/vacuum_pump/item"
  }
 }

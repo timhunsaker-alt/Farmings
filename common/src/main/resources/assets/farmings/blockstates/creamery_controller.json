@@ -1,7 +1,7 @@
 {
  "variants": {
   "": {
-   "model": "farmings:block/creamery_controller"
+   "model": "farmings:block/creamery_controller/p0"
   }
  }
 }

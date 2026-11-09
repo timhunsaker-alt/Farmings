@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/manure_scraper_0"
+  "model": "farmings:block/manure_scraper/item"
  }
 }

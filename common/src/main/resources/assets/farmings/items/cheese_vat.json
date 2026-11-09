@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/cheese_vat_0"
+  "model": "farmings:block/cheese_vat/item"
  }
 }

@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/parlor_controller"
+  "model": "farmings:block/parlor_controller/item"
  }
 }

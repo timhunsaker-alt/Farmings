@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/collection_pit_0"
+  "model": "farmings:block/collection_pit/item"
  }
 }

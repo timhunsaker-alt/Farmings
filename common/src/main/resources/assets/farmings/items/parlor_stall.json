@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/parlor_stall_0"
+  "model": "farmings:block/parlor_stall/item"
  }
 }

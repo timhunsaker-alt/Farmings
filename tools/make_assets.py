@@ -5,7 +5,12 @@ textures (named *_placeholder). Placeholders only; the real models and textures 
 """
 import json
 import os
+import sys
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "models"))
+import parts as real_models   # parts with a real model (tools/models/build.py writes their blockstate, models and item)
+MODELED = set(real_models.PARTS) | set(real_models.CONTROLLERS)
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "common", "src", "main")
 ASSETS = os.path.join(ROOT, "resources", "assets", "farmings")
@@ -165,6 +170,9 @@ def main():
     lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
         lang["block.farmings." + name] = title
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+        if name in MODELED:
+            continue
         texture(name, colour, (255, 214, 64) if name == "scraper_rail" else None)
         layers = pieces(fp)
         for layer, box in enumerate(boxes):
@@ -180,38 +188,50 @@ def main():
                 variants["facing=%s,piece=1" % facing] = dict(variants["facing=%s,piece=0" % facing])
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/%s_0" % name}})
-        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     # controller
-    texture("barn_controller", CONTROLLER[1], (40, 40, 40))
-    write(os.path.join(ASSETS, "models", "block", "barn_controller.json"),
-          {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/barn_controller_placeholder"}})
-    write(os.path.join(ASSETS, "blockstates", "barn_controller.json"), {"variants": {"": {"model": "farmings:block/barn_controller"}}})
-    write(os.path.join(ASSETS, "items", "barn_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/barn_controller"}})
+    if "barn_controller" not in MODELED:
+        texture("barn_controller", CONTROLLER[1], (40, 40, 40))
+    if "barn_controller" not in MODELED:
+        write(os.path.join(ASSETS, "models", "block", "barn_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/barn_controller_placeholder"}})
+    if "barn_controller" not in MODELED:
+        write(os.path.join(ASSETS, "blockstates", "barn_controller.json"), {"variants": {"": {"model": "farmings:block/barn_controller"}}})
+    if "barn_controller" not in MODELED:
+        write(os.path.join(ASSETS, "items", "barn_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/barn_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "barn_controller.json"), loot("barn_controller"))
-    texture("parlor_controller", PARLOR_CONTROLLER[1], (40, 40, 40))
+    if "parlor_controller" not in MODELED:
+        texture("parlor_controller", PARLOR_CONTROLLER[1], (40, 40, 40))
     lang["block.farmings.parlor_controller"] = PARLOR_CONTROLLER[0]
-    write(os.path.join(ASSETS, "models", "block", "parlor_controller.json"),
-          {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/parlor_controller_placeholder"}})
-    write(os.path.join(ASSETS, "blockstates", "parlor_controller.json"), {"variants": {"": {"model": "farmings:block/parlor_controller"}}})
-    write(os.path.join(ASSETS, "items", "parlor_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/parlor_controller"}})
+    if "parlor_controller" not in MODELED:
+        write(os.path.join(ASSETS, "models", "block", "parlor_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/parlor_controller_placeholder"}})
+    if "parlor_controller" not in MODELED:
+        write(os.path.join(ASSETS, "blockstates", "parlor_controller.json"), {"variants": {"": {"model": "farmings:block/parlor_controller"}}})
+    if "parlor_controller" not in MODELED:
+        write(os.path.join(ASSETS, "items", "parlor_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/parlor_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "parlor_controller.json"), loot("parlor_controller"))
-    texture("creamery_controller", CREAMERY_CONTROLLER[1], (40, 40, 40))
+    if "creamery_controller" not in MODELED:
+        texture("creamery_controller", CREAMERY_CONTROLLER[1], (40, 40, 40))
     lang["block.farmings.creamery_controller"] = CREAMERY_CONTROLLER[0]
-    write(os.path.join(ASSETS, "models", "block", "creamery_controller.json"),
-          {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/creamery_controller_placeholder"}})
-    write(os.path.join(ASSETS, "blockstates", "creamery_controller.json"), {"variants": {"": {"model": "farmings:block/creamery_controller"}}})
-    write(os.path.join(ASSETS, "items", "creamery_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/creamery_controller"}})
+    if "creamery_controller" not in MODELED:
+        write(os.path.join(ASSETS, "models", "block", "creamery_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/creamery_controller_placeholder"}})
+    if "creamery_controller" not in MODELED:
+        write(os.path.join(ASSETS, "blockstates", "creamery_controller.json"), {"variants": {"": {"model": "farmings:block/creamery_controller"}}})
+    if "creamery_controller" not in MODELED:
+        write(os.path.join(ASSETS, "items", "creamery_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/creamery_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "creamery_controller.json"), loot("creamery_controller"))
     # items: manure and the fork (placeholders)
     for name, title, colour, kind in ITEMS:
         parent = "minecraft:item/handheld" if kind == "fork" else "minecraft:item/generated"
         lang["item.farmings." + name] = title
-        item_texture(name, colour, kind if kind in ("straw", "steak", "armor", "book", "bottle") else kind == "fork")
-        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_placeholder" % name}})
+        real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
+        if not real:
+            item_texture(name, colour, kind if kind in ("straw", "steak", "armor", "book", "bottle") else kind == "fork")
+        tex = "farmings:item/" + name + ("" if real else "_placeholder")
+        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": tex}})
         if kind == "armor":
             lang["item.farmings." + name + ".spoiled"] = "Spoiled " + title
-            item_texture(name + "_spoiled", SPOILED_COLOUR, "armor")
-            write(os.path.join(ASSETS, "models", "item", name + "_spoiled.json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_spoiled_placeholder" % name}})
+            if not real:
+                item_texture(name + "_spoiled", SPOILED_COLOUR, "armor")
+            write(os.path.join(ASSETS, "models", "item", name + "_spoiled.json"), {"parent": parent, "textures": {"layer0": tex.replace(name, name + "_spoiled")}})
             write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:condition", "property": "minecraft:custom_model_data", "index": 0,
                   "on_true": {"type": "minecraft:model", "model": "farmings:item/%s_spoiled" % name},
                   "on_false": {"type": "minecraft:model", "model": "farmings:item/" + name}}})
@@ -222,6 +242,8 @@ def main():
         write(os.path.join(ASSETS, "equipment", asset + ".json"),
               {"layers": {"humanoid": [{"texture": "farmings:" + asset}], "humanoid_leggings": [{"texture": "farmings:" + asset}]}})
         for layer in ("humanoid", "humanoid_leggings"):
+            if os.path.exists(os.path.join(ASSETS, "textures", "entity", "equipment", layer, asset + ".png")):
+                continue
             img = Image.new("RGBA", (64, 32), colour + (255,))
             ImageDraw.Draw(img).rectangle([0, 0, 63, 31], outline=tuple(max(0, c - 50) for c in colour))
             path = os.path.join(ASSETS, "textures", "entity", "equipment", layer, asset + ".png")

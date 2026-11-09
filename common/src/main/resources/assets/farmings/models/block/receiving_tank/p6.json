@@ -1,0 +1,262 @@
+{
+ "textures": {
+  "steel": "wildcatter:block/mat/mat_stainless",
+  "galv": "wildcatter:block/mat/mat_galvanized",
+  "iron": "wildcatter:block/mat/mat_cast_iron",
+  "concrete": "wildcatter:block/mat/mat_concrete",
+  "rubber": "wildcatter:block/mat/mat_rubber",
+  "grey": "wildcatter:block/mat/mat_paint_ansi61",
+  "blue": "wildcatter:block/mat/mat_paint_ansi70",
+  "engine": "wildcatter:block/mat/mat_paint_engine",
+  "copper": "wildcatter:block/mat/mat_copper",
+  "brass": "wildcatter:block/mat/mat_brass",
+  "wood": "wildcatter:block/mat/mat_wood_fir",
+  "dark": "wildcatter:block/mat/mat_oil_dark",
+  "plastic": "wildcatter:block/mat/mat_polymer_grey",
+  "checker": "wildcatter:block/mat/mat_checker_plate",
+  "grating": "wildcatter:block/mat/mat_grating",
+  "nameplate": "wildcatter:block/mat/decal_nameplate",
+  "gauge": "wildcatter:block/mat/decal_gauge",
+  "controller": "wildcatter:block/mat/decal_controller",
+  "buttons": "wildcatter:block/mat/decal_pushbuttons",
+  "groove": "farmings:block/mat/mat_grooved_concrete",
+  "mat": "farmings:block/mat/mat_rubber_mat",
+  "hay": "farmings:block/mat/mat_hay",
+  "manure": "farmings:block/mat/mat_manure",
+  "milk": "farmings:block/mat/mat_milk",
+  "rind": "farmings:block/mat/mat_cheese_rind",
+  "yellow": "farmings:block/mat/mat_paint_yellow",
+  "water": "farmings:block/mat/mat_water",
+  "particle": "wildcatter:block/mat/mat_stainless"
+ },
+ "elements": [
+  {
+   "from": [
+    13.2948,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    13.6,
+    13.6
+   ],
+   "faces": {
+    "south": {
+     "texture": "#steel",
+     "uv": [
+      13.2948,
+      2.4,
+      16,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#steel",
+     "uv": [
+      13.2948,
+      0,
+      16,
+      13.6
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    2.4,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    13.504,
+    2.7052
+   ],
+   "faces": {
+    "west": {
+     "texture": "#steel",
+     "uv": [
+      0,
+      2.496,
+      2.7052,
+      16
+     ]
+    },
+    "up": {
+     "texture": "#steel",
+     "uv": [
+      2.4,
+      0,
+      16,
+      2.7052
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    14.0904,
+    13.6,
+    0
+   ],
+   "to": [
+    16,
+    15.2,
+    9.6
+   ],
+   "faces": {
+    "south": {
+     "texture": "#steel",
+     "uv": [
+      14.0904,
+      0.8,
+      16,
+      2.4
+     ]
+    },
+    "up": {
+     "texture": "#steel",
+     "uv": [
+      14.0904,
+      0,
+      16,
+      9.6
+     ]
+    },
+    "down": {
+     "texture": "#steel",
+     "uv": [
+      14.0904,
+      6.4,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    6.4,
+    13.696,
+    0
+   ],
+   "to": [
+    16,
+    15.104,
+    1.9096
+   ],
+   "faces": {
+    "west": {
+     "texture": "#steel",
+     "uv": [
+      0,
+      0.896,
+      1.9096,
+      2.304
+     ]
+    },
+    "up": {
+     "texture": "#steel",
+     "uv": [
+      6.4,
+      0,
+      16,
+      1.9096
+     ]
+    },
+    "down": {
+     "texture": "#steel",
+     "uv": [
+      6.4,
+      14.0904,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    15.1426,
+    15.2,
+    0
+   ],
+   "to": [
+    16,
+    16.0,
+    3.2
+   ],
+   "faces": {
+    "south": {
+     "texture": "#steel",
+     "uv": [
+      15.1426,
+      0.0,
+      16,
+      0.8
+     ]
+    },
+    "up": {
+     "texture": "#steel",
+     "uv": [
+      15.1426,
+      0,
+      16,
+      3.2
+     ]
+    },
+    "down": {
+     "texture": "#steel",
+     "uv": [
+      15.1426,
+      12.8,
+      16,
+      16
+     ]
+    }
+   }
+  },
+  {
+   "from": [
+    12.8,
+    15.272,
+    0
+   ],
+   "to": [
+    16,
+    15.928,
+    0.8574
+   ],
+   "faces": {
+    "west": {
+     "texture": "#steel",
+     "uv": [
+      0,
+      0.072,
+      0.8574,
+      0.728
+     ]
+    },
+    "up": {
+     "texture": "#steel",
+     "uv": [
+      12.8,
+      0,
+      16,
+      0.8574
+     ]
+    },
+    "down": {
+     "texture": "#steel",
+     "uv": [
+      12.8,
+      15.1426,
+      16,
+      16
+     ]
+    }
+   }
+  }
+ ]
+}

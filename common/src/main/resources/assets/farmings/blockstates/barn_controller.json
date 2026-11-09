@@ -1,7 +1,7 @@
 {
  "variants": {
   "": {
-   "model": "farmings:block/barn_controller"
+   "model": "farmings:block/barn_controller/p0"
   }
  }
 }

@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/barn_controller"
+  "model": "farmings:block/barn_controller/item"
  }
 }

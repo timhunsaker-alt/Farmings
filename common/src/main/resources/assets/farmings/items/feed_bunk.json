@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/feed_bunk_0"
+  "model": "farmings:block/feed_bunk/item"
  }
 }

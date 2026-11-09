@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/butter_churn_0"
+  "model": "farmings:block/butter_churn/item"
  }
 }

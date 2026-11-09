@@ -359,6 +359,290 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+	// ---- 2026-11-09: the cattle finish, the creamery and the art ----
+
+	private static void clear(ServerLevel level, int cx, int cz, int y, int rx, int rz, int h) {
+		for (int x = cx - rx; x <= cx + rx; x++) {
+			for (int z = cz - rz; z <= cz + rz; z++) {
+				level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+				for (int k = 0; k < h; k++) {
+					level.setBlockAndUpdate(new BlockPos(x, y + k, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+				}
+			}
+		}
+	}
+
+	private static void placePart(ServerLevel level, Block block, BlockPos main) {
+		BlockState state = block.defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
+		level.setBlock(main, state, Block.UPDATE_ALL);
+		BigParts.grow(level, main, state);
+	}
+
+	private static void actionbar(TestServerContext server, String text) {
+		server.runCommand("title @p actionbar \"" + text.replace("\"", "'") + "\"");
+	}
+
+	/** Every block, close up, in three groups (barn, parlor, creamery), and every item in item frames on a wall. */
+	private static void showroom(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx, cz, y, 24, 14, 8);
+			int x = cx - 20;
+			for (BarnParts k : BarnParts.values()) {
+				placePart(level, FarmingsBlocks.part(k), new BlockPos(x, y, cz + 1));
+				x += k == BarnParts.WATER_TROUGH || k == BarnParts.COLLECTION_PIT ? 3 : 2;
+			}
+			level.setBlockAndUpdate(new BlockPos(x, y, cz + 1), FarmingsBlocks.BARN_CONTROLLER.defaultBlockState());
+			x = cx - 20;
+			for (dev.farmings.parlor.ParlorParts k : dev.farmings.parlor.ParlorParts.values()) {
+				placePart(level, FarmingsBlocks.parlorPart(k), new BlockPos(x, y, cz - 4));
+				x += k == dev.farmings.parlor.ParlorParts.BULK_TANK ? 3 : 2;
+			}
+			level.setBlockAndUpdate(new BlockPos(x, y, cz - 4), FarmingsBlocks.PARLOR_CONTROLLER.defaultBlockState());
+			x = cx - 20;
+			for (dev.farmings.creamery.CreameryParts k : dev.farmings.creamery.CreameryParts.values()) {
+				placePart(level, FarmingsBlocks.creameryPart(k), new BlockPos(x, y, cz - 9));
+				x += k.part.length() + 1;
+			}
+			level.setBlockAndUpdate(new BlockPos(x, y, cz - 9), FarmingsBlocks.CREAMERY_CONTROLLER.defaultBlockState());
+			// the item wall, facing south
+			int wz = cz + 8;
+			for (int wx = cx - 6; wx <= cx + 6; wx++) {
+				for (int wy = y; wy < y + 4; wy++) {
+					level.setBlockAndUpdate(new BlockPos(wx, wy, wz), net.minecraft.world.level.block.Blocks.SPRUCE_PLANKS.defaultBlockState());
+				}
+			}
+			int i = 0;
+			java.util.List<net.minecraft.world.item.Item> items = new java.util.ArrayList<>(FarmingsItems.ALL.values());
+			for (net.minecraft.world.item.Item item : items) {
+				BlockPos at = new BlockPos(cx - 5 + i % 11, y + 3 - i / 11, wz - 1);
+				net.minecraft.world.entity.decoration.ItemFrame frame = new net.minecraft.world.entity.decoration.ItemFrame(level, at, Direction.NORTH);
+				ItemStack stack = new ItemStack(item);
+				if (item instanceof dev.farmings.item.MilkArmorItem && i % 2 == 1) {
+					dev.farmings.item.MilkArmorItem.spoil(stack);
+				}
+				frame.setItem(stack, false);
+				level.addFreshEntity(frame);
+				i++;
+			}
+		});
+		context.waitTicks(80);
+		String[][] shots = {{"barn-a", (cx - 17) + " " + (y + 2.5) + " " + (cz + 6.5) + " 180 25"}, {"barn-b", (cx - 5) + " " + (y + 2.5) + " " + (cz + 6.5) + " 180 25"},
+				{"parlor", (cx - 15) + " " + (y + 3) + " " + (cz + 0.5) + " 180 30"}, {"creamery-a", (cx - 15) + " " + (y + 3) + " " + (cz - 3.5) + " 180 30"},
+				{"creamery-b", (cx - 4) + " " + (y + 3) + " " + (cz - 3.5) + " 180 30"}, {"items", (cx + 0.5) + " " + (y + 2) + " " + (cz + 2.5) + " 0 0"}};
+		for (String[] shot : shots) {
+			server.runCommand("tp @p " + shot[1]);
+			context.waitTicks(40);
+			context.takeScreenshot("farmings-art-" + shot[0]);
+		}
+	}
+
+	private static CattleEntity founder(ServerLevel level, CattleBreed breed, Sex sex, long seed, double age, double kg, double x, int y, double z) {
+		CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+		c.initFounder(breed, sex, seed, age, kg, level.getGameTime());
+		c.setPos(x, y, z);
+		c.setNoAi(true);
+		level.addFreshEntity(c);
+		return c;
+	}
+
+	/** A heifer in heat (hearts), twins born to a cow, the readout of a calf, and the herd book open on its page. */
+	private static void breeding(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx, cz, y, 10, 10, 6);
+			CattleEntity heifer = founder(level, CattleBreed.JERSEY, Sex.FEMALE, 21L, 500, 280, cx - 3.5, y, cz + 0.5);
+			heifer.setNoAi(false);
+			heifer.startHeatForDisplay();
+			CattleEntity bull = founder(level, CattleBreed.ANGUS, Sex.MALE, 22L, 1500, 550, cx + 6.5, y, cz - 3.5);
+			CattleEntity dam = founder(level, CattleBreed.HOLSTEIN, Sex.FEMALE, 23L, 900, 650, cx + 1.5, y, cz + 0.5);
+			dam.setOwner(java.util.UUID.randomUUID());
+			dam.startHeatForDisplay();
+			dam.conceive(bull.genome(), level.getGameTime());
+			dam.forceCalvingForTest(2, false, false);
+		});
+		context.waitTicks(60);
+		server.runCommand("tp @p " + (cx - 1) + " " + (y + 2.5) + " " + (cz + 6) + " 180 20");
+		Filming film = context.computeOnClient(client -> Filming.start(client, "heat-and-twins"));
+		context.waitTicks(60);
+		context.takeScreenshot("farmings-breeding-heat");
+		server.runOnServer(srv -> {
+			for (CattleEntity c : srv.overworld().getEntitiesOfClass(CattleEntity.class, new net.minecraft.world.phys.AABB(cx - 8, y - 1, cz - 8, cx + 8, y + 4, cz + 8))) {
+				if (c.isInCalf()) {
+					c.makeDueNow();
+					c.settle(srv.overworld());
+				}
+			}
+		});
+		context.waitTicks(60);
+		context.takeScreenshot("farmings-breeding-twins");
+		film.stop();
+		String[] read = new String[1];
+		ItemStack[] book = new ItemStack[1];
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			java.util.List<CattleEntity> calves = level.getEntitiesOfClass(CattleEntity.class, new net.minecraft.world.phys.AABB(cx - 8, y - 1, cz - 8, cx + 8, y + 4, cz + 8), CattleEntity::isBaby);
+			CattleEntity calf = calves.get(0);
+			read[0] = calf.readout();
+			ItemStack b = new ItemStack(FarmingsItems.HERD_BOOK);
+			for (CattleEntity c : calves) {
+				dev.farmings.item.HerdBookItem.record(b, c);
+			}
+			book[0] = b;
+			for (net.minecraft.server.level.ServerPlayer p : srv.getPlayerList().getPlayers()) {
+				p.sendSystemMessage(net.minecraft.network.chat.Component.literal(read[0]));
+			}
+		});
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-breeding-readout");
+		context.runOnClient(client -> client.setScreenAndShow(new net.minecraft.client.gui.screens.inventory.BookViewScreen(
+				net.minecraft.client.gui.screens.inventory.BookViewScreen.BookAccess.fromItem(book[0]))));
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-breeding-herd-book");
+		context.runOnClient(client -> client.setScreenAndShow(null));
+	}
+
+	/** An Angus steer and a Wagyu steer killed side by side: their beef, graded steaks and leather on the ground. */
+	private static void beef(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		String[] counts = new String[1];
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx, cz, y, 8, 8, 6);
+			founder(level, CattleBreed.ANGUS, Sex.MALE, 31L, 700, 550, cx - 2.5, y, cz + 0.5);
+			founder(level, CattleBreed.WAGYU, Sex.MALE, 32L, 700, 487, cx + 3.5, y, cz + 0.5);
+		});
+		context.waitTicks(40);
+		server.runCommand("tp @p " + (cx + 0.5) + " " + (y + 3) + " " + (cz + 5) + " 180 35");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-beef-alive");
+		server.runOnServer(srv -> {
+			StringBuilder b = new StringBuilder();
+			for (CattleEntity c : srv.overworld().getEntitiesOfClass(CattleEntity.class, new net.minecraft.world.phys.AABB(cx - 8, y - 1, cz - 8, cx + 8, y + 4, cz + 8))) {
+				dev.farmings.husbandry.Carcass.Yield yv = c.carcass();
+				b.append(c.breed().assetName()).append(": ").append(yv.beefItems()).append(" beef, ").append(yv.steakItems()).append(' ')
+						.append(yv.grade().name().toLowerCase(java.util.Locale.ROOT)).append(" steaks; ");
+				c.kill(srv.overworld());
+			}
+			counts[0] = b.toString();
+		});
+		actionbar(server, counts[0]);
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-beef-drops");
+	}
+
+	/** A creamery fed 200 L of Jersey milk makes butter; then cheese; the readout runs in the action bar. Filmed. */
+	private static void creamery(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 56;
+		int cz = 60;
+		BlockPos c = new BlockPos(cx, y, cz);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx + 6, cz, y, 10, 6, 5);
+			level.setBlock(c, FarmingsBlocks.CREAMERY_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+			int x = cx + 1;
+			for (dev.farmings.creamery.CreameryParts k : dev.farmings.creamery.CreameryParts.values()) {
+				placePart(level, FarmingsBlocks.creameryPart(k), new BlockPos(x, y, cz));
+				x += k.part.length();
+			}
+			dev.farmings.creamery.CreameryControllerEntity ctl = (dev.farmings.creamery.CreameryControllerEntity) level.getBlockEntity(c);
+			ctl.refresh(level);
+			for (dev.farmings.process.creamery.CreameryPart p : new dev.farmings.process.creamery.CreameryPart[] {dev.farmings.process.creamery.CreameryPart.BATCH_PASTEURIZER,
+					dev.farmings.process.creamery.CreameryPart.CREAM_SEPARATOR, dev.farmings.process.creamery.CreameryPart.BUTTER_CHURN, dev.farmings.process.creamery.CreameryPart.CHEESE_VAT}) {
+				ctl.machine(level, p).forceRunning(true);
+			}
+			ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.BUTTER);
+			ctl.creamery().addMilk(200, 4.76, 3.63);
+		});
+		context.waitTicks(40);
+		server.runCommand("tp @p " + (cx + 6) + " " + (y + 3.5) + " " + (cz + 6) + " 180 25");
+		context.waitTicks(20);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "creamery"));
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-creamery-start");
+		for (int i = 0; i < 12; i++) {
+			String text = server.computeOnServer(srv -> {
+				dev.farmings.creamery.CreameryControllerEntity ctl = (dev.farmings.creamery.CreameryControllerEntity) srv.overworld().getBlockEntity(c);
+				ctl.run(srv.overworld(), 20);
+				if (ctl.creamery().phase() == dev.farmings.process.creamery.Creamery.Phase.IDLE && ctl.creamery().butterKg() > 0
+						&& ctl.creamery().mode() == dev.farmings.process.creamery.Creamery.Mode.BUTTER) {
+					ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
+					ctl.creamery().addMilk(200, 3.72, 3.06);
+				}
+				return ctl.readout();
+			});
+			actionbar(server, text);
+			context.waitTicks(20);
+			if (i == 3) {
+				context.takeScreenshot("farmings-creamery-butter");
+			}
+		}
+		server.runOnServer(srv -> {
+			dev.farmings.creamery.CreameryControllerEntity ctl = (dev.farmings.creamery.CreameryControllerEntity) srv.overworld().getBlockEntity(c);
+			for (int d = 0; d < 6; d++) {
+				ctl.run(srv.overworld(), 24_000);    // press and age the cheese: 4 game days
+			}
+			ServerLevel level = srv.overworld();
+			int n = 0;
+			for (ItemStack stack : new ItemStack[] {new ItemStack(FarmingsItems.BUTTER, ctl.creamery().takeButter(64)), new ItemStack(FarmingsItems.CHEDDAR_WHEEL, ctl.creamery().takeWheels(16)),
+					new ItemStack(FarmingsItems.SKIM_MILK_BOTTLE, 4), new ItemStack(FarmingsItems.BUTTERMILK_BOTTLE, 2)}) {
+				ItemEntity e = new ItemEntity(level, cx + 3 + n * 1.5, y + 0.2, cz + 2.5, stack);
+				e.setDeltaMovement(Vec3.ZERO);
+				level.addFreshEntity(e);
+				n++;
+			}
+		});
+		String text = server.computeOnServer(srv -> ((dev.farmings.creamery.CreameryControllerEntity) srv.overworld().getBlockEntity(c)).readout());
+		actionbar(server, text);
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-creamery-products");
+		film.stop();
+	}
+
+	/** The player in milk armor, seen from the front: fresh, then a game day later spoiled, with Nausea and Hunger. Filmed. */
+	private static void milkArmor(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		server.runOnServer(srv -> clear(srv.overworld(), cx, cz, y, 6, 6, 5));
+		server.runCommand("gamemode survival @p");
+		server.runCommand("tp @p " + (cx + 0.5) + " " + y + " " + (cz + 0.5) + " 180 10");
+		server.runOnServer(srv -> {
+			net.minecraft.server.level.ServerPlayer p = srv.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.entity.EquipmentSlot[] slots = {net.minecraft.world.entity.EquipmentSlot.HEAD, net.minecraft.world.entity.EquipmentSlot.CHEST,
+					net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET};
+			net.minecraft.world.item.Item[] items = {FarmingsItems.MILK_HELMET, FarmingsItems.MILK_CHESTPLATE, FarmingsItems.MILK_LEGGINGS, FarmingsItems.MILK_BOOTS};
+			for (int i = 0; i < 4; i++) {
+				ItemStack stack = new ItemStack(items[i]);
+				dev.farmings.item.MilkArmorItem.setMade(stack, srv.overworld().getGameTime());
+				p.setItemSlot(slots[i], stack);
+			}
+		});
+		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(40);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "milk-armor"));
+		context.waitTicks(30);
+		context.takeScreenshot("farmings-armor-fresh");
+		actionbar(server, "A game day later...");
+		server.runOnServer(srv -> {
+			net.minecraft.server.level.ServerPlayer p = srv.getPlayerList().getPlayers().get(0);
+			for (net.minecraft.world.entity.EquipmentSlot s : new net.minecraft.world.entity.EquipmentSlot[] {net.minecraft.world.entity.EquipmentSlot.HEAD,
+					net.minecraft.world.entity.EquipmentSlot.CHEST, net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET}) {
+				dev.farmings.item.MilkArmorItem.setMade(p.getItemBySlot(s), srv.overworld().getGameTime() - dev.farmings.item.MilkArmorItem.SPOIL_TICKS);
+			}
+		});
+		context.waitTicks(80);
+		context.takeScreenshot("farmings-armor-spoiled");
+		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+		context.waitTicks(60);
+		context.takeScreenshot("farmings-armor-sick-first-person");
+		film.stop();
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
@@ -368,6 +652,32 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			server.runCommand("time set noon");
 			server.runCommand("weather clear");
 			server.runCommand("gamemode spectator @p");
+			String only = System.getenv("FARMINGS_ONLY");
+			if ("showroom".equals(only)) {
+				context.waitTicks(200);
+				showroom(context, server, y);
+				return;
+			}
+			if ("breeding".equals(only)) {
+				context.waitTicks(200);
+				breeding(context, server, y);
+				return;
+			}
+			if ("beef".equals(only)) {
+				context.waitTicks(200);
+				beef(context, server, y);
+				return;
+			}
+			if ("creamery".equals(only)) {
+				context.waitTicks(200);
+				creamery(context, server, y);
+				return;
+			}
+			if ("armor".equals(only)) {
+				context.waitTicks(200);
+				milkArmor(context, server, y);
+				return;
+			}
 			if ("parlor".equals(System.getenv("FARMINGS_ONLY"))) {
 				context.waitTicks(200);
 				parlor(context, server, y);

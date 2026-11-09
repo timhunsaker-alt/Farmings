@@ -132,11 +132,19 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - Step 7 (2026-11-08): calf and heifer growth (`docs/animals/growth.md`, approved). `Growth` (target curve: birth 6%, 15 months at sourced Holstein 425 / Brown Swiss 379 / Jersey 297 kg, mature at 48 months; gain = curve gain x fed fraction; 6 unit tests) and `CattleEntity.grow`. 35 of 35 game tests (new: calf_grows_to_heifer, underfed_heifer_grows_slower, grown_cow_stops_growing, weight_survives_save). Unsourced: birth 6%, 48 months, Holstein's 0.60 for other breeds. Test caveat: the game tests move time with `advanceForTest`, not a real clock. No screenshots or recording of growth yet (same display problem as calving).
 - Step 8 (2026-11-08): straws, as approved in `breeding.md`. Items `empty_straw` and `semen_straw` (`StrawItem`); the genome rides in the item's custom data. 36 of 36 game tests (new: straw_inseminates). Straws never expire and the straw art is a placeholder. No screenshot or recording yet (display).
 - Step 9 (2026-11-08): milking parlor and bulk tank (`docs/multiblocks/parlor.md`, approved). Plain-Java layout check and `BulkTank` (7 unit tests), blocks and entities, cows walk to a stall and are milked into the tank, chiller, faults, bucket. 45 of 45 game tests (new: parlor_forms, parlor_missing_part, parlor_milks_cow, parlor_no_power_no_milk, tank_cools_and_warms, bucket_takes_milk, parlor_state_survives_save, parlor_cow_walks_and_is_milked, parlor_milks_a_herd). Bug found by the client screenshots, not the tests: the first cow's 35 C milk made the tank WARM and stopped the other cows; warm now only blocks a new session (Tim, 2026-11-09). Evidence: client scene `FARMINGS_ONLY=parlor` (3 screenshots, 16.75 s recording), sent to Tim. The recorder was filming Tim's own open Minecraft menu; `Filming` now raises the test window first (calving re-filmed). Placeholder art.
-- Next: straws (artificial insemination), calf growth, then the parlor blocks once Tim approves `docs/multiblocks/parlor.md`.
+- Step 10 (2026-11-09): the cattle finish, approved by Tim in plan mode with his popup answers. Commits 61a07a7, 510279d, 1afd552, 89fec3e and the art commit.
+  - Dairy: first-lactation cut (85%), twins (5.02% / 0.68% first calf), stillbirths (12.3% / 5.4%), freemartins (90%), the heat cue (hearts), a right-click readout, castration with shears, the dirty-stall effect (all values proposed).
+  - Beef: Angus and Wagyu baselines (proposed), crosses, meat by carcass weight (Penn State figures, 1 item = 10 kg), graded steaks (Select/Choice/Prime by marbling), Wagyu more steaks (Tim's rule).
+  - Herd book, pipe-fed trough (Wildcatter WaterUser), milk armor (Hunger + Nausea when spoiled).
+  - Creamery (`docs/multiblocks/creamery.md`): pasteurizer, separator, churn, cheese vat, press, aging shelf, bottler; milk fat tracked from each cow to the cheese (Van Slyke).
+  - Recipes for every block and hand-made item (`docs/recipes.md`).
+  - Art: Ludo materials and icons (`art/source/PROMPTS.md`, `tools/process_art.py`), true-size part models built with Wildcatter's model library and materials (`tools/models/`), a Ludo hair grain on the approved coats. No placeholder texture is left.
+  - 112 unit tests and 67 of 67 game tests. Client evidence: scenes showroom, breeding, beef, creamery, armor, parlor, scraper (screenshots and recordings, sent to Tim).
+- Next: sheep (Phase 4).
 
 ## Known gaps
-- Barn blocks are placeholder boxes and flat colours, with no recipes (creative tab only). Manure and fork icons are placeholders too.
-- Build still uses a temporary Java 25 JDK from a scratchpad; install a permanent one (Temurin 25).
-- NeoForge game tests exist (5 scenes). The Fabric client game test takes screenshots only; it asserts nothing yet.
-- NeoForge has not been launched with a client; Fabric has (the cattle render).
-- No icon, no creative tab. Cattle art is textures on the vanilla cow model (plus the Gyr hump), not final 3D models.
+- Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the worn armor look).
+- The Fabric client game test takes screenshots and recordings; it asserts nothing.
+- NeoForge has not been launched with a client; Fabric has.
+- Cattle are textures on the vanilla cow model (plus the Gyr hump), not their own 3D models. The visual genome recipe (coat from genes) is not built.
+- Not built: products by hopper or pipe, whey, spoilage of dairy products, a plain-text genome code.

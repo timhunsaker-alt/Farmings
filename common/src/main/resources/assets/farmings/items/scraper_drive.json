@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/scraper_drive_0"
+  "model": "farmings:block/scraper_drive/item"
  }
 }

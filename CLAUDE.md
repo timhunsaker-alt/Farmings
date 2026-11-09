@@ -24,7 +24,8 @@ conflict and ask before doing anything.
 
 ## How to work
 - Start every task in plan mode: files to change, multiblock specs needed, game test to add. Wait for approval before
-  writing code.
+  writing code. Present the plan with the approve-plan button (plan mode), and ask questions in the question popup, not in chat
+  (Tim, 2026-11-08).
 - For any piece of equipment, state its real-world counterpart and the values used.
 - Power comes from Wildcatter and nowhere else. No abstract energy units. Never hardcode a voltage or frequency; read
   them from the world's electrical standard (NA or IEC), as Tailings does.

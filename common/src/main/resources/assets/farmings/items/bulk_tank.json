@@ -1,6 +1,6 @@
 {
  "model": {
   "type": "minecraft:model",
-  "model": "farmings:block/bulk_tank_0"
+  "model": "farmings:block/bulk_tank/item"
  }
 }
