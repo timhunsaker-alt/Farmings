@@ -247,12 +247,13 @@ public class FarmingsGameTests {
 	}
 
 	/**
-	 * A whole barn, alley east-west, pit at the east end, controller at {@code c}: n stalls a side take 2n+1 cells along the alley.
+	 * A whole barn, alley east-west, pit at the east end, controller at {@code c}: the alley is twice the 2n+1-cell stall row (BarnLayout.alleyLength).
 	 * Everything is placed facing north, as the footprints are drawn.
 	 */
 	private static void buildBarn(ServerLevel level, BlockPos c, int stalls) {
 		int fl = c.getY() - 1;
-		int xd = c.getX() - (2 * stalls + 1);
+		int xd = c.getX() - dev.farmings.husbandry.barn.BarnLayout.alleyLength(stalls);
+		int row = xd + stalls;
 		Direction n = Direction.NORTH;
 		barnPart(level, BarnParts.COLLECTION_PIT, new BlockPos(c.getX(), fl - 1, c.getZ()), n);
 		level.setBlock(c, FarmingsBlocks.BARN_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
@@ -266,10 +267,10 @@ public class FarmingsGameTests {
 		for (int dir = -1; dir <= 1; dir += 2) {
 			int firstZ = dir < 0 ? c.getZ() - 4 : c.getZ() + 2;
 			for (int j = 0; j <= stalls; j++) {
-				barnPart(level, BarnParts.STALL_DIVIDER, new BlockPos(xd + 2 * j, fl, firstZ), n);
+				barnPart(level, BarnParts.STALL_DIVIDER, new BlockPos(row + 2 * j, fl, firstZ), n);
 			}
 			for (int i = 0; i < stalls; i++) {
-				int x = xd + 1 + 2 * i;
+				int x = row + 1 + 2 * i;
 				barnPart(level, BarnParts.STALL_BED, new BlockPos(x, fl, firstZ), n);
 				barnPart(level, BarnParts.FEED_BUNK, new BlockPos(x, fl, c.getZ() + dir * 5), n);
 				barnPart(level, BarnParts.HAY_FEEDER, new BlockPos(x, fl + 1, c.getZ() + dir * 5), n);
@@ -300,8 +301,9 @@ public class FarmingsGameTests {
 		BlockPos c = new BlockPos(14, 4, 8);
 		ServerLevel level = helper.getLevel();
 		buildBarn(level, helper.absolutePos(c), 3);
-		// the divider between stall 2 and stall 3 on the north side: x = xd + 4, its cells run from z = cz - 4 for 3 cells, 2 high
-		int xd = c.getX() - 7;
+		// the divider between stall 2 and stall 3 on the north side: x = row + 4, its cells run from z = cz - 4 for 3 cells, 2 high
+		// (3 stalls: a 14-cell alley, the row starting 3 cells from the drive)
+		int xd = c.getX() - 11;
 		BlockPos divider = helper.absolutePos(new BlockPos(xd + 4, c.getY() - 1, c.getZ() - 4));
 		helper.assertTrue(level.getBlockState(divider).getBlock() == FarmingsBlocks.part(BarnParts.STALL_DIVIDER), Component.literal("the divider should be where the test thinks"));
 		level.destroyBlock(divider, false);
@@ -322,7 +324,7 @@ public class FarmingsGameTests {
 		BlockPos c = new BlockPos(14, 4, 8);
 		ServerLevel level = helper.getLevel();
 		buildBarn(level, helper.absolutePos(c), 2);
-		int xd = c.getX() - 5;
+		int xd = c.getX() - 8;                           // 2 stalls: a 10-cell alley, the row starting 2 cells from the drive
 		BlockPos main = helper.absolutePos(new BlockPos(xd + 2, c.getY() - 1, c.getZ() + 2));
 		// break the topmost cell of the far end of the divider
 		level.destroyBlock(main.offset(0, 1, 2), false);
@@ -366,7 +368,7 @@ public class FarmingsGameTests {
 	}
 
 	private static DriveEntity driveOf(GameTestHelper helper, int stalls) {
-		BlockPos drive = helper.absolutePos(C).offset(-(2 * stalls + 1), 0, 0);
+		BlockPos drive = helper.absolutePos(C).offset(-dev.farmings.husbandry.barn.BarnLayout.alleyLength(stalls), 0, 0);
 		return (DriveEntity) BigParts.entity(helper.getLevel(), drive);
 	}
 
@@ -379,16 +381,16 @@ public class FarmingsGameTests {
 		BarnControllerEntity ctl = controller(helper, C);
 		PitEntity pit = (PitEntity) BigParts.entity(level, c.below());
 		int fl = c.getY() - 1;
-		int xd = c.getX() - 7;
-		dropManure(level, new BlockPos(xd + 3, fl, c.getZ()), 7);
-		dropManure(level, new BlockPos(xd + 5, fl, c.getZ() - 1), 5);
-		dropManure(level, new BlockPos(xd + 6, fl, c.getZ() + 1), 3);
+		int xd = c.getX() - dev.farmings.husbandry.barn.BarnLayout.alleyLength(3);   // 14 cells: open, stall row, open
+		dropManure(level, new BlockPos(xd + 2, fl, c.getZ()), 7);         // the drive-end open stretch
+		dropManure(level, new BlockPos(xd + 7, fl, c.getZ() - 1), 5);     // in front of the stalls
+		dropManure(level, new BlockPos(xd + 12, fl, c.getZ() + 1), 3);    // the pit-end open stretch
 		helper.assertTrue(ctl.startPass(level), Component.literal("a pass should start, got " + ctl.readout()));
 		helper.succeedWhen(() -> {
 			helper.assertTrue(pit.manure() == 15, Component.literal("all 15 manure should reach the pit, it holds " + pit.manure() + "; " + ctl.readout()));
 			helper.assertTrue(manureOnFloor(level, c) == 0, Component.literal("no manure should be left on the floor"));
 			helper.assertTrue(!ctl.pass().running(), Component.literal("the pass should be over"));
-			helper.assertTrue(level.getBlockState(c.offset(-6, 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER),
+			helper.assertTrue(level.getBlockState(new BlockPos(xd + 1, c.getY(), c.getZ())).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER),
 					Component.literal("the blade should be back beside the drive"));
 			helper.assertTrue(ctl.readout().contains("scraper idle"), Component.literal("readout: " + ctl.readout()));
 		});
@@ -403,7 +405,7 @@ public class FarmingsGameTests {
 		dropManure(level, c.offset(-4, -1, 0), 4);
 		helper.assertTrue(ctl.startPass(level), Component.literal("a pass starts even unpowered (it then waits)"));
 		helper.runAfterDelay(120, () -> {
-			helper.assertTrue(level.getBlockState(c.offset(-6, 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER), Component.literal("the blade must not have moved"));
+			helper.assertTrue(level.getBlockState(c.offset(1 - dev.farmings.husbandry.barn.BarnLayout.alleyLength(3), 0, 0)).getBlock() == FarmingsBlocks.part(BarnParts.MANURE_SCRAPER), Component.literal("the blade must not have moved"));
 			helper.assertTrue(ctl.readout().contains("NO POWER"), Component.literal("readout: " + ctl.readout()));
 			helper.assertTrue(((PitEntity) BigParts.entity(level, c.below())).manure() == 0, Component.literal("nothing reaches the pit"));
 			helper.succeed();
@@ -624,7 +626,7 @@ public class FarmingsGameTests {
 		buildBarn(level, c, 2);
 		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
 		player.getAbilities().instabuild = false;     // a creative player's items are not used up
-		BlockPos bunk = c.offset(-4, -1, -5);
+		BlockPos bunk = c.offset(-7, -1, -5);          // stall 1 north of a 2-stall barn
 		BlockPos feederCell = bunk.above();
 		FeederEntity feeder = (FeederEntity) BigParts.entity(level, feederCell);
 		ItemStack hay = new ItemStack(net.minecraft.world.item.Items.HAY_BLOCK, 5);

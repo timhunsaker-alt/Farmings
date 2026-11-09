@@ -74,7 +74,8 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	/** The same barn the NeoForge game test builds: alley east-west, pit at the east end, controller at c. */
 	private static void buildBarn(ServerLevel level, BlockPos c, int stalls) {
 		int fl = c.getY() - 1;
-		int xd = c.getX() - (2 * stalls + 1);
+		int xd = c.getX() - dev.farmings.husbandry.barn.BarnLayout.alleyLength(stalls);
+		int row = xd + stalls;
 		barnPart(level, BarnParts.COLLECTION_PIT, new BlockPos(c.getX(), fl - 1, c.getZ()));
 		level.setBlock(c, FarmingsBlocks.BARN_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
 		barnPart(level, BarnParts.SCRAPER_DRIVE, new BlockPos(xd, c.getY(), c.getZ()));
@@ -87,10 +88,10 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		for (int dir = -1; dir <= 1; dir += 2) {
 			int firstZ = dir < 0 ? c.getZ() - 4 : c.getZ() + 2;
 			for (int j = 0; j <= stalls; j++) {
-				barnPart(level, BarnParts.STALL_DIVIDER, new BlockPos(xd + 2 * j, fl, firstZ));
+				barnPart(level, BarnParts.STALL_DIVIDER, new BlockPos(row + 2 * j, fl, firstZ));
 			}
 			for (int i = 0; i < stalls; i++) {
-				int x = xd + 1 + 2 * i;
+				int x = row + 1 + 2 * i;
 				barnPart(level, BarnParts.STALL_BED, new BlockPos(x, fl, firstZ));
 				barnPart(level, BarnParts.FEED_BUNK, new BlockPos(x, fl, c.getZ() + dir * 5));
 				barnPart(level, BarnParts.HAY_FEEDER, new BlockPos(x, fl + 1, c.getZ() + dir * 5));

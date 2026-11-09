@@ -293,7 +293,7 @@ public class BarnControllerEntity extends BlockEntity {
 		if (!formed()) {
 			return;
 		}
-		List<BarnStalls.Stall> stalls = BarnStalls.of(check.driveX(), check.stallsPerSide());
+		List<BarnStalls.Stall> stalls = BarnStalls.of(check.rowStartX(), check.stallsPerSide());
 		List<CattleEntity> herd = herd(level);
 		Set<Integer> taken = new HashSet<>();
 		List<CattleEntity> homeless = new ArrayList<>();
@@ -381,7 +381,7 @@ public class BarnControllerEntity extends BlockEntity {
 		if (!formed() || !worldPosition.equals(cow.stallController())) {
 			return null;
 		}
-		for (BarnStalls.Stall s : BarnStalls.of(check.driveX(), check.stallsPerSide())) {
+		for (BarnStalls.Stall s : BarnStalls.of(check.rowStartX(), check.stallsPerSide())) {
 			if (standPos(s).equals(cow.stallStand())) {
 				return at(s.x(), floorY(), s.alleyZ());
 			}

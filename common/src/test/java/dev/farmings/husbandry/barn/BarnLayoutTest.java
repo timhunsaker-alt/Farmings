@@ -14,10 +14,12 @@ class BarnLayoutTest {
 		final Map<String, BarnPart> cells = new HashMap<>();
 		final int stalls;
 		final int xd;
+		final int row;
 
 		Drawing(int stalls) {
 			this.stalls = stalls;
-			this.xd = -(2 * stalls + 1);
+			this.xd = -BarnLayout.alleyLength(stalls);
+			this.row = xd + stalls;
 			set(0, 1, 0, BarnPart.CONTROLLER);
 			for (int x = 0; x <= 1; x++) {
 				for (int z = -1; z <= 1; z++) {
@@ -37,12 +39,12 @@ class BarnLayoutTest {
 			for (int dir = -1; dir <= 1; dir += 2) {
 				for (int j = 0; j <= stalls; j++) {
 					for (int k = 2; k <= 4; k++) {
-						set(xd + 2 * j, 0, dir * k, BarnPart.STALL_DIVIDER);
-						set(xd + 2 * j, 1, dir * k, BarnPart.STALL_DIVIDER);
+						set(row + 2 * j, 0, dir * k, BarnPart.STALL_DIVIDER);
+						set(row + 2 * j, 1, dir * k, BarnPart.STALL_DIVIDER);
 					}
 				}
 				for (int i = 0; i < stalls; i++) {
-					int x = xd + 1 + 2 * i;
+					int x = row + 1 + 2 * i;
 					for (int k = 2; k <= 4; k++) {
 						set(x, 0, dir * k, BarnPart.STALL_BED);
 					}
@@ -92,10 +94,10 @@ class BarnLayoutTest {
 	@Test
 	void aMissingDividerNamesTheStall() {
 		Drawing d = new Drawing(4);
-		// the divider between stall 2 and stall 3 on the north side: x = xd + 4
+		// the divider between stall 2 and stall 3 on the north side: x = row + 4
 		for (int k = 2; k <= 4; k++) {
-			d.remove(d.xd + 4, 0, -k);
-			d.remove(d.xd + 4, 1, -k);
+			d.remove(d.row + 4, 0, -k);
+			d.remove(d.row + 4, 1, -k);
 		}
 		BarnCheck c = d.check();
 		assertFalse(c.formed());
@@ -107,7 +109,7 @@ class BarnLayoutTest {
 	void aDividerThatIsOnlyOneHighIsNotEnough() {
 		Drawing d = new Drawing(3);
 		for (int k = 2; k <= 4; k++) {
-			d.remove(d.xd, 1, k);
+			d.remove(d.row, 1, k);
 		}
 		assertTrue(d.check().status().contains("Stall 1 south has no divider"));
 	}
@@ -116,8 +118,8 @@ class BarnLayoutTest {
 	void theFarDividerBelongsToTheLastStall() {
 		Drawing d = new Drawing(3);
 		for (int k = 2; k <= 4; k++) {
-			d.remove(d.xd + 6, 0, k);
-			d.remove(d.xd + 6, 1, k);
+			d.remove(d.row + 6, 0, k);
+			d.remove(d.row + 6, 1, k);
 		}
 		assertEquals("Stall 3 south has no divider on its far side", d.check().status());
 	}
@@ -125,13 +127,13 @@ class BarnLayoutTest {
 	@Test
 	void everyStallNeedsABedABunkAndAFeeder() {
 		Drawing d = new Drawing(3);
-		d.remove(d.xd + 3, 0, -3);                  // a cell of the bed of stall 2 north
+		d.remove(d.row + 3, 0, -3);                  // a cell of the bed of stall 2 north
 		assertEquals("Stall 2 north has no bed", d.check().status());
 		d = new Drawing(3);
-		d.remove(d.xd + 1, 0, 5);
+		d.remove(d.row + 1, 0, 5);
 		assertEquals("Stall 1 south has no feed bunk", d.check().status());
 		d = new Drawing(3);
-		d.remove(d.xd + 5, 1, -5);
+		d.remove(d.row + 5, 1, -5);
 		assertEquals("Stall 3 north has no hay feeder", d.check().status());
 	}
 
@@ -167,11 +169,33 @@ class BarnLayoutTest {
 	}
 
 	@Test
-	void anEvenAlleyIsRejected() {
+	void anAlleyThatIsNotTwiceTheStallRowIsRejected() {
 		Drawing d = new Drawing(3);
 		d.remove(d.xd, 1, 0);
 		d.set(d.xd + 1, 1, 0, BarnPart.SCRAPER_DRIVE);
-		assertTrue(d.check().status().contains("2n+1"), d.check().status());
+		assertTrue(d.check().status().contains("twice a stall row"), d.check().status());
+	}
+
+	@Test
+	void theAlleyIsTwiceTheStallRowWithOpenStretchesAtBothEnds() {
+		for (int n = 2; n <= 12; n++) {
+			Drawing d = new Drawing(n);
+			BarnCheck c = d.check();
+			assertTrue(c.formed(), c.problems().toString());
+			assertEquals(2 * (2 * n + 1), -c.driveX());
+			assertEquals(n, c.rowStartX() - c.driveX(), "n open cells at the drive end");
+			int rowEnd = c.rowStartX() + 2 * n;                 // the last divider
+			assertEquals(n + 1, -1 - rowEnd, "n+1 open cells at the pit end");
+		}
+	}
+
+	@Test
+	void theOldShortAlleyNamesTheLengthItNeeds() {
+		// 3 stalls a side built the old way: the alley only as long as the stall row (7 cells)
+		Drawing d = new Drawing(3);
+		d.remove(d.xd, 1, 0);
+		d.set(-7, 1, 0, BarnPart.SCRAPER_DRIVE);
+		assertTrue(d.check().status().contains("14 for 3 stalls a side"), d.check().status());
 	}
 
 	@Test
@@ -187,7 +211,7 @@ class BarnLayoutTest {
 			Drawing d = new Drawing(4);
 			// put the drawing in the world turned by o, controller at (40, 1, 40), and ask from the controller
 			BarnGrid world = (x, y, z) -> {
-				for (int ax = -30; ax <= 5; ax++) {
+				for (int ax = -55; ax <= 5; ax++) {
 					for (int az = -7; az <= 7; az++) {
 						int[] w = o.world(ax, az);
 						if (40 + w[0] == x && 40 + w[1] == z) {
@@ -207,8 +231,8 @@ class BarnLayoutTest {
 	void whenNothingFormsTheClosestReadingNamesTheProblem() {
 		Drawing d = new Drawing(4);
 		for (int k = 2; k <= 4; k++) {
-			d.remove(d.xd + 4, 0, -k);
-			d.remove(d.xd + 4, 1, -k);
+			d.remove(d.row + 4, 0, -k);
+			d.remove(d.row + 4, 1, -k);
 		}
 		BarnCheck c = BarnLayout.find(d.grid(), 0, 1, 0);
 		assertFalse(c.formed());

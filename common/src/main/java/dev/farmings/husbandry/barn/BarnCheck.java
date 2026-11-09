@@ -20,6 +20,11 @@ public record BarnCheck(boolean formed, int stallsPerSide, List<String> problems
 		return formed ? "FORMED" : problems.get(0);
 	}
 
+	/** Where the stall rows start (their first divider), in drawn cells from the controller: after the drive-end open stretch of n cells. */
+	public int rowStartX() {
+		return driveX + stallsPerSide;
+	}
+
 	public int stalls() {
 		return stallsPerSide * 2;
 	}

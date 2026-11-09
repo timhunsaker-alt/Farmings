@@ -26,6 +26,7 @@ A figure marked *(proposed)* is a proposal or a scaled value. A figure marked *(
 | Stall length | 3.1 m, plus 0.9-1.2 m lunge space | 3 cells; the lunge space is the open side beyond the stall |
 | Feed bunk space | about 75 cm per head (heifer table, *unverified* for cows) | 1 cell per cow, in line with its stall |
 | **Scrape alley** | **3 m** (Tim, 2026-11-07) | 3 cells wide |
+| **Alley length** | runs past the stalls into cross-alleys at both ends | **twice the stall row** (Tim, 2026-11-09): 2(2n+1) cells |
 
 Sources: [Dairyland Initiative](https://thedairylandinitiative.vetmed.wisc.edu/adult-cow-housing/freestall-design-and-dimensions/),
 [Lactanet](https://lactanet.ca/en/housing-newly-weaned-heifers-2/). A stall is one cell wide whatever the breed (rounding).
@@ -157,6 +158,19 @@ health (of 10) per game day, never below 2, so she never dies. Game test: dirty_
 ## Built, 2026-11-09: the pipe-fed trough
 The trough is a Wildcatter water user: a water pump whose pipe touches any cell of it tops it up to 1,000 L, as a float valve would. A
 bucket still works. Game test: trough_filled_by_pipe.
+
+## Changed 2026-11-09: the alley is twice as long as the stall rows (Tim)
+Tim asked for the scrape alley to be double the length of the stall rows, with the extra split evenly between both ends. A row of n stalls is
+2n+1 cells, so the alley (rail and both floor rows, from the drive to the cell before the pit) is **2(2n+1)** cells:
+```
+ drive | n open cells | divider bed divider ... divider (2n+1) | n+1 open cells | pit
+```
+The total open length, 2n+1, is odd, so the pit end gets the extra cell *(proposed)*. Nothing is required beside the open stretches;
+they are where the troughs can stand and where the cow lane to the parlor leaves the alley (parlor.md). Real barns have cross-alleys at
+the row ends for the same reasons. The scraper sweeps the whole alley, and rests beside the drive as before. With 12 stalls a side the
+alley is 50 cells. A barn built before this change no longer forms; the controller names the length it needs ("The alley is 9 cells long;
+it must be twice a stall row, 2 x (2n+1): 18 for 4 stalls a side"). Tests: BarnLayoutTest (both open stretches, the old short alley) and
+every barn game test, rebuilt to the longer alley.
 
 ## Open decisions
 None. All eight were settled on 2026-11-07 (see the top of this file). The *(unverified)* tags remain: the scraper motor size has no

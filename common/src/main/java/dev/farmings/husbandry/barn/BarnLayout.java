@@ -15,14 +15,15 @@ import java.util.List;
  *   z+2..z+4  stall beds and dividers
  *   z+5   feed bunk and hay feeder
  * </pre>
- * Along x, from the drive at the far end to the cell before the pit: divider, bed, divider, bed ... divider, so n stalls take
- * 2n+1 cells. (The spec's first sketch showed the beds shoulder to shoulder; that left no cell for a divider between two beds,
- * so a stall takes two cells, one for the bed and one for the divider that follows it.)
+ * Along x, a stall row is divider, bed, divider, bed ... divider, so n stalls take 2n+1 cells. (The spec's first sketch showed the
+ * beds shoulder to shoulder; that left no cell for a divider between two beds, so a stall takes two cells.) The alley is twice as long
+ * as a stall row (Tim, 2026-11-09): 2(2n+1) cells from the drive to the cell before the pit, with n open cells at the drive end, the
+ * stall row, then n+1 open cells at the pit end (the odd cell goes to the pit end, proposed).
  */
 public final class BarnLayout {
 	public static final int MIN_STALLS_PER_SIDE = 2;
-	/** How far from the controller the drive is looked for: 12 stalls a side (the spec's upper bound) take 25 cells. */
-	public static final int MAX_LENGTH = 25;
+	/** How far from the controller the drive is looked for: 12 stalls a side (the spec's upper bound) take a 50-cell alley. */
+	public static final int MAX_LENGTH = 50;
 	private static final int PIT_LENGTH = 2;
 
 	private BarnLayout() {
@@ -84,11 +85,14 @@ public final class BarnLayout {
 			return new BarnCheck(false, 0, problems, orientation, BarnCheck.NO_DRIVE);
 		}
 		int length = cx - xd;                       // cells from the drive to the one before the pit
-		if (length % 2 == 0) {
-			problems.add("The alley is " + length + " cells long; a barn of n stalls a side takes 2n+1");
+		if (length % 4 != 2) {
+			// an odd length is most likely a barn built before the alley was doubled: the alley only as long as its 2n+1 stall row
+			int n = Math.max(MIN_STALLS_PER_SIDE, length % 2 == 1 ? (length - 1) / 2 : (int) Math.round((length / 2.0 - 1) / 2));
+			problems.add("The alley is " + length + " cells long; it must be twice a stall row, 2 x (2n+1): "
+					+ alleyLength(n) + " for " + n + " stalls a side");
 			return new BarnCheck(false, 0, problems, orientation, xd - cx);
 		}
-		int stalls = (length - 1) / 2;
+		int stalls = (length / 2 - 1) / 2;
 		if (stalls < MIN_STALLS_PER_SIDE) {
 			problems.add("A barn needs at least " + MIN_STALLS_PER_SIDE + " stalls a side; this one has " + stalls);
 			return new BarnCheck(false, stalls, problems, orientation, xd - cx);
@@ -115,42 +119,48 @@ public final class BarnLayout {
 			problems.add("No manure scraper on the rail");
 		}
 
-		// the two rows of stalls
+		// the two rows of stalls, after the drive-end open stretch
+		int row = xd + stalls;
 		for (int side = 0; side < 2; side++) {
-			String row = side == 0 ? "north" : "south";
+			String rowName = side == 0 ? "north" : "south";
 			int dir = side == 0 ? -1 : 1;           // -z is the north row
 			int bedNear = cz + dir * 2;             // the bed cells are 3 long: 2..4 from the centre
 			for (int j = 0; j <= stalls; j++) {
-				int x = xd + 2 * j;
+				int x = row + 2 * j;
 				if (!column(g, x, fl, bedNear, dir, 3, 2, BarnPart.STALL_DIVIDER)) {
 					int stall = Math.min(j + 1, stalls);
-					problems.add("Stall " + stall + " " + row + " has no divider on its " + (j < stalls ? "near" : "far") + " side");
+					problems.add("Stall " + stall + " " + rowName + " has no divider on its " + (j < stalls ? "near" : "far") + " side");
 				}
 			}
 			for (int i = 0; i < stalls; i++) {
-				int x = xd + 1 + 2 * i;
+				int x = row + 1 + 2 * i;
 				if (!column(g, x, fl, bedNear, dir, 3, 1, BarnPart.STALL_BED)) {
-					problems.add("Stall " + (i + 1) + " " + row + " has no bed");
+					problems.add("Stall " + (i + 1) + " " + rowName + " has no bed");
 				}
 				int bunkZ = cz + dir * 5;
 				if (g.at(x, fl, bunkZ) != BarnPart.FEED_BUNK) {
-					problems.add("Stall " + (i + 1) + " " + row + " has no feed bunk");
+					problems.add("Stall " + (i + 1) + " " + rowName + " has no feed bunk");
 				}
 				if (g.at(x, fl + 1, bunkZ) != BarnPart.HAY_FEEDER) {
-					problems.add("Stall " + (i + 1) + " " + row + " has no hay feeder");
+					problems.add("Stall " + (i + 1) + " " + rowName + " has no hay feeder");
 				}
 			}
 			boolean trough = false;
-			for (int x = xd - 3; x <= cx + 4 && !trough; x++) {
+			for (int x = xd - 1; x <= cx + 4 && !trough; x++) {
 				for (int k = 2; k <= 4 && !trough; k++) {
 					trough = g.at(x, fl, cz + dir * k) == BarnPart.WATER_TROUGH;
 				}
 			}
 			if (!trough) {
-				problems.add("The " + row + " row has no water trough");
+				problems.add("The " + rowName + " row has no water trough");
 			}
 		}
 		return new BarnCheck(problems.isEmpty(), stalls, problems, orientation, xd - cx);
+	}
+
+	/** The alley length (drive to the cell before the pit) for {@code stallsPerSide} stalls a side: twice the 2n+1 stall row. */
+	public static int alleyLength(int stallsPerSide) {
+		return 2 * (2 * stallsPerSide + 1);
 	}
 
 	/** Whether {@code len} cells across (starting {@code dir * k} from the centre line) are {@code part}, {@code high} layers up. */
