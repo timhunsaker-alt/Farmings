@@ -13,7 +13,7 @@ public final class FarmingsNeoForgeClient {
 
 	public static void init(IEventBus modBus) {
 		modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
-				event -> event.registerLayerDefinition(CattleModels.GYR, CattleModels::createGyrLayer));
+				event -> event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer));
 		modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
 				event -> event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new));
 	}

@@ -449,6 +449,123 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		return c;
 	}
 
+	private static dev.farmings.genetics.VisualGenome withCoat(CattleEntity c, dev.farmings.genetics.VisualLocus l, int a, int b) {
+		java.util.EnumMap<dev.farmings.genetics.VisualLocus, int[]> m = new java.util.EnumMap<>(c.visualGenome().alleles());
+		m.put(l, new int[] {a, b});
+		return new dev.farmings.genetics.VisualGenome(m);
+	}
+
+	/** Bred and calved now; the calf, grown to {@code ageDays} if that is above zero. */
+	private static CattleEntity crossOf(ServerLevel level, CattleEntity dam, CattleEntity sire, double ageDays) {
+		dam.forceCalvingForTest(1, false, false);
+		dam.startHeatForDisplay();
+		dam.conceive(sire.genome(), sire.visualGenome(), level.getGameTime());
+		java.util.Set<java.util.UUID> before = new java.util.HashSet<>();
+		for (CattleEntity e : level.getEntitiesOfClass(CattleEntity.class, dam.getBoundingBox().inflate(6))) {
+			before.add(e.getUUID());
+		}
+		dam.makeDueNow();
+		dam.settle(level);
+		for (CattleEntity e : level.getEntitiesOfClass(CattleEntity.class, dam.getBoundingBox().inflate(6))) {
+			if (!before.contains(e.getUUID())) {
+				e.setNoAi(true);
+				if (ageDays > 0) {
+					e.settle(level);              // growth counts from the first settle
+					e.advanceForTest(ageDays);
+					e.settle(level);
+				}
+				return e;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The coat lineup (docs/animals/cattle.md, "Models and coats"): a cow of each breed, a red Holstein, a Holstein bull and a Gyr bull, three
+	 * F1 crosses grown up, and two calves; side views in groups of four, and a front view of the horns, ears and hump.
+	 */
+	private static void coats(ClientGameTestContext context, TestServerContext server, int y) {
+		java.util.List<CattleEntity> line = new java.util.ArrayList<>();
+		java.util.List<String> names = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 0, 40, y, 16, 34, 6);
+			for (int x = -16; x <= 16; x++) {
+				for (int z = 6; z <= 80; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+				}
+			}
+			long seed = 300;
+			for (CattleBreed b : CattleBreed.values()) {
+				CattleEntity c = founder(level, b, Sex.FEMALE, seed++, 1500, b.matureWeightKg, 60.5, y, 60.5);
+				c.setCalvedForDisplay(30);
+				c.settle(level);
+				line.add(c);
+				names.add(b.name().toLowerCase(java.util.Locale.ROOT));
+			}
+			CattleEntity red = founder(level, CattleBreed.HOLSTEIN, Sex.FEMALE, seed++, 1500, 680, 60.5, y, 60.5);
+			red.setVisualGenome(withCoat(red, dev.farmings.genetics.VisualLocus.EXTENSION, 3, 3));
+			red.setCalvedForDisplay(30);
+			red.settle(level);
+			line.add(red);
+			names.add("red holstein");
+			CattleEntity holBull = founder(level, CattleBreed.HOLSTEIN, Sex.MALE, seed++, 1500, 1000, 60.5, y, 60.5);
+			line.add(holBull);
+			names.add("holstein bull");
+			CattleEntity gyrBull = founder(level, CattleBreed.GYR, Sex.MALE, seed++, 1500, 700, 60.5, y, 60.5);
+			line.add(gyrBull);
+			names.add("gyr bull");
+			CattleEntity angBull = founder(level, CattleBreed.ANGUS, Sex.MALE, seed++, 1500, 900, 60.5, y, 60.5);
+			CattleEntity jerBull = founder(level, CattleBreed.JERSEY, Sex.MALE, seed++, 1500, 700, 60.5, y, 60.5);
+			CattleEntity[] dams = new CattleEntity[3];
+			for (int i = 0; i < 3; i++) {
+				dams[i] = founder(level, i == 2 ? CattleBreed.GYR : CattleBreed.HOLSTEIN, Sex.FEMALE, seed++, 1500, 650, 60.5, y, 60.5);
+			}
+			Object[][] crosses = {{dams[0], angBull, "holstein x angus"}, {dams[1], jerBull, "holstein x jersey"}, {dams[2], holBull, "gyr x holstein"}};
+			for (Object[] x : crosses) {
+				CattleEntity f1 = crossOf(level, (CattleEntity) x[0], (CattleEntity) x[1], 900);
+				if (f1 != null) {
+					line.add(f1);
+					names.add((String) x[2] + " F1");
+				}
+			}
+			CattleEntity calf = crossOf(level, line.get(0), holBull, 0);
+			if (calf != null) {
+				line.add(calf);
+				names.add("holstein calf");
+			}
+			for (CattleEntity d : dams) {
+				d.discard();
+			}
+			angBull.discard();
+			jerBull.discard();
+			for (int i = 0; i < line.size(); i++) {
+				line.get(i).setPos(0.5, y, 10.5 + 4 * i);
+				line.get(i).setYRot(0);
+				line.get(i).setYHeadRot(0);
+				line.get(i).setYBodyRot(0);
+			}
+		});
+		context.waitTicks(60);
+		// one at a time, a three-quarter view from the front left, everyone else parked out of sight
+		for (int i = 0; i < line.size(); i++) {
+			int shown = i;
+			server.runOnServer(srv -> {
+				for (int j = 0; j < line.size(); j++) {
+					CattleEntity c = line.get(j);
+					c.setPos(j == shown ? 0.5 : 200.5 + 4 * j, y, j == shown ? 20.5 : 200.5);
+					c.setYRot(0);
+					c.setYHeadRot(0);
+					c.setYBodyRot(0);
+				}
+			});
+			actionbar(server, names.get(i) + ": " + line.get(i).look().describe());
+			server.runCommand("tp @p 2.9 " + (y + 2.4) + " 22.9 135 32");
+			context.waitTicks(30);
+			context.takeScreenshot("farmings-coat-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + names.get(i).replace(' ', '-'));
+		}
+	}
+
 	/** A heifer in heat (hearts), twins born to a cow, the readout of a calf, and the herd book open on its page. */
 	private static void breeding(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
@@ -657,6 +774,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("coats".equals(only)) {
+				context.waitTicks(200);
+				coats(context, server, y);
 				return;
 			}
 			if ("breeding".equals(only)) {

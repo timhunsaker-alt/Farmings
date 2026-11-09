@@ -11,7 +11,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 public final class FarmingsFabricClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ModelLayerRegistry.registerModelLayer(CattleModels.GYR, CattleModels::createGyrLayer);
+		ModelLayerRegistry.registerModelLayer(CattleModels.CATTLE, CattleModels::createLayer);
 		EntityRendererRegistry.register(FarmingsEntities.CATTLE, CattleRenderer::new);
 	}
 }

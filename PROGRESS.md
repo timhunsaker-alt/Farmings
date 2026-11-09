@@ -146,5 +146,5 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the worn armor look).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.
-- Cattle are textures on the vanilla cow model (plus the Gyr hump), not their own 3D models. The visual genome recipe (coat from genes) is not built.
+- ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
 - Not built: products by hopper or pipe, whey, spoilage of dairy products, a plain-text genome code.

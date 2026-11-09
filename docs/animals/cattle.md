@@ -191,3 +191,37 @@ space, Gyr gestation and Brazilian Gyr weight, and the primary NRC source for in
   - 1-3 leather; an animal that dies burning drops cooked meat.
   - Results: a 550 kg Angus gives 13 beef and 3 Choice steaks. A 487 kg Wagyu gives 10 beef and 4 Prime steaks.
 - Game tests: first_lactation_lower, cow_readout_and_castration, beef_drops_by_weight, wagyu_more_steaks.
+
+## Models and coats (built 2026-11-09; Tim chose "new models + coat genes")
+Cattle no longer use the vanilla cow model or one texture per breed. Their looks come from their coat genes (GENETICS.md, "Coat genes").
+
+**The model** (`client/CattleModels`, `CattleModel`):
+- One model keeps the vanilla cow's head, body and legs in place, so the walking animation and hitbox still fit.
+- It adds parts the genes switch on:
+  - horns (horned animals, not calves);
+  - short ears, or long drooping ears for ear length 2-3;
+  - a hump in three sizes;
+  - a dewlap sized by the gene;
+  - an udder on a cow that has been bred;
+  - a crest on a bull.
+- **Body types** are made by scaling parts, so a cross sits between its parents:
+  - beef blood makes the body wider and deeper and the legs shorter and thicker;
+  - zebu blood makes the legs a little longer;
+  - a bull is a little bigger, with a heavier head.
+
+  These proportions are drawn, not measured *(proposed)*. The blend uses FarmChain's rule: the second body family counts when it gives at
+  least 25%.
+- Calves are drawn at half size with a larger head.
+
+**The coat**, drawn in three passes:
+1. A hair texture (from the Ludo cow-hair swatch), tinted by the coat colour from the genes.
+2. White markings: piebald patches (8 shapes), speckles (4 shapes) or colour-sided, each at 4 white levels from the white-coverage gene,
+   plus a star, blaze or white face.
+   - The shapes are cut from 3D noise sampled where each texel sits on the model, so a patch carries on across a box edge.
+   - Each animal's marking seed (from her genome hash) picks her shape, so it never changes.
+3. Details that are never tinted: eyes, muzzle, horns, hooves, udder.
+
+All drawn by `tools/cattle_textures.py`; the per-breed textures are retired.
+
+**Evidence:** the `coats` client scene (`FARMINGS_ONLY=coats ./gradlew :fabric:runClientGameTest`) shows each breed, a red Holstein, a
+Holstein and a Gyr bull, three F1 crosses grown up, and a calf.

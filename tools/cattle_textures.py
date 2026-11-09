@@ -1,349 +1,243 @@
 #!/usr/bin/env python3
-"""Draws the six cattle coat textures for the vanilla cow model's 64x64 UV layout. Everything is drawn here from scratch (no Mojang
-pixels are copied; the repo is CC0). Colors were chosen from the Ludo concept art approved by Tim. Deterministic: same output every run.
+"""Draws the cattle textures for the gene-driven cattle model (common/.../client/CattleModels.java; docs/animals/cattle.md, "Models and
+coats"). Everything is drawn here from scratch (no Mojang pixels are copied; the repo is CC0). Deterministic: same output every run.
 
-    python3 tools/cattle_textures.py            # writes the PNGs
-Needs Pillow. Output: common/src/main/resources/assets/farmings/textures/entity/cattle/
+    python3 tools/cattle_textures.py
+
+Output, in common/src/main/resources/assets/farmings/textures/entity/cattle/:
+    coat.png                       the hair, near white so the renderer's tint (the coat colour from the genes) shows true
+    detail.png                     eyes, muzzle, horns, hooves, udder: drawn over everything and never tinted
+    white/patch_<level>_<shape>    piebald patches, 4 white levels x 8 shapes (Holstein)
+    white/speckle_<level>_<shape>  speckles and mottling, 4 levels x 4 shapes (Gyr)
+    white/sided_<level>            colour-sided: white along the back line and belly, 4 levels
+    white/face_<1-3>               star, blaze, white face
+A white level is the white_coverage gene / 250 (1-4). The patches are cut from 3D noise sampled at each texel's place on the model, so a
+patch runs on across the edge of a box face instead of stopping at it. Needs Pillow. The hair grain is the Ludo cow-hair swatch
+(art/final/hair.png, from tools/process_art.py).
 """
+import math
 import os
 import random
 from PIL import Image
 
-OUT = os.path.join(os.path.dirname(__file__), "..", "common", "src", "main", "resources", "assets", "farmings", "textures", "entity", "cattle")
+HERE = os.path.dirname(__file__)
+OUT = os.path.join(HERE, "..", "common", "src", "main", "resources", "assets", "farmings", "textures", "entity", "cattle")
+HAIR = os.path.join(HERE, "..", "art", "final", "hair.png")
+PATCH_SHAPES, SPECKLE_SHAPES = 8, 4
+COVER = {1: 0.25, 2: 0.50, 3: 0.72, 4: 0.92}
 
-# UV layout of the vanilla cow model (CowModel.createBaseCowModel): box (w,h,d) at (u,v) has
-#   top (u+d, v) w*d | bottom (u+d+w, v) w*d | west (u, v+d) d*h | front (u+d, v+d) w*h | east (u+d+w, v+d) d*h | back (u+2d+w, v+d) w*h
-HEAD_TOP, HEAD_BOTTOM, HEAD_WEST, HEAD_FRONT, HEAD_EAST, HEAD_BACK = (6, 0, 8, 6), (14, 0, 8, 6), (0, 6, 6, 8), (6, 6, 8, 8), (14, 6, 6, 8), (20, 6, 8, 8)
-MUZZLE_FRONT, MUZZLE_TOP, MUZZLE_BOTTOM, MUZZLE_SIDE_W, MUZZLE_SIDE_E, MUZZLE_BACK = (2, 34, 6, 3), (2, 33, 6, 1), (8, 33, 6, 1), (1, 34, 1, 3), (8, 34, 1, 3), (9, 34, 6, 3)
-HORN = (22, 0, 4, 4)       # 1x3x1 box: faces fit in x22..26, y0..4
-BODY_NORTH_BELLY, BODY_SOUTH_BACK = (28, 14, 12, 18), (50, 14, 12, 18)
-BODY_WEST, BODY_EAST = (18, 14, 10, 18), (40, 14, 10, 18)
-BODY_CHEST, BODY_RUMP = (28, 4, 12, 10), (40, 4, 12, 10)
-UDDER = (52, 0, 8, 7)      # 4x6x1 box
-LEG = (0, 16, 16, 16)      # 4x12x4 box: x0..16, y16..32
+# The boxes of CattleModels.createLayer: name, (u, v), (x0, y0, z0), (w, h, d), part pivot, rotated (the body lies on its side), coat?
+HEAD = (0.0, 4.0, -8.0)
+BODY = (0.0, 5.0, 2.0)
+BOXES = [
+    ("head", (0, 0), (-4, -4, -6), (8, 8, 6), HEAD, False, True),
+    ("muzzle", (28, 0), (-3, 1, -7), (6, 3, 1), HEAD, False, False),
+    ("horn_r", (44, 0), (-5, -6, -5), (1, 3, 1), HEAD, False, False),
+    ("horn_l", (48, 0), (4, -6, -5), (1, 3, 1), HEAD, False, False),
+    ("ear", (52, 0), (-7, -3, -3), (3, 1, 2), HEAD, False, True),
+    ("long_ear", (52, 4), (-5, -2, -4), (1, 5, 2), HEAD, False, True),
+    ("leg", (0, 16), (-6, 12, -7), (4, 12, 4), (0, 0, 0), False, True),
+    ("body", (18, 14), (-6, -10, -7), (12, 18, 10), BODY, True, True),
+    ("udder", (0, 42), (-2, 2, -8), (4, 6, 1), BODY, True, False),
+    ("crest", (10, 42), (-3, -10, 3), (6, 8, 2), BODY, True, True),
+    ("dewlap", (48, 42), (-0.5, -10, -11), (1, 6, 4), BODY, True, True),
+    ("hump_l", (0, 54), (-3, -9, 3), (6, 7, 3), BODY, True, True),
+    ("hump_m", (18, 54), (-3, -8, 3), (6, 5, 2), BODY, True, True),
+    ("hump_s", (34, 54), (-2.5, -7, 3), (5, 3, 2), BODY, True, True),
+]
 
 
-def clamp(v):
-    return max(0, min(255, int(round(v))))
+def faces(box):
+    """Each face of a box as (name, u0, v0, fw, fh, point(s, t)) with s, t in 0..1 across the face; point is in model space."""
+    _, (u, v), (x0, y0, z0), (w, h, d), pivot, rotated, _ = box
+    w, h, d = int(math.ceil(w)), int(h), int(d)
+    fs = [
+        ("top", u + d, v, w, d, lambda s, t: (x0 + s * w, y0, z0 + t * d)),
+        ("bottom", u + d + w, v, w, d, lambda s, t: (x0 + s * w, y0 + h, z0 + t * d)),
+        ("west", u, v + d, d, h, lambda s, t: (x0, y0 + t * h, z0 + s * d)),
+        ("front", u + d, v + d, w, h, lambda s, t: (x0 + s * w, y0 + t * h, z0)),
+        ("east", u + d + w, v + d, d, h, lambda s, t: (x0 + w, y0 + t * h, z0 + (1 - s) * d)),
+        ("back", u + 2 * d + w, v + d, w, h, lambda s, t: (x0 + (1 - s) * w, y0 + t * h, z0 + d)),
+    ]
+    out = []
+    for name, fu, fv, fw, fh, fn in fs:
+        def point(s, t, fn=fn):
+            x, y, z = fn(s, t)
+            if rotated:     # a quarter turn about x: local +y runs to the rump (world +z), local +z is up (world -y)
+                x, y, z = x, -z, y
+            return (x + pivot[0], y + pivot[1], z + pivot[2])
+        out.append((name, fu, fv, fw, fh, point))
+    return out
 
 
-class Painter:
+def texels():
+    """Every painted texel: (x, y) -> (box name, face name, model-space point, coat?)."""
+    seen = {}
+    for box in BOXES:
+        for fname, fu, fv, fw, fh, point in faces(box):
+            for j in range(fh):
+                for i in range(fw):
+                    x, y = fu + i, fv + j
+                    if 0 <= x < 64 and 0 <= y < 64 and (x, y) not in seen:
+                        seen[(x, y)] = (box[0], fname, point((i + 0.5) / fw, (j + 0.5) / fh), box[6])
+    return seen
+
+
+class Noise:
+    """Smooth 3D value noise on a seeded lattice."""
+
     def __init__(self, seed):
-        self.img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-        self.px = self.img.load()
         self.rnd = random.Random(seed)
+        self.table = {}
 
-    def fill(self, rect, color, noise=0):
-        x, y, w, h = rect
-        for j in range(y, y + h):
-            for i in range(x, x + w):
-                self.px[i, j] = self.shade(color, noise)
+    def lattice(self, i, j, k):
+        key = (i, j, k)
+        if key not in self.table:
+            self.table[key] = self.rnd.random()
+        return self.table[key]
 
-    def shade(self, color, noise):
-        if noise == 0:
-            return (*color[:3], 255)
-        n = self.rnd.uniform(-noise, noise)
-        return (clamp(color[0] + n), clamp(color[1] + n), clamp(color[2] + n), 255)
-
-    def set(self, x, y, color):
-        self.px[x, y] = (*color[:3], 255)
-
-    def clear(self, rect):
-        x, y, w, h = rect
-        for j in range(y, y + h):
-            for i in range(x, x + w):
-                self.px[i, j] = (0, 0, 0, 0)
+    def at(self, x, y, z):
+        i, j, k = math.floor(x), math.floor(y), math.floor(z)
+        fx, fy, fz = x - i, y - j, z - k
+        sx, sy, sz = (f * f * (3 - 2 * f) for f in (fx, fy, fz))
+        total = 0.0
+        for di in (0, 1):
+            for dj in (0, 1):
+                for dk in (0, 1):
+                    w = (sx if di else 1 - sx) * (sy if dj else 1 - sy) * (sz if dk else 1 - sz)
+                    total += w * self.lattice(i + di, j + dj, k + dk)
+        return total
 
 
-def blobs(rnd, n, width, height, rmin, rmax):
-    """Random round blobs on a canvas that wraps sideways, as a list of (cx, cy, rx, ry)."""
-    return [(rnd.uniform(0, width), rnd.uniform(0, height), rnd.uniform(rmin, rmax), rnd.uniform(rmin * 0.7, rmax * 1.1)) for _ in range(n)]
+def hair_grain():
+    hair = Image.open(HAIR).convert("L")
+    px = hair.load()
+    vals = [px[i, j] for j in range(hair.height) for i in range(hair.width)]
+    lo, hi = min(vals), max(vals)
+    return lambda x, y: (px[x % hair.width, y % hair.height] - lo) / max(1, hi - lo)
 
 
-def field(blob_list, x, y, width):
-    best = 0.0
-    for cx, cy, rx, ry in blob_list:
-        dx = min(abs(x - cx), width - abs(x - cx))
-        d = (dx / rx) ** 2 + ((y - cy) / ry) ** 2
-        best = max(best, 1.0 - d)
-    return best
+def shade(face):
+    return {"top": 1.0, "bottom": 0.84, "front": 0.95, "back": 0.95, "west": 0.92, "east": 0.92}[face]
 
 
-def paint_body(p, pixel_fn):
-    """pixel_fn(cx, cy) -> color, on the unrolled body: x 0..44 = back(12) west flank(10) belly(12) east flank(10), y 0..18 = head to tail."""
-    for u in range(12):
-        for v in range(18):
-            p.set(BODY_SOUTH_BACK[0] + u, BODY_SOUTH_BACK[1] + v, pixel_fn(u, v))
-    for u in range(10):
-        for v in range(18):
-            p.set(BODY_WEST[0] + u, BODY_WEST[1] + v, pixel_fn(12 + u, v))
-    for u in range(12):
-        for v in range(18):
-            p.set(BODY_NORTH_BELLY[0] + u, BODY_NORTH_BELLY[1] + v, pixel_fn(22 + u, v))
-    for u in range(10):
-        for v in range(18):
-            p.set(BODY_EAST[0] + u, BODY_EAST[1] + v, pixel_fn(34 + u, v))
-    # chest and rump: the colour of the body's dorsal/front edge
-    for u in range(12):
-        for v in range(10):
-            p.set(BODY_CHEST[0] + u, BODY_CHEST[1] + v, pixel_fn(u, 0))
-            p.set(BODY_RUMP[0] + u, BODY_RUMP[1] + v, pixel_fn(u, 17))
+def coat(tex, grain):
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    px = img.load()
+    for (x, y), (box, face, _, is_coat) in tex.items():
+        c = int(round(255 * (0.80 + 0.20 * grain(x, y)) * shade(face)))
+        px[x, y] = (c, c, c, 255)
+    return img
 
 
-def paint_legs(p, upper, lower, hoof, sock_rows):
-    x, y, w, h = LEG
-    for face_x in (4, 0, 8, 12):          # front, west, east, back faces of a 4x12x4 leg
-        for i in range(4):
-            for j in range(12):
-                color = upper
-                if j >= 12 - sock_rows:
-                    color = lower
-                if j >= 10:
-                    color = hoof
-                p.set(face_x + i, 20 + j, p.shade(color, 5)[:3])
-    p.fill((4, 16, 4, 4), upper, 4)
-    p.fill((8, 16, 4, 4), hoof, 2)
+def white_mask(tex, grain, field, cover):
+    """White hair where field(point) is in the top `cover` share of the coat texels."""
+    vals = sorted(field(p) for (box, face, p, is_coat) in tex.values() if is_coat)
+    cut = vals[min(len(vals) - 1, max(0, int(round((1 - cover) * len(vals)))))]
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    px = img.load()
+    for (x, y), (box, face, p, is_coat) in tex.items():
+        if is_coat and field(p) >= cut:
+            c = int(round(255 * (0.90 + 0.10 * grain(x, y)) * (0.94 + 0.06 * shade(face))))
+            px[x, y] = (c, c, c, 255)
+    return img
 
 
-def paint_head(p, head_color, face_color, ear_color, muzzle_color, nostril, eye_white=(240, 236, 228), blaze=None, forehead=None):
-    for r in (HEAD_TOP, HEAD_BOTTOM, HEAD_WEST, HEAD_EAST, HEAD_BACK):
-        p.fill(r, head_color, 5)
-    p.fill(HEAD_FRONT, face_color, 5)
-    if blaze:                                           # a pale stripe down the face
-        x, y, w, h = HEAD_FRONT
-        for j in range(h):
-            for i in (3, 4):
-                p.set(x + i, y + j, blaze)
-        for j in range(HEAD_TOP[3]):
-            for i in (3, 4):
-                p.set(HEAD_TOP[0] + i, HEAD_TOP[1] + j, blaze)
-    if forehead:
-        x, y, w, h = HEAD_FRONT
-        for j in range(0, 2):
-            for i in range(w):
-                p.set(x + i, y + j, forehead)
-    # eyes: pale outer pixel, dark inner pixel, same row on both sides
-    x, y, _, _ = HEAD_FRONT
-    for row in (3, 4):
-        p.set(x + 1, y + row, eye_white)
-        p.set(x + 2, y + row, (20, 14, 12))
-        p.set(x + 5, y + row, (20, 14, 12))
-        p.set(x + 6, y + row, eye_white)
-    # ears: painted on the sides of the head, towards the back
-    for fx, fy, w, h in (HEAD_WEST, HEAD_EAST):
-        for i in range(3):
-            for j in range(2):
-                p.set(fx + 3 + i - (1 if fx == 0 else 0) + (0 if fx == 0 else 0), fy + 1 + j, ear_color)
-    # muzzle block
-    for r in (MUZZLE_TOP, MUZZLE_BOTTOM, MUZZLE_SIDE_W, MUZZLE_SIDE_E, MUZZLE_BACK):
-        p.fill(r, muzzle_color, 3)
-    p.fill(MUZZLE_FRONT, muzzle_color, 3)
-    mx, my, _, _ = MUZZLE_FRONT
-    p.set(mx + 1, my + 1, nostril)
-    p.set(mx + 4, my + 1, nostril)
+def patch_field(seed):
+    n1, n2 = Noise(seed), Noise(seed + 1000)
+
+    def f(p):
+        x, y, z = p
+        # big soft patches, a finer edge, and more white low down (belly and legs), as on most Holsteins
+        return 0.75 * n1.at(x / 7.0, y / 7.0, z / 7.0) + 0.25 * n2.at(x / 3.0, y / 3.0, z / 3.0) + 0.012 * y
+    return f
 
 
-def paint_horns(p, color, tip):
-    x, y, _, _ = HORN
-    p.fill((x, y, 4, 4), color, 3)
-    p.set(x + 1, y + 1, tip)
+def speckle_field(seed):
+    n1, n2 = Noise(seed), Noise(seed + 2000)
+
+    def f(p):
+        x, y, z = p
+        # fine speckle over a broad mottle: the Gyr's red-and-white look
+        return 0.55 * n1.at(x / 2.0, y / 2.0, z / 2.0) + 0.45 * n2.at(x / 6.0, y / 6.0, z / 6.0)
+    return f
 
 
-def paint_hump(p, coat, dark):
-    """The Gyr's shoulder hump: a 6x7x3 box at (0,40). Its faces are painted in the coat, a little darker on top."""
-    p.fill((0, 40, 18, 10), coat, 6)
-    p.fill((3, 40, 6, 3), dark, 5)
+def sided_field():
+    n = Noise(77)
+
+    def f(p):
+        x, y, z = p
+        # white along the top line and the belly, darkest on the flanks
+        top = max(0.0, -y + 2) / 12.0
+        belly = max(0.0, y - 8) / 6.0
+        return max(top * (1.0 - abs(x) / 7.0), belly) + 0.15 * n.at(x / 2.0, y / 2.0, z / 2.0)
+    return f
 
 
-def paint_udder(p, color, teat):
-    x, y, _, _ = UDDER
-    p.fill((x, y, 8, 7), color, 4)
-    for dx in (1, 3):
-        p.set(x + 1 + dx, y + 5, teat)     # front face (53..56, 1..7): teats at the bottom
-    p.fill((x + 1, y + 1, 4, 6), color, 4)
-    p.set(x + 2, y + 6, teat)
-    p.set(x + 4, y + 6, teat)
+def face_mask(tex, grain, kind):
+    """Face white on the head's front (and the muzzle for a white face). kind 1 star, 2 blaze, 3 white face."""
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    px = img.load()
+    for (x, y), (box, face, p, is_coat) in tex.items():
+        if box not in ("head", "muzzle"):
+            continue
+        hx, hy, hz = p[0] - HEAD[0], p[1] - HEAD[1], p[2] - HEAD[2]   # back in the head's own frame
+        white = False
+        if kind == 1:
+            white = face == "front" and box == "head" and abs(hx) <= 1.2 and -3.2 <= hy <= -1.0
+        elif kind == 2:
+            white = face == "front" and abs(hx) <= 1.3 and hy >= -3.5
+        elif kind == 3:
+            white = (face == "front" or box == "muzzle" or (face == "top" and hz < -3)) and not (box == "head" and face == "front" and abs(hx) > 3.2 and hy < -0.5)
+        if white:
+            c = int(round(255 * (0.90 + 0.10 * grain(x, y))))
+            px[x, y] = (c, c, c, 255)
+    return img
 
 
-# --- the breeds ---
-
-def black_share(patches, x0, x1):
-    n = sum(1 for cx in range(x0, x1) for cy in range(18) if field(patches, cx, cy, 44) > 0.0)
-    return n / ((x1 - x0) * 18)
-
-
-def holstein_patches():
-    """The first seed whose two flanks are each between 40 and 55 percent black, and whose back is not all one colour."""
-    for seed in range(1, 500):
-        patches = blobs(random.Random(seed), 12, 44, 18, 3.0, 6.5)
-        west, east, back = black_share(patches, 12, 22), black_share(patches, 34, 44), black_share(patches, 0, 12)
-        if 0.40 <= west <= 0.55 and 0.40 <= east <= 0.55 and 0.25 <= back <= 0.7:
-            return patches
-    raise RuntimeError("no Holstein pattern found")
-
-
-def holstein(udder):
-    p = Painter(101)
-    white, black, grey, pink = (244, 242, 238), (24, 24, 26), (176, 172, 176), (232, 160, 168)
-    patches = holstein_patches()
-
-    def fn(cx, cy):
-        f = field(patches, cx, cy, 44)
-        if f > 0.0:
-            n = p.rnd.uniform(-5, 5)
-            return (clamp(black[0] + n), clamp(black[1] + n), clamp(black[2] + n))
-        if 20 <= cx < 36 and cy > 9:                    # grey shading on the underside
-            return p.shade(grey, 4)[:3]
-        return p.shade(white, 3)[:3]
-    paint_body(p, fn)
-    paint_legs(p, white, white, (92, 80, 74), 0)
-    paint_head(p, black, black, pink, (150, 110, 112), (60, 40, 40), blaze=white)
-    p.fill(MUZZLE_FRONT, (232, 190, 188), 3)
-    mx, my, _, _ = MUZZLE_FRONT
-    p.set(mx + 1, my + 1, (90, 50, 54))
-    p.set(mx + 4, my + 1, (90, 50, 54))
-    p.clear(HORN)
-    if udder:
-        paint_udder(p, pink, (214, 130, 140))
-    return p.img
-
-
-def jersey(udder):
-    p = Painter(202)
-    fawn, belly, dark = (188, 138, 92), (214, 172, 130), (150, 104, 66)
-
-    def fn(cx, cy):
-        if 20 <= cx < 36:
-            return p.shade(belly, 4)[:3]
-        if cx < 12 or cx >= 40:                          # back: a touch darker
-            return p.shade(dark if p.rnd.random() < 0.05 else fawn, 5)[:3]
-        return p.shade(fawn, 6)[:3]
-    paint_body(p, fn)
-    paint_legs(p, fawn, (206, 160, 116), (58, 42, 36), 4)
-    paint_head(p, (170, 122, 82), (176, 128, 88), (214, 150, 140), (58, 40, 36), (24, 16, 14))
-    x, y, w, h = HEAD_FRONT                              # pale ring round the muzzle
-    for i in range(w):
-        p.set(x + i, y + h - 1, (226, 206, 184))
-    p.clear(HORN)
-    if udder:
-        paint_udder(p, (214, 150, 140), (176, 110, 110))
-    return p.img
-
-
-def brown_swiss(udder):
-    p = Painter(303)
-    coat, light, dark = (112, 98, 84), (140, 126, 110), (92, 80, 68)
-
-    def fn(cx, cy):
-        if 20 <= cx < 36:
-            return p.shade(light, 4)[:3]
-        return p.shade(dark if p.rnd.random() < 0.05 else coat, 5)[:3]
-    paint_body(p, fn)
-    paint_legs(p, coat, (96, 84, 72), (44, 38, 36), 3)
-    paint_head(p, (118, 104, 90), (124, 110, 94), (186, 150, 140), (226, 214, 200), (50, 42, 40), forehead=(150, 136, 120))
-    x, y, w, h = HEAD_FRONT
-    for i in range(w):
-        p.set(x + i, y + h - 1, (226, 214, 200))
-    mx, my, _, _ = MUZZLE_FRONT
-    p.fill(MUZZLE_FRONT, (60, 52, 48), 3)
-    p.set(mx + 1, my + 1, (20, 16, 16))
-    p.set(mx + 4, my + 1, (20, 16, 16))
-    p.clear(HORN)
-    if udder:
-        paint_udder(p, (196, 150, 144), (160, 104, 104))
-    return p.img
-
-
-def gyr(udder):
-    p = Painter(404)
-    coat, dark, speck, belly = (168, 66, 34), (122, 44, 24), (224, 200, 180), (152, 98, 78)
-
-    def fn(cx, cy):
-        r = p.rnd.random()
-        if 20 <= cx < 36:
-            return p.shade(belly, 5)[:3]
-        if r < 0.10:
-            return p.shade(speck, 6)[:3]
-        if r < 0.22:
-            return p.shade(dark, 5)[:3]
-        return p.shade(coat, 7)[:3]
-    paint_body(p, fn)
-    paint_legs(p, (150, 56, 30), (176, 92, 62), (54, 36, 30), 4)
-    paint_head(p, (140, 52, 28), (146, 56, 30), (176, 96, 80), (156, 150, 142), (50, 38, 34), forehead=(166, 66, 36))
-    paint_horns(p, (214, 200, 172), (70, 62, 52))
-    paint_hump(p, coat, dark)
-    if udder:
-        paint_udder(p, (170, 90, 100), (130, 66, 76))
-    return p.img
-
-
-def angus(udder):
-    p = Painter(505)
-    coat, hi = (32, 32, 36), (46, 46, 52)
-
-    def fn(cx, cy):
-        return p.shade(hi if p.rnd.random() < 0.14 else coat, 3)[:3]
-    paint_body(p, fn)
-    paint_legs(p, coat, (28, 28, 32), (14, 14, 16), 0)
-    paint_head(p, (30, 30, 34), (34, 34, 38), (70, 52, 52), (46, 44, 48), (14, 14, 16), eye_white=(220, 216, 208))
-    p.clear(HORN)
-    p.clear(UDDER)
-    return p.img
-
-
-def wagyu(udder):
-    p = Painter(606)
-    coat, sheen = (22, 17, 14), (40, 26, 18)
-    sh = blobs(random.Random(11), 3, 44, 18, 4.0, 6.0)
-    flank = [(16.5, 9, 6.5, 5.2), (39.0, 9, 6.5, 5.2)]       # one warm patch on each flank (x 12..22 west, 34..44 east)
-
-    def fn(cx, cy):
-        f = field(flank, cx, cy, 44)
-        if f > 0.15:
-            return p.shade(sheen, 5)[:3]
-        if f > 0.0:
-            return p.shade((30, 21, 16), 3)[:3]
-        return p.shade(coat, 3)[:3]
-    paint_body(p, fn)
-    paint_legs(p, coat, (26, 20, 16), (60, 54, 52), 0)
-    paint_head(p, (24, 19, 16), (26, 20, 17), (76, 54, 50), (44, 38, 36), (12, 10, 10), eye_white=(226, 220, 210))
-    paint_horns(p, (216, 204, 178), (70, 62, 52))
-    p.clear(UDDER)
-    return p.img
-
-
-BREEDS = {"holstein": (holstein, True), "jersey": (jersey, True), "brown_swiss": (brown_swiss, True), "gyr": (gyr, True),
-          "angus": (angus, False), "wagyu": (wagyu, False)}
-
-
-HAIR = os.path.join(os.path.dirname(__file__), "..", "art", "final", "hair.png")
-
-
-def with_hair(img):
-    """Lays the Ludo cow-hair swatch (art/final/hair.png, from tools/process_art.py) over the coat as a light-and-shade grain, so the
-    approved colours and patterns stay and the hide reads as hair. Horns and the transparent parts are left alone."""
-    if not os.path.exists(HAIR):
-        return img
-    hair = Image.open(HAIR).convert("L").resize(img.size)
-    mean = sum(hair.getdata()) / (hair.width * hair.height)
-    px, hp = img.load(), hair.load()
-    for x in range(img.width):
-        for y in range(img.height):
-            r, g, b, a = px[x, y]
-            if a == 0:
-                continue
-            k = 1 + 0.35 * (hp[x, y] - mean) / 128
-            px[x, y] = (clamp(r * k), clamp(g * k), clamp(b * k), a)
+def detail(tex):
+    """Untinted parts: eyes, muzzle, horns, hooves, udder skin."""
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    px = img.load()
+    for (x, y), (box, face, p, is_coat) in tex.items():
+        if box == "muzzle":
+            px[x, y] = (88, 70, 68, 255)
+        elif box.startswith("horn"):
+            tip = p[1] - HEAD[1] < -5.3
+            px[x, y] = (70, 62, 52, 255) if tip else (222, 210, 184, 255)
+        elif box == "udder":
+            px[x, y] = (222, 168, 160, 255)
+        elif box == "leg" and face != "top" and p[1] >= 22.0:
+            px[x, y] = (46, 40, 36, 255)
+    # nostrils on the muzzle's front face (u 29..34, v 1..3), and the eyes on the head's front face (u 6..13, v 6..13)
+    for nx in (30, 33):
+        px[nx, 2] = (40, 30, 30, 255)
+    for ex in (6, 13):
+        px[ex, 8] = (24, 20, 20, 255)
+        px[ex, 9] = (24, 20, 20, 255)
+    # teats along the udder's bottom face
+    for tx in (5, 6, 7, 8):
+        if (tx, 42) in tex:
+            px[tx, 42] = (196, 128, 124, 255)
     return img
 
 
 def main():
-    os.makedirs(OUT, exist_ok=True)
-    for name, (fn, dairy) in BREEDS.items():
-        with_hair(fn(True)).save(os.path.join(OUT, name + ".png"))
-        if dairy:
-            with_hair(fn(False)).save(os.path.join(OUT, name + "_no_udder.png"))
-    print("wrote", sorted(os.listdir(OUT)))
+    os.makedirs(os.path.join(OUT, "white"), exist_ok=True)
+    tex = texels()
+    grain = hair_grain()
+    coat(tex, grain).save(os.path.join(OUT, "coat.png"))
+    detail(tex).save(os.path.join(OUT, "detail.png"))
+    for level, cover in COVER.items():
+        for shape in range(PATCH_SHAPES):
+            white_mask(tex, grain, patch_field(100 + shape), cover).save(os.path.join(OUT, "white", f"patch_{level}_{shape}.png"))
+        for shape in range(SPECKLE_SHAPES):
+            white_mask(tex, grain, speckle_field(500 + shape), cover * 0.8).save(os.path.join(OUT, "white", f"speckle_{level}_{shape}.png"))
+        white_mask(tex, grain, sided_field(), cover * 0.6).save(os.path.join(OUT, "white", f"sided_{level}.png"))
+    for kind in (1, 2, 3):
+        face_mask(tex, grain, kind).save(os.path.join(OUT, "white", f"face_{kind}.png"))
+    print("wrote coat, detail and", len(os.listdir(os.path.join(OUT, "white"))), "white masks")
 
 
 if __name__ == "__main__":
