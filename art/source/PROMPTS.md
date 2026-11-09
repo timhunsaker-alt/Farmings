@@ -36,3 +36,7 @@ Every prompt ends "game item icon, plain white background, no text" (the armor: 
 | butter | A single rectangular half-kilo block of fresh pale yellow farm butter on folded white parchment paper |
 | cheddar_wheel | A single whole aged cheddar cheese wheel with an orange-tan cloth-bound waxed rind, three-quarter view |
 | cheddar | A single wedge slice of aged orange cheddar cheese with a thin rind edge |
+
+## Worn milk armor (2026-11-09, Ludo createImage, texture, Photorealistic 3D)
+- `mat_milk_armor.webp`: "Seamless tileable texture of fresh white milk surface poured over a curved form: glossy creamy white with soft sheen highlights, gentle ripples and a few thick drips, faint blue-white tint, no objects, no text, even lighting, top-down"
+- `mat_milk_spoiled.webp`: "Seamless tileable texture of spoiled curdled sour milk: lumpy cottage-cheese curds, yellowish off-white with sickly green-yellow tinge, separated watery whey in places, a few mould spots, matte, no objects, no text, even lighting, top-down"
