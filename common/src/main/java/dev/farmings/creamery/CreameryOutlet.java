@@ -95,10 +95,15 @@ public final class CreameryOutlet {
 		};
 	}
 
+	/** Takes the product: it leaves the cold creamery now, so its spoil clock starts (docs/food.md). */
 	public ItemStack take(Level level, BlockPos self, int slot, int count) {
 		if (slot == GLASS) {
 			return glass.split(count);
 		}
+		return dev.farmings.item.Perishables.stamp(takeRaw(level, self, count), level.getGameTime());
+	}
+
+	private ItemStack takeRaw(Level level, BlockPos self, int count) {
 		Creamery c = creamery(level, self);
 		if (c == null || count <= 0) {
 			return ItemStack.EMPTY;

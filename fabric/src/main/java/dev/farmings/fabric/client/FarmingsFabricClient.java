@@ -11,6 +11,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 public final class FarmingsFabricClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		dev.farmings.Farmings.clientTime = () -> {
+			var mc = net.minecraft.client.Minecraft.getInstance();
+			return mc.level == null ? 0L : mc.level.getGameTime();
+		};
 		ModelLayerRegistry.registerModelLayer(CattleModels.CATTLE, CattleModels::createLayer);
 		EntityRendererRegistry.register(FarmingsEntities.CATTLE, CattleRenderer::new);
 	}

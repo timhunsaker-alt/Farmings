@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 public final class Farmings {
 	public static final String MOD_ID = "farmings";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	/** The client world's game time, set by each loader's client entry point; null on a server. Used only to draw food freshness bars. */
+	public static volatile java.util.function.LongSupplier clientTime;
 
 	private Farmings() {
 	}

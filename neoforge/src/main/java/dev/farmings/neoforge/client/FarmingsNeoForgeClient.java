@@ -12,6 +12,10 @@ public final class FarmingsNeoForgeClient {
 	}
 
 	public static void init(IEventBus modBus) {
+		dev.farmings.Farmings.clientTime = () -> {
+			var mc = net.minecraft.client.Minecraft.getInstance();
+			return mc.level == null ? 0L : mc.level.getGameTime();
+		};
 		modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
 				event -> event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer));
 		modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,

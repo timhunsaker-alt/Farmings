@@ -68,6 +68,10 @@ ITEMS = [
     ("skim_milk_bottle", "Skim Milk", (232, 238, 246), "bottle"),
     ("buttermilk_bottle", "Buttermilk", (244, 240, 214), "bottle"),
     ("whey_bottle", "Whey", (226, 228, 170), "bottle"),
+    ("spoiled_bottle", "Spoiled Bottle", (196, 200, 120), "bottle"),
+    ("rancid_butter", "Rancid Butter", (200, 180, 90), "blob"),
+    ("moldy_cheese", "Moldy Cheese", (170, 160, 90), "blob"),
+    ("spoiled_steak", "Spoiled Steak", (110, 90, 70), "steak"),
     ("butter", "Butter", (246, 220, 110), "blob"),
     ("cheddar_wheel", "Cheddar Wheel", (232, 168, 60), "blob"),
     ("cheddar", "Cheddar", (240, 180, 70), "blob"),
@@ -139,7 +143,7 @@ def item_texture(name, colour, fork):
     elif fork == "steak":
         d.ellipse([2, 4, 14, 12], fill=colour)
         d.arc([2, 4, 14, 12], 0, 360, fill=(240, 230, 220))                 # fat rim
-        marbling = {"select": 2, "choice": 5, "prime": 9}[name.replace("cooked_", "").split("_")[0]]
+        marbling = {"select": 2, "choice": 5, "prime": 9}.get(name.replace("cooked_", "").split("_")[0], 0)
         for i in range(marbling):
             d.point((4 + (i * 5) % 9, 6 + (i * 3) % 5), fill=(245, 235, 230))
     elif fork == "straw":

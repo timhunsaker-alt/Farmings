@@ -985,7 +985,7 @@ public class CattleEntity extends Animal {
 		int max = new ItemStack(item).getMaxStackSize();
 		while (count > 0) {
 			int n = Math.min(max, count);
-			spawnAtLocation(level, new ItemStack(item, n));
+			spawnAtLocation(level, dev.farmings.item.Perishables.stamp(new ItemStack(item, n), level.getGameTime()));
 			count -= n;
 		}
 	}

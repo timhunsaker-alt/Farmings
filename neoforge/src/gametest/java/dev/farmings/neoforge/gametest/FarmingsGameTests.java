@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -136,6 +136,8 @@ public class FarmingsGameTests {
 			helper.register(id("hopper_takes_butter_and_wheels"), loaded(FarmingsGameTests::hopperTakesButterAndWheels));
 			helper.register(id("hopper_bottles_with_glass"), loaded(FarmingsGameTests::hopperBottlesWithGlass));
 			helper.register(id("whey_from_cheese"), loaded(FarmingsGameTests::wheyFromCheese));
+			helper.register(id("milk_spoils_at_room"), loaded(FarmingsGameTests::milkSpoilsAtRoom));
+			helper.register(id("spoiled_food_sickens"), loaded(FarmingsGameTests::spoiledFoodSickens));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -1867,6 +1869,69 @@ public class FarmingsGameTests {
 		helper.succeed();
 	}
 
+	// ---- spoilage (2026-11-09) ----
+
+	/** Milk bottled at the creamery starts its clock as it leaves (1 game day at room temperature), and turns when the day is up. */
+	private static void milkSpoilsAtRoom(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().addMilk(10, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.getAbilities().instabuild = false;
+		player.getInventory().clearContent();
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE, 3));
+		BlockPos bottler = partPos(c, dev.farmings.creamery.CreameryParts.BOTTLER);
+		for (int i = 0; i < 3; i++) {
+			useOn(level, player, bottler, player.getMainHandItem());
+		}
+		int slot = -1;
+		for (int i = 0; i < player.getInventory().getContainerSize() && slot < 0; i++) {
+			if (player.getInventory().getItem(i).is(FarmingsItems.BOTTLED_MILK)) {
+				slot = i;
+			}
+		}
+		helper.assertTrue(slot >= 0, Component.literal("bottled milk in hand"));
+		ItemStack milk = player.getInventory().getItem(slot);
+		long now = level.getGameTime();
+		long at = dev.farmings.item.Perishables.spoilsAt(milk);
+		helper.assertTrue(at - now >= 24_000 && at - now <= 24_000 + 1_200, Component.literal("it keeps one game day out of the cold, spoils in " + (at - now)));
+		// three bottles filled in the same tick carry the same clock, so they stack (the last fills the emptied hand, the others stack together)
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.BOTTLED_MILK) == 3, Component.literal("three bottles"));
+		boolean stacked = false;
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			ItemStack o = player.getInventory().getItem(i);
+			if (o.is(FarmingsItems.BOTTLED_MILK) && o != milk) {
+				stacked |= ItemStack.isSameItemSameComponents(o, milk);
+			}
+		}
+		helper.assertTrue(stacked, Component.literal("bottles filled together carry the same clock and stack"));
+		milk.getItem().inventoryTick(milk, level, player, null);
+		helper.assertTrue(player.getInventory().getItem(slot).is(FarmingsItems.BOTTLED_MILK), Component.literal("still good today"));
+		dev.farmings.item.Perishables.setSpoilsAt(milk, now - 1);    // a day later
+		milk.getItem().inventoryTick(milk, level, player, null);
+		ItemStack after = player.getInventory().getItem(slot);
+		helper.assertTrue(after.is(FarmingsItems.SPOILED_BOTTLE) && after.getCount() == milk.getCount(), Component.literal("then it turns, the same count: " + after));
+		helper.succeed();
+	}
+
+	/** Spoiled food is edible but sickens like spoiled milk armor: Hunger and Nausea. */
+	private static void spoiledFoodSickens(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		for (net.minecraft.world.item.Item item : new net.minecraft.world.item.Item[] {FarmingsItems.SPOILED_BOTTLE, FarmingsItems.RANCID_BUTTER,
+				FarmingsItems.MOLDY_CHEESE, FarmingsItems.SPOILED_STEAK}) {
+			player.removeAllEffects();
+			ItemStack food = new ItemStack(item);
+			food.finishUsingItem(level, player);
+			helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.HUNGER) && player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA),
+					Component.literal(item + " should sicken"));
+		}
+		helper.succeed();
+	}
+
 	private static void cheeseYieldAndAging(GameTestHelper helper) {
 		ServerLevel level = helper.getLevel();
 		BlockPos c = helper.absolutePos(K);
@@ -1938,7 +2003,7 @@ public class FarmingsGameTests {
 	/** Every block and every hand-made item has a recipe; animal and machine products (manure, filled straws, raw steaks, dairy) do not. */
 	private static void recipesCoverAllItems(GameTestHelper helper) {
 		java.util.Set<String> madeElsewhere = java.util.Set.of("manure", "semen_straw", "select_steak", "choice_steak", "prime_steak", "bottled_milk",
-				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel");
+				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel", "spoiled_bottle", "rancid_butter", "moldy_cheese", "spoiled_steak");
 		net.minecraft.world.item.crafting.RecipeManager recipes = helper.getLevel().getServer().getRecipeManager();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		int checked = 0;

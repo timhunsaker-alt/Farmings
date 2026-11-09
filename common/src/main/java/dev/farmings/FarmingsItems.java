@@ -25,14 +25,14 @@ public final class FarmingsItems {
 
 	// Steaks by USDA grade (husbandry.Carcass). Raw: vanilla raw beef's food. Cooked: Select is vanilla steak (8 hunger); Choice 9 and
 	// Prime 10 (proposed: better marbling, a little more food).
-	public static final Item SELECT_STEAK = item("select_steak", p -> new Item(p.food(net.minecraft.world.food.Foods.BEEF)));
-	public static final Item CHOICE_STEAK = item("choice_steak", p -> new Item(p.food(net.minecraft.world.food.Foods.BEEF)));
-	public static final Item PRIME_STEAK = item("prime_steak", p -> new Item(p.food(net.minecraft.world.food.Foods.BEEF)));
-	public static final Item COOKED_SELECT_STEAK = item("cooked_select_steak", p -> new Item(p.food(net.minecraft.world.food.Foods.COOKED_BEEF)));
+	public static final Item SELECT_STEAK = item("select_steak", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_STEAK, p.food(net.minecraft.world.food.Foods.BEEF)));
+	public static final Item CHOICE_STEAK = item("choice_steak", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_STEAK, p.food(net.minecraft.world.food.Foods.BEEF)));
+	public static final Item PRIME_STEAK = item("prime_steak", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_STEAK, p.food(net.minecraft.world.food.Foods.BEEF)));
+	public static final Item COOKED_SELECT_STEAK = item("cooked_select_steak", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_STEAK, p.food(net.minecraft.world.food.Foods.COOKED_BEEF)));
 	public static final Item COOKED_CHOICE_STEAK = item("cooked_choice_steak",
-			p -> new Item(p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(9).saturationModifier(0.8F).build())));
+			p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_STEAK, p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(9).saturationModifier(0.8F).build())));
 	public static final Item COOKED_PRIME_STEAK = item("cooked_prime_steak",
-			p -> new Item(p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(10).saturationModifier(0.9F).build())));
+			p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_STEAK, p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(10).saturationModifier(0.9F).build())));
 
 	public static Item steak(dev.farmings.husbandry.Carcass.Grade grade, boolean cooked) {
 		return switch (grade) {
@@ -56,21 +56,35 @@ public final class FarmingsItems {
 		return new net.minecraft.world.food.FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).alwaysEdible().build();
 	}
 
-	public static final Item BOTTLED_MILK = item("bottled_milk", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+	public static final Item BOTTLED_MILK = item("bottled_milk", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.MILK, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(4, 0.3F), net.minecraft.world.item.component.Consumables.defaultDrink()
 					.onConsume(net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect.INSTANCE).build())));
-	public static final Item CREAM_BOTTLE = item("cream_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+	public static final Item CREAM_BOTTLE = item("cream_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CREAM, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(2, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
-	public static final Item SKIM_MILK_BOTTLE = item("skim_milk_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+	public static final Item SKIM_MILK_BOTTLE = item("skim_milk_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.SKIM, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(2, 0.2F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
-	public static final Item BUTTERMILK_BOTTLE = item("buttermilk_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+	public static final Item BUTTERMILK_BOTTLE = item("buttermilk_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.BUTTERMILK, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(2, 0.3F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 	/** Whey from the cheese vat (creamery.md): a weak drink *(proposed food value)*; pigs will eat it when pigs come. */
-	public static final Item WHEY_BOTTLE = item("whey_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+	public static final Item WHEY_BOTTLE = item("whey_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.WHEY, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(1, 0.1F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
-	public static final Item BUTTER = item("butter", p -> new Item(p.food(food(3, 0.6F))));
-	public static final Item CHEDDAR_WHEEL = item("cheddar_wheel", p -> new Item(p.stacksTo(16)));
-	public static final Item CHEDDAR = item("cheddar", p -> new Item(p.food(food(3, 0.7F))));
+	public static final Item BUTTER = item("butter", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.BUTTER, p.food(food(3, 0.6F))));
+	public static final Item CHEDDAR_WHEEL = item("cheddar_wheel", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL, p.stacksTo(16)));
+	public static final Item CHEDDAR = item("cheddar", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR, p.food(food(3, 0.7F))));
+
+	// Spoiled food (docs/food.md): eating it gives Hunger and Nausea, like spoiled milk armor; food values proposed.
+	private static net.minecraft.world.item.component.Consumable sickening(boolean drink) {
+		return (drink ? net.minecraft.world.item.component.Consumables.defaultDrink() : net.minecraft.world.item.component.Consumables.defaultFood())
+				.onConsume(new net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect(java.util.List.of(
+						new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.HUNGER, 600, 0),
+						new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NAUSEA, 300, 0)))).build();
+	}
+
+	public static final Item SPOILED_BOTTLE = item("spoiled_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(1, 0.0F), sickening(true))));
+	public static final Item RANCID_BUTTER = item("rancid_butter", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+	public static final Item MOLDY_CHEESE = item("moldy_cheese", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+	public static final Item SPOILED_STEAK = item("spoiled_steak", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
 
 	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b) {
 		return switch (b) {
@@ -106,6 +120,10 @@ public final class FarmingsItems {
 		ALL.put("skim_milk_bottle", SKIM_MILK_BOTTLE);
 		ALL.put("buttermilk_bottle", BUTTERMILK_BOTTLE);
 		ALL.put("whey_bottle", WHEY_BOTTLE);
+		ALL.put("spoiled_bottle", SPOILED_BOTTLE);
+		ALL.put("rancid_butter", RANCID_BUTTER);
+		ALL.put("moldy_cheese", MOLDY_CHEESE);
+		ALL.put("spoiled_steak", SPOILED_STEAK);
 		ALL.put("butter", BUTTER);
 		ALL.put("cheddar_wheel", CHEDDAR_WHEEL);
 		ALL.put("cheddar", CHEDDAR);
