@@ -42,6 +42,15 @@ public final class FarmingsItems {
 		};
 	}
 
+	/** The herd book (records each animal's parents and traits). */
+	public static final Item HERD_BOOK = item("herd_book", p -> new dev.farmings.item.HerdBookItem(p.stacksTo(1)));
+
+	// Milk armor, the easter egg (docs/milk-armor.md).
+	public static final Item MILK_HELMET = item("milk_helmet", p -> new dev.farmings.item.MilkArmorItem(p, net.minecraft.world.item.equipment.ArmorType.HELMET));
+	public static final Item MILK_CHESTPLATE = item("milk_chestplate", p -> new dev.farmings.item.MilkArmorItem(p, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+	public static final Item MILK_LEGGINGS = item("milk_leggings", p -> new dev.farmings.item.MilkArmorItem(p, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
+	public static final Item MILK_BOOTS = item("milk_boots", p -> new dev.farmings.item.MilkArmorItem(p, net.minecraft.world.item.equipment.ArmorType.BOOTS));
+
 	/** Every item this class registers, by name, for registration and the asset/recipe checks. */
 	public static final java.util.Map<String, Item> ALL = new java.util.LinkedHashMap<>();
 
@@ -56,6 +65,11 @@ public final class FarmingsItems {
 		ALL.put("cooked_select_steak", COOKED_SELECT_STEAK);
 		ALL.put("cooked_choice_steak", COOKED_CHOICE_STEAK);
 		ALL.put("cooked_prime_steak", COOKED_PRIME_STEAK);
+		ALL.put("herd_book", HERD_BOOK);
+		ALL.put("milk_helmet", MILK_HELMET);
+		ALL.put("milk_chestplate", MILK_CHESTPLATE);
+		ALL.put("milk_leggings", MILK_LEGGINGS);
+		ALL.put("milk_boots", MILK_BOOTS);
 	}
 
 	private FarmingsItems() {

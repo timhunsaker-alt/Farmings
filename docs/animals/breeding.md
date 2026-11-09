@@ -69,3 +69,9 @@ Heat (`husbandry/Breeding`), a housed bull serving housed cows in heat on the ba
 - **Heat cue:** heart particles every 3 seconds while she is in heat (a game sign).
 - **Beef crosses:** Angus and Wagyu now have baselines (proposed, in cattle.md) and breed like the dairy breeds. Their calves carry the mixed breed composition. Beef cows calve but are never milked.
 - Game tests: twins_born, stillbirth_no_calf, freemartin_does_not_cycle, angus_wagyu_cross.
+
+## Built, 2026-11-09: the herd book
+A `herd_book` item. Right-click an animal to record it; use it in the air to read it as a book. One page per animal, keyed by its herd ID
+(the first 8 characters of its genome hash): breed or cross, sex, birth day, dam and sire IDs (founders say "founder"), calves, freemartin,
+the eight trait scores, dressing % and marbling grade. Recording again replaces the page. It holds 64 animals *(proposed)*.
+Game test: herd_book_records.

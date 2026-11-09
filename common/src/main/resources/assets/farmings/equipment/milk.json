@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "farmings:milk"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "farmings:milk"
+   }
+  ]
+ }
+}

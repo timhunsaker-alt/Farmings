@@ -42,11 +42,19 @@ ITEMS = [
     ("cooked_select_steak", "Cooked Select Steak", (120, 70, 40), "steak"),
     ("cooked_choice_steak", "Cooked Choice Steak", (128, 76, 44), "steak"),
     ("cooked_prime_steak", "Cooked Prime Steak", (136, 82, 48), "steak"),
+    ("herd_book", "Herd Book", (60, 110, 60), "book"),
+    ("milk_helmet", "Milk Helmet", (246, 246, 240), "armor"),
+    ("milk_chestplate", "Milk Chestplate", (246, 246, 240), "armor"),
+    ("milk_leggings", "Milk Leggings", (246, 246, 240), "armor"),
+    ("milk_boots", "Milk Boots", (246, 246, 240), "armor"),
 ]
+SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
     "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
     "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty.",
     "message.farmings.castrated": "Castrated: he will grow as a steer.",
+    "message.farmings.herd_book.recorded": "Recorded %s in the herd book.",
+    "message.farmings.herd_book.full": "The herd book is full (64 animals).",
 }
 CONTROLLER = ("Barn Controller", (200, 110, 40))
 PARLOR_CONTROLLER = ("Parlor Controller", (60, 110, 190))
@@ -92,7 +100,15 @@ def texture(name, colour, centre_stripe=None):
 def item_texture(name, colour, fork):
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    if fork == "steak":
+    if fork == "armor":
+        piece = name.split("_")[1]
+        shapes = {"helmet": [(3, 4, 12, 9)], "chestplate": [(2, 3, 13, 13)], "leggings": [(4, 3, 7, 14), (8, 3, 11, 14)], "boots": [(2, 9, 6, 14), (9, 9, 13, 14)]}
+        for box in shapes[piece]:
+            d.rectangle(box, fill=colour, outline=tuple(max(0, c - 60) for c in colour))
+    elif fork == "book":
+        d.rectangle([3, 2, 12, 14], fill=colour, outline=(40, 60, 40))
+        d.rectangle([5, 4, 10, 6], fill=(230, 220, 190))
+    elif fork == "steak":
         d.ellipse([2, 4, 14, 12], fill=colour)
         d.arc([2, 4, 14, 12], 0, 360, fill=(240, 230, 220))                 # fat rim
         marbling = {"select": 2, "choice": 5, "prime": 9}[name.replace("cooked_", "").split("_")[0]]
@@ -163,9 +179,28 @@ def main():
     for name, title, colour, kind in ITEMS:
         parent = "minecraft:item/handheld" if kind == "fork" else "minecraft:item/generated"
         lang["item.farmings." + name] = title
-        item_texture(name, colour, kind if kind in ("straw", "steak") else kind == "fork")
+        item_texture(name, colour, kind if kind in ("straw", "steak", "armor", "book") else kind == "fork")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_placeholder" % name}})
-        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+        if kind == "armor":
+            lang["item.farmings." + name + ".spoiled"] = "Spoiled " + title
+            item_texture(name + "_spoiled", SPOILED_COLOUR, "armor")
+            write(os.path.join(ASSETS, "models", "item", name + "_spoiled.json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_spoiled_placeholder" % name}})
+            write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:condition", "property": "minecraft:custom_model_data", "index": 0,
+                  "on_true": {"type": "minecraft:model", "model": "farmings:item/%s_spoiled" % name},
+                  "on_false": {"type": "minecraft:model", "model": "farmings:item/" + name}}})
+        else:
+            write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+    # the worn milk armor: equipment assets and their layer textures (placeholders)
+    for asset, colour in (("milk", (246, 246, 240)), ("milk_spoiled", SPOILED_COLOUR)):
+        write(os.path.join(ASSETS, "equipment", asset + ".json"),
+              {"layers": {"humanoid": [{"texture": "farmings:" + asset}], "humanoid_leggings": [{"texture": "farmings:" + asset}]}})
+        for layer in ("humanoid", "humanoid_leggings"):
+            img = Image.new("RGBA", (64, 32), colour + (255,))
+            ImageDraw.Draw(img).rectangle([0, 0, 63, 31], outline=tuple(max(0, c - 50) for c in colour))
+            path = os.path.join(ASSETS, "textures", "entity", "equipment", layer, asset + ".png")
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            img.save(path)
+    write(os.path.join(DATA, "tags", "item", "repairs_milk_armor.json"), {"values": ["minecraft:milk_bucket"]})
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     print("wrote", len(PARTS) + 1, "blocks")
 

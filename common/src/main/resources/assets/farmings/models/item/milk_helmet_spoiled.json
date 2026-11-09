@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "farmings:item/milk_helmet_spoiled_placeholder"
+ }
+}

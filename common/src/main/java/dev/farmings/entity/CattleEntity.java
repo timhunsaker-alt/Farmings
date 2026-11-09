@@ -101,6 +101,9 @@ public class CattleEntity extends Animal {
 	private int lactations;
 	/** A heifer born twin to a bull who came out infertile (Breeding.FREEMARTIN_RATE). She never cycles. */
 	private boolean freemartin;
+	/** Her parents' herd-book IDs (the first 8 characters of their genome hash); empty for a founder. */
+	private String damId = "";
+	private String sireId = "";
 	/** How dirty her stall is, 0 to 1, as her barn last saw it (Hygiene). */
 	private double dirty;
 
@@ -467,6 +470,8 @@ public class CattleEntity extends Animal {
 			if (calf != null) {
 				calf.initCalf(r, now, breed.matureWeightKg);
 				calf.ownerId = ownerId;
+				calf.damId = herdId(genome);
+				calf.sireId = herdId(sire);
 				calf.setPos(getX() + 0.8, getY(), getZ() + i * 0.8);
 				level.addFreshEntity(calf);
 				born.add(calf);
@@ -511,6 +516,35 @@ public class CattleEntity extends Animal {
 
 	public java.util.List<String> lastCalving() {
 		return lastCalving;
+	}
+
+	/** A herd-book ID: the first 8 characters of the genome hash, the same in every world for the same genes. */
+	public static String herdId(@Nullable Genome g) {
+		if (g == null) {
+			return "--------";
+		}
+		String h = g.hash();
+		return h.length() > 8 ? h.substring(0, 8) : h;
+	}
+
+	public String herdId() {
+		return herdId(genome);
+	}
+
+	public String damId() {
+		return damId;
+	}
+
+	public String sireId() {
+		return sireId;
+	}
+
+	public long birthTick() {
+		return birthTick;
+	}
+
+	public boolean castrated() {
+		return castrated;
 	}
 
 	public boolean freemartin() {
@@ -870,6 +904,8 @@ public class CattleEntity extends Animal {
 		output.putInt("Lactations", lactations);
 		output.putBoolean("Freemartin", freemartin);
 		output.putDouble("Dirty", dirty);
+		output.putString("Dam", damId);
+		output.putString("SireId", sireId);
 	}
 
 	@Override
@@ -917,6 +953,8 @@ public class CattleEntity extends Animal {
 		lactations = input.getIntOr("Lactations", hasCalved ? 1 : 0);
 		freemartin = input.getBooleanOr("Freemartin", false);
 		dirty = input.getDoubleOr("Dirty", 0);
+		damId = input.getStringOr("Dam", "");
+		sireId = input.getStringOr("SireId", "");
 		entityData.set(DATA_BREED, breed.ordinal());
 		entityData.set(DATA_STAGE, stageAt(level().getGameTime()).ordinal());
 	}

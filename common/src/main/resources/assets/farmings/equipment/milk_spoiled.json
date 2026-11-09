@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "farmings:milk_spoiled"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "farmings:milk_spoiled"
+   }
+  ]
+ }
+}

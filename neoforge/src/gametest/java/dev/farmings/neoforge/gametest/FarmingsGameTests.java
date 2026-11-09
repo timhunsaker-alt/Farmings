@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -115,6 +115,9 @@ public class FarmingsGameTests {
 			helper.register(id("angus_wagyu_cross"), loaded(FarmingsGameTests::angusWagyuCross));
 			helper.register(id("beef_drops_by_weight"), loaded(FarmingsGameTests::beefDropsByWeight));
 			helper.register(id("wagyu_more_steaks"), loaded(FarmingsGameTests::wagyuMoreSteaks));
+			helper.register(id("herd_book_records"), loaded(FarmingsGameTests::herdBookRecords));
+			helper.register(id("trough_filled_by_pipe"), loaded(FarmingsGameTests::troughFilledByPipe));
+			helper.register(id("milk_armor_spoils_and_sickens"), loaded(FarmingsGameTests::milkArmorSpoils));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -1345,6 +1348,77 @@ public class FarmingsGameTests {
 		for (CattleEntity cow : cows) {
 			helper.assertTrue(cow.milkKg() == 0, Component.literal("every cow is milked in one session, fault " + ctl.fault() + ", tank " + ctl.tank(level).tank().litres() + " L"));
 		}
+		helper.succeed();
+	}
+
+	// ---- herd book, piped trough, milk armor (2026-11-09) ----
+
+	private static void herdBookRecords(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 81L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 82L, 500, 400);
+		CattleEntity calf = calveOnce(level, dam, bull);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		ItemStack book = new ItemStack(FarmingsItems.HERD_BOOK);
+		player.setItemInHand(InteractionHand.MAIN_HAND, book);
+		FarmingsItems.HERD_BOOK.interactLivingEntity(book, player, calf, InteractionHand.MAIN_HAND);
+		FarmingsItems.HERD_BOOK.interactLivingEntity(book, player, dam, InteractionHand.MAIN_HAND);
+		FarmingsItems.HERD_BOOK.interactLivingEntity(book, player, calf, InteractionHand.MAIN_HAND);   // again: replaced, not added
+		ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+		java.util.List<String[]> entries = dev.farmings.item.HerdBookItem.entries(held);
+		helper.assertTrue(entries.size() == 2, Component.literal("two animals, got " + entries.size()));
+		String page = entries.get(0)[1];
+		helper.assertTrue(page.contains("Dam " + dam.herdId()) && page.contains("Sire " + bull.herdId()) && page.contains("milk yield"),
+				Component.literal("the calf's page names her parents and traits: " + page));
+		net.minecraft.world.item.component.WrittenBookContent content = held.get(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT);
+		helper.assertTrue(content != null && content.pages().size() == 2, Component.literal("it reads as a two-page book"));
+		helper.assertTrue(entries.get(0)[1].length() <= net.minecraft.world.item.component.WrittenBookContent.PAGE_LENGTH, Component.literal("a page fits"));
+		helper.succeed();
+	}
+
+	private static void troughFilledByPipe(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		TroughEntity trough = anyTrough(level, c);
+		helper.assertTrue(trough != null && trough.litres() == 0, Component.literal("an empty trough"));
+		// A pipe cell touching any cell of the trough finds it, the way a Wildcatter pump looks for its machines.
+		BlockPos pipe = trough.getBlockPos().above();
+		java.util.List<net.minecraft.world.level.block.entity.BlockEntity> found = dev.wildcatter.block.Plumbing.machines(level, java.util.Set.of(),
+				java.util.Set.of(pipe), false, net.minecraft.world.level.block.entity.BlockEntity.class);
+		dev.wildcatter.block.WaterUser user = found.stream().filter(e -> e instanceof dev.wildcatter.block.WaterUser).map(e -> (dev.wildcatter.block.WaterUser) e).findFirst().orElse(null);
+		helper.assertTrue(user == trough, Component.literal("the pump sees the trough as a water user, found " + found));
+		helper.assertTrue(user.waterLevel() == 0 && user.addWater(600) == 600 && user.addWater(600) == 400, Component.literal("it takes what fits"));
+		helper.assertTrue(trough.litres() == TroughEntity.CAPACITY_LITRES && user.waterLevel() == 1, Component.literal("full at 1,000 L"));
+		helper.succeed();
+	}
+
+	private static void milkArmorSpoils(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		ItemStack helmet = new ItemStack(FarmingsItems.MILK_HELMET);
+		ItemStack netherite = new ItemStack(net.minecraft.world.item.Items.NETHERITE_HELMET);
+		helper.assertTrue(helmet.getMaxDamage() == netherite.getMaxDamage(), Component.literal("netherite durability"));
+		helper.assertTrue(java.util.Objects.equals(helmet.get(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS).modifiers().size(),
+				netherite.get(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS).modifiers().size()), Component.literal("netherite stats"));
+		player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, helmet);
+		ItemStack worn = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD);
+		dev.farmings.item.MilkArmorItem.setMade(worn, level.getGameTime());
+		worn.inventoryTick(level, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
+		helper.assertTrue(!dev.farmings.item.MilkArmorItem.spoiled(worn) && !player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA), Component.literal("fresh: no sickness"));
+		dev.farmings.item.MilkArmorItem.setMade(worn, level.getGameTime() - dev.farmings.item.MilkArmorItem.SPOIL_TICKS);
+		worn.setDamageValue(17);
+		worn.inventoryTick(level, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
+		helper.assertTrue(dev.farmings.item.MilkArmorItem.spoiled(worn), Component.literal("a game day later it is spoiled"));
+		boolean viaTick = player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA);
+		dev.farmings.item.MilkArmorItem.sicken(player);
+		helper.assertTrue(viaTick, Component.literal("worn spoiled: Hunger and Nausea (direct call gives " + player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA)
+				+ ", same stack " + (player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD) == worn) + ", creative " + player.isCreative() + ")"));
+		helper.assertTrue(worn.getDamageValue() == 17, Component.literal("durability kept"));
+		helper.assertTrue(worn.getHoverName().getString().startsWith("Spoiled") || worn.getHoverName().getString().contains("spoiled"), Component.literal("spoiled name: " + worn.getHoverName().getString()));
 		helper.succeed();
 	}
 }

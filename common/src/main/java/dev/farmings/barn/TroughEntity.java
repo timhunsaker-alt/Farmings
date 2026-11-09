@@ -1,6 +1,7 @@
 package dev.farmings.barn;
 
 import dev.farmings.FarmingsBlocks;
+import dev.wildcatter.block.WaterUser;
 import dev.wildcatter.multiblock.BigPartEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,9 +11,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * A water trough's water, in litres. At one cell to the metre a water bucket (one block of water) is 1,000 litres, and the trough's
- * capacity is one bucket *(proposed)*. A Wildcatter pipe feed comes later (decided with Tim: water from both a pipe and a bucket).
+ * capacity is one bucket *(proposed)*. Water comes from a bucket or from a Wildcatter water pump's pipe (decided with Tim: both): the trough
+ * is a {@link WaterUser}, so a pump whose pipe touches it keeps it topped up, as a float valve does on a real trough.
  */
-public class TroughEntity extends BlockEntity implements BigPartEntity {
+public class TroughEntity extends BlockEntity implements BigPartEntity, WaterUser {
 	public static final double BUCKET_LITRES = 1000;
 	public static final double CAPACITY_LITRES = BUCKET_LITRES;
 
@@ -49,6 +51,22 @@ public class TroughEntity extends BlockEntity implements BigPartEntity {
 			setChanged();
 		}
 		return taken;
+	}
+
+	@Override
+	public double waterLevel() {
+		return litres / CAPACITY_LITRES;
+	}
+
+	/** From a pipe: takes what fits. */
+	@Override
+	public int addWater(int l) {
+		int fits = (int) Math.max(0, Math.min(l, Math.floor(room())));
+		if (fits > 0) {
+			litres += fits;
+			setChanged();
+		}
+		return fits;
 	}
 
 	@Override
