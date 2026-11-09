@@ -90,12 +90,13 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 		output.putBoolean("grown", grown);
 		output.putDouble("Litres", tank.litres());
 		output.putDouble("TempC", tank.tempC());
+		output.putLong("SinceAdd", tank.sinceAddTicks());
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
 		grown = input.getBooleanOr("grown", false);
-		tank.load(input.getDoubleOr("Litres", 0), input.getDoubleOr("TempC", BulkTank.COLD_C));
+		tank.load(input.getDoubleOr("Litres", 0), input.getDoubleOr("TempC", BulkTank.COLD_C), input.getLongOr("SinceAdd", Long.MAX_VALUE / 2));
 	}
 }

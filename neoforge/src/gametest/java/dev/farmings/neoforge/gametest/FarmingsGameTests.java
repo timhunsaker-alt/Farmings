@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -105,6 +105,7 @@ public class FarmingsGameTests {
 			helper.register(id("bucket_takes_milk"), loaded(FarmingsGameTests::bucketTakesMilk));
 			helper.register(id("parlor_state_survives_save"), loaded(FarmingsGameTests::parlorStateSurvivesSave));
 			helper.register(id("parlor_cow_walks_and_is_milked"), loaded(FarmingsGameTests::parlorCowWalks));
+			helper.register(id("parlor_milks_a_herd"), loaded(FarmingsGameTests::parlorMilksAHerd));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -1076,6 +1077,8 @@ public class FarmingsGameTests {
 		tank.tank().add(100, 35);
 		helper.assertTrue(tank.tank().warm(), Component.literal("fresh milk makes the tank warm"));
 		ctl.milk(level, 20);
+		helper.assertTrue(ctl.fault().isEmpty(), Component.literal("a session is under way, so milking goes on: " + ctl.fault()));
+		ctl.milk(level, 6_000);
 		helper.assertTrue(ctl.fault().equals("TANK WARM"), Component.literal("fault: " + ctl.fault()));
 		tank.forceChilling(true);
 		ctl.milk(level, 14_400);
@@ -1127,5 +1130,33 @@ public class FarmingsGameTests {
 			helper.assertTrue(ctl.tank(level).tank().litres() > 5, Component.literal("she walks in and is milked; tank " + ctl.tank(level).tank().litres() + " L, cow at " + cow.position()
 					+ ", stand " + cow.milkingStand() + ", fault " + ctl.fault()));
 		});
+	}
+
+	/** Found by the client screenshots: the first cow's warm milk must not stop the rest of the herd being milked in the same session. */
+	private static void parlorMilksAHerd(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildParlor(level, c, 4);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		ctl.tank(level).forceChilling(true);
+		CattleEntity[] cows = new CattleEntity[4];
+		for (int i = 0; i < cows.length; i++) {
+			cows[i] = milkingCow(level, c.offset(-4 + i, -1, 5), 94L + i);
+		}
+		for (int round = 0; round < 3; round++) {
+			ctl.milk(level, 20);
+			for (CattleEntity cow : cows) {
+				BlockPos stand = cow.milkingStand();
+				if (stand != null) {
+					cow.setPos(stand.getX() + 0.5, stand.getY() + 0.25, stand.getZ() + 0.5);
+				}
+			}
+			ctl.milk(level, 20);
+		}
+		for (CattleEntity cow : cows) {
+			helper.assertTrue(cow.milkKg() == 0, Component.literal("every cow is milked in one session, fault " + ctl.fault() + ", tank " + ctl.tank(level).tank().litres() + " L"));
+		}
+		helper.succeed();
 	}
 }

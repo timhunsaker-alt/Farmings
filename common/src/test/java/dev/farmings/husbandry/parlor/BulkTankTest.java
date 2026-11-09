@@ -37,4 +37,21 @@ class BulkTankTest {
 		t.add(10, 700);
 		assertTrue(t.warm());
 	}
+
+	@Test
+	void warmMilkOnlyBlocksANewSession() {
+		BulkTank t = new BulkTank();
+		t.add(40, 35);
+		assertTrue(t.warm());
+		assertFalse(t.blocksMilking());              // the session is under way
+		t.cool(5_999, false);
+		assertFalse(t.blocksMilking());
+		t.add(40, 35);                               // another cow: the session continues
+		t.cool(5_999, false);
+		assertFalse(t.blocksMilking());
+		t.cool(1, false);
+		assertTrue(t.blocksMilking());               // no milk for a whole session and still warm
+		t.cool(14_400, true);
+		assertFalse(t.blocksMilking());
+	}
 }

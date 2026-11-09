@@ -241,6 +241,77 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+	private static void parlorPart(ServerLevel level, dev.farmings.parlor.ParlorParts kind, BlockPos main) {
+		BlockState state = FarmingsBlocks.parlorPart(kind).defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
+		level.setBlock(main, state, Block.UPDATE_ALL);
+		BigParts.grow(level, main, state);
+	}
+
+	/** Four cows 30 days in milk walk into a 4-stall parlor and are milked into the bulk tank. Filmed, with screenshots. */
+	private static void parlor(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		int stalls = 4;
+		BlockPos c = new BlockPos(cx, y + 1, cz);
+		CattleEntity[] cows = new CattleEntity[4];
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			for (int x = cx - 12; x <= cx + 8; x++) {
+				for (int z = cz - 6; z <= cz + 14; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+					for (int h = 0; h < 6; h++) {
+						level.setBlockAndUpdate(new BlockPos(x, y + h, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					}
+				}
+			}
+			int fl = c.getY() - 1;
+			level.setBlock(c, FarmingsBlocks.PARLOR_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+			parlorPart(level, dev.farmings.parlor.ParlorParts.BULK_TANK, new BlockPos(c.getX() + 1, fl, c.getZ()));
+			int xp = c.getX() - stalls - 1;
+			parlorPart(level, dev.farmings.parlor.ParlorParts.VACUUM_PUMP, new BlockPos(xp, fl, c.getZ()));
+			for (int x = xp + 1; x <= c.getX(); x++) {
+				parlorPart(level, dev.farmings.parlor.ParlorParts.MILK_LINE, new BlockPos(x, fl, c.getZ()));
+			}
+			for (int x = xp + 1; x < c.getX(); x++) {
+				parlorPart(level, dev.farmings.parlor.ParlorParts.MILKING_UNIT, new BlockPos(x, c.getY(), c.getZ()));
+				parlorPart(level, dev.farmings.parlor.ParlorParts.PARLOR_STALL, new BlockPos(x, fl, c.getZ() + 1));
+			}
+			dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) level.getBlockEntity(c);
+			ctl.refresh(level);
+			ctl.pump(level).forceRunning(true);
+			ctl.tank(level).forceChilling(true);
+			for (int i = 0; i < cows.length; i++) {
+				CattleEntity cow = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+				cow.initFounder(CattleBreed.HOLSTEIN, Sex.FEMALE, 90L + i, 900, 650, level.getGameTime());
+				cow.setCalvedForDisplay(30);
+				cow.setPos(cx - 5 + i * 1.5, y, cz + 9 + 0.5);
+				cow.settle(level);
+				cows[i] = cow;
+				level.addFreshEntity(cow);
+			}
+		});
+		context.waitTicks(40);
+		server.runCommand("tp @p " + (cx - 2) + " " + (y + 6) + " " + (cz + 12) + " 180 45");
+		context.waitTicks(20);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "parlor"));
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-parlor-start");
+		for (int i = 0; i < 16; i++) {
+			context.waitTicks(20);
+			String text = server.computeOnServer(srv -> {
+				dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) srv.overworld().getBlockEntity(c);
+				ctl.milk(srv.overworld(), 20);
+				return ctl.readout(srv.overworld());
+			});
+			server.runCommand("title @p actionbar \"" + text + "\"");
+			if (i == 5) {
+				context.takeScreenshot("farmings-parlor-walking");
+			}
+		}
+		context.takeScreenshot("farmings-parlor-milked");
+		film.stop();
+	}
+
 	private static void calving(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
 		int cz = 60;
@@ -297,6 +368,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			server.runCommand("time set noon");
 			server.runCommand("weather clear");
 			server.runCommand("gamemode spectator @p");
+			if ("parlor".equals(System.getenv("FARMINGS_ONLY"))) {
+				context.waitTicks(200);
+				parlor(context, server, y);
+				return;
+			}
 			if ("calving".equals(System.getenv("FARMINGS_ONLY"))) {
 				context.waitTicks(200);
 				calving(context, server, y);

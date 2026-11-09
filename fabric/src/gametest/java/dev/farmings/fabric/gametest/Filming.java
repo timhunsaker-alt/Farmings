@@ -28,6 +28,14 @@ final class Filming {
 			File out = new File(folder, scene + ".mov");
 			out.delete();
 			var window = client.getWindow();
+			// screencapture films whatever is on top of that rectangle, so bring this game's window to the front first (another Minecraft
+			// open on the same screen, such as a launcher's own client, was being filmed instead: found 2026-11-08)
+			org.lwjgl.sdl.SDLVideo.SDL_RaiseWindow(window.handle());
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException ex) {
+				Thread.currentThread().interrupt();
+			}
 			String rect = window.getX() + "," + window.getY() + "," + window.getScreenWidth() + "," + window.getScreenHeight();
 			Process awake = new ProcessBuilder("caffeinate", "-d", "-i", "-t", "600").start();   // keeps the display and the Mac awake, at most 10 minutes
 			Process process = new ProcessBuilder("screencapture", "-x", "-v", "-R", rect, out.getPath()).redirectErrorStream(true)

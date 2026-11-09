@@ -104,8 +104,8 @@ public class ParlorControllerEntity extends BlockEntity {
 			work |= c.milkKg() > 0 || standIndex(c) >= 0;
 		}
 		pump.setDemand(work);
-		fault = !pump.powered() ? (work ? "NO POWER" : "") : tank.room() <= 0 ? "TANK FULL" : tank.warm() ? "TANK WARM" : "";
-		boolean ready = pump.powered() && tank.room() > 0 && !tank.warm();
+		fault = !pump.powered() ? (work ? "NO POWER" : "") : tank.room() <= 0 ? "TANK FULL" : tank.blocksMilking() ? "TANK WARM" : "";
+		boolean ready = pump.powered() && tank.room() > 0 && !tank.blocksMilking();
 		int n = check.stalls();
 		boolean[] taken = new boolean[n];
 		for (CattleEntity c : herd) {

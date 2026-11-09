@@ -44,7 +44,7 @@ Drawn with the controller at the origin and the tank to the east; it may lie any
 Plain Java `husbandry/parlor` (layout check, `BulkTank`, tests); blocks and entities in `dev.farmings.parlor`. Once a second the controller
 calls each lactating cow with milk (within 24 blocks *(proposed)*) to a free stall, she walks there (`CattleEntity.MilkingGoal`), is milked
 into the tank (1.03 kg per litre, 35 C), and goes home. Pump 4 kW, chiller 2.2 kW, tank 1,000 L (all Tim's, 2026-11-08). The tank cools
-35 C to 4 C in 14,400 ticks (the manufacturer's 3 h, scaled 15:1); above 10 C the tank is WARM and milking stops *(proposed)*. Faults: NO POWER,
+35 C to 4 C in 14,400 ticks (the manufacturer's 3 h, scaled 15:1); above 10 C the tank is WARM *(proposed)*; warm only blocks a **new milking session** (Tim chose this 2026-11-09 after the first client screenshots showed one cow's 35 C milk stopping the rest of the herd): milk keeps going in while the last of it went in under 6,000 ticks ago *(proposed)*. Faults: NO POWER,
 TANK FULL, TANK WARM. An empty bucket on the tank takes 10 L as a milk bucket *(proposed)*. Not built: spoilage, processing, models.
 
 ## DECISIONS for Tim
