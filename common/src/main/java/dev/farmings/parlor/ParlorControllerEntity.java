@@ -124,8 +124,10 @@ public class ParlorControllerEntity extends BlockEntity {
 			if (dx * dx + dz * dz <= AT_STAND_SQ) {
 				double litres = c.milkKg() / BulkTank.KG_PER_L;
 				if (tank.room() >= litres) {
+					double fat = c.milkFatPct();
+					double protein = c.milkProteinPct();
 					c.takeMilk();
-					tank.add(litres, BulkTank.MILK_IN_C);
+					tank.add(litres, BulkTank.MILK_IN_C, fat, protein);
 					c.setMilkingStand(null);
 					tankEntity.setChanged();
 				}

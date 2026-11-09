@@ -70,7 +70,7 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 
 	@Override
 	public Component inspect() {
-		return Component.literal(String.format("Bulk tank: %.0f / %.0f L at %.1f C; chiller (2.2 kW): %s", tank.litres(), BulkTank.CAPACITY_L, tank.tempC(), chiller.describe()));
+		return Component.literal(String.format("Bulk tank: %.0f / %.0f L at %.1f C, %.2f%% fat; chiller (2.2 kW): %s", tank.litres(), BulkTank.CAPACITY_L, tank.tempC(), tank.fatPct(), chiller.describe()));
 	}
 
 	@Override
@@ -91,6 +91,8 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 		output.putDouble("Litres", tank.litres());
 		output.putDouble("TempC", tank.tempC());
 		output.putLong("SinceAdd", tank.sinceAddTicks());
+		output.putDouble("FatPct", tank.fatPct());
+		output.putDouble("ProteinPct", tank.proteinPct());
 	}
 
 	@Override
@@ -98,5 +100,6 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 		super.loadAdditional(input);
 		grown = input.getBooleanOr("grown", false);
 		tank.load(input.getDoubleOr("Litres", 0), input.getDoubleOr("TempC", BulkTank.COLD_C), input.getLongOr("SinceAdd", Long.MAX_VALUE / 2));
+		tank.loadComponents(input.getDoubleOr("FatPct", 3.72), input.getDoubleOr("ProteinPct", 3.06));
 	}
 }

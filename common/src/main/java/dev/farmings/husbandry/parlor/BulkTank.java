@@ -27,6 +27,9 @@ public final class BulkTank {
 
 	private double litres;
 	private double tempC = COLD_C;
+	/** Fat and protein percent of the milk in the tank, mixed by volume (docs/multiblocks/creamery.md). */
+	private double fatPct = 3.72;
+	private double proteinPct = 3.06;
 	private long sinceAddTicks = Long.MAX_VALUE / 2;
 
 	public double litres() {
@@ -52,10 +55,17 @@ public final class BulkTank {
 
 	/** Adds fresh milk at {@code inC}; returns the litres that fit. */
 	public double add(double addL, double inC) {
+		return add(addL, inC, 3.72, 3.06);
+	}
+
+	/** Adds fresh milk at {@code inC} with its fat and protein percent; returns the litres that fit. */
+	public double add(double addL, double inC, double fat, double protein) {
 		double in = Math.max(0, Math.min(addL, room()));
 		if (in <= 0) {
 			return 0;
 		}
+		fatPct = (litres * fatPct + in * fat) / (litres + in);
+		proteinPct = (litres * proteinPct + in * protein) / (litres + in);
 		tempC = (litres * tempC + in * inC) / (litres + in);
 		sinceAddTicks = 0;
 		litres += in;
@@ -74,6 +84,19 @@ public final class BulkTank {
 		double out = Math.max(0, Math.min(wantL, litres));
 		litres -= out;
 		return out;
+	}
+
+	public double fatPct() {
+		return fatPct;
+	}
+
+	public double proteinPct() {
+		return proteinPct;
+	}
+
+	public void loadComponents(double fat, double protein) {
+		this.fatPct = fat;
+		this.proteinPct = protein;
 	}
 
 	public long sinceAddTicks() {

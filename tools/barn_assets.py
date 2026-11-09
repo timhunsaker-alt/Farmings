@@ -29,6 +29,15 @@ PARTS = {
     "vacuum_pump": ("Vacuum Pump", (70, 100, 150), (1, 1, 1, 0, 0), [(1, 0, 1, 15, 14, 15)]),
     "milk_line": ("Milk Line", (200, 200, 205), (1, 1, 1, 0, 0), [(0, 0, 5, 16, 5, 11)]),
     "bulk_tank": ("Bulk Tank", (205, 208, 214), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
+    # the creamery (docs/multiblocks/creamery.md)
+    "receiving_tank": ("Receiving Tank", (200, 204, 210), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
+    "batch_pasteurizer": ("Batch Pasteurizer", (190, 196, 204), (1, 2, 1, 0, 0), [(1, 0, 1, 15, 16, 15)]),
+    "cream_separator": ("Cream Separator", (176, 180, 190), (1, 1, 1, 0, 0), [(3, 0, 3, 13, 15, 13)]),
+    "butter_churn": ("Butter Churn", (150, 120, 80), (1, 1, 1, 0, 0), [(2, 0, 2, 14, 14, 14)]),
+    "cheese_vat": ("Cheese Vat", (196, 200, 206), (2, 1, 1, 0, 0), [(0, 0, 1, 16, 12, 15)]),
+    "cheese_press": ("Cheese Press", (120, 100, 70), (1, 1, 1, 0, 0), [(2, 0, 2, 14, 16, 14)]),
+    "aging_shelf": ("Aging Shelf", (140, 110, 70), (1, 2, 1, 0, 0), [(0, 0, 2, 16, 16, 14)]),
+    "bottler": ("Bottler", (170, 190, 200), (1, 1, 1, 0, 0), [(2, 0, 2, 14, 14, 14)]),
 }
 # items that are not blocks: (id, name, placeholder colour, kind: "blob", "fork", "straw", "steak")
 ITEMS = [
@@ -47,6 +56,13 @@ ITEMS = [
     ("milk_chestplate", "Milk Chestplate", (246, 246, 240), "armor"),
     ("milk_leggings", "Milk Leggings", (246, 246, 240), "armor"),
     ("milk_boots", "Milk Boots", (246, 246, 240), "armor"),
+    ("bottled_milk", "Bottled Milk", (248, 248, 244), "bottle"),
+    ("cream_bottle", "Cream", (250, 244, 220), "bottle"),
+    ("skim_milk_bottle", "Skim Milk", (232, 238, 246), "bottle"),
+    ("buttermilk_bottle", "Buttermilk", (244, 240, 214), "bottle"),
+    ("butter", "Butter", (246, 220, 110), "blob"),
+    ("cheddar_wheel", "Cheddar Wheel", (232, 168, 60), "blob"),
+    ("cheddar", "Cheddar", (240, 180, 70), "blob"),
 ]
 SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
@@ -58,6 +74,7 @@ EXTRA_LANG = {
 }
 CONTROLLER = ("Barn Controller", (200, 110, 40))
 PARLOR_CONTROLLER = ("Parlor Controller", (60, 110, 190))
+CREAMERY_CONTROLLER = ("Creamery Controller", (230, 230, 220))
 
 
 def pieces(fp):
@@ -105,6 +122,9 @@ def item_texture(name, colour, fork):
         shapes = {"helmet": [(3, 4, 12, 9)], "chestplate": [(2, 3, 13, 13)], "leggings": [(4, 3, 7, 14), (8, 3, 11, 14)], "boots": [(2, 9, 6, 14), (9, 9, 13, 14)]}
         for box in shapes[piece]:
             d.rectangle(box, fill=colour, outline=tuple(max(0, c - 60) for c in colour))
+    elif fork == "bottle":
+        d.rectangle([6, 1, 9, 3], fill=(150, 110, 70))                     # cork
+        d.rectangle([5, 4, 10, 14], fill=colour, outline=(170, 190, 200))  # glass with the product
     elif fork == "book":
         d.rectangle([3, 2, 12, 14], fill=colour, outline=(40, 60, 40))
         d.rectangle([5, 4, 10, 6], fill=(230, 220, 190))
@@ -175,11 +195,18 @@ def main():
     write(os.path.join(ASSETS, "blockstates", "parlor_controller.json"), {"variants": {"": {"model": "farmings:block/parlor_controller"}}})
     write(os.path.join(ASSETS, "items", "parlor_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/parlor_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "parlor_controller.json"), loot("parlor_controller"))
+    texture("creamery_controller", CREAMERY_CONTROLLER[1], (40, 40, 40))
+    lang["block.farmings.creamery_controller"] = CREAMERY_CONTROLLER[0]
+    write(os.path.join(ASSETS, "models", "block", "creamery_controller.json"),
+          {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/creamery_controller_placeholder"}})
+    write(os.path.join(ASSETS, "blockstates", "creamery_controller.json"), {"variants": {"": {"model": "farmings:block/creamery_controller"}}})
+    write(os.path.join(ASSETS, "items", "creamery_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/creamery_controller"}})
+    write(os.path.join(DATA, "loot_table", "blocks", "creamery_controller.json"), loot("creamery_controller"))
     # items: manure and the fork (placeholders)
     for name, title, colour, kind in ITEMS:
         parent = "minecraft:item/handheld" if kind == "fork" else "minecraft:item/generated"
         lang["item.farmings." + name] = title
-        item_texture(name, colour, kind if kind in ("straw", "steak", "armor", "book") else kind == "fork")
+        item_texture(name, colour, kind if kind in ("straw", "steak", "armor", "book", "bottle") else kind == "fork")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_placeholder" % name}})
         if kind == "armor":
             lang["item.farmings." + name + ".spoiled"] = "Spoiled " + title

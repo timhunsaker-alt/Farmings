@@ -31,7 +31,7 @@ public class ParlorPartBlock extends BigPartBlock {
 		this.shapes = new VoxelShape[4][pieces];
 		for (int turns = 0; turns < 4; turns++) {
 			for (int piece = 0; piece < pieces; piece++) {
-				double[] b = turn(kind.shapeFor(kind.footprint.cell(piece).dy()), turns);
+				double[] b = turnBox(kind.shapeFor(kind.footprint.cell(piece).dy()), turns);
 				shapes[turns][piece] = Shapes.box(b[0] / 16, b[1] / 16, b[2] / 16, b[3] / 16, b[4] / 16, b[5] / 16);
 			}
 		}
@@ -92,7 +92,7 @@ public class ParlorPartBlock extends BigPartBlock {
 		return kind == ParlorParts.PARLOR_STALL && super.isPathfindable(state, type);
 	}
 
-	static double[] turn(double[] b, int turns) {
+	public static double[] turnBox(double[] b, int turns) {
 		double x1 = b[0], z1 = b[2], x2 = b[3], z2 = b[5];
 		for (int i = 0; i < turns; i++) {
 			double nx1 = 16 - z2, nx2 = 16 - z1, nz1 = x1, nz2 = x2;

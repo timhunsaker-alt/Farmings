@@ -52,3 +52,7 @@ TANK FULL, TANK WARM. An empty bucket on the tank takes 10 L as a milk bucket *(
 2. ~~Whether to build milk as a plain-Java curve~~ Decided yes, built ( (breed + days in milk + genome milk-yield trait) before any parlor blocks).
 3. Sizes: 1 cell per cow in the parlor; vacuum pump 4 kW; bulk-tank chiller 2.2 kW; tank capacity (a 2 x 2 x 2 tank holding 1,000 L is my suggestion, not a source). Approve, change, or ask me to look for datasheets first.
 4. Approve the whole parlor spec (parts, how it runs) so building can start.
+
+## Built later (2026-11-09)
+The bulk tank tracks the milk's fat and protein by volume. Each cow's milk goes in with her own fat (her breed's, moved by her butterfat
+score) for the creamery. A run of milk_line from the bulk tank to a creamery's receiving tank pipes the milk across (creamery.md).

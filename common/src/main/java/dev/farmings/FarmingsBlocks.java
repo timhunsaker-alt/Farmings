@@ -38,6 +38,8 @@ import net.minecraft.world.level.material.MapColor;
 public final class FarmingsBlocks {
 	public static final Block BARN_CONTROLLER = block("barn_controller", props -> new BarnControllerBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL)));
 	public static final Block PARLOR_CONTROLLER = block("parlor_controller", props -> new ParlorControllerBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL)));
+	public static final Block CREAMERY_CONTROLLER = block("creamery_controller", props -> new dev.farmings.creamery.CreameryControllerBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL)));
+	private static final Block[] CREAMERY_PARTS = new Block[dev.farmings.creamery.CreameryParts.values().length];
 	private static final Block[] PARLOR_PARTS = new Block[ParlorParts.values().length];
 	private static final Block[] PARTS = new Block[BarnParts.values().length];
 
@@ -53,6 +55,15 @@ public final class FarmingsBlocks {
 		}
 	}
 
+	static {
+		for (dev.farmings.creamery.CreameryParts kind : dev.farmings.creamery.CreameryParts.values()) {
+			CREAMERY_PARTS[kind.ordinal()] = block(kind.id, props -> new dev.farmings.creamery.CreameryPartBlock(props.mapColor(MapColor.METAL).strength(2.0F, 6.0F).sound(SoundType.METAL), kind));
+		}
+	}
+
+	public static final BlockEntityType<dev.farmings.creamery.CreameryPartEntity> CREAMERY_PART_ENTITY = new BlockEntityType<>(dev.farmings.creamery.CreameryPartEntity::new, creameryParts(false));
+	public static final BlockEntityType<dev.farmings.creamery.CreameryMachineEntity> CREAMERY_MACHINE_ENTITY = new BlockEntityType<>(dev.farmings.creamery.CreameryMachineEntity::new, creameryParts(true));
+	public static final BlockEntityType<dev.farmings.creamery.CreameryControllerEntity> CREAMERY_CONTROLLER_ENTITY = new BlockEntityType<>(dev.farmings.creamery.CreameryControllerEntity::new, Set.of(CREAMERY_CONTROLLER));
 	public static final BlockEntityType<ParlorPartEntity> PARLOR_PART_ENTITY = new BlockEntityType<>(ParlorPartEntity::new, parlorOthers());
 	public static final BlockEntityType<PumpEntity> PUMP_ENTITY = new BlockEntityType<>(PumpEntity::new, Set.of(parlorPart(ParlorParts.VACUUM_PUMP)));
 	public static final BlockEntityType<TankEntity> TANK_ENTITY = new BlockEntityType<>(TankEntity::new, Set.of(parlorPart(ParlorParts.BULK_TANK)));
@@ -88,6 +99,20 @@ public final class FarmingsBlocks {
 		return out;
 	}
 
+	private static Set<Block> creameryParts(boolean powered) {
+		Set<Block> out = new HashSet<>();
+		for (dev.farmings.creamery.CreameryParts kind : dev.farmings.creamery.CreameryParts.values()) {
+			if ((kind.watts > 0) == powered) {
+				out.add(CREAMERY_PARTS[kind.ordinal()]);
+			}
+		}
+		return out;
+	}
+
+	public static Block creameryPart(dev.farmings.creamery.CreameryParts kind) {
+		return CREAMERY_PARTS[kind.ordinal()];
+	}
+
 	public static Block parlorPart(ParlorParts kind) {
 		return PARLOR_PARTS[kind.ordinal()];
 	}
@@ -105,7 +130,7 @@ public final class FarmingsBlocks {
 		Registry.register(BuiltInRegistries.BLOCK, Farmings.id(name), block);
 		ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Farmings.id(name));
 		Item.Properties properties = new Item.Properties().setId(itemKey).useBlockDescriptionPrefix();
-		Registry.register(BuiltInRegistries.ITEM, itemKey, block instanceof BarnPartBlock || block instanceof ParlorPartBlock ? new BigPartItem(block, properties) : new BlockItem(block, properties));
+		Registry.register(BuiltInRegistries.ITEM, itemKey, block instanceof BarnPartBlock || block instanceof ParlorPartBlock || block instanceof dev.farmings.creamery.CreameryPartBlock ? new BigPartItem(block, properties) : new BlockItem(block, properties));
 	}
 
 	public static Component tabTitle() {
@@ -127,6 +152,10 @@ public final class FarmingsBlocks {
 		for (ParlorParts kind : ParlorParts.values()) {
 			output.accept(parlorPart(kind));
 		}
+		output.accept(CREAMERY_CONTROLLER);
+		for (dev.farmings.creamery.CreameryParts kind : dev.farmings.creamery.CreameryParts.values()) {
+			output.accept(creameryPart(kind));
+		}
 	}
 
 	public static void register() {
@@ -138,6 +167,13 @@ public final class FarmingsBlocks {
 		for (ParlorParts kind : ParlorParts.values()) {
 			add(kind.id, parlorPart(kind));
 		}
+		add("creamery_controller", CREAMERY_CONTROLLER);
+		for (dev.farmings.creamery.CreameryParts kind : dev.farmings.creamery.CreameryParts.values()) {
+			add(kind.id, creameryPart(kind));
+		}
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("creamery_part"), CREAMERY_PART_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("creamery_machine"), CREAMERY_MACHINE_ENTITY);
+		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("creamery_controller"), CREAMERY_CONTROLLER_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("parlor_part"), PARLOR_PART_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("parlor_controller"), PARLOR_CONTROLLER_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("vacuum_pump"), PUMP_ENTITY);

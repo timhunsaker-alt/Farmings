@@ -51,6 +51,33 @@ public final class FarmingsItems {
 	public static final Item MILK_LEGGINGS = item("milk_leggings", p -> new dev.farmings.item.MilkArmorItem(p, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
 	public static final Item MILK_BOOTS = item("milk_boots", p -> new dev.farmings.item.MilkArmorItem(p, net.minecraft.world.item.equipment.ArmorType.BOOTS));
 
+	// Creamery products (docs/multiblocks/creamery.md). Food values proposed. Bottles give back the glass bottle.
+	private static net.minecraft.world.food.FoodProperties food(int nutrition, float saturation) {
+		return new net.minecraft.world.food.FoodProperties.Builder().nutrition(nutrition).saturationModifier(saturation).alwaysEdible().build();
+	}
+
+	public static final Item BOTTLED_MILK = item("bottled_milk", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(4, 0.3F), net.minecraft.world.item.component.Consumables.defaultDrink()
+					.onConsume(net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect.INSTANCE).build())));
+	public static final Item CREAM_BOTTLE = item("cream_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(2, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
+	public static final Item SKIM_MILK_BOTTLE = item("skim_milk_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(2, 0.2F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
+	public static final Item BUTTERMILK_BOTTLE = item("buttermilk_bottle", p -> new Item(p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(2, 0.3F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
+	public static final Item BUTTER = item("butter", p -> new Item(p.food(food(3, 0.6F))));
+	public static final Item CHEDDAR_WHEEL = item("cheddar_wheel", p -> new Item(p.stacksTo(16)));
+	public static final Item CHEDDAR = item("cheddar", p -> new Item(p.food(food(3, 0.7F))));
+
+	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b) {
+		return switch (b) {
+			case MILK -> BOTTLED_MILK;
+			case CREAM -> CREAM_BOTTLE;
+			case SKIM -> SKIM_MILK_BOTTLE;
+			case BUTTERMILK -> BUTTERMILK_BOTTLE;
+		};
+	}
+
 	/** Every item this class registers, by name, for registration and the asset/recipe checks. */
 	public static final java.util.Map<String, Item> ALL = new java.util.LinkedHashMap<>();
 
@@ -70,6 +97,13 @@ public final class FarmingsItems {
 		ALL.put("milk_chestplate", MILK_CHESTPLATE);
 		ALL.put("milk_leggings", MILK_LEGGINGS);
 		ALL.put("milk_boots", MILK_BOOTS);
+		ALL.put("bottled_milk", BOTTLED_MILK);
+		ALL.put("cream_bottle", CREAM_BOTTLE);
+		ALL.put("skim_milk_bottle", SKIM_MILK_BOTTLE);
+		ALL.put("buttermilk_bottle", BUTTERMILK_BOTTLE);
+		ALL.put("butter", BUTTER);
+		ALL.put("cheddar_wheel", CHEDDAR_WHEEL);
+		ALL.put("cheddar", CHEDDAR);
 	}
 
 	private FarmingsItems() {

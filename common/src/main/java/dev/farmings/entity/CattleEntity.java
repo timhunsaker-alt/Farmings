@@ -355,6 +355,15 @@ public class CattleEntity extends Animal {
 		this.milkingStand = stand;
 	}
 
+	/** Fat percent of her milk: her breed's, moved by her butterfat score (husbandry.MilkComponents). */
+	public double milkFatPct() {
+		return dev.farmings.husbandry.MilkComponents.fat(breed, score(Trait.BUTTERFAT), dev.farmings.genetics.Breeds.baseline(breed.code, Trait.BUTTERFAT));
+	}
+
+	public double milkProteinPct() {
+		return dev.farmings.husbandry.MilkComponents.breedProtein(breed);
+	}
+
 	/** The milk a milking machine takes: all of it. */
 	public double takeMilk() {
 		double taken = milkKg;

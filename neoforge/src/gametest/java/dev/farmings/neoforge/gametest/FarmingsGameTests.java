@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -118,6 +118,15 @@ public class FarmingsGameTests {
 			helper.register(id("herd_book_records"), loaded(FarmingsGameTests::herdBookRecords));
 			helper.register(id("trough_filled_by_pipe"), loaded(FarmingsGameTests::troughFilledByPipe));
 			helper.register(id("milk_armor_spoils_and_sickens"), loaded(FarmingsGameTests::milkArmorSpoils));
+			helper.register(id("creamery_forms"), loaded(FarmingsGameTests::creameryForms));
+			helper.register(id("creamery_missing_part"), loaded(FarmingsGameTests::creameryMissingPart));
+			helper.register(id("pasteurizer_bottles"), loaded(FarmingsGameTests::pasteurizerBottles));
+			helper.register(id("separator_splits_fat"), loaded(FarmingsGameTests::separatorSplitsFat));
+			helper.register(id("churn_makes_butter"), loaded(FarmingsGameTests::churnMakesButter));
+			helper.register(id("cheese_yield_and_aging"), loaded(FarmingsGameTests::cheeseYieldAndAging));
+			helper.register(id("creamery_no_power"), loaded(FarmingsGameTests::creameryNoPower));
+			helper.register(id("milk_line_from_parlor"), loaded(FarmingsGameTests::milkLineFromParlor));
+			helper.register(id("creamery_state_survives_save"), loaded(FarmingsGameTests::creameryStateSurvivesSave));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -1419,6 +1428,206 @@ public class FarmingsGameTests {
 				+ ", same stack " + (player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD) == worn) + ", creative " + player.isCreative() + ")"));
 		helper.assertTrue(worn.getDamageValue() == 17, Component.literal("durability kept"));
 		helper.assertTrue(worn.getHoverName().getString().startsWith("Spoiled") || worn.getHoverName().getString().contains("spoiled"), Component.literal("spoiled name: " + worn.getHoverName().getString()));
+		helper.succeed();
+	}
+
+	// ---- the creamery (2026-11-09) ----
+
+	private static final BlockPos K = new BlockPos(2, 2, 4);   // the creamery controller, relative to the test
+
+	private static void creameryPart(ServerLevel level, dev.farmings.creamery.CreameryParts kind, BlockPos main) {
+		BlockState state = FarmingsBlocks.creameryPart(kind).defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
+		level.setBlock(main, state, Block.UPDATE_ALL);
+		BigParts.grow(level, main, state);
+	}
+
+	/** The row runs east from the controller at {@code c}: tank, pasteurizer, separator, churn, vat, press, shelf, bottler. */
+	private static void buildCreamery(ServerLevel level, BlockPos c) {
+		for (int x = c.getX() - 1; x <= c.getX() + 12; x++) {
+			for (int z = c.getZ() - 1; z <= c.getZ() + 2; z++) {
+				level.setBlock(new BlockPos(x, c.getY() - 1, z), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
+			}
+		}
+		level.setBlock(c, FarmingsBlocks.CREAMERY_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+		int x = c.getX() + 1;
+		for (dev.farmings.creamery.CreameryParts kind : dev.farmings.creamery.CreameryParts.values()) {
+			creameryPart(level, kind, new BlockPos(x, c.getY(), c.getZ()));
+			x += kind.part.length();
+		}
+	}
+
+	private static dev.farmings.creamery.CreameryControllerEntity creamery(GameTestHelper helper, BlockPos relative, boolean power) {
+		ServerLevel level = helper.getLevel();
+		dev.farmings.creamery.CreameryControllerEntity ctl = (dev.farmings.creamery.CreameryControllerEntity) level.getBlockEntity(helper.absolutePos(relative));
+		ctl.refresh(level);
+		if (power && ctl.formed()) {
+			for (dev.farmings.process.creamery.CreameryPart p : new dev.farmings.process.creamery.CreameryPart[] {dev.farmings.process.creamery.CreameryPart.BATCH_PASTEURIZER,
+					dev.farmings.process.creamery.CreameryPart.CREAM_SEPARATOR, dev.farmings.process.creamery.CreameryPart.BUTTER_CHURN, dev.farmings.process.creamery.CreameryPart.CHEESE_VAT}) {
+				ctl.machine(level, p).forceRunning(true);
+			}
+		}
+		return ctl;
+	}
+
+	private static void runFor(ServerLevel level, dev.farmings.creamery.CreameryControllerEntity ctl, long ticks) {
+		for (long t = 0; t < ticks; t += 20) {
+			ctl.run(level, 20);
+		}
+	}
+
+	private static BlockPos partPos(BlockPos c, dev.farmings.creamery.CreameryParts kind) {
+		int x = c.getX() + 1;
+		for (dev.farmings.creamery.CreameryParts k : dev.farmings.creamery.CreameryParts.values()) {
+			if (k == kind) {
+				return new BlockPos(x, c.getY(), c.getZ());
+			}
+			x += k.part.length();
+		}
+		return null;
+	}
+
+	private static InteractionResult useOn(ServerLevel level, net.minecraft.server.level.ServerPlayer player, BlockPos pos, ItemStack stack) {
+		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+		BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
+		BlockState state = level.getBlockState(pos);
+		InteractionResult r = stack.isEmpty() ? InteractionResult.PASS : state.useItemOn(stack, level, player, InteractionHand.MAIN_HAND, hit);
+		if (r == InteractionResult.TRY_WITH_EMPTY_HAND || stack.isEmpty()) {
+			r = state.useWithoutItem(level, player, hit);
+		}
+		return r;
+	}
+
+	private static void creameryForms(GameTestHelper helper) {
+		buildCreamery(helper.getLevel(), helper.absolutePos(K));
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, false);
+		helper.assertTrue(ctl.formed(), Component.literal("a full row forms: " + ctl.readout()));
+		helper.assertTrue(ctl.owns(partPos(helper.absolutePos(K), dev.farmings.creamery.CreameryParts.BOTTLER)), Component.literal("it owns its bottler"));
+		helper.succeed();
+	}
+
+	private static void creameryMissingPart(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		level.setBlock(partPos(c, dev.farmings.creamery.CreameryParts.CREAM_SEPARATOR), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, false);
+		helper.assertTrue(!ctl.formed() && ctl.readout().contains("cream separator"), Component.literal("it names the missing separator: " + ctl.readout()));
+		helper.succeed();
+	}
+
+	private static void pasteurizerBottles(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.RECEIVING_TANK), new ItemStack(net.minecraft.world.item.Items.MILK_BUCKET));
+		helper.assertTrue(ctl.creamery().rawL() == 10,   // the mock player is in creative, so the bucket stays full in hand
+				Component.literal("a milk bucket pours 10 L, got " + ctl.creamery().rawL()));
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		helper.assertTrue(ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.MILK) == 10, Component.literal("10 L pasteurized: " + ctl.readout()));
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.BOTTLER), new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE));
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.BOTTLED_MILK) == 1 && ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.MILK) == 9,
+				Component.literal("a glass bottle fills with milk"));
+		helper.succeed();
+	}
+
+	private static void separatorSplitsFat(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		buildCreamery(level, helper.absolutePos(K));
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CREAM);
+		ctl.creamery().addMilk(100, 4.76, 3.63);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		double cream = ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.CREAM);
+		double skim = ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.SKIM);
+		helper.assertTrue(Math.abs(cream + skim - 100) < 1e-6 && Math.abs(cream * 36 + skim * 0.1 - 476) < 1e-6, Component.literal("fat balance holds: " + cream + " cream, " + skim + " skim"));
+		helper.succeed();
+	}
+
+	private static void churnMakesButter(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.BUTTER);
+		ctl.creamery().addMilk(200, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		double kg = ctl.creamery().butterKg();
+		helper.assertTrue(kg > 8.5 && kg < 9.5, Component.literal("about 9.1 kg of butter from 200 L Holstein milk, got " + kg));
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.BUTTER_CHURN), ItemStack.EMPTY);
+		int got = player.getInventory().countItem(FarmingsItems.BUTTER);
+		helper.assertTrue(got == (int) Math.floor(kg / 0.5), Component.literal("half-kilo blocks from the churn: " + got));
+		helper.assertTrue(ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.BUTTERMILK) > 0, Component.literal("and buttermilk"));
+		helper.succeed();
+	}
+
+	private static void cheeseYieldAndAging(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
+		ctl.creamery().addMilk(200, 3.72, 3.06);
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		double expected = dev.farmings.process.creamery.Dairy.cheeseKg(200, 3.72, 3.06);
+		helper.assertTrue(Math.abs(ctl.creamery().curdKg() + (ctl.creamery().pressingWheel() ? 20 : 0) - expected) < 1e-6, Component.literal("Van Slyke curd " + expected + ": " + ctl.readout()));
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.AGING_SHELF), ItemStack.EMPTY);
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.CHEDDAR_WHEEL) == 0, Component.literal("no wheel before it has aged"));
+		for (int i = 0; i < 6; i++) {
+			ctl.run(level, 24_000);
+		}
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.AGING_SHELF), ItemStack.EMPTY);
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.CHEDDAR_WHEEL) == 2, Component.literal("two aged 10 kg wheels after 4 game days, got "
+				+ player.getInventory().countItem(FarmingsItems.CHEDDAR_WHEEL)));
+		helper.succeed();
+	}
+
+	private static void creameryNoPower(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		buildCreamery(level, helper.absolutePos(K));
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, false);
+		ctl.creamery().addMilk(50, 3.72, 3.06);
+		runFor(level, ctl, 400);
+		helper.assertTrue(ctl.creamery().bottled(dev.farmings.process.creamery.Creamery.Bottle.MILK) == 0 && ctl.readout().contains("NO POWER"),
+				Component.literal("no heater power, no milk: " + ctl.readout()));
+		helper.succeed();
+	}
+
+	private static void milkLineFromParlor(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos p = helper.absolutePos(new BlockPos(8, 3, 9));    // the parlor controller
+		buildParlor(level, p, 2);
+		BlockPos q = new BlockPos(p.getX(), p.getY() - 1, p.getZ() - 5);   // the creamery controller, on the parlor's floor level
+		buildCreamery(level, q);
+		for (int z = p.getZ() - 3; z <= p.getZ() - 1; z++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.MILK_LINE, new BlockPos(p.getX() + 1, p.getY() - 1, z));
+		}
+		dev.farmings.parlor.ParlorControllerEntity parlor = (dev.farmings.parlor.ParlorControllerEntity) level.getBlockEntity(p);
+		parlor.refresh(level);
+		parlor.tank(level).tank().add(120, 4, 4.76, 3.63);
+		dev.farmings.creamery.CreameryControllerEntity ctl = (dev.farmings.creamery.CreameryControllerEntity) level.getBlockEntity(q);
+		ctl.refresh(level);
+		helper.assertTrue(ctl.formed(), Component.literal("the creamery forms: " + ctl.readout()));
+		double moved = ctl.pullFromParlor(level, 50);
+		helper.assertTrue(moved == 50 && Math.abs(ctl.creamery().rawFat() - 4.76) < 1e-9 && Math.abs(parlor.tank(level).tank().litres() - 70) < 1e-9,
+				Component.literal("50 L of Jersey milk piped across, moved " + moved + ", fat " + ctl.creamery().rawFat()));
+		helper.succeed();
+	}
+
+	private static void creameryStateSurvivesSave(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		buildCreamery(level, helper.absolutePos(K));
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
+		ctl.creamery().addMilk(300, 3.9, 3.1);
+		runFor(level, ctl, 400);
+		net.minecraft.nbt.CompoundTag tag = ctl.saveWithFullMetadata(level.registryAccess());
+		net.minecraft.world.level.block.entity.BlockEntity copy = net.minecraft.world.level.block.entity.BlockEntity.loadStatic(ctl.getBlockPos(), ctl.getBlockState(), tag, level.registryAccess());
+		helper.assertTrue(copy instanceof dev.farmings.creamery.CreameryControllerEntity k && java.util.Arrays.equals(k.creamery().save(), ctl.creamery().save()),
+				Component.literal("the creamery's milk, batch and products survive a save"));
 		helper.succeed();
 	}
 }
