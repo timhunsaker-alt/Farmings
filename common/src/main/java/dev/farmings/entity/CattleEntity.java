@@ -56,6 +56,9 @@ public class CattleEntity extends Animal {
 	/** Breed and stage, sent to the client so the renderer can pick the right coat, model and udder. */
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
+	/** The resolved coat (VisualPhenotype.pack) and the seed for her exact markings, for the renderer. */
+	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.LONG);
+	private static final EntityDataAccessor<Integer> DATA_MARKINGS = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 
 	private CattleBreed breed = CattleBreed.HOLSTEIN;
 	private Sex sex = Sex.FEMALE;
@@ -86,6 +89,9 @@ public class CattleEntity extends Animal {
 	private long nextHeatTick = -1;
 	/** The sire's encoded genome while she is in calf; empty if none (an art/test cow in calf has no sire and never calves). */
 	private String sireGenome = "";
+	/** The sire's coat genes, saved with his genome at conception (VisualGenome.save), or empty. */
+	private int[] sireVisual = new int[0];
+	private dev.farmings.genetics.@Nullable VisualGenome visual;
 	/** The game tick she calves. */
 	private long dueTick = -1;
 	/** The player whose barn houses her; calf counts for the tutorial sex rule are kept per player. */
@@ -122,6 +128,42 @@ public class CattleEntity extends Animal {
 		super.defineSynchedData(builder);
 		builder.define(DATA_BREED, CattleBreed.HOLSTEIN.ordinal());
 		builder.define(DATA_STAGE, Stage.HEIFER.ordinal());
+		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_MARKINGS, 0);
+	}
+
+	/** Her looks as the client knows them, or null before the server has sent them. */
+	public dev.farmings.genetics.@Nullable VisualPhenotype syncedLook() {
+		long v = entityData.get(DATA_LOOK);
+		return v < 0 ? null : dev.farmings.genetics.VisualPhenotype.unpack(v);
+	}
+
+	public int syncedMarkings() {
+		return entityData.get(DATA_MARKINGS);
+	}
+
+	/** Her coat genes; an animal saved before coat genes existed gets them from her genome (VisualGenome.fallback), once. */
+	public dev.farmings.genetics.VisualGenome visualGenome() {
+		if (visual == null && genome != null) {
+			visual = dev.farmings.genetics.VisualGenome.fallback(genome);
+		}
+		return visual;
+	}
+
+	public void setVisualGenome(dev.farmings.genetics.VisualGenome v) {
+		this.visual = v;
+		syncLook();
+	}
+
+	public dev.farmings.genetics.VisualPhenotype look() {
+		return dev.farmings.genetics.VisualPhenotype.of(visualGenome(), genome.breedCompositionBp());
+	}
+
+	private void syncLook() {
+		if (genome != null) {
+			entityData.set(DATA_LOOK, look().pack());
+			entityData.set(DATA_MARKINGS, dev.farmings.genetics.VisualPhenotype.patternSeed(genome));
+		}
 	}
 
 	/** The breed as the client knows it. */
@@ -323,6 +365,7 @@ public class CattleEntity extends Animal {
 		this.breed = breed;
 		this.sex = sex;
 		this.genome = f.genome();
+		this.visual = dev.farmings.genetics.VisualGenome.founder(breed.code, seed);
 		for (Trait t : Trait.values()) {
 			this.scores[t.ordinal()] = f.phenotype().score(t);
 		}
@@ -481,12 +524,18 @@ public class CattleEntity extends Animal {
 	}
 
 	/** A service in heat conceives (decided 2026-11-08). The sire's genome is kept until the calf is born. */
+	/** Conceives to a sire whose coat genes are not known (a straw): they are taken from his genome (VisualGenome.fallback). */
 	public boolean conceive(Genome sire, long nowTick) {
+		return conceive(sire, dev.farmings.genetics.VisualGenome.fallback(sire), nowTick);
+	}
+
+	public boolean conceive(Genome sire, dev.farmings.genetics.VisualGenome sireCoat, long nowTick) {
 		if (!canConceive()) {
 			return false;
 		}
 		this.bredTick = nowTick;
 		this.sireGenome = sire.encode();
+		this.sireVisual = sireCoat.save();
 		this.dueTick = nowTick + TimeScale.realDaysToTicks(breed.gestationDays);
 		this.nextHeatTick = -1;
 		syncAge(nowTick);
@@ -549,6 +598,10 @@ public class CattleEntity extends Animal {
 			CattleEntity calf = dev.farmings.FarmingsEntities.CATTLE.create(level, EntitySpawnReason.BREEDING);
 			if (calf != null) {
 				calf.initCalf(r, now, breed.matureWeightKg);
+				dev.farmings.genetics.VisualGenome sireCoat = dev.farmings.genetics.VisualGenome.load(sireVisual);
+				calf.setVisualGenome(dev.farmings.genetics.VisualGenome.inherit(visualGenome(), sireCoat != null ? sireCoat : dev.farmings.genetics.VisualGenome.fallback(sire),
+						dev.farmings.genetics.BreedingSeed.seed(Long.toString(level.getSeed()), eventId + (i == 0 ? "" : ":twin" + i), genome.hash(), sire.hash(),
+								Ruleset.defaults().version())));
 				calf.ownerId = ownerId;
 				calf.damId = herdId(genome);
 				calf.sireId = herdId(sire);
@@ -573,6 +626,7 @@ public class CattleEntity extends Animal {
 		calvedTick = now;
 		bredTick = -1;
 		sireGenome = "";
+		sireVisual = new int[0];
 		dueTick = -1;
 		nextHeatTick = -1;
 		lastMilkDay = -1;
@@ -795,6 +849,7 @@ public class CattleEntity extends Animal {
 		Stage stage = stageAt(nowTick);
 		entityData.set(DATA_BREED, breed.ordinal());
 		entityData.set(DATA_STAGE, stage.ordinal());
+		syncLook();
 		boolean calf = isCalfStage(stage);
 		if (calf != isBaby()) {
 			setAge(calf ? -1 : 0);
@@ -883,6 +938,9 @@ public class CattleEntity extends Animal {
 		b.append(", ").append(String.format(java.util.Locale.ROOT, "%.0f months", ageRealDays() / 30.4));
 		b.append(", ").append(String.format(java.util.Locale.ROOT, "%.0f kg", weightKg));
 		b.append(", ").append(stage().name().toLowerCase(java.util.Locale.ROOT).replace('_', ' '));
+		if (genome != null) {
+			b.append(", ").append(look().describe());
+		}
 		if (freemartin) {
 			b.append(", freemartin (infertile)");
 		}
@@ -967,6 +1025,10 @@ public class CattleEntity extends Animal {
 		output.putDouble("MilkKg", milkKg);
 		output.putLong("NextHeat", nextHeatTick);
 		output.putString("Sire", sireGenome);
+		output.putIntArray("SireVisual", sireVisual);
+		if (visual != null) {
+			output.putIntArray("Visual", visual.save());
+		}
 		output.putLong("Due", dueTick);
 		if (ownerId != null) {
 			output.putString("Owner", ownerId.toString());
@@ -1014,6 +1076,8 @@ public class CattleEntity extends Animal {
 		milkKg = input.getDoubleOr("MilkKg", 0);
 		nextHeatTick = input.getLongOr("NextHeat", -1L);
 		sireGenome = input.getStringOr("Sire", "");
+		sireVisual = input.getIntArray("SireVisual").orElse(new int[0]);
+		visual = input.getIntArray("Visual").map(dev.farmings.genetics.VisualGenome::load).orElse(null);
 		dueTick = input.getLongOr("Due", -1L);
 		String own = input.getStringOr("Owner", "");
 		ownerId = own.isEmpty() ? null : java.util.UUID.fromString(own);
@@ -1037,6 +1101,7 @@ public class CattleEntity extends Animal {
 		sireId = input.getStringOr("SireId", "");
 		entityData.set(DATA_BREED, breed.ordinal());
 		entityData.set(DATA_STAGE, stageAt(level().getGameTime()).ordinal());
+		syncLook();
 	}
 
 	// --- sounds (the vanilla cow's, until there are our own) ---

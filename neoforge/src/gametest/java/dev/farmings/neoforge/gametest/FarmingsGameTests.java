@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -132,6 +132,7 @@ public class FarmingsGameTests {
 			helper.register(id("no_lane_no_milking"), loaded(FarmingsGameTests::noLaneNoMilking));
 			helper.register(id("cows_wait_in_pen"), loaded(FarmingsGameTests::cowsWaitInPen));
 			helper.register(id("cow_walks_lane_and_return"), loaded(FarmingsGameTests::cowWalksLaneAndReturn));
+			helper.register(id("coat_inherited"), loaded(FarmingsGameTests::coatInherited));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -817,7 +818,7 @@ public class FarmingsGameTests {
 	private static java.util.List<CattleEntity> calveAs(ServerLevel level, CattleEntity dam, CattleEntity sire) {
 		java.util.List<CattleEntity> out = new java.util.ArrayList<>();
 		dam.startHeatForDisplay();
-		if (!dam.conceive(sire.genome(), level.getGameTime())) {
+		if (!dam.conceive(sire.genome(), sire.visualGenome(), level.getGameTime())) {
 			return out;
 		}
 		java.util.Set<java.util.UUID> before = new java.util.HashSet<>();
@@ -1530,6 +1531,53 @@ public class FarmingsGameTests {
 			helper.assertTrue(!cow.onRoute() && cow.distanceToSqr(home.getX() + 0.5, home.getY() + 0.25, home.getZ() + 0.5) < 1.0,
 					Component.literal("then she walks back to her stall; at " + cow.blockPosition() + ", home " + home));
 		});
+	}
+
+	// ---- coat genes (2026-11-09) ----
+
+	private static dev.farmings.genetics.VisualGenome coat(CattleEntity c, dev.farmings.genetics.VisualLocus l, int a, int b) {
+		java.util.EnumMap<dev.farmings.genetics.VisualLocus, int[]> m = new java.util.EnumMap<>(c.visualGenome().alleles());
+		m.put(l, new int[] {a, b});
+		return new dev.farmings.genetics.VisualGenome(m);
+	}
+
+	/**
+	 * A black polled bull (ED/ED, polled/polled) on a red horned cow (e/e, horned/horned): every calf is black and polled, carries red and
+	 * horns, and the calf's coat genes survive a save. Her red calf by a red bull is red.
+	 */
+	private static void coatInherited(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 201L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 202L, 500, 400);
+		bull.setVisualGenome(coat(bull, dev.farmings.genetics.VisualLocus.EXTENSION, 0, 0));
+		bull.setVisualGenome(coat(bull, dev.farmings.genetics.VisualLocus.HORNS, 0, 0));
+		dam.setVisualGenome(coat(dam, dev.farmings.genetics.VisualLocus.EXTENSION, 3, 3));
+		dam.setVisualGenome(coat(dam, dev.farmings.genetics.VisualLocus.HORNS, 1, 1));
+		CattleEntity calf = calveOnce(level, dam, bull);
+		helper.assertTrue(calf != null, Component.literal("a calf is born"));
+		dev.farmings.genetics.VisualPhenotype look = calf.look();
+		helper.assertTrue(look.coat() == dev.farmings.genetics.VisualPhenotype.Coat.BLACK && !look.horned(), Component.literal("black and polled: " + look.describe()));
+		helper.assertTrue(java.util.Arrays.equals(calf.visualGenome().pair(dev.farmings.genetics.VisualLocus.EXTENSION), new int[] {3, 0}),
+				Component.literal("she carries her dam's red and her sire's black: " + calf.visualGenome()));
+		helper.assertTrue(calf.syncedLook() != null && calf.syncedLook().equals(look), Component.literal("the client is sent her looks"));
+		helper.assertTrue(calf.readout().contains("black") && calf.readout().contains("polled"), Component.literal("readout: " + calf.readout()));
+		// saved and loaded, the same coat genes
+		net.minecraft.util.ProblemReporter reporter = net.minecraft.util.ProblemReporter.DISCARDING;
+		net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, level.registryAccess());
+		calf.saveWithoutId(out);
+		CattleEntity copy = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
+		copy.load(net.minecraft.world.level.storage.TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(copy.visualGenome().equals(calf.visualGenome()), Component.literal("coat genes survive a save"));
+		// red by red is red
+		CattleEntity redBull = founderAt(level, p, Sex.MALE, 203L, 1500, 800);
+		redBull.setVisualGenome(coat(redBull, dev.farmings.genetics.VisualLocus.EXTENSION, 3, 3));
+		CattleEntity dam2 = founderAt(level, p, Sex.FEMALE, 204L, 500, 400);
+		dam2.setVisualGenome(coat(dam2, dev.farmings.genetics.VisualLocus.EXTENSION, 3, 3));
+		CattleEntity red = calveOnce(level, dam2, redBull);
+		helper.assertTrue(red.look().coat() == dev.farmings.genetics.VisualPhenotype.Coat.RED, Component.literal("red x red is red: " + red.look().describe()));
+		helper.succeed();
 	}
 
 	// ---- herd book, piped trough, milk armor (2026-11-09) ----

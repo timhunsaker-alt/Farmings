@@ -459,7 +459,7 @@ public class BarnControllerEntity extends BlockEntity {
 				c.setOwner(owner);
 			}
 			if (bull != null && c != bull && worldPosition.equals(c.stallController()) && c.canConceive()) {
-				c.conceive(bull.genome(), level.getGameTime());
+				c.conceive(bull.genome(), bull.visualGenome(), level.getGameTime());
 			}
 		}
 	}

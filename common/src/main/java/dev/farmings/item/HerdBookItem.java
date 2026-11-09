@@ -114,6 +114,9 @@ public class HerdBookItem extends Item {
 		StringBuilder b = new StringBuilder();
 		b.append("ID ").append(cow.herdId()).append('\n');
 		b.append(cow.breedLabel()).append(", ").append(cow.sex().name().toLowerCase(Locale.ROOT)).append(cow.castrated() ? " (steer)" : "").append('\n');
+		if (cow.genome() != null) {
+			b.append("Coat ").append(cow.look().describe()).append('\n');
+		}
 		b.append("Born day ").append(Math.floorDiv(cow.birthTick(), TimeScale.TICKS_PER_GAME_DAY)).append('\n');
 		b.append("Dam ").append(cow.damId().isEmpty() ? "founder" : cow.damId()).append('\n');
 		b.append("Sire ").append(cow.sireId().isEmpty() ? "founder" : cow.sireId()).append('\n');

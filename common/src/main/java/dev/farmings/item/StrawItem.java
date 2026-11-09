@@ -21,6 +21,8 @@ import net.minecraft.world.item.component.CustomData;
  */
 public class StrawItem extends Item {
 	private static final String KEY_GENOME = "Genome";
+	/** The bull's coat genes (VisualGenome.save); a straw filled before coat genes existed has none, and the cow uses his genome's. */
+	private static final String KEY_COAT = "Coat";
 	private static final String KEY_SIRE = "Sire";
 	private final boolean filled;
 
@@ -49,6 +51,7 @@ public class StrawItem extends Item {
 		ItemStack full = new ItemStack(FarmingsItems.SEMEN_STRAW);
 		CustomData.update(DataComponents.CUSTOM_DATA, full, tag -> {
 			tag.putString(KEY_GENOME, g.encode());
+			tag.putIntArray(KEY_COAT, bull.visualGenome().save());
 			tag.putString(KEY_SIRE, bull.getUUID().toString());
 		});
 		stack.consume(1, player);
@@ -64,7 +67,9 @@ public class StrawItem extends Item {
 			player.sendOverlayMessage(Component.translatable("message.farmings.straw.not_in_heat"));
 			return InteractionResult.FAIL;
 		}
-		if (!cow.conceive(sire, cow.level().getGameTime())) {
+		CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+		dev.farmings.genetics.VisualGenome coat = data == null ? null : data.copyTag().getIntArray(KEY_COAT).map(dev.farmings.genetics.VisualGenome::load).orElse(null);
+		if (!(coat == null ? cow.conceive(sire, cow.level().getGameTime()) : cow.conceive(sire, coat, cow.level().getGameTime()))) {
 			return InteractionResult.FAIL;
 		}
 		if (cow.owner() == null) {
