@@ -45,4 +45,14 @@ class BreedingTest {
 		assertNull(Breeding.forcedSex(3));
 		assertNull(Breeding.forcedSex(40));
 	}
+
+	@Test
+	void twinAndStillbirthRatesFollowParity() {
+		assertTrue(Breeding.twins(0.03, false));
+		assertFalse(Breeding.twins(0.03, true));
+		assertTrue(Breeding.stillborn(0.10, true));
+		assertFalse(Breeding.stillborn(0.10, false));
+		assertTrue(Breeding.freemartin(0.5));
+		assertFalse(Breeding.freemartin(0.95));
+	}
 }

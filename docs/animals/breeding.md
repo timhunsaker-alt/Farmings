@@ -60,3 +60,12 @@ Heat (`husbandry/Breeding`), a housed bull serving housed cows in heat on the ba
 3. First-two-heifers counter: per world (proposed), per player, or per dam.
 4. How a bull is "in the barn": his own stall in the barn, or free to roam to the cow (needs pathing and may need pens).
 5. Whether the first version builds natural service **and** straws together, or natural service first (my recommendation: natural service first, straws right after, because the straw adds an item, a collection step and a right-click on cows).
+
+## Built, 2026-11-09: twins, stillbirths, freemartins, the heat cue, beef crosses
+- **Twins:** 5.02% of calvings in later lactations, from 1.3 million North American Holstein births ([Twinning rates for North American Holstein sires, PubMed 11573789](https://pubmed.ncbi.nlm.nih.gov/11573789/)). It rises with parity; a first calving twins about 0.68% of the time (1.6 million Italian calvings, same search). Both figures used.
+- **Stillbirths:** 12.3% for heifers, 5.4% for cows (USDA AIPL research, [Hoard's Dairyman](https://hoards.com/E_reproduction/REP08)). A stillborn calf is not spawned; the cow lives and her lactation starts.
+- **Freemartin:** a heifer born twin to a bull is infertile in more than 90% of cases ([Oklahoma State](https://news.okstate.edu/articles/agriculture/2020/stotts_zook-freking_freemartinism)); 90% is used. She never cycles, cannot conceive, and the readout says so.
+- All calving rolls come from a generator seeded by the calving (world seed, dam, sire), so the same calving gives the same result.
+- **Heat cue:** heart particles every 3 seconds while she is in heat (a game sign).
+- **Beef crosses:** Angus and Wagyu now have baselines (proposed, in cattle.md) and breed like the dairy breeds. Their calves carry the mixed breed composition. Beef cows calve but are never milked.
+- Game tests: twins_born, stillbirth_no_calf, freemartin_does_not_cycle, angus_wagyu_cross.

@@ -64,6 +64,39 @@ public final class Breeding {
 		};
 	}
 
+	/**
+	 * Twins: 5.02% of calvings in 1.3 million North American Holstein births, rising with parity (Kinsel et al. / NAAB calving-ease
+	 * data, J Dairy Sci 2001, PubMed 11573789). First-parity cows twin far less: about 0.68% in 1.6 million Italian calvings. Both used.
+	 */
+	public static final double TWIN_RATE_COW = 0.0502;
+	public static final double TWIN_RATE_FIRST_CALF = 0.0068;
+	/** Stillbirths: 12.3% for heifers, 5.4% for cows (USDA AIPL research, Hoard's Dairyman). A stillborn calf is not spawned. */
+	public static final double STILLBIRTH_RATE_FIRST_CALF = 0.123;
+	public static final double STILLBIRTH_RATE_COW = 0.054;
+	/** A heifer born twin to a bull is a freemartin, infertile in more than 90% of cases (Oklahoma State, Freking); 0.9 used. */
+	public static final double FREEMARTIN_RATE = 0.90;
+
+	public static double twinRate(boolean firstCalf) {
+		return firstCalf ? TWIN_RATE_FIRST_CALF : TWIN_RATE_COW;
+	}
+
+	public static double stillbirthRate(boolean firstCalf) {
+		return firstCalf ? STILLBIRTH_RATE_FIRST_CALF : STILLBIRTH_RATE_COW;
+	}
+
+	/** {@code roll} is a uniform 0..1 draw from the calving's own seeded generator, so the same calving gives the same answer. */
+	public static boolean twins(double roll, boolean firstCalf) {
+		return roll < twinRate(firstCalf);
+	}
+
+	public static boolean stillborn(double roll, boolean firstCalf) {
+		return roll < stillbirthRate(firstCalf);
+	}
+
+	public static boolean freemartin(double roll) {
+		return roll < FREEMARTIN_RATE;
+	}
+
 	/** Birth weight as a share of the dam's mature weight (proposed; about 6%, so a Holstein calf is about 43 kg, unverified). */
 	public static final double BIRTH_WEIGHT_FRACTION = 0.06;
 }

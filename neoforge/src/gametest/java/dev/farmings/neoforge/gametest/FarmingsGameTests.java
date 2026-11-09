@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -106,6 +106,15 @@ public class FarmingsGameTests {
 			helper.register(id("parlor_state_survives_save"), loaded(FarmingsGameTests::parlorStateSurvivesSave));
 			helper.register(id("parlor_cow_walks_and_is_milked"), loaded(FarmingsGameTests::parlorCowWalks));
 			helper.register(id("parlor_milks_a_herd"), loaded(FarmingsGameTests::parlorMilksAHerd));
+			helper.register(id("first_lactation_lower"), loaded(FarmingsGameTests::firstLactationLower));
+			helper.register(id("twins_born"), loaded(FarmingsGameTests::twinsBorn));
+			helper.register(id("stillbirth_no_calf"), loaded(FarmingsGameTests::stillbirthNoCalf));
+			helper.register(id("freemartin_does_not_cycle"), loaded(FarmingsGameTests::freemartinDoesNotCycle));
+			helper.register(id("dirty_stall_less_milk"), loaded(FarmingsGameTests::dirtyStallLessMilk));
+			helper.register(id("cow_readout_and_castration"), loaded(FarmingsGameTests::cowReadoutAndCastration));
+			helper.register(id("angus_wagyu_cross"), loaded(FarmingsGameTests::angusWagyuCross));
+			helper.register(id("beef_drops_by_weight"), loaded(FarmingsGameTests::beefDropsByWeight));
+			helper.register(id("wagyu_more_steaks"), loaded(FarmingsGameTests::wagyuMoreSteaks));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -781,9 +790,16 @@ public class FarmingsGameTests {
 	}
 
 	private static CattleEntity calveOnce(ServerLevel level, CattleEntity dam, CattleEntity sire) {
+		dam.forceCalvingForTest(1, false, false);   // one live calf, so the rolls cannot make a test flaky
+		return calveAs(level, dam, sire).stream().findFirst().orElse(null);
+	}
+
+	/** Breeds and calves her now; returns every new calf (none, one or two). */
+	private static java.util.List<CattleEntity> calveAs(ServerLevel level, CattleEntity dam, CattleEntity sire) {
+		java.util.List<CattleEntity> out = new java.util.ArrayList<>();
 		dam.startHeatForDisplay();
 		if (!dam.conceive(sire.genome(), level.getGameTime())) {
-			return null;
+			return out;
 		}
 		java.util.Set<java.util.UUID> before = new java.util.HashSet<>();
 		for (CattleEntity e : level.getEntitiesOfClass(CattleEntity.class, dam.getBoundingBox().inflate(6))) {
@@ -793,10 +809,182 @@ public class FarmingsGameTests {
 		dam.settle(level);
 		for (CattleEntity e : level.getEntitiesOfClass(CattleEntity.class, dam.getBoundingBox().inflate(6))) {
 			if (!before.contains(e.getUUID())) {
-				return e;
+				out.add(e);
 			}
 		}
-		return null;
+		return out;
+	}
+
+	private static CattleEntity breedAt(ServerLevel level, BlockPos near, CattleBreed breed, Sex sex, long seed, double ageDays, double weightKg) {
+		CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+		c.setPos(near.getX() + 0.5, near.getY() + 0.2, near.getZ() + 0.5);
+		c.initFounder(breed, sex, seed, ageDays, weightKg, level.getGameTime());
+		c.setNoAi(true);
+		level.addFreshEntity(c);
+		return c;
+	}
+
+	// ---- dairy finish and beef (2026-11-09) ----
+
+	private static void firstLactationLower(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 61L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 62L, 500, 400);
+		calveOnce(level, dam, bull);
+		double expected = dev.farmings.husbandry.Lactation.producedKg(CattleBreed.HOLSTEIN, 1, dam.score(Trait.MILK_YIELD), 1, 1, 1, 0);
+		double later = dev.farmings.husbandry.Lactation.producedKg(CattleBreed.HOLSTEIN, 1, dam.score(Trait.MILK_YIELD), 1, 1, 2, 0);
+		helper.assertTrue(dam.lactations() == 1, Component.literal("one lactation, got " + dam.lactations()));
+		helper.assertTrue(Math.abs(dam.milkKg() - expected) < 1e-6 && Math.abs(expected - later * 0.85) < 1e-6,
+				Component.literal("first lactation is 85%: " + dam.milkKg() + " vs " + later));
+		helper.succeed();
+	}
+
+	private static void twinsBorn(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 63L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 64L, 500, 400);
+		dam.forceCalvingForTest(2, false, false);
+		java.util.List<CattleEntity> calves = calveAs(level, dam, bull);
+		helper.assertTrue(calves.size() == 2, Component.literal("twins, got " + calves.size()));
+		helper.assertTrue(dam.lastCalving().size() == 2 && dam.stage() == Stage.LACTATING_COW, Component.literal("both recorded, she milks"));
+		helper.succeed();
+	}
+
+	private static void stillbirthNoCalf(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 65L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 66L, 500, 400);
+		dam.forceCalvingForTest(1, true, false);
+		java.util.List<CattleEntity> calves = calveAs(level, dam, bull);
+		helper.assertTrue(calves.isEmpty(), Component.literal("a stillborn calf is not spawned, got " + calves.size()));
+		helper.assertTrue(dam.lastCalving().get(0).startsWith("stillborn"), Component.literal("recorded as stillborn"));
+		helper.assertTrue(dam.isAlive() && dam.stage() == Stage.LACTATING_COW && dam.milkKg() > 0, Component.literal("she lives and milks"));
+		helper.succeed();
+	}
+
+	private static void freemartinDoesNotCycle(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = founderAt(level, p, Sex.MALE, 67L, 1500, 800);
+		CattleEntity dam = founderAt(level, p, Sex.FEMALE, 68L, 500, 400);
+		dam.setOwner(java.util.UUID.randomUUID());   // the first two calves are heifers
+		dam.forceCalvingForTest(2, false, true);
+		java.util.List<CattleEntity> calves = calveAs(level, dam, bull);
+		helper.assertTrue(calves.size() == 2 && calves.stream().allMatch(CattleEntity::freemartin), Component.literal("heifer twins with a bull are freemartins"));
+		CattleEntity fm = calves.get(0);
+		fm.setWeightKg(420);
+		fm.advanceForTest(500);
+		fm.settle(level);
+		fm.startHeatForDisplay();
+		helper.assertTrue(!fm.canConceive(), Component.literal("a freemartin cannot conceive"));
+		// it survives a save
+		ProblemReporter reporter = ProblemReporter.DISCARDING;
+		TagValueOutput out = TagValueOutput.createWithContext(reporter, level.registryAccess());
+		fm.saveWithoutId(out);
+		CattleEntity copy = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.LOAD);
+		copy.load(TagValueInput.create(reporter, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(copy.freemartin(), Component.literal("freemartin survives a save"));
+		helper.succeed();
+	}
+
+	private static void dirtyStallLessMilk(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		buildBarn(level, c, 2);
+		fillBarn(level, c);
+		BarnControllerEntity ctl = controller(helper, C);
+		CattleEntity cow = barnCow(level, c.offset(-4, -1, -1), 700, false);
+		ctl.tend(level, 20);
+		FeederEntity feeder = feederAt(level, cow.stallBunk());
+		for (int i = 0; i < 4; i++) {
+			feeder.addBlock();
+		}
+		BlockPos alley = ctl.alleyInFrontOf(cow);
+		helper.assertTrue(alley != null, Component.literal("her alley cell is known"));
+		ctl.tend(level, 20);
+		helper.assertTrue(cow.dirty() == 0, Component.literal("a clean alley is clean, got " + cow.dirty()));
+		dropManure(level, alley, 9);
+		float before = cow.getHealth();
+		ctl.tend(level, 24_000);
+		helper.assertTrue(cow.dirty() == 1, Component.literal("nine items is fully dirty, got " + cow.dirty()));
+		helper.assertTrue(Math.abs(cow.getHealth() - (before - 1)) < 1e-3, Component.literal("one health a game day, " + before + " -> " + cow.getHealth()));
+		for (int i = 0; i < 20; i++) {
+			ctl.tend(level, 24_000);
+		}
+		helper.assertTrue(cow.isAlive() && cow.getHealth() >= 2 - 1e-3, Component.literal("never below 2, got " + cow.getHealth()));
+		helper.assertTrue(Math.abs(dev.farmings.husbandry.Hygiene.milkFactor(cow.dirty()) - 0.9) < 1e-9, Component.literal("10% less milk"));
+		helper.succeed();
+	}
+
+	private static void cowReadoutAndCastration(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity cow = founderAt(level, p, Sex.FEMALE, 69L, 500, 400);
+		cow.startHeatForDisplay();
+		String r = cow.readout();
+		helper.assertTrue(r.startsWith("holstein female") && r.contains("IN HEAT") && r.contains("400 kg") && r.contains("health"), Component.literal("readout: " + r));
+		CattleEntity calf = founderAt(level, p, Sex.MALE, 70L, 30, 60);
+		helper.assertTrue(calf.stage() == Stage.BULL_CALF, Component.literal("a bull calf, got " + calf.stage()));
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.SHEARS));
+		calf.mobInteract(player, InteractionHand.MAIN_HAND);
+		calf.setWeightKg(400);
+		helper.assertTrue(calf.stage() == Stage.STEER, Component.literal("shears make a steer, got " + calf.stage()));
+		helper.succeed();
+	}
+
+	private static void angusWagyuCross(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity bull = breedAt(level, p, CattleBreed.WAGYU, Sex.MALE, 71L, 1500, 480);
+		CattleEntity dam = breedAt(level, p, CattleBreed.ANGUS, Sex.FEMALE, 72L, 500, 320);
+		CattleEntity calf = calveOnce(level, dam, bull);
+		helper.assertTrue(calf != null && calf.genome().breedCompositionBp().get("WAG") == 5000, Component.literal("an Angus x Wagyu calf"));
+		helper.assertTrue(dam.milkKg() == 0, Component.literal("a beef cow is not milked"));
+		helper.assertTrue(calf.readout().contains("50%"), Component.literal("the readout shows the cross: " + calf.readout()));
+		helper.succeed();
+	}
+
+	private static java.util.Map<net.minecraft.world.item.Item, Integer> dropsOf(ServerLevel level, CattleEntity animal) {
+		net.minecraft.world.phys.AABB box = animal.getBoundingBox().inflate(4);
+		animal.kill(level);
+		java.util.Map<net.minecraft.world.item.Item, Integer> got = new java.util.HashMap<>();
+		for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, box)) {
+			got.merge(e.getItem().getItem(), e.getItem().getCount(), Integer::sum);
+		}
+		return got;
+	}
+
+	private static void beefDropsByWeight(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity steer = breedAt(level, p, CattleBreed.ANGUS, Sex.MALE, 73L, 700, 550);
+		java.util.Map<net.minecraft.world.item.Item, Integer> got = dropsOf(level, steer);
+		helper.assertTrue(got.getOrDefault(net.minecraft.world.item.Items.BEEF, 0) == 13, Component.literal("13 beef (10 kg each), got " + got));
+		helper.assertTrue(got.getOrDefault(FarmingsItems.CHOICE_STEAK, 0) == 3, Component.literal("3 Choice steaks, got " + got));
+		int leather = got.getOrDefault(net.minecraft.world.item.Items.LEATHER, 0);
+		helper.assertTrue(leather >= 1 && leather <= 3, Component.literal("1-3 leather, got " + leather));
+		helper.succeed();
+	}
+
+	private static void wagyuMoreSteaks(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		BlockPos p = helper.absolutePos(new BlockPos(3, 1, 3));
+		CattleEntity w = breedAt(level, p, CattleBreed.WAGYU, Sex.MALE, 74L, 700, 487);
+		java.util.Map<net.minecraft.world.item.Item, Integer> got = dropsOf(level, w);
+		helper.assertTrue(got.getOrDefault(FarmingsItems.PRIME_STEAK, 0) == 4, Component.literal("4 Prime steaks (Angus gives 3), got " + got));
+		helper.succeed();
 	}
 
 	private static void calfIsBornBesideDam(GameTestHelper helper) {

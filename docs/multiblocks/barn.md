@@ -149,6 +149,11 @@ Cows take stalls, eat from the feeder and drink from a trough, and make manure f
 holds 1,000 L (a bucket); stages with no sourced intake eat at the dry cow's 2.2% of body weight. The pipe-fed trough, lying down, the
 dirty-stall effect and milk are not built.
 
+## Built, 2026-11-09: the dirty-stall effect (all values proposed; Tim chose "build, marked proposed")
+Manure lying in the alley cell in front of her stall makes her stall dirty. One item (one day's manure, cleared by the daily scraper pass) is
+normal. Each further item adds a quarter, so five items is fully dirty. Fully dirty costs 10% of her milk. At half dirty or worse she loses 1
+health (of 10) per game day, never below 2, so she never dies. Game test: dirty_stall_less_milk.
+
 ## Open decisions
 None. All eight were settled on 2026-11-07 (see the top of this file). The *(unverified)* tags remain: the scraper motor size has no
 source, the trough ratio has no source, and the dirty-stall effect size has no source. Each is revisited when a source is found.

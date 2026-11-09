@@ -17,11 +17,18 @@
  "block.farmings.vacuum_pump": "Vacuum Pump",
  "block.farmings.water_trough": "Water Trough",
  "entity.farmings.cattle": "Cattle",
+ "item.farmings.choice_steak": "Choice Steak",
+ "item.farmings.cooked_choice_steak": "Cooked Choice Steak",
+ "item.farmings.cooked_prime_steak": "Cooked Prime Steak",
+ "item.farmings.cooked_select_steak": "Cooked Select Steak",
  "item.farmings.empty_straw": "Empty Straw",
  "item.farmings.manure": "Manure",
  "item.farmings.manure_fork": "Manure Fork",
+ "item.farmings.prime_steak": "Prime Steak",
+ "item.farmings.select_steak": "Select Steak",
  "item.farmings.semen_straw": "Semen Straw",
  "itemGroup.farmings": "Farmings",
+ "message.farmings.castrated": "Castrated: he will grow as a steer.",
  "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
  "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty."
 }

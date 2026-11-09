@@ -97,6 +97,12 @@ public class CattleEntity extends Animal {
 	private double waterDrunkL;
 	private double lastFed = 1;
 	private double lastWatered = 1;
+	/** How many times she has calved; her first lactation gives 15% less (Lactation.parityFactor). */
+	private int lactations;
+	/** A heifer born twin to a bull who came out infertile (Breeding.FREEMARTIN_RATE). She never cycles. */
+	private boolean freemartin;
+	/** How dirty her stall is, 0 to 1, as her barn last saw it (Hygiene). */
+	private double dirty;
 
 	public CattleEntity(EntityType<? extends CattleEntity> type, Level level) {
 		super(type, level);
@@ -320,6 +326,7 @@ public class CattleEntity extends Animal {
 		this.bredTick = -1;
 		this.calvedTick = now - TimeScale.realDaysToTicks(realDaysAgo);
 		this.lastMilkDay = -1;
+		this.lactations = Math.max(lactations, 2);   // a display cow stands for a grown cow in a later lactation
 		syncAge(now);
 		updateMilk(now);
 	}
@@ -363,7 +370,7 @@ public class CattleEntity extends Animal {
 			lastMilkDay = day;
 			double realDays = TimeScale.ticksToRealDays(nowTick - calvedTick);
 			milkKg = dev.farmings.husbandry.Lactation.producedKg(breed, dev.farmings.husbandry.Lactation.daysInMilk(realDays),
-					score(Trait.MILK_YIELD), lastFed, lastWatered);
+					score(Trait.MILK_YIELD), lastFed, lastWatered, Math.max(1, lactations), dirty);
 		}
 	}
 
@@ -387,7 +394,7 @@ public class CattleEntity extends Animal {
 	}
 
 	public boolean canConceive() {
-		return genome != null && inHeat() && bredTick < 0;
+		return genome != null && !freemartin && inHeat() && bredTick < 0;
 	}
 
 	/** A service in heat conceives (decided 2026-11-08). The sire's genome is kept until the calf is born. */
@@ -418,7 +425,7 @@ public class CattleEntity extends Animal {
 			return;
 		}
 		double sinceCalving = hasCalved ? TimeScale.ticksToRealDays(now - calvedTick) : 0;
-		if (!dev.farmings.husbandry.Breeding.cycles(breed, stageAt(now), false, ageRealDays(), weightKg, sinceCalving)) {
+		if (freemartin || !dev.farmings.husbandry.Breeding.cycles(breed, stageAt(now), false, ageRealDays(), weightKg, sinceCalving)) {
 			nextHeatTick = -1;
 			return;
 		}
@@ -430,28 +437,54 @@ public class CattleEntity extends Animal {
 		}
 	}
 
-	/** The calf is born beside her and her lactation starts. */
+	/**
+	 * She calves: one calf, or twins (Breeding.twinRate), each of which may be stillborn (Breeding.stillbirthRate). A stillborn calf is
+	 * not spawned. A heifer twinned with a bull may be a freemartin. Her lactation starts either way. Every roll comes from a generator
+	 * seeded by the calving, so the same calving in the same world gives the same calves.
+	 */
 	private void calve(ServerLevel level, long now) {
 		Genome sire = Genome.decode(sireGenome);
-		Sex forced = null;
+		boolean firstCalf = !hasCalved;
+		lastCalving.clear();
 		CalfCounts counts = CalfCounts.get(level.getServer());
-		if (ownerId != null) {
-			forced = dev.farmings.husbandry.Breeding.forcedSex(counts.count(ownerId));
-		}
 		String eventId = "calving:" + getUUID() + ":" + now;
-		dev.farmings.genetics.Offspring.Result r = dev.farmings.genetics.Offspring.create(genome, sire, eventId,
-				Long.toString(level.getSeed()), Ruleset.defaults(), forced);
-		CattleEntity calf = dev.farmings.FarmingsEntities.CATTLE.create(level, EntitySpawnReason.BREEDING);
-		if (calf != null) {
-			calf.initCalf(r, now, breed.matureWeightKg);
-			calf.ownerId = ownerId;
-			calf.setPos(getX() + 0.8, getY(), getZ());
-			level.addFreshEntity(calf);
+		dev.farmings.genetics.Rng rng = new dev.farmings.genetics.Rng(dev.farmings.genetics.BreedingSeed.seed(Long.toString(level.getSeed()),
+				eventId + ":birth", genome.hash(), sire.hash(), Ruleset.defaults().version()));
+		boolean twinRoll = dev.farmings.husbandry.Breeding.twins(rng.next(), firstCalf);
+		int count = forcedCalves > 0 ? forcedCalves : twinRoll ? 2 : 1;
+		java.util.List<CattleEntity> born = new java.util.ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			Sex forced = ownerId == null ? null : dev.farmings.husbandry.Breeding.forcedSex(counts.count(ownerId));
+			dev.farmings.genetics.Offspring.Result r = dev.farmings.genetics.Offspring.create(genome, sire, eventId + (i == 0 ? "" : ":twin" + i),
+					Long.toString(level.getSeed()), Ruleset.defaults(), forced);
+			boolean deadRoll = dev.farmings.husbandry.Breeding.stillborn(rng.next(), firstCalf);
+			boolean dead = forcedStillborn != null ? forcedStillborn : deadRoll;
+			lastCalving.add(dead ? "stillborn " + r.sex().name().toLowerCase(java.util.Locale.ROOT) : r.sex().name().toLowerCase(java.util.Locale.ROOT));
+			if (dead) {
+				continue;
+			}
+			CattleEntity calf = dev.farmings.FarmingsEntities.CATTLE.create(level, EntitySpawnReason.BREEDING);
+			if (calf != null) {
+				calf.initCalf(r, now, breed.matureWeightKg);
+				calf.ownerId = ownerId;
+				calf.setPos(getX() + 0.8, getY(), getZ() + i * 0.8);
+				level.addFreshEntity(calf);
+				born.add(calf);
+				if (ownerId != null) {
+					counts.add(ownerId);
+				}
+			}
 		}
-		if (ownerId != null) {
-			counts.add(ownerId);
+		if (count == 2) {
+			boolean bull = forcedFreemartin || lastCalving.stream().anyMatch(t -> t.endsWith("male") && !t.endsWith("female"));
+			for (CattleEntity c : born) {
+				if (bull && c.sex == Sex.FEMALE && (forcedFreemartin || dev.farmings.husbandry.Breeding.freemartin(rng.next()))) {
+					c.freemartin = true;
+				}
+			}
 		}
 		hasCalved = true;
+		lactations++;
 		calvedTick = now;
 		bredTick = -1;
 		sireGenome = "";
@@ -460,6 +493,55 @@ public class CattleEntity extends Animal {
 		lastMilkDay = -1;
 		syncAge(now);
 		updateMilk(now);
+	}
+
+	/** Game tests only: fix the next calving's outcome (0 calves = roll; null = roll). Not saved. */
+	private int forcedCalves;
+	private @Nullable Boolean forcedStillborn;
+	private boolean forcedFreemartin;
+
+	public void forceCalvingForTest(int calves, @Nullable Boolean stillborn, boolean freemartinTwin) {
+		this.forcedCalves = calves;
+		this.forcedStillborn = stillborn;
+		this.forcedFreemartin = freemartinTwin;
+	}
+
+	/** What the last calving gave, for tests and the readout: "female", "male", "stillborn female"... Not saved. */
+	private final java.util.List<String> lastCalving = new java.util.ArrayList<>();
+
+	public java.util.List<String> lastCalving() {
+		return lastCalving;
+	}
+
+	public boolean freemartin() {
+		return freemartin;
+	}
+
+	public int lactations() {
+		return lactations;
+	}
+
+	/** For game tests: how many times she has calved. */
+	public void setLactationsForTest(int n) {
+		this.lactations = n;
+	}
+
+	/** For game tests: marks her a freemartin without waiting for a twin calving. */
+	public void setFreemartinForTest(boolean f) {
+		this.freemartin = f;
+	}
+
+	public double dirty() {
+		return dirty;
+	}
+
+	/** Her barn reports how dirty her stall is; past half dirty she slowly loses health, never below the floor (Hygiene). */
+	public void applyDirt(double dirty, long ticks) {
+		this.dirty = dirty;
+		float loss = (float) dev.farmings.husbandry.Hygiene.healthLoss(dirty, getHealth(), ticks);
+		if (loss > 0) {
+			setHealth(getHealth() - loss);
+		}
 	}
 
 	/** The once-a-second bookkeeping: age and stage, the udder, heat and calving. Game tests call it to skip waiting. */
@@ -628,6 +710,112 @@ public class CattleEntity extends Animal {
 		if (tickCount % 20 == 0) {
 			settle(level);
 		}
+		// The heat cue: hearts every 3 seconds while she is in heat (a game sign; real signs are standing to be mounted and restlessness).
+		if (tickCount % 60 == 0 && inHeat()) {
+			level.sendParticles(net.minecraft.core.particles.ParticleTypes.HEART, getX(), getY() + getBbHeight() + 0.3, getZ(), 2, 0.3, 0.2, 0.3, 0.0);
+		}
+	}
+
+	/**
+	 * An empty hand reads the animal (breed, sex, age, weight, stage, breeding, milk, feed, health). Shears on a bull calf castrate him,
+	 * so he grows as a steer for beef (proposed; real farms band or castrate calves young).
+	 */
+	@Override
+	public net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (stack.isEmpty()) {
+			if (!level().isClientSide()) {
+				player.sendSystemMessage(net.minecraft.network.chat.Component.literal(readout()));
+			}
+			return net.minecraft.world.InteractionResult.SUCCESS;
+		}
+		if (stack.is(net.minecraft.world.item.Items.SHEARS) && sex == Sex.MALE && !castrated && stage() == Stage.BULL_CALF) {
+			if (!level().isClientSide()) {
+				castrated = true;
+				syncAge(level().getGameTime());
+				stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
+				player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.farmings.castrated"));
+			}
+			return net.minecraft.world.InteractionResult.SUCCESS;
+		}
+		return super.mobInteract(player, hand);
+	}
+
+	/** "holstein", or "holstein 50% angus 50%" for a cross, largest share first. */
+	public String breedLabel() {
+		if (genome == null) {
+			return breed.assetName().replace('_', ' ');
+		}
+		java.util.List<java.util.Map.Entry<String, Integer>> parts = new java.util.ArrayList<>(genome.breedCompositionBp().entrySet());
+		parts.sort((x, y) -> y.getValue() - x.getValue());
+		if (parts.size() == 1) {
+			return CattleBreed.byCode(parts.get(0).getKey()).assetName().replace('_', ' ');
+		}
+		StringBuilder b = new StringBuilder();
+		for (java.util.Map.Entry<String, Integer> e : parts) {
+			if (b.length() > 0) {
+				b.append(' ');
+			}
+			b.append(CattleBreed.byCode(e.getKey()).assetName().replace('_', ' ')).append(' ')
+					.append(String.format(java.util.Locale.ROOT, "%.0f%%", e.getValue() / 100.0));
+		}
+		return b.toString();
+	}
+
+	/** One line about the animal, as the readout shows it. */
+	public String readout() {
+		StringBuilder b = new StringBuilder();
+		b.append(breedLabel()).append(' ').append(sex == Sex.FEMALE ? "female" : castrated ? "steer" : "male");
+		b.append(", ").append(String.format(java.util.Locale.ROOT, "%.0f months", ageRealDays() / 30.4));
+		b.append(", ").append(String.format(java.util.Locale.ROOT, "%.0f kg", weightKg));
+		b.append(", ").append(stage().name().toLowerCase(java.util.Locale.ROOT).replace('_', ' '));
+		if (freemartin) {
+			b.append(", freemartin (infertile)");
+		}
+		if (inHeat()) {
+			b.append(", IN HEAT");
+		}
+		if (isInCalf()) {
+			long left = dueTick - level().getGameTime();
+			b.append(dueTick >= 0 ? String.format(java.util.Locale.ROOT, ", in calf, due in %.1f game days", left / (double) TimeScale.TICKS_PER_GAME_DAY) : ", in calf");
+		}
+		if (Lifecycle.givesMilk(stage())) {
+			b.append(", day ").append(daysInMilk()).append(" in milk, lactation ").append(Math.max(1, lactations));
+			b.append(String.format(java.util.Locale.ROOT, ", %.1f kg in udder", milkKg));
+		}
+		if (stallController != null) {
+			b.append(String.format(java.util.Locale.ROOT, ", fed %.0f%%, watered %.0f%%", lastFed * 100, lastWatered * 100));
+			if (dirty > 0) {
+				b.append(String.format(java.util.Locale.ROOT, ", stall %.0f%% dirty", dirty * 100));
+			}
+		}
+		b.append(String.format(java.util.Locale.ROOT, ", health %.0f/%.0f", getHealth(), getMaxHealth()));
+		return b.toString();
+	}
+
+	/** What she gives when killed: beef and steaks by carcass weight (husbandry.Carcass, 1 item = 10 kg) and 1-3 leather. */
+	public dev.farmings.husbandry.Carcass.Yield carcass() {
+		java.util.Map<String, Integer> comp = genome != null ? genome.breedCompositionBp() : java.util.Map.of(breed.code, 10_000);
+		return dev.farmings.husbandry.Carcass.of(weightKg, comp);
+	}
+
+	@Override
+	protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
+		super.dropCustomDeathLoot(level, source, recentlyHit);
+		dev.farmings.husbandry.Carcass.Yield y = carcass();
+		boolean fire = isOnFire();
+		dropCount(level, fire ? net.minecraft.world.item.Items.COOKED_BEEF : net.minecraft.world.item.Items.BEEF, y.beefItems());
+		dropCount(level, dev.farmings.FarmingsItems.steak(y.grade(), fire), y.steakItems());
+		dropCount(level, net.minecraft.world.item.Items.LEATHER, 1 + random.nextInt(3));
+	}
+
+	private void dropCount(ServerLevel level, net.minecraft.world.level.ItemLike item, int count) {
+		int max = new ItemStack(item).getMaxStackSize();
+		while (count > 0) {
+			int n = Math.min(max, count);
+			spawnAtLocation(level, new ItemStack(item, n));
+			count -= n;
+		}
 	}
 
 	@Override
@@ -679,6 +867,9 @@ public class CattleEntity extends Animal {
 		output.putDouble("WaterDrunkL", waterDrunkL);
 		output.putDouble("LastFed", lastFed);
 		output.putDouble("LastWatered", lastWatered);
+		output.putInt("Lactations", lactations);
+		output.putBoolean("Freemartin", freemartin);
+		output.putDouble("Dirty", dirty);
 	}
 
 	@Override
@@ -723,6 +914,9 @@ public class CattleEntity extends Animal {
 		waterDrunkL = input.getDoubleOr("WaterDrunkL", 0);
 		lastFed = input.getDoubleOr("LastFed", 1);
 		lastWatered = input.getDoubleOr("LastWatered", 1);
+		lactations = input.getIntOr("Lactations", hasCalved ? 1 : 0);
+		freemartin = input.getBooleanOr("Freemartin", false);
+		dirty = input.getDoubleOr("Dirty", 0);
 		entityData.set(DATA_BREED, breed.ordinal());
 		entityData.set(DATA_STAGE, stageAt(level().getGameTime()).ordinal());
 	}

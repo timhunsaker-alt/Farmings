@@ -174,3 +174,20 @@ Decided 2026-11-07: time scale 1 game day = 15 real days; one milking per game d
 ## Still to research
 Per-breed peak and total milk yield, heat duration, a primary source for brown swiss and Angus weights, water trough and pasture
 space, Gyr gestation and Brazilian Gyr weight, and the primary NRC source for intake.
+
+## Built, 2026-11-09: first lactation, readout, castration, beef
+- **First lactation** gives 15% less (the Wisconsin fits above). The cow counts her lactations; it is saved.
+- **Readout:** right-click with an empty hand shows breed (or the cross, largest share first), sex, age, weight, stage, heat, due date, days in milk and lactation number, milk in the udder, fed and watered, stall dirt and health.
+- **Castration** *(proposed)*: shears on a bull calf make him a steer.
+- **Angus and Wagyu baselines** on FarmChain's 0-100 scale, all *(proposed, no source; FarmChain has no beef breeds)*: Angus milk 20, fat 50, protein 50, feed efficiency 75, health 80, fertility 80, longevity 75, temperament 70. Wagyu 15, 55, 50, 55, 75, 70, 85, 85. They point the way the real differences go: little milk, Angus more efficient and fertile, Wagyu longer-lived and calmer.
+- **Beef traits** (dressing %, marbling; growth is the breed's own weight curve) come from the animal's breed composition, weighted by share. They are not genome loci, so the FarmChain-checked genome is unchanged.
+- **Meat** (husbandry/Carcass, 1 item = 10 kg, Tim 2026-11-09):
+  - carcass = live weight x dressing %: 63% for beef breeds, 58% for dairy ([Penn State](https://extension.psu.edu/understanding-beef-carcass-yields-and-losses-during-processing));
+  - boneless retail meat = 50% of the carcass (Penn State, yield grade 3);
+  - steaks = 10% of the carcass (the four steak cuts are 8-12%), taken out of the retail meat; the rest drops as vanilla beef;
+  - Wagyu: steak share x 1.5 for a purebred, scaled by Wagyu share *(proposed; Tim's game rule, not a realism claim)*;
+  - marbling: Angus 597, Wagyu 771 (Twin Wood study above); dairy 450 *(proposed)*. Grade: under 400 Select, 400-699 Choice, 700 up Prime;
+  - steak items by grade, raw and cooked. Raw is vanilla raw beef. Cooked Select is vanilla steak (8 hunger); Choice 9, Prime 10 *(proposed)*;
+  - 1-3 leather; an animal that dies burning drops cooked meat.
+  - Results: a 550 kg Angus gives 13 beef and 3 Choice steaks. A 487 kg Wagyu gives 10 beef and 4 Prime steaks.
+- Game tests: first_lactation_lower, cow_readout_and_castration, beef_drops_by_weight, wagyu_more_steaks.

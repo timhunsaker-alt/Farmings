@@ -76,12 +76,25 @@ public final class Lactation {
 	 * A breed with no milk baseline gives 1.
 	 */
 	public static double yieldFactor(CattleBreed breed, int milkYieldScore) {
+		if (breed.use == CattleBreed.Use.BEEF) {
+			return 1;   // beef cows are not milked; their curve is zero anyway
+		}
 		int baseline = dev.farmings.genetics.Breeds.known(breed.code)
 				? dev.farmings.genetics.Breeds.baseline(breed.code, dev.farmings.genetics.Trait.MILK_YIELD) * 10 : 0;
 		if (baseline <= 0) {
 			return 1;
 		}
 		return Math.max(MIN_FACTOR, Math.min(MAX_FACTOR, (double) milkYieldScore / baseline));
+	}
+
+	/**
+	 * First lactation: about 15% less than later ones (Wisconsin Wood's fits, docs/animals/cattle.md). Later lactations give the full
+	 * curve, which is fitted to later lactations.
+	 */
+	public static final double FIRST_LACTATION_FACTOR = 0.85;
+
+	public static double parityFactor(int lactation) {
+		return lactation <= 1 ? FIRST_LACTATION_FACTOR : 1.0;
 	}
 
 	/** Which real day of the lactation it is, counting the calving day as 1. */
@@ -94,7 +107,12 @@ public final class Lactation {
 	 * the fed and watered fractions of her last tending (proposed: milk falls in step with the shortfall; she never dies).
 	 */
 	public static double producedKg(CattleBreed breed, int daysInMilk, int milkYieldScore, double fed, double watered) {
+		return producedKg(breed, daysInMilk, milkYieldScore, fed, watered, 2, 0);
+	}
+
+	/** As above, for her {@code lactation}-th lactation (1 = first) and a stall {@code dirty} fraction 0..1 ({@link Hygiene}). */
+	public static double producedKg(CattleBreed breed, int daysInMilk, int milkYieldScore, double fed, double watered, int lactation, double dirty) {
 		double shortfall = Math.max(0, Math.min(1, Math.min(fed, watered)));
-		return dailyKg(breed, daysInMilk, yieldFactor(breed, milkYieldScore)) * shortfall;
+		return dailyKg(breed, daysInMilk, yieldFactor(breed, milkYieldScore)) * shortfall * parityFactor(lactation) * Hygiene.milkFactor(dirty);
 	}
 }

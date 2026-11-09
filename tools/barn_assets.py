@@ -30,6 +30,24 @@ PARTS = {
     "milk_line": ("Milk Line", (200, 200, 205), (1, 1, 1, 0, 0), [(0, 0, 5, 16, 5, 11)]),
     "bulk_tank": ("Bulk Tank", (205, 208, 214), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
 }
+# items that are not blocks: (id, name, placeholder colour, kind: "blob", "fork", "straw", "steak")
+ITEMS = [
+    ("manure", "Manure", (92, 64, 38), "blob"),
+    ("manure_fork", "Manure Fork", (138, 120, 96), "fork"),
+    ("empty_straw", "Empty Straw", (170, 170, 176), "straw"),
+    ("semen_straw", "Semen Straw", (80, 130, 200), "straw"),
+    ("select_steak", "Select Steak", (190, 60, 60), "steak"),
+    ("choice_steak", "Choice Steak", (196, 70, 70), "steak"),
+    ("prime_steak", "Prime Steak", (204, 84, 84), "steak"),
+    ("cooked_select_steak", "Cooked Select Steak", (120, 70, 40), "steak"),
+    ("cooked_choice_steak", "Cooked Choice Steak", (128, 76, 44), "steak"),
+    ("cooked_prime_steak", "Cooked Prime Steak", (136, 82, 48), "steak"),
+]
+EXTRA_LANG = {
+    "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
+    "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty.",
+    "message.farmings.castrated": "Castrated: he will grow as a steer.",
+}
 CONTROLLER = ("Barn Controller", (200, 110, 40))
 PARLOR_CONTROLLER = ("Parlor Controller", (60, 110, 190))
 
@@ -74,7 +92,13 @@ def texture(name, colour, centre_stripe=None):
 def item_texture(name, colour, fork):
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    if fork == "straw":
+    if fork == "steak":
+        d.ellipse([2, 4, 14, 12], fill=colour)
+        d.arc([2, 4, 14, 12], 0, 360, fill=(240, 230, 220))                 # fat rim
+        marbling = {"select": 2, "choice": 5, "prime": 9}[name.replace("cooked_", "").split("_")[0]]
+        for i in range(marbling):
+            d.point((4 + (i * 5) % 9, 6 + (i * 3) % 5), fill=(245, 235, 230))
+    elif fork == "straw":
         d.line([(3, 13), (13, 3)], fill=(232, 224, 200), width=3)         # a thin tube
         d.line([(3, 13), (6, 10)], fill=colour, width=3)                  # the plug end
     elif fork:
@@ -101,9 +125,8 @@ def block_model(name, box):
 
 
 def main():
-    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "block.farmings.barn_controller": CONTROLLER[0],
-            "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
-            "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty."}
+    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "block.farmings.barn_controller": CONTROLLER[0]}
+    lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
         lang["block.farmings." + name] = title
         texture(name, colour, (255, 214, 64) if name == "scraper_rail" else None)
@@ -137,12 +160,10 @@ def main():
     write(os.path.join(ASSETS, "items", "parlor_controller.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/parlor_controller"}})
     write(os.path.join(DATA, "loot_table", "blocks", "parlor_controller.json"), loot("parlor_controller"))
     # items: manure and the fork (placeholders)
-    for name, title, colour, parent in (("manure", "Manure", (92, 64, 38), "minecraft:item/generated"),
-                                        ("manure_fork", "Manure Fork", (138, 120, 96), "minecraft:item/handheld"),
-                                        ("empty_straw", "Empty Straw", (170, 170, 176), "minecraft:item/generated"),
-                                        ("semen_straw", "Semen Straw", (80, 130, 200), "minecraft:item/generated")):
+    for name, title, colour, kind in ITEMS:
+        parent = "minecraft:item/handheld" if kind == "fork" else "minecraft:item/generated"
         lang["item.farmings." + name] = title
-        item_texture(name, colour, "straw" if name.endswith("_straw") else name == "manure_fork")
+        item_texture(name, colour, kind if kind in ("straw", "steak") else kind == "fork")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/%s_placeholder" % name}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})

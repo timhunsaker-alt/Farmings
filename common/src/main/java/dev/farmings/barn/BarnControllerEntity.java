@@ -365,6 +365,7 @@ public class BarnControllerEntity extends BlockEntity {
 			trough.take(r.drunkL());
 		}
 		cow.recordTending(r.eatenKg(), r.drunkL(), r.fed(), r.watered());
+		cow.applyDirt(dev.farmings.husbandry.Hygiene.dirtyFraction(manureInFront(level, s)), ticks);
 		int items = cow.collectManureItems(r.manureKg());
 		if (items > 0) {
 			Vec3 spot = Vec3.atCenterOf(at(s.x(), floorY(), s.alleyZ()));
@@ -373,6 +374,31 @@ public class BarnControllerEntity extends BlockEntity {
 			e.setDeltaMovement(Vec3.ZERO);
 			level.addFreshEntity(e);
 		}
+	}
+
+	/** The alley cell in front of this cow's stall in this barn, or null if she is not housed here. */
+	public @org.jspecify.annotations.Nullable BlockPos alleyInFrontOf(CattleEntity cow) {
+		if (!formed() || !worldPosition.equals(cow.stallController())) {
+			return null;
+		}
+		for (BarnStalls.Stall s : BarnStalls.of(check.driveX(), check.stallsPerSide())) {
+			if (standPos(s).equals(cow.stallStand())) {
+				return at(s.x(), floorY(), s.alleyZ());
+			}
+		}
+		return null;
+	}
+
+	/** Manure items lying in the alley cell in front of her stall: what makes her stall dirty (Hygiene). */
+	private int manureInFront(Level level, BarnStalls.Stall s) {
+		BlockPos cell = at(s.x(), floorY(), s.alleyZ());
+		int n = 0;
+		for (ItemEntity e : level.getEntitiesOfClass(ItemEntity.class, new AABB(cell).inflate(0.1, 1.0, 0.1))) {
+			if (e.getItem().is(FarmingsItems.MANURE)) {
+				n += e.getItem().getCount();
+			}
+		}
+		return n;
 	}
 
 	/** A trough in her row: the first with water in it, or else the first there is. */

@@ -76,4 +76,12 @@ class LactationTest {
 		assertEquals(1, Lactation.daysInMilk(0.99));
 		assertEquals(70, Lactation.daysInMilk(69.2));
 	}
+
+	@Test
+	void firstLactationGivesFifteenPercentLess() {
+		double later = Lactation.producedKg(CattleBreed.HOLSTEIN, 50, 950, 1, 1, 2, 0);
+		double first = Lactation.producedKg(CattleBreed.HOLSTEIN, 50, 950, 1, 1, 1, 0);
+		assertEquals(later * 0.85, first, 1e-9);
+		assertEquals(later * 0.9, Lactation.producedKg(CattleBreed.HOLSTEIN, 50, 950, 1, 1, 2, 1), 1e-9);
+	}
 }

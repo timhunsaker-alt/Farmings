@@ -119,8 +119,7 @@ public final class FarmingsBlocks {
 	/** Every item the creative tab shows. The tab itself is built in each loader, which has the builder that takes no argument. */
 	public static void creativeTab(java.util.function.Consumer<net.minecraft.world.level.ItemLike> output) {
 		output.accept(BARN_CONTROLLER);
-		output.accept(FarmingsItems.MANURE_FORK);
-		output.accept(FarmingsItems.MANURE);
+		FarmingsItems.ALL.values().forEach(output);
 		for (BarnParts kind : BarnParts.values()) {
 			output.accept(part(kind));
 		}

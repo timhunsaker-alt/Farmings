@@ -245,9 +245,19 @@ class GeneticsTest {
 	}
 
 	@Test
-	void angusAndWagyuHaveNoBaselinesYet() {
+	void allSixBreedsHaveBaselines() {
 		assertTrue(Breeds.known("HOL") && Breeds.known("JER") && Breeds.known("BSW") && Breeds.known("GYR"));
-		assertTrue(!Breeds.known("ANG") && !Breeds.known("WAG"));
+		assertTrue(Breeds.known("ANG") && Breeds.known("WAG"));
+		assertTrue(Breeds.baseline("WAG", Trait.MILK_YIELD) < Breeds.baseline("GYR", Trait.MILK_YIELD));
+	}
+
+	@Test
+	void angusWagyuCrossIsHalfAndHalf() {
+		Founders.Result a = Founders.create("ANG", Sex.FEMALE, 1L, RULES);
+		Founders.Result w = Founders.create("WAG", Sex.MALE, 2L, RULES);
+		Offspring.Result r = Offspring.create(a.genome(), w.genome(), 7L, RULES, null);
+		assertEquals(5000, r.genome().breedCompositionBp().get("ANG"));
+		assertEquals(5000, r.genome().breedCompositionBp().get("WAG"));
 	}
 
 	@Test
