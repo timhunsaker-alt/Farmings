@@ -986,6 +986,178 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+	/**
+	 * The sheep farm (docs/multiblocks/sheep-shed.md, shearing-shed.md, wool-mill.md, docs/wool.md): the flock in the shed at night, filmed
+	 * going out to the pasture by day; a Merino filmed walking to the shearing stand and shorn; the mill line with its products; the player
+	 * in the wool clothing.
+	 */
+	private static void sheepFarm(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 40;
+		int cz = 40;
+		java.util.List<dev.farmings.entity.SheepEntity> flock = new java.util.ArrayList<>();
+		BlockPos shedPos = new BlockPos(cx + 1, y, cz + 2);
+		BlockPos standPos = new BlockPos(cx + 5, y, cz - 1);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx + 8, cz + 6, y, 16, 14, 6);
+			level.setBlockAndUpdate(shedPos, dev.farmings.shed.ShedBlocks.SHED_CONTROLLER.defaultBlockState());
+			for (int x = cx + 2; x <= cx + 5; x++) {
+				for (int z = cz + 1; z <= cz + 4; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y, z), dev.farmings.shed.ShedBlocks.SHEEP_PEN.defaultBlockState());
+				}
+			}
+			for (int x = cx + 6; x <= cx + 20; x++) {
+				for (int z = cz - 2; z <= cz + 8; z++) {
+					if (x == cx + 6 || x == cx + 20 || z == cz - 2 || z == cz + 8) {
+						level.setBlockAndUpdate(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(new BlockPos(cx + 6, y, cz + 1), dev.farmings.shed.ShedBlocks.LAMBING_PEN.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(cx + 6, y, cz + 3), dev.farmings.shed.ShedBlocks.PASTURE_GATE.defaultBlockState());
+			barnPart(level, BarnParts.HAY_FEEDER, new BlockPos(cx + 2, y, cz));
+			barnPart(level, BarnParts.WATER_TROUGH, new BlockPos(cx + 3, y, cz + 5));
+			level.setBlockAndUpdate(new BlockPos(cx + 5, y, cz), dev.farmings.shearing.ShearingBlocks.CATCHING_PEN.defaultBlockState());
+			level.setBlockAndUpdate(standPos, dev.farmings.shearing.ShearingBlocks.SHEARING_STAND.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(cx + 4, y, cz - 1), dev.farmings.shearing.ShearingBlocks.WOOL_TABLE.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(cx + 3, y, cz - 1), dev.farmings.shearing.ShearingBlocks.WOOL_PRESS.defaultBlockState());
+			if (level.getBlockEntity(new BlockPos(cx + 2, y, cz)) instanceof dev.farmings.barn.FeederEntity f) {
+				for (int i = 0; i < 4; i++) {
+					f.addBlock();
+				}
+			}
+			if (level.getBlockEntity(BigParts.owner(level, new BlockPos(cx + 3, y, cz + 5))) instanceof dev.farmings.barn.TroughEntity t) {
+				t.pourBucket();
+			}
+			long seed = 1200;
+			dev.farmings.husbandry.SheepBreed[] breeds = {dev.farmings.husbandry.SheepBreed.MERINO, dev.farmings.husbandry.SheepBreed.MERINO,
+					dev.farmings.husbandry.SheepBreed.SUFFOLK, dev.farmings.husbandry.SheepBreed.DORPER, dev.farmings.husbandry.SheepBreed.EAST_FRIESIAN,
+					dev.farmings.husbandry.SheepBreed.SUFFOLK};
+			for (int i = 0; i < breeds.length; i++) {
+				dev.farmings.entity.SheepEntity s = sheep(level, breeds[i], i == 5 ? Sex.MALE : Sex.FEMALE, seed++, 900);
+				s.setNoAi(false);
+				s.setFleeceDaysForTest(i == 0 ? 365 : 200);
+				s.setPos(cx + 2.5 + i % 4, y + 0.2, cz + 1.5 + i / 4 * 2);
+				s.assignShed(shedPos, null);
+				flock.add(s);
+			}
+			((dev.farmings.shed.ShedControllerEntity) level.getBlockEntity(shedPos)).forceDayForTest(false);
+		});
+		context.waitTicks(100);
+		actionbar(server, "Night: the flock is in the shed");
+		server.runCommand("tp @p " + (cx + 4.5) + " " + (y + 9) + " " + (cz + 15) + " 160 38");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-sheepfarm-night");
+		Filming film = context.computeOnClient(client -> Filming.start(client, "flock-to-pasture"));
+		server.runOnServer(srv -> ((dev.farmings.shed.ShedControllerEntity) srv.overworld().getBlockEntity(shedPos)).forceDayForTest(true));
+		actionbar(server, "Morning: out through the pasture gate");
+		context.waitTicks(400);
+		context.takeScreenshot("farmings-sheepfarm-pasture");
+		String[] shedRead = new String[1];
+		server.runOnServer(srv -> shedRead[0] = ((dev.farmings.shed.ShedControllerEntity) srv.overworld().getBlockEntity(shedPos)).readout());
+		actionbar(server, shedRead[0]);
+		context.waitTicks(60);
+		context.takeScreenshot("farmings-sheepfarm-readout");
+		film.stop();
+		// the shearing stand: night again, power on; the Merino with a year's fleece is called in and shorn
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			((dev.farmings.shed.ShedControllerEntity) level.getBlockEntity(shedPos)).forceDayForTest(false);
+			((dev.farmings.shearing.ShearingStandEntity) level.getBlockEntity(standPos)).forceRunning(true);
+		});
+		context.waitTicks(200);
+		server.runCommand("tp @p " + (cx + 8.5) + " " + (y + 3.5) + " " + (cz - 4.5) + " 60 25");
+		Filming shear = context.computeOnClient(client -> Filming.start(client, "shearing"));
+		for (int i = 0; i < 12; i++) {
+			String[] read = new String[1];
+			server.runOnServer(srv -> read[0] = ((dev.farmings.shearing.ShearingStandEntity) srv.overworld().getBlockEntity(standPos)).readout());
+			actionbar(server, read[0]);
+			context.waitTicks(40);
+			if (i == 5) {
+				context.takeScreenshot("farmings-shearing-stand");
+			}
+		}
+		String[] table = new String[1];
+		server.runOnServer(srv -> {
+			dev.farmings.shearing.WoolStoreEntity t = (dev.farmings.shearing.WoolStoreEntity) srv.overworld().getBlockEntity(new BlockPos(cx + 4, y, cz - 1));
+			StringBuilder b = new StringBuilder("Wool table:");
+			for (ItemStack st : t.items()) {
+				if (!st.isEmpty()) {
+					b.append(' ').append(st.getHoverName().getString()).append(String.format(java.util.Locale.ROOT, " %.2f kg %s;",
+							dev.farmings.item.FleeceItem.greasyKg(st), dev.farmings.item.FleeceItem.grade(st) == null ? "" : dev.farmings.item.FleeceItem.grade(st).label));
+				}
+			}
+			table[0] = b.toString();
+		});
+		actionbar(server, table[0]);
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-shearing-done");
+		shear.stop();
+		// the mill line, fed by hand in a hurry: each machine shows what it made
+		java.util.List<dev.farmings.woolmill.WoolMachineEntity> mill = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			int mz = cz + 13;
+			dev.farmings.woolmill.WoolMachine[] kinds = dev.farmings.woolmill.WoolMachine.values();
+			for (int i = 0; i < kinds.length; i++) {
+				BlockPos p = new BlockPos(cx + 2 + 2 * i, y, mz);
+				level.setBlockAndUpdate(p, dev.farmings.woolmill.WoolMillBlocks.machine(kinds[i]).defaultBlockState());
+				dev.farmings.woolmill.WoolMachineEntity m = (dev.farmings.woolmill.WoolMachineEntity) level.getBlockEntity(p);
+				m.forceRunning(true);
+				mill.add(m);
+			}
+			mill.get(0).pourBucket();
+			mill.get(0).insertByHand(dev.farmings.item.FleeceItem.make(FarmingsItems.FLEECE, 4.4, 20.5, 8, 0.5, dev.farmings.husbandry.Flock.Grade.FINE, dev.farmings.genetics.SheepLook.Wool.WHITE));
+			mill.get(1).insertByHand(dev.farmings.item.FleeceItem.make(FarmingsItems.CLEAN_WOOL, 2.2, 20.5, 8, 1, dev.farmings.husbandry.Flock.Grade.FINE, dev.farmings.genetics.SheepLook.Wool.WHITE));
+			mill.get(2).insertByHand(dev.farmings.item.FleeceItem.make(FarmingsItems.SLIVER, 2.0, 29, 9, 1, dev.farmings.husbandry.Flock.Grade.QUARTER, dev.farmings.genetics.SheepLook.Wool.BLACK));
+			mill.get(3).insertByHand(new ItemStack(FarmingsItems.YARN.get(net.minecraft.world.item.DyeColor.RED), 8));
+			mill.get(4).insertByHand(dev.farmings.item.FleeceItem.make(FarmingsItems.CLEAN_WOOL, 1.0, 30, 9, 1, dev.farmings.husbandry.Flock.Grade.QUARTER, dev.farmings.genetics.SheepLook.Wool.WHITE));
+		});
+		context.waitTicks(130);
+		String[] made = new String[1];
+		server.runOnServer(srv -> {
+			StringBuilder b = new StringBuilder();
+			for (dev.farmings.woolmill.WoolMachineEntity m : mill) {
+				b.append(m.kind().title).append(':');
+				for (int i = 1; i < 5; i++) {
+					ItemStack st = m.items().get(i);
+					if (!st.isEmpty()) {
+						b.append(' ').append(st.getCount()).append(' ').append(st.getHoverName().getString());
+					}
+				}
+				b.append("  ");
+				// show the output on top of each machine
+				ItemStack first = m.items().get(1).copy();
+				net.minecraft.world.entity.item.ItemEntity shown = new net.minecraft.world.entity.item.ItemEntity(srv.overworld(), m.getBlockPos().getX() + 0.5,
+						m.getBlockPos().getY() + 1.1, m.getBlockPos().getZ() + 0.5, first);
+				shown.setNoGravity(true);
+				shown.setDeltaMovement(0, 0, 0);
+				shown.setNeverPickUp();
+				srv.overworld().addFreshEntity(shown);
+			}
+			made[0] = b.toString();
+		});
+		actionbar(server, made[0]);
+		server.runCommand("tp @p " + (cx + 6.5) + " " + (y + 2.6) + " " + (cz + 18.5) + " 180 22");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-wool-mill");
+		// the wool clothing, worn
+		server.runCommand("gamemode survival @p");
+		server.runCommand("tp @p " + (cx + 6.5) + " " + y + " " + (cz + 22.5) + " 180 10");
+		server.runOnServer(srv -> {
+			net.minecraft.server.level.ServerPlayer p = srv.getPlayerList().getPlayers().get(0);
+			p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(FarmingsItems.WOOL_CAP));
+			p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new ItemStack(FarmingsItems.WOOL_SWEATER));
+			p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, new ItemStack(FarmingsItems.WOOL_TROUSERS));
+			p.setItemSlot(net.minecraft.world.entity.EquipmentSlot.FEET, new ItemStack(FarmingsItems.WOOL_SOCKS));
+		});
+		actionbar(server, "Wool clothing: cap, sweater, trousers, socks");
+		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(60);
+		context.takeScreenshot("farmings-wool-clothing");
+		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
+	}
+
 	/** The player in milk armor, seen from the front: fresh, then a game day later spoiled, with Nausea and Hunger. Filmed. */
 	private static void milkArmor(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
@@ -1038,6 +1210,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("sheepfarm".equals(only)) {
+				context.waitTicks(200);
+				sheepFarm(context, server, y);
 				return;
 			}
 			if ("flock".equals(only)) {
