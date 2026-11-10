@@ -67,6 +67,7 @@ public final class Perishables {
 			case BUTTER -> FarmingsItems.RANCID_BUTTER;
 			case CHEESE -> FarmingsItems.MOLDY_CHEESE;
 			case STEAK -> FarmingsItems.SPOILED_STEAK;
+			case MUTTON -> FarmingsItems.SPOILED_MUTTON;
 		};
 	}
 }

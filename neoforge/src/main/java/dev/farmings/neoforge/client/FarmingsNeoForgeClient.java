@@ -17,8 +17,15 @@ public final class FarmingsNeoForgeClient {
 			return mc.level == null ? 0L : mc.level.getGameTime();
 		};
 		modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
-				event -> event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer));
+				event -> {
+					event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer);
+					event.registerLayerDefinition(dev.farmings.client.SheepModels.SHEEP, dev.farmings.client.SheepModels::createLayer);
+					event.registerLayerDefinition(dev.farmings.client.SheepModels.FLEECE, dev.farmings.client.SheepModels::createFleeceLayer);
+				});
 		modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
-				event -> event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new));
+				event -> {
+					event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new);
+					event.registerEntityRenderer(FarmingsEntities.SHEEP, dev.farmings.client.SheepRenderer::new);
+				});
 	}
 }

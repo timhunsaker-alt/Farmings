@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -142,6 +142,13 @@ public class FarmingsGameTests {
 			helper.register(id("cold_room_gap_named"), loaded(FarmingsGameTests::coldRoomGapNamed));
 			helper.register(id("fridge_slows_spoilage"), loaded(FarmingsGameTests::fridgeSlowsSpoilage));
 			helper.register(id("cold_room_no_power_warms"), loaded(FarmingsGameTests::coldRoomNoPowerWarms));
+			helper.register(id("sheep_spawns_and_survives_save"), loaded(SheepGameTests::sheepSpawnsAndSurvivesSave));
+			helper.register(id("sheep_lifecycle"), loaded(SheepGameTests::sheepLifecycle));
+			helper.register(id("ewe_lambs_twins"), loaded(SheepGameTests::eweLambsTwins));
+			helper.register(id("fleece_grows_and_shears"), loaded(SheepGameTests::fleeceGrowsAndShears));
+			helper.register(id("dorper_sheds"), loaded(SheepGameTests::dorperSheds));
+			helper.register(id("ewe_milk_by_breed"), loaded(SheepGameTests::eweMilkByBreed));
+			helper.register(id("sheep_meat_by_age"), loaded(SheepGameTests::sheepMeatByAge));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -180,6 +187,17 @@ public class FarmingsGameTests {
 			}
 			Runnable release = () -> {
 				for (ChunkPos c : mine) {
+					if (FORCED.get(c.pack()) != null && FORCED.get(c.pack()) <= 1) {
+						// Detach the scene's circuit parts before its chunks go: Wildcatter unregisters a part only when its chunk
+						// actually unloads, and until then its solver reads the part's cells, which loads the chunk again, tick after tick
+						// (with 87 scenes that churn ran the server out of heap).
+						net.minecraft.world.level.chunk.LevelChunk chunk = level.getChunk(c.x(), c.z());
+						for (BlockPos p : new java.util.ArrayList<>(chunk.getBlockEntities().keySet())) {
+							if (chunk.getBlockEntity(p) instanceof dev.wildcatter.circuit.CircuitPart) {
+								level.removeBlockEntity(p);
+							}
+						}
+					}
 					if (FORCED.merge(c.pack(), -1, Integer::sum) <= 0) {
 						FORCED.remove(c.pack());
 						level.setChunkForced(c.x(), c.z(), false);
@@ -221,7 +239,7 @@ public class FarmingsGameTests {
 	}
 
 	/** A flat floor under the scene so the animals do not fall. */
-	private static void floor(GameTestHelper helper) {
+	static void floor(GameTestHelper helper) {
 		for (int x = 0; x < 8; x++) {
 			for (int z = 0; z < 8; z++) {
 				helper.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
@@ -2162,7 +2180,8 @@ public class FarmingsGameTests {
 	/** Every block and every hand-made item has a recipe; animal and machine products (manure, filled straws, raw steaks, dairy) do not. */
 	private static void recipesCoverAllItems(GameTestHelper helper) {
 		java.util.Set<String> madeElsewhere = java.util.Set.of("manure", "semen_straw", "select_steak", "choice_steak", "prime_steak", "bottled_milk",
-				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel", "spoiled_bottle", "rancid_butter", "moldy_cheese", "spoiled_steak");
+				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel", "spoiled_bottle", "rancid_butter", "moldy_cheese", "spoiled_steak",
+				"fleece", "loose_wool", "lamb_chop", "mutton_chop", "spoiled_mutton");
 		net.minecraft.world.item.crafting.RecipeManager recipes = helper.getLevel().getServer().getRecipeManager();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		int checked = 0;

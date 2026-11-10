@@ -22,5 +22,6 @@ public final class FarmingsFabric implements ModInitializer {
 				.displayItems((parameters, output) -> FarmingsBlocks.creativeTab(output::accept))
 				.build());
 		FabricDefaultAttributeRegistry.register(FarmingsEntities.CATTLE, CattleEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(FarmingsEntities.SHEEP, dev.farmings.entity.SheepEntity.createAttributes());
 	}
 }

@@ -133,11 +133,11 @@ seeded by its genome hash, so they are always the same. New straws carry the bul
   - brown: recessive (moorit);
   - spotting: dominant, shows only on a coloured sheep;
   - head colour: white, mottled or black, a blend *(proposed)*;
-  - horns: polled dominant and sex-influenced (P/H rams grow scurs, P/H ewes are polled);
+  - horns: three alleles, polled dominant, sex-limited horns (Merino rams horned, ewes polled), horned; a polled-carrier ram grows scurs;
   - coat type: wool, part hair or hair, a blend *(proposed)*;
   - crimp: drawn only.
 - They inherit like the cattle coat genes: one allele from each parent, drawn from the breeding seed with the same salt.
-- **Founders:** all four breeds are white. Suffolk and Dorper have black heads, Merino is H/H, the rest are polled, and Dorper is
+- **Founders:** all four breeds are white. Suffolk and Dorper have black heads, Merino is H^L/H^L, the rest are polled, and Dorper is
   a hair sheep. 5% hidden non-agouti and brown *(proposed)*.
 - Natural wool colours for fleece and yarn: white, black, brown, and grey for a spotted coloured sheep or a black one past two
   years *(proposed age)*.

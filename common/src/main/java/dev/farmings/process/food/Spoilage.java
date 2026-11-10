@@ -21,7 +21,7 @@ public final class Spoilage {
 	/** Spoil ticks are rounded up to this, and a fridge credits its food once per this many ticks, so stacks stay alike *(proposed)*. */
 	public static final long STEP = 1_200;
 
-	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK }
+	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON }
 
 	public enum Food {
 		MILK(7, 1, Spoiled.BOTTLE),
@@ -33,7 +33,10 @@ public final class Spoilage {
 		CHEDDAR_WHEEL(180, 14, Spoiled.CHEESE),
 		CHEDDAR(24.5, 1, Spoiled.CHEESE),
 		RAW_STEAK(4, 1, Spoiled.STEAK),
-		COOKED_STEAK(3.5, 1, Spoiled.STEAK);
+		COOKED_STEAK(3.5, 1, Spoiled.STEAK),
+		// Lamb chops: raw 3-5 days, cooked 3-4 days in the fridge (USDA FoodKeeper, lamb); the middles. Room 1 day as all (proposed).
+		RAW_LAMB(4, 1, Spoiled.MUTTON),
+		COOKED_LAMB(3.5, 1, Spoiled.MUTTON);
 
 		public final double fridgeDays;
 		public final double roomDays;

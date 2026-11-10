@@ -716,6 +716,120 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		}
 	}
 
+	private static dev.farmings.entity.SheepEntity sheep(ServerLevel level, dev.farmings.husbandry.SheepBreed breed, Sex sex, long seed, double age) {
+		dev.farmings.entity.SheepEntity s = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.COMMAND);
+		java.util.Map<String, Integer> c = java.util.Map.of(breed.code, 10_000);
+		s.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Flock.targetKg(c, age), level.getGameTime());
+		s.setPos(200.5, 0, 200.5);
+		s.setNoAi(true);
+		level.addFreshEntity(s);
+		return s;
+	}
+
+	/** A cross of two sheep, made directly from the genetics (as a lambing does) and grown to {@code age} real days. */
+	private static dev.farmings.entity.SheepEntity sheepCross(ServerLevel level, dev.farmings.entity.SheepEntity dam, dev.farmings.entity.SheepEntity sire, long seed, double age) {
+		dev.farmings.genetics.Offspring.Result r = dev.farmings.genetics.Offspring.create(dam.genome(), sire.genome(), "scene-" + seed, "scene",
+				dev.farmings.genetics.Ruleset.defaults(), Sex.FEMALE);
+		dev.farmings.entity.SheepEntity s = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.COMMAND);
+		s.initLamb(r, dev.farmings.genetics.SheepGenes.inherit(dam.genes(), sire.genes(), seed), level.getGameTime());
+		s.advanceForTest(age);
+		s.setWeightKg(dev.farmings.husbandry.Flock.targetKg(r.genome().breedCompositionBp(), age));
+		s.setPos(200.5, 0, 200.5);
+		s.setNoAi(true);
+		level.addFreshEntity(s);
+		s.settle(level);
+		return s;
+	}
+
+	/**
+	 * The flock lineup (docs/animals/sheep.md, "Coat genes"): a ewe of each breed with a year's fleece, a Merino ram, a just-shorn Merino,
+	 * three F1 crosses, a lamb, and the recessive colours (black, brown, a spotted black); one at a time, a three-quarter view, then a group.
+	 */
+	private static void flock(ClientGameTestContext context, TestServerContext server, int y) {
+		java.util.List<dev.farmings.entity.SheepEntity> line = new java.util.ArrayList<>();
+		java.util.List<String> names = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 0, 20, y, 16, 16, 6);
+			long seed = 900;
+			for (dev.farmings.husbandry.SheepBreed b : dev.farmings.husbandry.SheepBreed.values()) {
+				dev.farmings.entity.SheepEntity s = sheep(level, b, Sex.FEMALE, seed++, 900);
+				s.setFleeceDaysForTest(365);
+				if (b == dev.farmings.husbandry.SheepBreed.EAST_FRIESIAN) {
+					s.setLambedForTest(20, 2);
+				}
+				line.add(s);
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " ewe");
+			}
+			dev.farmings.entity.SheepEntity ram = sheep(level, dev.farmings.husbandry.SheepBreed.MERINO, Sex.MALE, seed++, 900);
+			ram.setFleeceDaysForTest(365);
+			line.add(ram);
+			names.add("merino ram");
+			dev.farmings.entity.SheepEntity shorn = sheep(level, dev.farmings.husbandry.SheepBreed.MERINO, Sex.FEMALE, seed++, 900);
+			shorn.setFleeceDaysForTest(0);
+			line.add(shorn);
+			names.add("merino just shorn");
+			dev.farmings.entity.SheepEntity sufRam = sheep(level, dev.farmings.husbandry.SheepBreed.SUFFOLK, Sex.MALE, seed++, 900);
+			dev.farmings.entity.SheepEntity dorRam = sheep(level, dev.farmings.husbandry.SheepBreed.DORPER, Sex.MALE, seed++, 900);
+			Object[][] crosses = {{line.get(0), sufRam, "merino x suffolk F1"}, {line.get(3), sufRam, "east friesian x suffolk F1"}, {line.get(0), dorRam, "merino x dorper F1"}};
+			for (Object[] x : crosses) {
+				dev.farmings.entity.SheepEntity f1 = sheepCross(level, (dev.farmings.entity.SheepEntity) x[0], (dev.farmings.entity.SheepEntity) x[1], seed++, 500);
+				f1.setFleeceDaysForTest(300);
+				line.add(f1);
+				names.add((String) x[2]);
+			}
+			dev.farmings.entity.SheepEntity lamb = sheepCross(level, line.get(1), sufRam, seed++, 40);
+			line.add(lamb);
+			names.add("suffolk lamb");
+			Object[][] colours = {{1, 0, 0, "black (non-agouti)"}, {1, 1, 0, "brown (moorit)"}, {1, 0, 1, "spotted black"}};
+			for (Object[] col : colours) {
+				dev.farmings.entity.SheepEntity s = sheep(level, dev.farmings.husbandry.SheepBreed.MERINO, Sex.FEMALE, seed++, 600);
+				java.util.EnumMap<dev.farmings.genetics.SheepLocus, int[]> m = new java.util.EnumMap<>(s.genes().alleles());
+				m.put(dev.farmings.genetics.SheepLocus.AGOUTI, new int[] {(Integer) col[0], (Integer) col[0]});
+				m.put(dev.farmings.genetics.SheepLocus.BROWN, new int[] {(Integer) col[1], (Integer) col[1]});
+				m.put(dev.farmings.genetics.SheepLocus.SPOTTING, new int[] {(Integer) col[2], 0});
+				m.put(dev.farmings.genetics.SheepLocus.WHITE, new int[] {500, 500});
+				s.setGenesForTest(new dev.farmings.genetics.SheepGenes(m));
+				s.setFleeceDaysForTest(365);
+				line.add(s);
+				names.add((String) col[3]);
+			}
+			sufRam.discard();
+			dorRam.discard();
+		});
+		context.waitTicks(60);
+		for (int i = 0; i < line.size(); i++) {
+			int shown = i;
+			server.runOnServer(srv -> {
+				for (int j = 0; j < line.size(); j++) {
+					dev.farmings.entity.SheepEntity s = line.get(j);
+					s.setPos(j == shown ? 0.5 : 200.5 + 4 * j, y, j == shown ? 20.5 : 200.5);
+					s.setYRot(0);
+					s.setYHeadRot(0);
+					s.setYBodyRot(0);
+				}
+			});
+			actionbar(server, names.get(i) + ": " + line.get(i).look().describe());
+			server.runCommand("tp @p 2.1 " + (y - 0.3) + " 22.1 135 18");
+			context.waitTicks(30);
+			context.takeScreenshot("farmings-flock-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + names.get(i).replace(' ', '-').replace("(", "").replace(")", ""));
+		}
+		// everyone in a row, side on
+		server.runOnServer(srv -> {
+			for (int j = 0; j < line.size(); j++) {
+				dev.farmings.entity.SheepEntity s = line.get(j);
+				s.setPos(-13.5 + 2.2 * j, y, 20.5);
+				s.setYRot(90);
+				s.setYHeadRot(90);
+				s.setYBodyRot(90);
+			}
+		});
+		actionbar(server, "the flock: breeds, ram, shorn, crosses, lamb, colours");
+		server.runCommand("tp @p 0.5 " + (y + 4.5) + " 32 180 18");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-flock-all");
+	}
+
 	/** A heifer in heat (hearts), twins born to a cow, the readout of a calf, and the herd book open on its page. */
 	private static void breeding(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
@@ -924,6 +1038,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("flock".equals(only)) {
+				context.waitTicks(200);
+				flock(context, server, y);
 				return;
 			}
 			if ("coats".equals(only)) {

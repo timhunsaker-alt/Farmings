@@ -33,7 +33,10 @@ public final class FarmingsNeoForge {
 			}
 		});
 		modBus.addListener(EntityAttributeCreationEvent.class,
-				event -> event.put(FarmingsEntities.CATTLE, CattleEntity.createAttributes().build()));
+				event -> {
+					event.put(FarmingsEntities.CATTLE, CattleEntity.createAttributes().build());
+					event.put(FarmingsEntities.SHEEP, dev.farmings.entity.SheepEntity.createAttributes().build());
+				});
 		if (FMLEnvironment.getDist() == Dist.CLIENT) {
 			dev.farmings.neoforge.client.FarmingsNeoForgeClient.init(modBus);
 		}

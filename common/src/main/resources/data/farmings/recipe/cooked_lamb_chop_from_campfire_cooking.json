@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:campfire_cooking",
+ "category": "food",
+ "ingredient": "farmings:lamb_chop",
+ "result": {
+  "id": "farmings:cooked_lamb_chop"
+ },
+ "experience": 0.35,
+ "cookingtime": 600
+}

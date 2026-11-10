@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "farmings:item/lamb_chop_placeholder"
+ }
+}

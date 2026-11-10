@@ -17,10 +17,18 @@ public final class FarmingsEntities {
 			.clientTrackingRange(10)
 			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("cattle")));
 
+	/** A sheep: the vanilla sheep's size (0.9 x 1.3). */
+	public static final EntityType<dev.farmings.entity.SheepEntity> SHEEP = EntityType.Builder.<dev.farmings.entity.SheepEntity>of(dev.farmings.entity.SheepEntity::new, MobCategory.CREATURE)
+			.sized(0.9F, 1.3F)
+			.eyeHeight(1.235F)
+			.clientTrackingRange(10)
+			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("sheep")));
+
 	private FarmingsEntities() {
 	}
 
 	public static void register() {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("cattle"), CATTLE);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("sheep"), SHEEP);
 	}
 }

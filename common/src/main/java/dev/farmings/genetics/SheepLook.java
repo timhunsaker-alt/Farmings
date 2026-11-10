@@ -8,7 +8,8 @@ import java.util.Locale;
  * <ul>
  *   <li>Colour: dominant black E^D gives black; otherwise white/tan A^Wt gives white; a non-agouti a/a sheep is black, or brown
  *       (moorit) when it is also b/b.</li>
- *   <li>Horns (RXFP2, sex-influenced): H/H is horned in both sexes; P/H rams grow scurs, P/H ewes are polled; P/P is polled.</li>
+ *   <li>Horns (RXFP2, sex-influenced): with a polled allele the sheep is polled, except that a ram carrying a horn allele grows scurs;
+ *       with sex-limited horns and no polled allele, rams are horned and ewes polled (the Merino); H+/H+ is horned in both sexes.</li>
  *   <li>Head: white, mottled or black (only seen on a white sheep). Spotting shows white patches on a coloured sheep only.</li>
  * </ul>
  *
@@ -34,7 +35,13 @@ public record SheepLook(Colour colour, int head, boolean spotted, int white, int
 			c = g.expressed(SheepLocus.BROWN) == 1 ? Colour.BROWN : Colour.BLACK;
 		}
 		int[] h = g.pair(SheepLocus.HORNS);
-		int horns = h[0] == 1 && h[1] == 1 ? 2 : h[0] + h[1] == 1 && sex == Sex.MALE ? 1 : 0;
+		boolean ram = sex == Sex.MALE;
+		int shown = Math.min(h[0], h[1]);
+		int horns = switch (shown) {
+			case 0 -> ram && Math.max(h[0], h[1]) > 0 ? 1 : 0;      // polled; a ram carrying a horn allele grows scurs
+			case 1 -> ram ? 2 : 0;                                   // sex-limited: rams horned, ewes polled
+			default -> 2;                                            // horned in both sexes
+		};
 		boolean spotted = c != Colour.WHITE && g.expressed(SheepLocus.SPOTTING) == 1;
 		return new SheepLook(c, g.expressed(SheepLocus.HEAD), spotted, g.expressed(SheepLocus.WHITE), horns, g.expressed(SheepLocus.COAT),
 				g.expressed(SheepLocus.CRIMP), java.util.Arrays.hashCode(g.save()));

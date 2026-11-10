@@ -161,12 +161,12 @@ One hay rack block serves 2 sheep (50 cm each, the top of the Penn State range r
 | Brown (TYRP1) | black B+ > brown b (moorit, recessive) | Sponenberg notes |
 | Spotting | spotted S > plain s (usually dominant) | Sponenberg notes; amount of white varies *(proposed range)* |
 | Head and legs | black head/legs pattern (Suffolk, Dorper): recessive to plain white face *(proposed mode)* | breed descriptions above; mode not found |
-| Horns (RXFP2) | polled P > horned H, sex-influenced: a P/H ram may grow scurs or small horns, a P/H ewe is polled *(rams-horned, ewes-polled pattern of Merino)* | [Duijvesteijn et al. 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5964914/); [OMIA 000483-9940](https://omia.org/830) |
+| Horns (RXFP2) | three alleles: polled H^P, sex-limited H^L (rams horned, ewes polled: the Merino), horned H+. Polled is dominant; a polled-carrier ram grows scurs; H^L over H+ is *(proposed)* | the three-allele model as reviewed in [Duijvesteijn et al. 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5964914/); [OMIA 000483-9940](https://omia.org/830) |
 | Coat type | wool W vs hair/shedding h, incomplete dominance (W/h sheds partly) *(proposed; Dorper shedding is polygenic)* | [Cornell Small Farms](https://smallfarms.cornell.edu/2011/01/dorper-sheep-truths-and-myths) |
 | Pattern seed | spot shapes only | as cattle |
 
 Black-based colours fade to grey in many sheep (Sponenberg); the renderer greys black wool a little with age *(proposed)*.
-Founders: all four breeds are white (A^Wt). Suffolk and Dorper carry the black head pattern, Merino is horned (H/H), the others polled.
+Founders: all four breeds are white (A^Wt). Suffolk and Dorper carry the black head pattern, Merino carries sex-limited horns (H^L/H^L), the others are polled.
 A small share of founders carry recessive non-agouti and brown *(proposed: 5% each)*, so coloured lambs appear now and then, as on
 real farms.
 

@@ -75,12 +75,21 @@ ITEMS = [
     ("butter", "Butter", (246, 220, 110), "blob"),
     ("cheddar_wheel", "Cheddar Wheel", (232, 168, 60), "blob"),
     ("cheddar", "Cheddar", (240, 180, 70), "blob"),
+    # sheep (docs/animals/sheep.md)
+    ("fleece", "Fleece", (236, 228, 206), "blob"),
+    ("loose_wool", "Loose Wool", (214, 206, 186), "blob"),
+    ("lamb_chop", "Lamb Chop", (214, 120, 120), "steak"),
+    ("cooked_lamb_chop", "Cooked Lamb Chop", (150, 96, 60), "steak"),
+    ("mutton_chop", "Mutton Chop", (176, 70, 66), "steak"),
+    ("cooked_mutton_chop", "Cooked Mutton Chop", (124, 76, 46), "steak"),
+    ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
 ]
 SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
     "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
     "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty.",
     "message.farmings.castrated": "Castrated: he will grow as a steer.",
+    "message.farmings.wether": "Castrated: he will grow as a wether.",
     "message.farmings.herd_book.recorded": "Recorded %s in the herd book.",
     "message.farmings.herd_book.full": "The herd book is full (64 animals).",
 }
@@ -173,7 +182,7 @@ def block_model(name, box):
 
 
 def main():
-    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "block.farmings.barn_controller": CONTROLLER[0]}
+    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "block.farmings.barn_controller": CONTROLLER[0]}
     lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
         lang["block.farmings." + name] = title
@@ -317,7 +326,8 @@ SHAPELESS = {
     "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
     "cheddar": (["farmings:cheddar_wheel"], 8),
 }
-COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak"}
+COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
+           "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop"}
 
 
 def ingredient(ref):

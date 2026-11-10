@@ -65,9 +65,11 @@ class SheepGeneticsTest {
 
 	@Test
 	void hornsAreSexInfluenced() {
-		assertEquals(2, SheepLook.of(genes(SheepLocus.HORNS, 1, 1), Sex.FEMALE).horns());
-		assertEquals(1, SheepLook.of(genes(SheepLocus.HORNS, 0, 1), Sex.MALE).horns(), "a P/H ram grows scurs");
-		assertEquals(0, SheepLook.of(genes(SheepLocus.HORNS, 0, 1), Sex.FEMALE).horns(), "a P/H ewe is polled");
+		assertEquals(2, SheepLook.of(genes(SheepLocus.HORNS, 2, 2), Sex.FEMALE).horns(), "H+/H+ horned in both sexes");
+		assertEquals(2, SheepLook.of(genes(SheepLocus.HORNS, 1, 1), Sex.MALE).horns(), "a Merino ram is horned");
+		assertEquals(0, SheepLook.of(genes(SheepLocus.HORNS, 1, 1), Sex.FEMALE).horns(), "a Merino ewe is polled");
+		assertEquals(1, SheepLook.of(genes(SheepLocus.HORNS, 0, 1), Sex.MALE).horns(), "a polled-carrier ram grows scurs");
+		assertEquals(0, SheepLook.of(genes(SheepLocus.HORNS, 0, 2), Sex.FEMALE).horns(), "a polled-carrier ewe is polled");
 		assertEquals(0, SheepLook.of(genes(SheepLocus.HORNS, 0, 0), Sex.MALE).horns());
 	}
 
@@ -81,6 +83,7 @@ class SheepGeneticsTest {
 			assertTrue(dor.sheds());
 			assertEquals(SheepLook.Colour.WHITE, dor.colour());
 			assertEquals(2, SheepLook.of(SheepGenes.founder("MER", seed), Sex.MALE).horns(), "Merino rams horned");
+			assertEquals(0, SheepLook.of(SheepGenes.founder("MER", seed), Sex.FEMALE).horns(), "Merino ewes polled");
 		}
 	}
 

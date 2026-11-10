@@ -86,6 +86,30 @@ public final class FarmingsItems {
 	public static final Item MOLDY_CHEESE = item("moldy_cheese", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
 	public static final Item SPOILED_STEAK = item("spoiled_steak", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
 
+	// Sheep (docs/animals/sheep.md). Lamb chops from sheep under a year, mutton chops from older ones; food values are vanilla mutton's.
+	public static final Item FLEECE = item("fleece", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
+	/** The little wool a hair sheep sheds each year (0.5-1 kg, sheep.md): the lowest grade *(proposed)*. */
+	public static final Item LOOSE_WOOL = item("loose_wool", Item::new);
+	public static final Item LAMB_CHOP = item("lamb_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
+	public static final Item COOKED_LAMB_CHOP = item("cooked_lamb_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_LAMB, p.food(net.minecraft.world.food.Foods.COOKED_MUTTON)));
+	public static final Item MUTTON_CHOP = item("mutton_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
+	public static final Item COOKED_MUTTON_CHOP = item("cooked_mutton_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_LAMB, p.food(net.minecraft.world.food.Foods.COOKED_MUTTON)));
+	public static final Item SPOILED_MUTTON = item("spoiled_mutton", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+
+	public static Item sheepMeat(boolean lamb, boolean cooked) {
+		return lamb ? (cooked ? COOKED_LAMB_CHOP : LAMB_CHOP) : (cooked ? COOKED_MUTTON_CHOP : MUTTON_CHOP);
+	}
+
+	/** A fleece shorn with hand shears (a grade lower than the shearing stand, proposed). */
+	public static net.minecraft.world.item.ItemStack handShorn(dev.farmings.entity.SheepEntity.Fleece f, long now) {
+		return dev.farmings.item.FleeceItem.of(f, true);
+	}
+
+	/** What a hair sheep drops when it sheds. */
+	public static net.minecraft.world.item.ItemStack shedWool() {
+		return new net.minecraft.world.item.ItemStack(LOOSE_WOOL);
+	}
+
 	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b) {
 		return switch (b) {
 			case MILK -> BOTTLED_MILK;
@@ -127,6 +151,13 @@ public final class FarmingsItems {
 		ALL.put("butter", BUTTER);
 		ALL.put("cheddar_wheel", CHEDDAR_WHEEL);
 		ALL.put("cheddar", CHEDDAR);
+		ALL.put("fleece", FLEECE);
+		ALL.put("loose_wool", LOOSE_WOOL);
+		ALL.put("lamb_chop", LAMB_CHOP);
+		ALL.put("cooked_lamb_chop", COOKED_LAMB_CHOP);
+		ALL.put("mutton_chop", MUTTON_CHOP);
+		ALL.put("cooked_mutton_chop", COOKED_MUTTON_CHOP);
+		ALL.put("spoiled_mutton", SPOILED_MUTTON);
 	}
 
 	private FarmingsItems() {

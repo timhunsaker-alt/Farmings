@@ -18,8 +18,12 @@ public enum SheepLocus {
 	WHITE("white_amount", VisualLocus.Mode.MEAN, 0, 1000, true, null),
 	/** Head and leg colour: 0 white, 2 black (Suffolk, Dorper); a blend, so crosses show a mottled head *(proposed)*. */
 	HEAD("head_colour", VisualLocus.Mode.MEAN, 0, 2, false, new String[] {"white", "mottled", "black"}),
-	/** RXFP2 horns: 0 polled P (dominant), 1 horned H; sex-influenced, see {@link SheepLook}. */
-	HORNS("horns", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, new String[] {"P", "H"}),
+	/**
+	 * RXFP2 horns, the three-allele model (polled H^P, sex-limited horns H^L, horns H+; review in Duijvesteijn et al. 2018): 0 polled,
+	 * 1 sex-limited (rams horned, ewes polled: the Merino), 2 horned in both sexes. The lower allele shows; that H^L is over H+ is
+	 * *(proposed)*. Sex influence is applied in {@link SheepLook}.
+	 */
+	HORNS("horns", VisualLocus.Mode.DOMINANT_LOW, 0, 2, false, new String[] {"HP", "HL", "H+"}),
 	/** Coat type: 0 wool, 2 hair that sheds; a blend, so a wool x hair cross sheds part of its coat *(proposed)*. */
 	COAT("coat_type", VisualLocus.Mode.MEAN, 0, 2, false, new String[] {"wool", "part hair", "hair"}),
 	/** Fleece crimp, 0-3; drawn only, a blend *(proposed)*. */
@@ -60,7 +64,7 @@ public enum SheepLocus {
 
 	/**
 	 * Founder alleles per breed: a weighted list {value, weight, ...} or, for a range locus, {low, high}. All four breeds are white
-	 * (A^Wt); Suffolk and Dorper have black heads; Merino rams are horned (H/H); the others are polled; Dorper is a hair sheep
+	 * (A^Wt); Suffolk and Dorper have black heads; Merino carries sex-limited horns (HL/HL: rams horned, ewes polled); the others are polled; Dorper is a hair sheep
 	 * (docs/animals/sheep.md). The 5% hidden non-agouti and brown alleles are *(proposed)*, so a coloured lamb turns up now and then.
 	 */
 	static int[] founder(String breed, SheepLocus l) {
@@ -71,7 +75,7 @@ public enum SheepLocus {
 			case SPOTTING -> new int[] {0, 1};
 			case WHITE -> new int[] {200, 700};
 			case HEAD -> breed.equals("SUF") || breed.equals("DOR") ? new int[] {2, 1} : new int[] {0, 1};
-			case HORNS -> breed.equals("MER") ? new int[] {1, 1} : new int[] {0, 1};
+			case HORNS -> breed.equals("MER") ? new int[] {1, 1} : new int[] {0, 1};   // Merino HL/HL; the rest polled
 			case COAT -> breed.equals("DOR") ? new int[] {2, 1} : new int[] {0, 1};
 			case CRIMP -> switch (breed) {
 				case "MER" -> new int[] {3, 1};

@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:campfire_cooking",
+ "category": "food",
+ "ingredient": "farmings:mutton_chop",
+ "result": {
+  "id": "farmings:cooked_mutton_chop"
+ },
+ "experience": 0.35,
+ "cookingtime": 600
+}
