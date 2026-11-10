@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age", "shed_forms", "shed_gap_named", "flock_goes_to_pasture_and_back", "ewe_moves_to_lambing_pen", "grazing_feeds", "shearing_shed_forms", "sheep_shorn_by_stand", "no_power_no_shearing", "press_makes_bale", "fleece_to_yarn", "scour_needs_water", "hopper_takes_cloth", "wool_clothing_stops_freezing", "yarn_to_wool_blocks"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age", "shed_forms", "shed_gap_named", "flock_goes_to_pasture_and_back", "ewe_moves_to_lambing_pen", "grazing_feeds", "shearing_shed_forms", "sheep_shorn_by_stand", "no_power_no_shearing", "press_makes_bale", "fleece_to_yarn", "scour_needs_water", "hopper_takes_cloth", "wool_clothing_stops_freezing", "yarn_to_wool_blocks", "ewe_milked_in_sheep_stall", "tank_refuses_mixed_milk", "sheep_cheese_from_creamery"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -163,6 +163,9 @@ public class FarmingsGameTests {
 			helper.register(id("hopper_takes_cloth"), loaded(SheepGameTests::hopperTakesCloth));
 			helper.register(id("wool_clothing_stops_freezing"), loaded(SheepGameTests::woolClothingStopsFreezing));
 			helper.register(id("yarn_to_wool_blocks"), loaded(SheepGameTests::yarnToWoolBlocks));
+			helper.register(id("ewe_milked_in_sheep_stall"), loaded(FarmingsGameTests::eweMilkedInSheepStall));
+			helper.register(id("tank_refuses_mixed_milk"), loaded(FarmingsGameTests::tankRefusesMixedMilk));
+			helper.register(id("sheep_cheese_from_creamery"), loaded(FarmingsGameTests::sheepCheeseFromCreamery));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
@@ -2145,6 +2148,106 @@ public class FarmingsGameTests {
 		helper.succeed();
 	}
 
+	/**
+	 * A sheep-only parlor (docs/multiblocks/parlor.md, "Sheep stalls"): the two-cell cow stalls replaced by one-cell sheep stalls, a sheep
+	 * pen behind them at z+2..z+3 and a shed controller beside the pen. Returns the shed controller.
+	 */
+	private static BlockPos buildSheepParlor(ServerLevel level, BlockPos c, int stalls) {
+		buildParlorOnly(level, c, stalls);
+		int fl = c.getY() - 1;
+		int xp = c.getX() - stalls - 1;
+		for (int x = xp + 1; x < c.getX(); x++) {
+			level.removeBlock(new BlockPos(x, fl, c.getZ() + 1), false);
+			level.removeBlock(new BlockPos(x, fl, c.getZ() + 2), false);
+		}
+		for (int x = xp + 1; x < c.getX(); x++) {
+			parlorPart(level, dev.farmings.parlor.ParlorParts.SHEEP_STALL, new BlockPos(x, fl, c.getZ() + 1));
+			for (int z = 2; z <= 3; z++) {
+				level.setBlock(new BlockPos(x, fl, c.getZ() + z), dev.farmings.shed.ShedBlocks.SHEEP_PEN.defaultBlockState(), Block.UPDATE_ALL);
+			}
+		}
+		BlockPos shed = new BlockPos(xp, fl, c.getZ() + 3);
+		level.setBlock(shed, dev.farmings.shed.ShedBlocks.SHED_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+		return shed;
+	}
+
+	private static dev.farmings.entity.SheepEntity dairyEwe(ServerLevel level, BlockPos at, BlockPos shed, long seed) {
+		dev.farmings.entity.SheepEntity e = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.COMMAND);
+		java.util.Map<String, Integer> comp = java.util.Map.of("EFR", 10_000);
+		e.initFounder(dev.farmings.husbandry.SheepBreed.EAST_FRIESIAN, Sex.FEMALE, seed, 800, dev.farmings.husbandry.Flock.targetKg(comp, 800), level.getGameTime());
+		e.setPos(at.getX() + 0.5, at.getY() + 0.2, at.getZ() + 0.5);
+		level.addFreshEntity(e);
+		e.assignShed(shed, at);
+		e.setLambedForTest(30, 1);
+		return e;
+	}
+
+	/** A dairy ewe is called from the shed's pen to a sheep stall and milked into the tank as sheep milk. */
+	private static void eweMilkedInSheepStall(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		BlockPos shed = buildSheepParlor(level, c, 2);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		dev.farmings.parlor.TankEntity tank = ctl.tank(level);
+		tank.forceChilling(true);
+		helper.assertTrue(ctl.check().sheepStall(0) && ctl.check().sheepStall(1), Component.literal("two sheep stalls: " + ctl.check().status()));
+		dev.farmings.entity.SheepEntity ewe = dairyEwe(level, c.offset(-2, -1, 3), shed, 501L);
+		double kg = ewe.milkKg();
+		helper.assertTrue(kg > 0.5, Component.literal("an East Friesian 30 days in milk has milk, got " + kg));
+		ctl.milk(level, 20);
+		helper.assertTrue(ewe.sentTo() != null && ewe.reservedBy() != null, Component.literal("she is called to a sheep stall: " + ctl.readout(level)));
+		BlockPos stand = ewe.sentTo();
+		ewe.setPos(stand.getX() + 0.5, stand.getY() + 0.2, stand.getZ() + 1.3);
+		ctl.milk(level, 20);
+		helper.assertTrue(ewe.milkKg() == 0 && ewe.reservedBy() == null, Component.literal("she is milked and let go"));
+		helper.assertTrue(Math.abs(tank.tank().litres() - kg / 1.03) < 1e-6 && tank.tank().sheep(), Component.literal("the tank holds her milk as sheep milk: " + tank.tank().litres()));
+		helper.assertTrue(Math.abs(tank.tank().fatPct() - 5.68) < 1e-6, Component.literal("East Friesian fat, got " + tank.tank().fatPct()));
+		helper.succeed();
+	}
+
+	/** A tank holding cow milk takes no sheep milk: the fault says so and the ewe keeps hers. */
+	private static void tankRefusesMixedMilk(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(C);
+		BlockPos shed = buildSheepParlor(level, c, 2);
+		dev.farmings.parlor.ParlorControllerEntity ctl = parlorController(helper, C);
+		ctl.pump(level).forceRunning(true);
+		dev.farmings.parlor.TankEntity tank = ctl.tank(level);
+		tank.forceChilling(true);
+		tank.tank().add(10, 4, 3.72, 3.06, false);
+		dev.farmings.entity.SheepEntity ewe = dairyEwe(level, c.offset(-2, -1, 3), shed, 502L);
+		ctl.milk(level, 20);
+		helper.assertTrue(ctl.fault().equals("TANK HOLDS COW MILK") && ewe.reservedBy() == null && ewe.milkKg() > 0,
+				Component.literal("fault " + ctl.fault() + ", ewe called " + (ewe.reservedBy() != null)));
+		helper.assertTrue(tank.tank().add(5, 35, 5.68, 4.92, true) == 0, Component.literal("the tank refuses sheep milk while it holds cow milk"));
+		tank.tank().take(10);
+		helper.assertTrue(tank.tank().add(5, 35, 5.68, 4.92, true) == 5, Component.literal("emptied, it takes sheep milk"));
+		helper.succeed();
+	}
+
+	/** Sheep milk in the creamery makes sheep cheese wheels; with sheep milk in it the creamery refuses cow milk. */
+	private static void sheepCheeseFromCreamery(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
+		helper.assertTrue(ctl.creamery().addMilk(200, 5.68, 4.92, true) == 200, Component.literal("sheep milk goes in"));
+		helper.assertTrue(ctl.creamery().addMilk(10, 3.72, 3.06, false) == 0, Component.literal("cow milk is refused while it holds sheep milk"));
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
+		double expected = dev.farmings.process.creamery.Dairy.cheeseKg(200, 5.68, 4.92);
+		helper.assertTrue(expected > dev.farmings.process.creamery.Dairy.cheeseKg(200, 3.72, 3.06), Component.literal("richer milk gives more cheese"));
+		for (int i = 0; i < 6; i++) {
+			ctl.run(level, 24_000);
+		}
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		useOn(level, player, partPos(c, dev.farmings.creamery.CreameryParts.AGING_SHELF), ItemStack.EMPTY);
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.SHEEP_CHEESE_WHEEL) >= 2 && player.getInventory().countItem(FarmingsItems.CHEDDAR_WHEEL) == 0,
+				Component.literal("sheep cheese wheels, got " + player.getInventory().countItem(FarmingsItems.SHEEP_CHEESE_WHEEL) + "; " + ctl.readout()));
+		helper.succeed();
+	}
+
 	private static void creameryNoPower(GameTestHelper helper) {
 		ServerLevel level = helper.getLevel();
 		buildCreamery(level, helper.absolutePos(K));
@@ -2196,7 +2299,7 @@ public class FarmingsGameTests {
 		java.util.Set<String> madeElsewhere = java.util.Set.of("manure", "semen_straw", "select_steak", "choice_steak", "prime_steak", "bottled_milk",
 				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel", "spoiled_bottle", "rancid_butter", "moldy_cheese", "spoiled_steak",
 				"fleece", "loose_wool", "lamb_chop", "mutton_chop", "spoiled_mutton", "skirtings", "wool_bale",
-				"clean_wool", "sliver", "lanolin", "wool_cloth", "felt", "yarn_white");
+				"clean_wool", "sliver", "lanolin", "wool_cloth", "felt", "yarn_white", "sheep_milk_bottle", "sheep_cheese_wheel");
 		net.minecraft.world.item.crafting.RecipeManager recipes = helper.getLevel().getServer().getRecipeManager();
 		java.util.List<String> missing = new java.util.ArrayList<>();
 		int checked = 0;

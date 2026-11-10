@@ -83,15 +83,20 @@ public final class ParlorLayout {
 				break;
 			}
 		}
+		List<Boolean> sheep = new ArrayList<>();
 		for (int i = 0; i < stalls; i++) {
 			int x = xp + 1 + i;
 			if (g.at(x, cy, cz) != ParlorPart.MILKING_UNIT) {
 				problems.add("Stall " + (i + 1) + " has no milking unit");
 			}
-			if (g.at(x, fl, cz + 1) != ParlorPart.PARLOR_STALL || g.at(x, fl, cz + 2) != ParlorPart.PARLOR_STALL) {
+			// a cow stall is two parlor-stall cells; a sheep stall is one sheep-stall cell (sheep.md: dairy ewes)
+			boolean cow = g.at(x, fl, cz + 1) == ParlorPart.PARLOR_STALL && g.at(x, fl, cz + 2) == ParlorPart.PARLOR_STALL;
+			boolean ewe = g.at(x, fl, cz + 1) == ParlorPart.SHEEP_STALL;
+			if (!cow && !ewe) {
 				problems.add("Stall " + (i + 1) + " has no parlor stall");
 			}
+			sheep.add(ewe);
 		}
-		return new ParlorCheck(problems.isEmpty(), stalls, problems, orientation, xp - cx);
+		return new ParlorCheck(problems.isEmpty(), stalls, problems, orientation, xp - cx, List.copyOf(sheep));
 	}
 }

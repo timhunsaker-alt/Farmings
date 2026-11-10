@@ -96,3 +96,13 @@ A vanilla hopper works on three parts. It must be against the part's main cell, 
 
 The products are read from the creamery each time, so nothing is held twice. A hopper that takes an item it cannot hold puts it back.
 Taking by hand still works. Game tests: hopper_takes_butter_and_wheels, hopper_bottles_with_glass, whey_from_cheese.
+
+## Sheep milk (built 2026-11-10)
+- **One milk kind at a time:** the creamery works cow milk or sheep milk, never both. It changes kind only when it is empty of
+  everything: raw milk, the batch, stores, butter, curd and wheels. Milk of the other kind is refused at the receiving tank, and the
+  milk line leaves it in the parlor's tank.
+- **Products of sheep milk:**
+  - **sheep milk** bottles and **sheep cheese** wheels (cut into sheep cheese);
+  - cream, skim, buttermilk, whey and butter, which are the shared items.
+- **Yield:** the Van Slyke cheese yield and the butter yield read the milk's own fat and protein. East Friesian milk (5.68% fat,
+  4.92% protein) gives more cheese per litre than Holstein milk.

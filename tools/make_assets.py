@@ -37,6 +37,7 @@ PARTS = {
     "bulk_tank": ("Bulk Tank", (205, 208, 214), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
     "cow_lane": ("Cow Lane", (120, 120, 116), (1, 1, 1, 0, 0), [(0, 0, 0, 16, 2, 16)]),
     "holding_pen": ("Holding Pen", (110, 112, 108), (1, 1, 1, 0, 0), [(0, 0, 0, 16, 2, 16)]),
+    "sheep_stall": ("Sheep Stall", (160, 160, 166), (1, 1, 1, 0, 0), [(0, 0, 0, 16, 3, 16)]),
     # the creamery (docs/multiblocks/creamery.md)
     "receiving_tank": ("Receiving Tank", (200, 204, 210), (2, 2, 2, 0, 0), [(0, 0, 0, 16, 16, 16)]),
     "batch_pasteurizer": ("Batch Pasteurizer", (190, 196, 204), (1, 2, 1, 0, 0), [(1, 0, 1, 15, 16, 15)]),
@@ -76,6 +77,9 @@ ITEMS = [
     ("butter", "Butter", (246, 220, 110), "blob"),
     ("cheddar_wheel", "Cheddar Wheel", (232, 168, 60), "blob"),
     ("cheddar", "Cheddar", (240, 180, 70), "blob"),
+    ("sheep_milk_bottle", "Sheep Milk", (250, 248, 236), "bottle"),
+    ("sheep_cheese_wheel", "Sheep Cheese Wheel", (236, 218, 160), "blob"),
+    ("sheep_cheese", "Sheep Cheese", (240, 224, 170), "blob"),
     # sheep (docs/animals/sheep.md)
     ("fleece", "Fleece", (236, 228, 206), "blob"),
     ("loose_wool", "Loose Wool", (214, 206, 186), "blob"),
@@ -344,6 +348,7 @@ SHAPED = {
     "bulk_tank": (["SSS", "SBS", "SCS"], 1),
     "cow_lane": (["N N", "KKK"], 6),
     "holding_pen": (["NNN", "KKK"], 6),
+    "sheep_stall": (["SNS", "KKK"], 2),
     # creamery
     "creamery_controller": (["SRS", "GCG", "SSS"], 1),
     "receiving_tank": (["SSS", "SBS", "SSS"], 1),
@@ -392,6 +397,7 @@ SHAPELESS = {
     "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
     "cheddar": (["farmings:cheddar_wheel"], 8),
     "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
+    "sheep_cheese": (["farmings:sheep_cheese_wheel"], 8),
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop"}

@@ -18,7 +18,9 @@ public enum ParlorParts {
 	/** A floor cell of the lane cows walk between the barn and the parlor; it is walked on, so it is low. */
 	COW_LANE("cow_lane", ParlorPart.COW_LANE, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 0, 16, 2, 16))),
 	/** A floor cell of the holding pen where cows wait for a parlor stall. */
-	HOLDING_PEN("holding_pen", ParlorPart.HOLDING_PEN, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 0, 16, 2, 16)));
+	HOLDING_PEN("holding_pen", ParlorPart.HOLDING_PEN, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 0, 16, 2, 16))),
+	/** A dairy ewe's stall: one cell, walked on, in place of a cow's two-cell stall. */
+	SHEEP_STALL("sheep_stall", ParlorPart.SHEEP_STALL, Footprint.box(1, 1, 1, 0, 0), List.of(box(0, 0, 0, 16, 3, 16)));
 
 	public final String id;
 	public final ParlorPart part;

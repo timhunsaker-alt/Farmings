@@ -52,3 +52,13 @@ Each figure is the middle of the source's range. Sources:
 - `SpoilageTest`: a day out of the cold; 7 days for cold milk; the FoodKeeper figures.
 - Game tests: milk_spoils_at_room (bottles stamped at the creamery stack, then turn) and spoiled_food_sickens. fridge_slows_spoilage is
   with the walk-in fridge.
+
+## Sheep products (2026-11-10)
+| Item | Fridge | Room | Source |
+|---|---|---|---|
+| Sheep milk | 7 days | 1 day | cow milk's FoodKeeper figure, used for sheep milk *(proposed: no sheep-milk entry found)* |
+| Sheep cheese wheel / cut | as cheddar (180 / 24.5 days) | as cheddar | hard cheese, FoodKeeper *(proposed for sheep cheese)* |
+| Lamb and mutton chops, raw | 4 days (3-5) | 1 day | USDA FoodKeeper, lamb chops |
+| Lamb and mutton chops, cooked | 3.5 days (3-4) | 1 day | USDA FoodKeeper, cooked meat |
+
+Spoiled chops become **spoiled mutton** (Hunger and Nausea, as the other spoiled foods).

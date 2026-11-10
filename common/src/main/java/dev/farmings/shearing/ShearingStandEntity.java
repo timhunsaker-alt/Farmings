@@ -104,26 +104,8 @@ public class ShearingStandEntity extends BlockEntity implements CircuitPart, Ins
 		shed = check.formed() ? findShed(level, pos(check.shedFloor())) : null;
 	}
 
-	/** The controller of the sheep shed whose pen holds {@code floor}: the pen is walked until a cell touches a shed controller. */
 	private static @Nullable BlockPos findShed(ServerLevel level, BlockPos floor) {
-		Set<BlockPos> seen = new HashSet<>();
-		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
-		queue.add(floor);
-		seen.add(floor);
-		while (!queue.isEmpty() && seen.size() <= dev.farmings.husbandry.shed.ShedLayout.MAX_CELLS) {
-			BlockPos p = queue.poll();
-			for (Direction d : Direction.Plane.HORIZONTAL) {
-				BlockPos n = p.relative(d);
-				Block b = level.getBlockState(n).getBlock();
-				if (b == ShedBlocks.SHED_CONTROLLER) {
-					return n;
-				}
-				if (b instanceof ShedFloorBlock && b != ShedBlocks.PASTURE_GATE && b != ShearingBlocks.CATCHING_PEN && seen.add(n)) {
-					queue.add(n);
-				}
-			}
-		}
-		return null;
+		return dev.farmings.shed.ShedWorld.findShed(level, floor);
 	}
 
 	public void serverTick(ServerLevel level) {

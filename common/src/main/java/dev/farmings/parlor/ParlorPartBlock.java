@@ -56,7 +56,9 @@ public class ParlorPartBlock extends BigPartBlock {
 			BlockHitResult hit) {
 		if (level.getBlockEntity(BigParts.main(pos, state)) instanceof TankEntity tank && stack.is(Items.BUCKET)) {
 			if (!level.isClientSide()) {
-				if (tank.tank().litres() >= BulkTank.BUCKET_L) {
+				if (tank.tank().sheep()) {
+					player.sendOverlayMessage(Component.literal("The tank holds sheep milk: it goes to the creamery, not into a bucket"));
+				} else if (tank.tank().litres() >= BulkTank.BUCKET_L) {
 					tank.tank().take(BulkTank.BUCKET_L);
 					tank.setChanged();
 					player.setItemInHand(hand, net.minecraft.world.item.ItemUtils.createFilledResult(stack, player, new ItemStack(Items.MILK_BUCKET)));
@@ -89,7 +91,7 @@ public class ParlorPartBlock extends BigPartBlock {
 	/** The parlor stall, cow lane and holding pen are walked on; everything else stops a cow. */
 	@Override
 	protected boolean isPathfindable(BlockState state, net.minecraft.world.level.pathfinder.PathComputationType type) {
-		return (kind == ParlorParts.PARLOR_STALL || kind == ParlorParts.COW_LANE || kind == ParlorParts.HOLDING_PEN) && super.isPathfindable(state, type);
+		return (kind == ParlorParts.PARLOR_STALL || kind == ParlorParts.COW_LANE || kind == ParlorParts.HOLDING_PEN || kind == ParlorParts.SHEEP_STALL) && super.isPathfindable(state, type);
 	}
 
 	public static double[] turnBox(double[] b, int turns) {

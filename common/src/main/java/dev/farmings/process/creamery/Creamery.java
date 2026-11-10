@@ -81,8 +81,52 @@ public final class Creamery {
 		return TANK_L - rawL;
 	}
 
+	/** True while the creamery is working sheep milk (docs/multiblocks/creamery.md, "Sheep milk"). */
+	private boolean sheep;
+
+	public boolean sheep() {
+		return sheep;
+	}
+
+	public void setSheep(boolean sheep) {
+		this.sheep = sheep;
+	}
+
+	/** Nothing of any milk in it: raw milk, a batch, stores, butter, curd, wheels. Only then can it change milk kind. */
+	public boolean empty() {
+		double stores = 0;
+		for (double b : bottles) {
+			stores += b;
+		}
+		return rawL <= 1e-6 && batchL <= 1e-6 && stores <= 1e-6 && butterKg <= 1e-6 && curdKg <= 1e-6 && inPress == 0 && aging.isEmpty() && agedWheels == 0;
+	}
+
+	/** True if milk of this kind can go in now: the same kind, or an empty creamery. Cow and sheep milk are never mixed. */
+	public boolean accepts(boolean sheepMilk) {
+		return sheep == sheepMilk || empty();
+	}
+
+	/** Adds raw milk of one kind; refused (0) if the creamery holds the other kind. */
+	public double addMilk(double litres, double fat, double protein, boolean sheepMilk) {
+		if (!accepts(sheepMilk)) {
+			return 0;
+		}
+		sheep = sheepMilk;
+		return addRaw(litres, fat, protein);
+	}
+
 	/** Adds raw milk with its fat and protein, mixed by volume; returns the litres that fit. */
 	public double addMilk(double litres, double fat, double protein) {
+		if (sheep && empty()) {
+			sheep = false;          // a cow-milk bucket into an empty creamery
+		}
+		if (sheep) {
+			return 0;
+		}
+		return addRaw(litres, fat, protein);
+	}
+
+	private double addRaw(double litres, double fat, double protein) {
 		double in = Math.max(0, Math.min(litres, room()));
 		if (in <= 0) {
 			return 0;

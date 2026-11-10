@@ -153,8 +153,12 @@ public class CreameryControllerEntity extends BlockEntity {
 					if (pb.kind() == ParlorParts.MILK_LINE) {
 						queue.add(n);
 					} else if (pb.kind() == ParlorParts.BULK_TANK && !fromTank && BigParts.entity(level, n) instanceof TankEntity tank) {
+						boolean sheepMilk = tank.tank().sheep();
+						if (!creamery.accepts(sheepMilk)) {
+							return 0;     // the creamery holds the other milk: it is not mixed
+						}
 						double l = tank.tank().take(Math.min(maxL, creamery.room()));
-						creamery.addMilk(l, tank.tank().fatPct(), tank.tank().proteinPct());
+						creamery.addMilk(l, tank.tank().fatPct(), tank.tank().proteinPct(), sheepMilk);
 						tank.setChanged();
 						return l;
 					}
@@ -178,6 +182,7 @@ public class CreameryControllerEntity extends BlockEntity {
 	@Override
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
+		output.putBoolean("SheepMilk", creamery.sheep());
 		double[] d = creamery.save();
 		output.putInt("CreameryN", d.length);
 		for (int i = 0; i < d.length; i++) {
@@ -194,5 +199,6 @@ public class CreameryControllerEntity extends BlockEntity {
 			d[i] = input.getDoubleOr("Creamery" + i, 0);
 		}
 		creamery.load(d);
+		creamery.setSheep(input.getBooleanOr("SheepMilk", false));
 	}
 }

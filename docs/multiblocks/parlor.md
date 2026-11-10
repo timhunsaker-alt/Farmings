@@ -94,3 +94,15 @@ stub barn alley.
 
 **Not built:** collision rails on the lane (cows follow it by waypoints, so the rails are drawn but low), crowd gates, a return lane
 separate from the entry lane.
+
+## Sheep stalls (built 2026-11-10; Tim: "Same parlor, sheep stalls")
+- **The part:** `sheep_stall` is a one-cell raised stall for a dairy ewe, under a milking unit, in place of a cow's two-cell
+  `parlor_stall`. A parlor can mix cow stalls and sheep stalls.
+- **Which ewes:** a sheep stall is fed from the **sheep shed whose pen touches its entry end** (the cell behind the stall). That shed's
+  ewes with East Friesian blood and milk in the udder are called one to a stall. Each walks up from the pen, is stepped onto the stall
+  within two blocks of it, is milked, and goes home. Cows still come by the cow lane, and only to cow stalls.
+- **One milk kind per tank:** the bulk tank holds cow milk or sheep milk, never both. Its faults are `TANK HOLDS COW MILK` and
+  `TANK HOLDS SHEEP MILK`. An empty tank takes either kind. Sheep milk is not given out by bucket; it goes to the creamery by the milk
+  line.
+- **Milk:** East Friesian milk is 5.68% fat and 4.92% protein (sheep.md). The yield follows `Flock.milkKg`, scaled by the ewe's East
+  Friesian share and her milk_yield trait.

@@ -144,6 +144,21 @@ public final class FarmingsItems {
 		return new net.minecraft.world.item.ItemStack(LOOSE_WOOL);
 	}
 
+	// Sheep-milk products (docs/multiblocks/creamery.md, "Sheep milk"); cream, skim, buttermilk, whey and butter are the shared items.
+	public static final Item SHEEP_MILK_BOTTLE = item("sheep_milk_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.MILK, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(5, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
+	public static final Item SHEEP_CHEESE_WHEEL = item("sheep_cheese_wheel", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL, p.stacksTo(16)));
+	public static final Item SHEEP_CHEESE = item("sheep_cheese", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR, p.food(food(4, 0.8F))));
+
+	/** The bottle of a creamery store, for cow or sheep milk. */
+	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b, boolean sheep) {
+		return sheep && b == dev.farmings.process.creamery.Creamery.Bottle.MILK ? SHEEP_MILK_BOTTLE : bottle(b);
+	}
+
+	public static Item cheeseWheel(boolean sheep) {
+		return sheep ? SHEEP_CHEESE_WHEEL : CHEDDAR_WHEEL;
+	}
+
 	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b) {
 		return switch (b) {
 			case MILK -> BOTTLED_MILK;
@@ -185,6 +200,9 @@ public final class FarmingsItems {
 		ALL.put("butter", BUTTER);
 		ALL.put("cheddar_wheel", CHEDDAR_WHEEL);
 		ALL.put("cheddar", CHEDDAR);
+		ALL.put("sheep_milk_bottle", SHEEP_MILK_BOTTLE);
+		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
+		ALL.put("sheep_cheese", SHEEP_CHEESE);
 		ALL.put("fleece", FLEECE);
 		ALL.put("loose_wool", LOOSE_WOOL);
 		ALL.put("skirtings", SKIRTINGS);

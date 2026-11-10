@@ -9,7 +9,9 @@ public enum ParlorPart {
 	MILK_LINE("milk line"),
 	BULK_TANK("bulk tank"),
 	COW_LANE("cow lane"),
-	HOLDING_PEN("holding pen");
+	HOLDING_PEN("holding pen"),
+	/** A one-cell raised stall for a dairy ewe (docs/multiblocks/parlor.md, "Sheep stalls"). */
+	SHEEP_STALL("sheep stall");
 
 	public final String label;
 

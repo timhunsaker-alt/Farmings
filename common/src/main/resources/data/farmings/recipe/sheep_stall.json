@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SNS",
+  "KKK"
+ ],
+ "key": {
+  "K": "minecraft:gray_concrete",
+  "N": "minecraft:iron_bars",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:sheep_stall",
+  "count": 2
+ }
+}
