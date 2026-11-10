@@ -1018,6 +1018,15 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		}
 	}
 
+	/** Natural spawns follow the vanilla animal rule: on grass, in light 9 or more (docs/taming.md). */
+	@Override
+	public boolean checkSpawnRules(net.minecraft.world.level.LevelAccessor level, EntitySpawnReason reason) {
+		if (Wild.wildReason(reason)) {
+			return net.minecraft.world.entity.animal.Animal.checkAnimalSpawnRules(dev.farmings.FarmingsEntities.SHEEP, level, reason, blockPosition(), getRandom());
+		}
+		return super.checkSpawnRules(level, reason);
+	}
+
 	@Override
 	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
 			@Nullable SpawnGroupData groupData) {

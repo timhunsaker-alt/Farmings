@@ -32,6 +32,8 @@ public final class FarmingsNeoForge {
 						.build());
 			}
 		});
+		modBus.addListener(RegisterEvent.class, event -> event.register(net.neoforged.neoforge.registries.NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS,
+				helper -> helper.register(Farmings.id("wild_spawns"), WildSpawnsModifier.CODEC)));
 		modBus.addListener(EntityAttributeCreationEvent.class,
 				event -> {
 					event.put(FarmingsEntities.CATTLE, CattleEntity.createAttributes().build());

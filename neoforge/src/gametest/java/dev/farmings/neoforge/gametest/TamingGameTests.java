@@ -111,6 +111,53 @@ final class TamingGameTests {
 		});
 	}
 
+	private static java.util.List<net.minecraft.util.random.Weighted<net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData>> creatures(ServerLevel level,
+			net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome> key) {
+		var biome = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME).getOrThrow(key);
+		var settings = biome.value().getAttributes().applyModifier(net.minecraft.world.attribute.EnvironmentAttributes.NATURAL_MOB_SPAWNS,
+				net.minecraft.world.level.biome.MobSpawnSettings.EMPTY);
+		return settings.getMobsInCategory(net.minecraft.world.entity.MobCategory.CREATURE).unwrap();
+	}
+
+	/** Plains spawns Farmings cattle (weight 8, groups of 4) and sheep (12) and no vanilla cows or sheep; the cherry grove gets Wagyu. */
+	static void biomeSpawnsReplaced(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		var plains = creatures(level, net.minecraft.world.level.biome.Biomes.PLAINS);
+		var types = plains.stream().map(w -> w.value().type()).toList();
+		helper.assertTrue(!types.contains(net.minecraft.world.entity.EntityTypes.COW) && !types.contains(net.minecraft.world.entity.EntityTypes.SHEEP),
+				Component.literal("no vanilla cows or sheep in plains: " + types));
+		var cattle = plains.stream().filter(w -> w.value().type() == FarmingsEntities.CATTLE).findFirst();
+		var sheep = plains.stream().filter(w -> w.value().type() == FarmingsEntities.SHEEP).findFirst();
+		helper.assertTrue(cattle.isPresent() && cattle.get().weight() == 8 && cattle.get().value().count().maxInclusive() == 4,
+				Component.literal("plains cattle weight 8, groups of 4: " + cattle));
+		helper.assertTrue(sheep.isPresent() && sheep.get().weight() == 12, Component.literal("plains sheep weight 12: " + sheep));
+		var cherry = creatures(level, net.minecraft.world.level.biome.Biomes.CHERRY_GROVE);
+		helper.assertTrue(cherry.stream().anyMatch(w -> w.value().type() == FarmingsEntities.CATTLE && w.weight() == 2),
+				Component.literal("cherry grove gets cattle at weight 2"));
+		helper.succeed();
+	}
+
+	/** A natural spawn needs grass under it and light; a summon does not. */
+	static void naturalSpawnNeedsGrass(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(1, 0, 1), net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
+		helper.setBlock(new BlockPos(4, 0, 1), net.minecraft.world.level.block.Blocks.STONE);
+		for (BlockPos p : new BlockPos[] {new BlockPos(1, 1, 1), new BlockPos(1, 2, 1), new BlockPos(4, 1, 1), new BlockPos(4, 2, 1)}) {
+			helper.setBlock(p, net.minecraft.world.level.block.Blocks.AIR);
+		}
+		CattleEntity onGrass = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.NATURAL);
+		BlockPos g = helper.absolutePos(new BlockPos(1, 1, 1));
+		onGrass.snapTo(g.getX() + 0.5, g.getY(), g.getZ() + 0.5, 0, 0);
+		CattleEntity onStone = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.NATURAL);
+		BlockPos st = helper.absolutePos(new BlockPos(4, 1, 1));
+		onStone.snapTo(st.getX() + 0.5, st.getY(), st.getZ() + 0.5, 0, 0);
+		helper.assertTrue(!onStone.checkSpawnRules(level, EntitySpawnReason.NATURAL), Component.literal("no natural spawn on stone"));
+		helper.assertTrue(onStone.checkSpawnRules(level, EntitySpawnReason.COMMAND), Component.literal("a summon can go anywhere"));
+		boolean bright = level.getRawBrightness(g, 0) > 8;
+		helper.assertTrue(!bright || onGrass.checkSpawnRules(level, EntitySpawnReason.NATURAL), Component.literal("a natural spawn on lit grass is fine"));
+		helper.succeed();
+	}
+
 	/** Checks every 10 ticks until the condition holds, then runs next; fails after limit ticks. */
 	static void waitFor(GameTestHelper helper, int waited, int limit, java.util.function.BooleanSupplier cond, String what, Runnable next) {
 		if (cond.getAsBoolean()) {
