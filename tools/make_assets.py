@@ -15,6 +15,7 @@ MODELED = set(real_models.PARTS) | set(real_models.CONTROLLERS)
 ROOT = os.path.join(os.path.dirname(__file__), "..", "common", "src", "main")
 ASSETS = os.path.join(ROOT, "resources", "assets", "farmings")
 DATA = os.path.join(ROOT, "resources", "data", "farmings")
+ROOT_DATA = os.path.join(ROOT, "resources", "data")
 
 # id: (display name, colour, footprint (w, h, d, mainX, mainZ), [model box per layer], layers sharing the last box)
 PARTS = {
@@ -80,6 +81,33 @@ ITEMS = [
     ("loose_wool", "Loose Wool", (214, 206, 186), "blob"),
     ("skirtings", "Skirtings", (200, 190, 160), "blob"),
     ("wool_bale", "Wool Bale", (226, 218, 196), "blob"),
+    # the wool mill and wool uses (docs/multiblocks/wool-mill.md, docs/wool.md)
+    ("clean_wool", "Clean Wool", (244, 240, 230), "blob"),
+    ("sliver", "Sliver", (240, 236, 226), "blob"),
+    ("lanolin", "Lanolin", (232, 206, 120), "blob"),
+    ("wool_cloth", "Wool Cloth", (226, 220, 204), "blob"),
+    ("felt", "Felt", (176, 170, 158), "blob"),
+    ("udder_balm", "Udder Balm", (238, 222, 160), "blob"),
+    ("wool_cap", "Wool Cap", (226, 218, 196), "clothing"),
+    ("wool_sweater", "Wool Sweater", (226, 218, 196), "clothing"),
+    ("wool_trousers", "Wool Trousers", (206, 198, 176), "clothing"),
+    ("wool_socks", "Wool Socks", (226, 218, 196), "clothing"),
+    ("yarn_white", "White Yarn", (234, 236, 236), "yarn"),
+    ("yarn_orange", "Orange Yarn", (240, 118, 19), "yarn"),
+    ("yarn_magenta", "Magenta Yarn", (189, 68, 179), "yarn"),
+    ("yarn_light_blue", "Light Blue Yarn", (58, 175, 217), "yarn"),
+    ("yarn_yellow", "Yellow Yarn", (248, 197, 39), "yarn"),
+    ("yarn_lime", "Lime Yarn", (112, 185, 25), "yarn"),
+    ("yarn_pink", "Pink Yarn", (237, 141, 172), "yarn"),
+    ("yarn_gray", "Gray Yarn", (62, 68, 71), "yarn"),
+    ("yarn_light_gray", "Light Gray Yarn", (142, 142, 134), "yarn"),
+    ("yarn_cyan", "Cyan Yarn", (21, 137, 145), "yarn"),
+    ("yarn_purple", "Purple Yarn", (121, 42, 172), "yarn"),
+    ("yarn_blue", "Blue Yarn", (53, 57, 157), "yarn"),
+    ("yarn_brown", "Brown Yarn", (114, 71, 40), "yarn"),
+    ("yarn_green", "Green Yarn", (84, 109, 27), "yarn"),
+    ("yarn_red", "Red Yarn", (160, 39, 34), "yarn"),
+    ("yarn_black", "Black Yarn", (26, 26, 30), "yarn"),
     ("lamb_chop", "Lamb Chop", (214, 120, 120), "steak"),
     ("cooked_lamb_chop", "Cooked Lamb Chop", (150, 96, 60), "steak"),
     ("mutton_chop", "Mutton Chop", (176, 70, 66), "steak"),
@@ -143,8 +171,14 @@ def item_texture(name, colour, fork):
     if fork == "armor":
         piece = name.split("_")[1]
         shapes = {"helmet": [(3, 4, 12, 9)], "chestplate": [(2, 3, 13, 13)], "leggings": [(4, 3, 7, 14), (8, 3, 11, 14)], "boots": [(2, 9, 6, 14), (9, 9, 13, 14)]}
+        piece = {"cap": "helmet", "sweater": "chestplate", "trousers": "leggings", "socks": "boots"}.get(piece, piece)
         for box in shapes[piece]:
             d.rectangle(box, fill=colour, outline=tuple(max(0, c - 60) for c in colour))
+    elif fork == "yarn":
+        d.ellipse([3, 4, 12, 13], fill=colour, outline=tuple(max(0, c - 50) for c in colour))     # a skein
+        for x in (5, 7, 9):
+            d.arc([x - 2, 4, x + 3, 13], 250, 110, fill=tuple(min(255, c + 30) for c in colour))
+        d.line([(12, 9), (15, 6)], fill=colour)                                                     # the loose end
     elif fork == "bottle":
         d.rectangle([6, 1, 9, 3], fill=(150, 110, 70))                     # cork
         d.rectangle([5, 4, 10, 14], fill=colour, outline=(170, 190, 200))  # glass with the product
@@ -242,7 +276,7 @@ def main():
         lang["item.farmings." + name] = title
         real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
         if not real:
-            item_texture(name, colour, kind if kind in ("straw", "steak", "armor", "book", "bottle") else kind == "fork")
+            item_texture(name, colour, "armor" if kind == "clothing" else kind if kind in ("straw", "steak", "armor", "book", "bottle", "yarn") else kind == "fork")
         tex = "farmings:item/" + name + ("" if real else "_placeholder")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": tex}})
         if kind == "armor":
@@ -268,6 +302,13 @@ def main():
             os.makedirs(os.path.dirname(path), exist_ok=True)
             img.save(path)
     write(os.path.join(DATA, "tags", "item", "repairs_milk_armor.json"), {"values": ["minecraft:milk_bucket"]})
+    # wool clothing: its worn look (tools/wool_textures.py draws the layers), repairs and the freeze-immune tag (docs/wool.md)
+    write(os.path.join(ASSETS, "equipment", "wool.json"),
+          {"layers": {"humanoid": [{"texture": "farmings:wool"}], "humanoid_leggings": [{"texture": "farmings:wool"}]}})
+    write(os.path.join(DATA, "tags", "item", "repairs_wool_clothing.json"), {"values": ["farmings:wool_cloth"]})
+    write(os.path.join(ROOT_DATA, "minecraft", "tags", "item", "freeze_immune_wearables.json"),
+          {"replace": False, "values": ["farmings:wool_cap", "farmings:wool_sweater", "farmings:wool_trousers", "farmings:wool_socks"]})
+    wool_mill_assets(lang)
     cold_room_assets(lang)
     shed_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
@@ -280,7 +321,7 @@ def main():
 KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecraft:copper_ingot", "R": "minecraft:redstone",
         "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
         "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick",
-        "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences"}
+        "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences", "X": "farmings:wool_cloth"}
 SHAPED = {
     # barn
     "barn_controller": (["SRS", "CIC", "SSS"], 1),
@@ -329,6 +370,17 @@ SHAPED = {
     "catching_pen": (["F F", "WWW"], 4),
     "wool_table": (["WWW", "T T"], 1),
     "wool_press": (["III", "W W", "WWW"], 1),
+    # the wool mill (docs/multiblocks/wool-mill.md)
+    "scouring_bowl": (["SBS", "S S", "SCS"], 1),
+    "carding_machine": (["NNN", "CRC", "SSS"], 1),
+    "spinning_frame": (["TTT", "CRC", "SSS"], 1),
+    "loom_frame": (["WWW", "TRT", "SSS"], 1),
+    "felting_table": (["WBW", "SRS"], 1),
+    # wool clothing from the mill's cloth (docs/wool.md)
+    "wool_cap": (["XXX", "X X"], 1),
+    "wool_sweater": (["X X", "XXX", "XXX"], 1),
+    "wool_trousers": (["XXX", "X X", "X X"], 1),
+    "wool_socks": (["X X", "X X"], 1),
     "manure_fork": (["I I", " T ", " T "], 1),
     "milk_helmet": (["MMM", "M M"], 1),
     "milk_chestplate": (["M M", "MMM", "MMM"], 1),
@@ -339,6 +391,7 @@ SHAPELESS = {
     "empty_straw": (["wildcatter:plastic_sheet"], 8),
     "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
     "cheddar": (["farmings:cheddar_wheel"], 8),
+    "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop"}
@@ -461,6 +514,62 @@ def cold_room_assets(lang):
                                                              "properties": {"half": "lower"}}]
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), drop)
     cold_room_textures()
+
+
+WOOL_DYES = {'white': (234, 236, 236), 'orange': (240, 118, 19), 'magenta': (189, 68, 179), 'light_blue': (58, 175, 217), 'yellow': (248, 197, 39), 'lime': (112, 185, 25), 'pink': (237, 141, 172), 'gray': (62, 68, 71), 'light_gray': (142, 142, 134), 'cyan': (21, 137, 145), 'purple': (121, 42, 172), 'blue': (53, 57, 157), 'brown': (114, 71, 40), 'green': (84, 109, 27), 'red': (160, 39, 34), 'black': (26, 26, 30)}
+MILL = {"scouring_bowl": "Scouring Bowl", "carding_machine": "Carding Machine", "spinning_frame": "Spinning Frame", "loom_frame": "Power Loom",
+        "felting_table": "Felting Table"}
+
+
+def wool_mill_assets(lang):
+    """The mill machines (drawn fronts on a steel body), their loot, and the mill's recipes that make vanilla blocks or dye yarn."""
+    from PIL import Image, ImageDraw
+    tex = os.path.join(ASSETS, "textures", "block")
+    m = os.path.join(ASSETS, "models", "block")
+    body = Image.new("RGBA", (16, 16), (150, 156, 162, 255))
+    ImageDraw.Draw(body).rectangle([0, 0, 15, 15], outline=(100, 106, 112, 255))
+    fronts = {}
+    f = body.copy(); d = ImageDraw.Draw(f); d.rectangle([2, 5, 13, 13], fill=(90, 130, 170, 255)); d.rectangle([3, 6, 12, 8], fill=(236, 232, 218, 255))
+    fronts["scouring_bowl"] = f        # a bowl of water with wool on it
+    f = body.copy(); d = ImageDraw.Draw(f)
+    for y in (4, 8, 12):
+        d.ellipse([2, y - 2, 13, y + 2], fill=(120, 110, 96, 255), outline=(70, 70, 76, 255))
+    fronts["carding_machine"] = f      # the card's toothed rollers
+    f = body.copy(); d = ImageDraw.Draw(f)
+    for x in (3, 7, 11):
+        d.rectangle([x, 3, x + 2, 13], fill=(236, 232, 218, 255)); d.line([(x + 1, 1), (x + 1, 3)], fill=(60, 60, 66, 255))
+    fronts["spinning_frame"] = f       # bobbins
+    f = body.copy(); d = ImageDraw.Draw(f)
+    for x in range(2, 14, 2):
+        d.line([(x, 2), (x, 13)], fill=(226, 220, 204, 255))
+    for y in range(3, 13, 3):
+        d.line([(2, y), (13, y)], fill=(196, 188, 168, 255))
+    fronts["loom_frame"] = f           # warp and weft
+    f = body.copy(); d = ImageDraw.Draw(f); d.rectangle([2, 6, 13, 10], fill=(176, 170, 158, 255))
+    fronts["felting_table"] = f        # a felt sheet
+    for name, title in MILL.items():
+        lang["block.farmings." + name] = title
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + "_front.png")):
+            fronts[name].save(os.path.join(tex, name + "_front.png"))
+        write(os.path.join(m, name + ".json"), {"parent": "minecraft:block/cube", "textures": {
+              "north": "farmings:block/%s_front" % name, "south": "farmings:block/wool_machine_side", "east": "farmings:block/wool_machine_side",
+              "west": "farmings:block/wool_machine_side", "up": "farmings:block/wool_machine_side", "down": "farmings:block/wool_machine_side",
+              "particle": "farmings:block/wool_machine_side"}})
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    body.save(os.path.join(tex, "wool_machine_side.png"))
+    out = os.path.join(DATA, "recipe")
+    for colour in WOOL_DYES:
+        # four skeins of yarn make one vanilla wool block of their colour; carpets and beds then come from vanilla's own recipes
+        write(os.path.join(out, "%s_wool_from_yarn.json" % colour), {"type": "minecraft:crafting_shaped", "category": "building", "pattern": ["YY", "YY"],
+              "key": {"Y": "farmings:yarn_" + colour}, "result": {"id": "minecraft:%s_wool" % colour, "count": 1}})
+        if colour != "white":
+            write(os.path.join(out, "yarn_%s.json" % colour), {"type": "minecraft:crafting_shapeless", "category": "misc",
+                  "ingredients": ["farmings:yarn_white", "minecraft:%s_dye" % colour], "result": {"id": "farmings:yarn_" + colour, "count": 1}})
+    # felt insulates a cold-room panel as well as wool does (docs/wool.md)
+    write(os.path.join(out, "cold_room_panel_from_felt.json"), {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["III", "EEE", "III"],
+          "key": {"I": "minecraft:iron_ingot", "E": "farmings:felt"}, "result": {"id": "farmings:cold_room_panel", "count": 4}})
 
 
 SHED = {"shed_controller": "Sheep Shed Controller", "sheep_pen": "Sheep Pen", "lambing_pen": "Lambing Pen", "pasture_gate": "Pasture Gate",

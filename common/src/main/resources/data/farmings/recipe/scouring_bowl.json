@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SBS",
+  "S S",
+  "SCS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "C": "minecraft:copper_ingot",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:scouring_bowl",
+  "count": 1
+ }
+}

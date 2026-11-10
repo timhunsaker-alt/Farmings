@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "farmings:item/clean_wool_placeholder"
+ }
+}

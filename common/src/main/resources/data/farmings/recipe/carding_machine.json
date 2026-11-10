@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "NNN",
+  "CRC",
+  "SSS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "N": "minecraft:iron_bars",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:carding_machine",
+  "count": 1
+ }
+}

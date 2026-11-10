@@ -452,4 +452,104 @@ final class SheepGameTests {
 		helper.assertTrue(table.count(s -> s.is(FarmingsItems.FLEECE)) == 1, Component.literal("one fleece left on the table"));
 		helper.succeed();
 	}
+
+	// ---- the wool mill and wool uses (docs/multiblocks/wool-mill.md, docs/wool.md) ----
+
+	static dev.farmings.woolmill.WoolMachineEntity machine(GameTestHelper helper, dev.farmings.woolmill.WoolMachine kind, BlockPos rel) {
+		helper.setBlock(rel, dev.farmings.woolmill.WoolMillBlocks.machine(kind));
+		dev.farmings.woolmill.WoolMachineEntity m = (dev.farmings.woolmill.WoolMachineEntity) helper.getLevel().getBlockEntity(helper.absolutePos(rel));
+		m.forceRunning(true);
+		return m;
+	}
+
+	static ItemStack outputOf(dev.farmings.woolmill.WoolMachineEntity m, net.minecraft.world.item.Item item) {
+		for (int i = 1; i < 5; i++) {
+			if (m.items().get(i).is(item)) {
+				return m.items().get(i);
+			}
+		}
+		return ItemStack.EMPTY;
+	}
+
+	/** A Merino fleece through the scouring bowl, card and spinning frame: clean wool and lanolin, sliver, then white yarn by weight. */
+	static void fleeceToYarn(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		dev.farmings.woolmill.WoolMachineEntity scour = machine(helper, dev.farmings.woolmill.WoolMachine.SCOURING_BOWL, new BlockPos(1, 1, 1));
+		dev.farmings.woolmill.WoolMachineEntity card = machine(helper, dev.farmings.woolmill.WoolMachine.CARDING_MACHINE, new BlockPos(3, 1, 1));
+		dev.farmings.woolmill.WoolMachineEntity spin = machine(helper, dev.farmings.woolmill.WoolMachine.SPINNING_FRAME, new BlockPos(5, 1, 1));
+		scour.pourBucket();
+		scour.insertByHand(FleeceItem.make(FarmingsItems.FLEECE, 4.0, 20.0, 8.0, 0.5, Flock.Grade.FINE, dev.farmings.genetics.SheepLook.Wool.WHITE));
+		helper.runAfterDelay(110, () -> {
+			ItemStack clean = outputOf(scour, FarmingsItems.CLEAN_WOOL);
+			helper.assertTrue(Math.abs(FleeceItem.greasyKg(clean) - 2.0) < 0.01, Component.literal("4 kg at 50% scours to 2 kg clean, got " + clean));
+			helper.assertTrue(outputOf(scour, FarmingsItems.LANOLIN).getCount() == 1, Component.literal("4 kg x 15% grease x 30% gives one 0.1 kg lanolin"));
+			helper.assertTrue(Math.abs(scour.water() - 940) < 0.01, Component.literal("it used 60 L of water, has " + scour.water()));
+			card.insertByHand(clean.copy());
+			clean.setCount(0);
+			helper.runAfterDelay(110, () -> {
+				ItemStack sliver = outputOf(card, FarmingsItems.SLIVER);
+				helper.assertTrue(Math.abs(FleeceItem.greasyKg(sliver) - 1.9) < 0.01, Component.literal("carding loses 5%, got " + sliver));
+				spin.insertByHand(sliver.copy());
+				sliver.setCount(0);
+				helper.runAfterDelay(110, () -> {
+					int yarn = outputOf(spin, FarmingsItems.YARN.get(net.minecraft.world.item.DyeColor.WHITE)).getCount();
+					helper.assertTrue(yarn == 23, Component.literal("1.9 kg of fine sliver spins 19 x 1.25 = 23 white yarn, got " + yarn));
+					helper.succeed();
+				});
+			});
+		});
+	}
+
+	/** A scouring bowl without water does not scour and says so; a black fleece spins black yarn. */
+	static void scourNeedsWater(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		dev.farmings.woolmill.WoolMachineEntity scour = machine(helper, dev.farmings.woolmill.WoolMachine.SCOURING_BOWL, new BlockPos(1, 1, 1));
+		scour.insertByHand(FleeceItem.make(FarmingsItems.FLEECE, 3.0, 30.0, 9.0, 0.56, Flock.Grade.QUARTER, dev.farmings.genetics.SheepLook.Wool.BLACK));
+		dev.farmings.woolmill.WoolMachineEntity spin = machine(helper, dev.farmings.woolmill.WoolMachine.SPINNING_FRAME, new BlockPos(3, 1, 1));
+		spin.insertByHand(FleeceItem.make(FarmingsItems.SLIVER, 1.0, 30.0, 9.0, 1.0, Flock.Grade.QUARTER, dev.farmings.genetics.SheepLook.Wool.BLACK));
+		helper.runAfterDelay(120, () -> {
+			helper.assertTrue(scour.batches() == 0 && scour.readout().contains("NO WATER"), Component.literal(scour.readout()));
+			int black = outputOf(spin, FarmingsItems.YARN.get(net.minecraft.world.item.DyeColor.BLACK)).getCount();
+			helper.assertTrue(black == 10, Component.literal("1 kg of quarter-blood black sliver spins 10 x 1.05 = 10 black yarn, got " + black));
+			helper.succeed();
+		});
+	}
+
+	/** A loom weaves four yarn into cloth; a hopper under it takes the cloth. */
+	static void hopperTakesCloth(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		helper.setBlock(new BlockPos(2, 1, 2), net.minecraft.world.level.block.Blocks.HOPPER);
+		dev.farmings.woolmill.WoolMachineEntity loom = machine(helper, dev.farmings.woolmill.WoolMachine.LOOM, new BlockPos(2, 2, 2));
+		loom.insertByHand(new ItemStack(FarmingsItems.YARN.get(net.minecraft.world.item.DyeColor.WHITE), 4));
+		helper.runAfterDelay(160, () -> {
+			net.minecraft.world.level.block.entity.HopperBlockEntity hopper = (net.minecraft.world.level.block.entity.HopperBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 2)));
+			boolean cloth = false;
+			for (int i = 0; i < hopper.getContainerSize(); i++) {
+				cloth |= hopper.getItem(i).is(FarmingsItems.WOOL_CLOTH);
+			}
+			helper.assertTrue(cloth, Component.literal("the hopper should hold the cloth; loom: " + loom.readout()));
+			helper.succeed();
+		});
+	}
+
+	/** Any piece of wool clothing keeps powder snow's cold off, as leather does. */
+	static void woolClothingStopsFreezing(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		SheepEntity z = adult(helper, SheepBreed.DORPER, Sex.FEMALE, 101L, new BlockPos(3, 1, 3));    // any living thing wearing it
+		helper.assertTrue(z.canFreeze(), Component.literal("a bare animal freezes"));
+		z.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(FarmingsItems.WOOL_CAP));
+		helper.assertTrue(!z.canFreeze(), Component.literal("a wool cap stops freezing"));
+		helper.succeed();
+	}
+
+	/** Yarn makes vanilla wool of its colour; white yarn dyes; clothing, balm and felt panels have recipes. */
+	static void yarnToWoolBlocks(GameTestHelper helper) {
+		net.minecraft.world.item.crafting.RecipeManager r = helper.getLevel().getServer().getRecipeManager();
+		for (String id : List.of("white_wool_from_yarn", "black_wool_from_yarn", "brown_wool_from_yarn", "light_gray_wool_from_yarn", "yarn_red", "wool_sweater",
+				"udder_balm", "cold_room_panel_from_felt")) {
+			helper.assertTrue(r.byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, dev.farmings.Farmings.id(id))).isPresent(),
+					Component.literal("recipe " + id + " should exist"));
+		}
+		helper.succeed();
+	}
 }

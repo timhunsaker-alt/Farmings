@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WBW",
+  "SRS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:felting_table",
+  "count": 1
+ }
+}

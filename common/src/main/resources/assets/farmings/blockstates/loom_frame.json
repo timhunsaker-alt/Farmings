@@ -1,0 +1,7 @@
+{
+ "variants": {
+  "": {
+   "model": "farmings:block/loom_frame"
+  }
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:yarn_white",
+  "minecraft:light_blue_dye"
+ ],
+ "result": {
+  "id": "farmings:yarn_light_blue",
+  "count": 1
+ }
+}

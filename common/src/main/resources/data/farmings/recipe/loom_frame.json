@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WWW",
+  "TRT",
+  "SSS"
+ ],
+ "key": {
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot",
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:loom_frame",
+  "count": 1
+ }
+}

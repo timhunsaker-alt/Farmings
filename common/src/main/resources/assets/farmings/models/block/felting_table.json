@@ -1,0 +1,12 @@
+{
+ "parent": "minecraft:block/cube",
+ "textures": {
+  "north": "farmings:block/felting_table_front",
+  "south": "farmings:block/wool_machine_side",
+  "east": "farmings:block/wool_machine_side",
+  "west": "farmings:block/wool_machine_side",
+  "up": "farmings:block/wool_machine_side",
+  "down": "farmings:block/wool_machine_side",
+  "particle": "farmings:block/wool_machine_side"
+ }
+}

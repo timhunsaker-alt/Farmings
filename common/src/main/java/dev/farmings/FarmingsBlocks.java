@@ -165,6 +165,9 @@ public final class FarmingsBlocks {
 		for (Block b : dev.farmings.shearing.ShearingBlocks.ALL) {
 			output.accept(b);
 		}
+		for (Block b : dev.farmings.woolmill.WoolMillBlocks.MACHINES.values()) {
+			output.accept(b);
+		}
 	}
 
 	public static void register() {
@@ -196,6 +199,7 @@ public final class FarmingsBlocks {
 		dev.farmings.coldroom.ColdRoomBlocks.register();
 		dev.farmings.shed.ShedBlocks.register();
 		dev.farmings.shearing.ShearingBlocks.register();
+		dev.farmings.woolmill.WoolMillBlocks.register();
 		FarmingsItems.register();
 	}
 }

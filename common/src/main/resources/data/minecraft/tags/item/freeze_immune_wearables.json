@@ -1,0 +1,9 @@
+{
+ "replace": false,
+ "values": [
+  "farmings:wool_cap",
+  "farmings:wool_sweater",
+  "farmings:wool_trousers",
+  "farmings:wool_socks"
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "X X",
+  "X X"
+ ],
+ "key": {
+  "X": "farmings:wool_cloth"
+ },
+ "result": {
+  "id": "farmings:wool_socks",
+  "count": 1
+ }
+}

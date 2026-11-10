@@ -92,6 +92,36 @@ public final class FarmingsItems {
 	public static final Item SKIRTINGS = item("skirtings", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
 	/** Pressed fleeces of one grade and colour. */
 	public static final Item WOOL_BALE = item("wool_bale", p -> new dev.farmings.item.FleeceItem(p.stacksTo(1)));
+	// The wool mill (docs/multiblocks/wool-mill.md) and what wool is for (docs/wool.md).
+	public static final Item CLEAN_WOOL = item("clean_wool", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
+	public static final Item SLIVER = item("sliver", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
+	public static final Item LANOLIN = item("lanolin", Item::new);
+	public static final Item WOOL_CLOTH = item("wool_cloth", Item::new);
+	public static final Item FELT = item("felt", Item::new);
+	public static final Item UDDER_BALM = item("udder_balm", p -> new dev.farmings.item.BalmItem(p.stacksTo(16)));
+	public static final Item WOOL_CAP = item("wool_cap", p -> new dev.farmings.item.WoolClothingItem(p, net.minecraft.world.item.equipment.ArmorType.HELMET));
+	public static final Item WOOL_SWEATER = item("wool_sweater", p -> new dev.farmings.item.WoolClothingItem(p, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+	public static final Item WOOL_TROUSERS = item("wool_trousers", p -> new dev.farmings.item.WoolClothingItem(p, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
+	public static final Item WOOL_SOCKS = item("wool_socks", p -> new dev.farmings.item.WoolClothingItem(p, net.minecraft.world.item.equipment.ArmorType.BOOTS));
+	/** Yarn in the sixteen dye colours; natural wool spins to white, black, brown or light grey (SheepLook.Wool). */
+	public static final java.util.Map<net.minecraft.world.item.DyeColor, Item> YARN = new java.util.EnumMap<>(net.minecraft.world.item.DyeColor.class);
+
+	static {
+		for (net.minecraft.world.item.DyeColor c : net.minecraft.world.item.DyeColor.values()) {
+			YARN.put(c, item("yarn_" + c.getSerializedName(), Item::new));
+		}
+	}
+
+	/** The yarn a natural wool colour spins to. */
+	public static Item naturalYarn(dev.farmings.genetics.SheepLook.Wool w) {
+		return YARN.get(switch (w) {
+			case WHITE -> net.minecraft.world.item.DyeColor.WHITE;
+			case BLACK -> net.minecraft.world.item.DyeColor.BLACK;
+			case BROWN -> net.minecraft.world.item.DyeColor.BROWN;
+			case GREY -> net.minecraft.world.item.DyeColor.LIGHT_GRAY;
+		});
+	}
+
 	/** The little wool a hair sheep sheds each year (0.5-1 kg, sheep.md): the lowest grade *(proposed)*. */
 	public static final Item LOOSE_WOOL = item("loose_wool", Item::new);
 	public static final Item LAMB_CHOP = item("lamb_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
@@ -159,6 +189,17 @@ public final class FarmingsItems {
 		ALL.put("loose_wool", LOOSE_WOOL);
 		ALL.put("skirtings", SKIRTINGS);
 		ALL.put("wool_bale", WOOL_BALE);
+		ALL.put("clean_wool", CLEAN_WOOL);
+		ALL.put("sliver", SLIVER);
+		ALL.put("lanolin", LANOLIN);
+		ALL.put("wool_cloth", WOOL_CLOTH);
+		ALL.put("felt", FELT);
+		ALL.put("udder_balm", UDDER_BALM);
+		ALL.put("wool_cap", WOOL_CAP);
+		ALL.put("wool_sweater", WOOL_SWEATER);
+		ALL.put("wool_trousers", WOOL_TROUSERS);
+		ALL.put("wool_socks", WOOL_SOCKS);
+		YARN.forEach((c, item) -> ALL.put("yarn_" + c.getSerializedName(), item));
 		ALL.put("lamb_chop", LAMB_CHOP);
 		ALL.put("cooked_lamb_chop", COOKED_LAMB_CHOP);
 		ALL.put("mutton_chop", MUTTON_CHOP);

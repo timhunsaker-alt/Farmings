@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:lanolin",
+  "farmings:lanolin"
+ ],
+ "result": {
+  "id": "farmings:udder_balm",
+  "count": 1
+ }
+}

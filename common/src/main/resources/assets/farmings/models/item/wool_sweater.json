@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "farmings:item/wool_sweater_placeholder"
+ }
+}

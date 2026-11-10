@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "TTT",
+  "CRC",
+  "SSS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:spinning_frame",
+  "count": 1
+ }
+}
