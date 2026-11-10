@@ -1197,9 +1197,183 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+
+	/** Wild animals counted around a spot: Farmings wild cattle and sheep by breed, and any vanilla cows or sheep. */
+	private static String census(ServerLevel level, BlockPos at, String where) {
+		java.util.Map<String, Integer> n = new java.util.TreeMap<>();
+		int vanilla = 0;
+		net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(at).inflate(96, 64, 96);
+		for (net.minecraft.world.entity.Mob m : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, box)) {
+			if (m instanceof CattleEntity c && c.isWild()) {
+				n.merge(c.breed().code + " cattle", 1, Integer::sum);
+			} else if (m instanceof dev.farmings.entity.SheepEntity sh && sh.isWild()) {
+				n.merge(sh.breed().code + " sheep", 1, Integer::sum);
+			} else if (m.getType() == net.minecraft.world.entity.EntityTypes.COW || m.getType() == net.minecraft.world.entity.EntityTypes.SHEEP) {
+				vanilla++;
+			}
+		}
+		return where + ": wild " + n + ", vanilla cows/sheep " + vanilla;
+	}
+
+	/**
+	 * Wild animals and the taming corral (docs/taming.md): wild herds where the world spawned them (plains, savanna), a wild cow filmed
+	 * following hay into the corral, a wild flock filmed drawn by the bait through the one-way gate, and the readouts after settling.
+	 */
+	private static void taming(ClientGameTestContext context, TestServerContext server, int y0) {
+		BlockPos[] plains = new BlockPos[1];
+		for (String biome : new String[] {"plains", "savanna"}) {
+			BlockPos[] found = new BlockPos[1];
+			server.runOnServer(srv -> {
+				var r = srv.overworld().findClosestBiome3d(h -> h.is(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.BIOME,
+						net.minecraft.resources.Identifier.withDefaultNamespace(biome))), new BlockPos(0, 64, 0), 3200, 32, 64);
+				found[0] = r == null ? null : r.getFirst();
+			});
+			if (found[0] == null) {
+				actionbar(server, "No " + biome + " within 3200 blocks");
+				context.waitTicks(20);
+				continue;
+			}
+			server.runCommand("tp @p " + found[0].getX() + " 140 " + found[0].getZ() + " 0 60");
+			context.waitTicks(300);
+			String text = server.computeOnServer(srv -> census(srv.overworld(), found[0], biome));
+			BlockPos herd = server.computeOnServer(srv -> {
+				for (net.minecraft.world.entity.Mob m : srv.overworld().getEntitiesOfClass(net.minecraft.world.entity.Mob.class,
+						new net.minecraft.world.phys.AABB(found[0]).inflate(96, 64, 96), m -> m instanceof dev.farmings.entity.Wild.Animal a && a.isWild())) {
+					return m.blockPosition();
+				}
+				return null;
+			});
+			System.out.println("[farmings] " + text);
+			if (biome.equals("plains")) {
+				plains[0] = found[0];
+			}
+			if (herd != null) {
+				server.runCommand("tp @p " + (herd.getX() + 0.5) + " " + (herd.getY() + 9) + " " + (herd.getZ() + 12.5) + " 180 35");
+				context.waitTicks(60);
+			}
+			actionbar(server, text);
+			context.waitTicks(20);
+			context.takeScreenshot("farmings-wild-" + biome);
+		}
+		// the corral, built on the plains spot (or at 40, 40 if there were none)
+		int cx = plains[0] == null ? 40 : plains[0].getX() + 24;
+		int cz = plains[0] == null ? 40 : plains[0].getZ() + 24;
+		server.runCommand("tp @p " + (cx + 5.5) + " 160 " + (cz + 12.5));
+		context.waitTicks(120);
+		int y = server.computeOnServer(srv -> srv.overworld().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, cx + 5, cz + 12));
+		BlockPos post = new BlockPos(cx + 1, y, cz + 1);
+		BlockPos gate = new BlockPos(cx + 5, y, cz + 9);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			for (net.minecraft.world.entity.Mob m : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new net.minecraft.world.phys.AABB(new BlockPos(cx + 5, y, cz + 12)).inflate(40))) {
+				m.discard();
+			}
+			clear(level, cx + 5, cz + 12, y, 14, 16, 16);
+			for (int x = cx - 9; x <= cx + 19; x++) {
+				for (int z = cz - 4; z <= cz + 28; z++) {
+					for (int k = 2; k <= 4; k++) {
+						level.setBlockAndUpdate(new BlockPos(x, y - k, z), net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState());
+					}
+				}
+			}
+			for (int x = cx; x <= cx + 10; x++) {
+				for (int z = cz; z <= cz + 9; z++) {
+					if (x == cx || x == cx + 10 || z == cz || z == cz + 9) {
+						level.setBlockAndUpdate(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(gate, dev.farmings.corral.CorralBlocks.CORRAL_GATE.defaultBlockState().setValue(dev.farmings.corral.CorralGateBlock.FACING, Direction.NORTH));
+			level.setBlockAndUpdate(post, dev.farmings.corral.CorralBlocks.CORRAL_POST.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(cx + 5, y, cz + 3), dev.farmings.corral.CorralBlocks.BAIT_TROUGH.defaultBlockState());
+			barnPart(level, BarnParts.WATER_TROUGH, new BlockPos(cx + 7, y, cz + 5));
+			if (level.getBlockEntity(BigParts.owner(level, new BlockPos(cx + 7, y, cz + 5))) instanceof TroughEntity t) {
+				t.pourBucket();
+			}
+		});
+		// 1. a wild Holstein follows a player holding hay, through the gate into the corral
+		server.runCommand("gamemode creative @p");
+		server.runCommand("item replace entity @p weapon.mainhand with minecraft:hay_block");
+		CattleEntity[] cow = new CattleEntity[1];
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+			c.setBreedForDisplay(CattleBreed.HOLSTEIN, Sex.FEMALE, 650, false);
+			c.setWild(true);
+			c.setPos(cx + 5.5, y, cz + 15.5);
+			level.addFreshEntity(c);
+			cow[0] = c;
+		});
+		server.runCommand("tp @p " + (cx + 5.5) + " " + y + " " + (cz + 6.5) + " 0 20");
+		context.waitTicks(40);
+		actionbar(server, "A wild Holstein follows the hay in the player's hand");
+		context.takeScreenshot("farmings-taming-wild-cow");
+		Filming follow = context.computeOnClient(client -> Filming.start(client, "wild-cow-follows-hay"));
+		for (int i = 0; i < 14; i++) {
+			context.waitTicks(20);
+			String read = server.computeOnServer(srv -> cow[0].readout());
+			actionbar(server, read);
+		}
+		context.takeScreenshot("farmings-taming-cow-in");
+		follow.stop();
+		// 2. a wild flock, spawned as a natural group, drawn by the bait through the one-way gate
+		server.runCommand("item replace entity @p weapon.mainhand with minecraft:air");
+		server.runCommand("gamemode spectator @p");
+		java.util.List<dev.farmings.entity.SheepEntity> flock = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			((dev.farmings.corral.BaitTroughEntity) level.getBlockEntity(new BlockPos(cx + 5, y, cz + 3))).addBlock();
+			((dev.farmings.corral.BaitTroughEntity) level.getBlockEntity(new BlockPos(cx + 5, y, cz + 3))).addBlock();
+			net.minecraft.world.entity.SpawnGroupData group = null;
+			for (int i = 0; i < 4; i++) {
+				dev.farmings.entity.SheepEntity s = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.NATURAL);
+				s.snapTo(cx + 3.5 + i * 1.5, y, cz + 24.5, 0, 0);
+				group = s.finalizeSpawn(level, level.getCurrentDifficultyAt(s.blockPosition()), EntitySpawnReason.NATURAL, group);
+				level.addFreshEntity(s);
+				flock.add(s);
+			}
+			((dev.farmings.corral.CorralPostEntity) level.getBlockEntity(post)).claim(srv.getPlayerList().getPlayers().get(0).getUUID());
+		});
+		server.runCommand("tp @p " + (cx + 5.5) + " " + (y + 9) + " " + (cz - 4.5) + " 0 40");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-taming-flock-outside");
+		Filming bait = context.computeOnClient(client -> Filming.start(client, "bait-draws-flock"));
+		for (int i = 0; i < 24; i++) {
+			context.waitTicks(20);
+			String read = server.computeOnServer(srv -> ((dev.farmings.corral.CorralPostEntity) srv.overworld().getBlockEntity(post)).readout(srv.overworld()));
+			actionbar(server, read);
+		}
+		context.takeScreenshot("farmings-taming-flock-in");
+		bait.stop();
+		// 3. seven real days fed and watered: the corral tames them; the readouts show it
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			dev.farmings.corral.CorralPostEntity p = (dev.farmings.corral.CorralPostEntity) level.getBlockEntity(post);
+			p.refresh(level);
+			for (net.minecraft.world.entity.Mob m : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, new net.minecraft.world.phys.AABB(post).inflate(16),
+					m -> m instanceof dev.farmings.entity.Wild.Animal a && a.isWild() && p.inside(m))) {
+				for (int k = 0; k < 8; k++) {
+					p.tend(level, m, (dev.farmings.entity.Wild.Animal) m, (int) dev.farmings.husbandry.TimeScale.realDaysToTicks(1));
+				}
+			}
+		});
+		String postRead = server.computeOnServer(srv -> ((dev.farmings.corral.CorralPostEntity) srv.overworld().getBlockEntity(post)).readout(srv.overworld()));
+		actionbar(server, postRead);
+		System.out.println("[farmings] " + postRead);
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-taming-post-readout");
+		String sheepRead = server.computeOnServer(srv -> flock.get(0).readout());
+		System.out.println("[farmings] " + sheepRead);
+		actionbar(server, sheepRead);
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-taming-tamed-sheep");
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		try (TestSingleplayerContext world = context.worldBuilder().create()) {
+		// the taming scene needs a generated world (biomes and their animals); every other scene uses the flat test world
+		boolean generated = "taming".equals(System.getenv("FARMINGS_ONLY"));
+		try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(!generated).create()) {
 			TestServerContext server = world.getServer();
 			context.waitTicks(40);
 			int y = server.computeOnServer(srv -> srv.overworld().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, 0, 0));
@@ -1210,6 +1384,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("taming".equals(only)) {
+				context.waitTicks(200);
+				taming(context, server, y);
 				return;
 			}
 			if ("sheepfarm".equals(only)) {

@@ -131,3 +131,8 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
   through the gate.
 - **Path finding:** cattle now have a follow range of 64, as sheep do, so the path can be found from 32 blocks away.
 - **Tests:** `WildBreedsTest`, `CorralLayoutTest`; game tests `wild_*` and `corral_*`.
+- **Client scene `taming`** (`FARMINGS_ONLY=taming`, in a generated world):
+  - a census of wild animals found by biome, with no vanilla cows or sheep left on Fabric;
+  - a wild Holstein following hay through the gate (recording `wild-cow-follows-hay`);
+  - a wild flock drawn in by the bait (recording `bait-draws-flock`);
+  - the readouts after settling.

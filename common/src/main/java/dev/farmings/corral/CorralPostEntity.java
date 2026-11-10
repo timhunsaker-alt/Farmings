@@ -176,6 +176,9 @@ public class CorralPostEntity extends BlockEntity {
 
 	/** Feeds and waters one wild animal for {@code ticks}; a fully fed and watered step counts toward settling. */
 	public void tend(ServerLevel level, Mob m, Wild.Animal a, int ticks) {
+		if (!a.isWild()) {
+			return;
+		}
 		double share = (double) ticks / TimeScale.TICKS_PER_GAME_DAY;     // one game day is one real day's intake (the barn rule)
 		double wantKg = a.dailyDryMatterKg() * share;
 		double wantL = a.dailyWaterL() * share;
