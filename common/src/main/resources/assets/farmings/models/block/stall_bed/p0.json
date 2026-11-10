@@ -24,6 +24,7 @@
   "hay": "farmings:block/mat/mat_hay",
   "manure": "farmings:block/mat/mat_manure",
   "milk": "farmings:block/mat/mat_milk",
+  "lane": "farmings:block/mat/mat_cow_lane",
   "rind": "farmings:block/mat/mat_cheese_rind",
   "yellow": "farmings:block/mat/mat_paint_yellow",
   "water": "farmings:block/mat/mat_water",

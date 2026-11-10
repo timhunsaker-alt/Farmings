@@ -40,3 +40,21 @@ Every prompt ends "game item icon, plain white background, no text" (the armor: 
 ## Worn milk armor (2026-11-09, Ludo createImage, texture, Photorealistic 3D)
 - `mat_milk_armor.webp`: "Seamless tileable texture of fresh white milk surface poured over a curved form: glossy creamy white with soft sheen highlights, gentle ripples and a few thick drips, faint blue-white tint, no objects, no text, even lighting, top-down"
 - `mat_milk_spoiled.webp`: "Seamless tileable texture of spoiled curdled sour milk: lumpy cottage-cheese curds, yellowish off-white with sickly green-yellow tinge, separated watery whey in places, a few mould spots, matte, no objects, no text, even lighting, top-down"
+
+## 2026-11-09: whey, spoiled food, the walk-in fridge, the cow lane (Ludo createImage)
+Item icons (`item-icon`, Photorealistic 3D):
+| file | prompt |
+|---|---|
+| whey_bottle | A single old-fashioned 1 litre clear glass bottle full of thin translucent yellowish-green whey liquid, white cardboard cap, upright, no label, plain background |
+| spoiled_bottle | A single old-fashioned 1 litre clear glass bottle of spoiled sour milk: lumpy curdled yellowish chunks separated from greenish watery liquid, a bulging grey cap, a few mould spots, upright, no label, plain background |
+| rancid_butter | A half-kilo block of rancid butter on torn wax paper: dark yellow, translucent oily edges, a darker oxidised crust, a few small mould spots, plain background |
+| moldy_cheese | A wedge of mouldy cheddar cheese: orange-yellow cheese covered in fuzzy blue-green and white mould patches, cracked dry rind, plain background |
+| spoiled_steak | A single spoiled raw beef steak: dull grey-brown and greenish discoloured meat, slimy sheen, dark edges, a couple of mould spots, plain background |
+
+Surfaces (`texture`, Photorealistic 3D):
+| file | prompt |
+|---|---|
+| mat_insulated_panel | Seamless tileable texture of a white walk-in cooler insulated wall panel: smooth glossy white food-grade FRP surface with faint vertical stucco embossing, a thin tongue-and-groove seam, clean, even lighting, flat front view, no text, no logos |
+| face_evaporator | Front face of a commercial walk-in cooler evaporator unit: brushed aluminium casing with a round black fan guard grille in the centre and fine horizontal aluminium cooling fins around it, flat front view, even lighting, no text, no logos |
+| face_condensing_unit | Side of an outdoor refrigeration condensing unit: grey painted steel casing with a large round black wire fan guard over a fan, copper condenser coil fins visible behind, flat front view, even lighting, no text, no logos |
+| mat_cow_lane | Seamless tileable texture of a brushed concrete livestock walkway with shallow parallel anti-slip grooves and a little straw and dust, top-down, even lighting, no text |

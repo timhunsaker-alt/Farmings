@@ -13,7 +13,7 @@ TEX = {
 	"checker": W + "mat_checker_plate", "grating": W + "mat_grating",
 	"nameplate": W + "decal_nameplate", "gauge": W + "decal_gauge", "controller": W + "decal_controller", "buttons": W + "decal_pushbuttons",
 	"groove": F + "mat_grooved_concrete", "mat": F + "mat_rubber_mat", "hay": F + "mat_hay", "manure": F + "mat_manure", "milk": F + "mat_milk",
-	"rind": F + "mat_cheese_rind", "yellow": F + "mat_paint_yellow", "water": F + "mat_water",
+	"lane": F + "mat_cow_lane", "rind": F + "mat_cheese_rind", "yellow": F + "mat_paint_yellow", "water": F + "mat_water",
 }
 
 

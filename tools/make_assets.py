@@ -364,15 +364,13 @@ def cold_room_textures():
         for y in range(3, 15, 4):
             d.line([(1, y), (14, y)], fill=(220, 222, 226, 255))
         return im
-    out = {"cold_room_panel": panel()}
-    side = panel()
+    out = {}     # the panel itself is the Ludo insulated panel (textures/block/mat/mat_insulated_panel)
     front = Image.new("RGBA", (16, 16), (210, 214, 218, 255))
     d = ImageDraw.Draw(front)
     for x in range(1, 15, 2):
         d.line([(x, 2), (x, 13)], fill=(150, 156, 162, 255))
     d.ellipse([4, 4, 11, 11], outline=(90, 96, 104, 255))
     out["evaporator_front"] = front
-    out["evaporator_side"] = side
     cu = Image.new("RGBA", (16, 16), (120, 128, 136, 255))
     d = ImageDraw.Draw(cu)
     d.rectangle([0, 0, 15, 15], outline=(80, 86, 92, 255))
@@ -395,21 +393,21 @@ def cold_room_textures():
     for name, im in out.items():
         if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
             im.save(os.path.join(tex, name + ".png"))
-    item = out["cold_room_door_bottom"].copy()
-    item.save(os.path.join(ASSETS, "textures", "item", "cold_room_door.png"))
+    if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", "cold_room_door_bottom.png")):
+        out["cold_room_door_bottom"].save(os.path.join(ASSETS, "textures", "item", "cold_room_door.png"))
 
 
 def cold_room_assets(lang):
     m = os.path.join(ASSETS, "models", "block")
     for name, title in COLD_ROOM.items():
         lang["block.farmings." + name] = title
-    write(os.path.join(m, "cold_room_panel.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/cold_room_panel"}})
+    write(os.path.join(m, "cold_room_panel.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/mat/mat_insulated_panel"}})
     write(os.path.join(ASSETS, "blockstates", "cold_room_panel.json"), {"variants": {"": {"model": "farmings:block/cold_room_panel"}}})
     write(os.path.join(m, "condensing_unit.json"), {"parent": "minecraft:block/cube_column",
           "textures": {"side": "farmings:block/condensing_unit_side", "end": "farmings:block/condensing_unit_top"}})
     write(os.path.join(ASSETS, "blockstates", "condensing_unit.json"), {"variants": {"": {"model": "farmings:block/condensing_unit"}}})
     write(os.path.join(m, "evaporator.json"), {"parent": "minecraft:block/orientable", "textures": {
-          "front": "farmings:block/evaporator_front", "side": "farmings:block/evaporator_side", "top": "farmings:block/evaporator_side"}})
+          "front": "farmings:block/evaporator_front", "side": "farmings:block/mat/mat_insulated_panel", "top": "farmings:block/mat/mat_insulated_panel"}})
     write(os.path.join(ASSETS, "blockstates", "evaporator.json"), {"variants": {
           "facing=%s" % f: {"model": "farmings:block/evaporator", **({"y": y} if y else {})}
           for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270))}})

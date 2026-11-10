@@ -157,14 +157,60 @@ public class FarmingsGameTests {
 		});
 	}
 
-	/** Runs a scene with the chunks around it loaded and ticking. */
+	/** How many running scenes hold each forced chunk: a chunk is let go when the last scene using it ends. */
+	private static final java.util.Map<Long, Integer> FORCED = new java.util.HashMap<>();
+
+	/**
+	 * Runs a scene with the chunks around it loaded and ticking, and lets them go when the scene passes or fails. (Left forced, 80 scenes'
+	 * barns, parlors and cows kept ticking after the run; with the machine short of memory the last vanilla test could not load its own
+	 * chunks and the server ran out of heap.)
+	 */
 	private static Consumer<GameTestHelper> loaded(Consumer<GameTestHelper> scene) {
 		return helper -> {
+			ServerLevel level = helper.getLevel();
 			ChunkPos origin = ChunkPos.containing(helper.absolutePos(BlockPos.ZERO));
+			java.util.List<ChunkPos> mine = new java.util.ArrayList<>();
 			for (int dx = -1; dx <= 2; dx++) {
 				for (int dz = -1; dz <= 2; dz++) {
-					helper.getLevel().setChunkForced(origin.x() + dx, origin.z() + dz, true);
+					ChunkPos c = new ChunkPos(origin.x() + dx, origin.z() + dz);
+					mine.add(c);
+					FORCED.merge(c.pack(), 1, Integer::sum);
+					level.setChunkForced(c.x(), c.z(), true);
 				}
+			}
+			Runnable release = () -> {
+				for (ChunkPos c : mine) {
+					if (FORCED.merge(c.pack(), -1, Integer::sum) <= 0) {
+						FORCED.remove(c.pack());
+						level.setChunkForced(c.x(), c.z(), false);
+					}
+				}
+			};
+			try {
+				java.lang.reflect.Field f = GameTestHelper.class.getDeclaredField("testInfo");
+				f.setAccessible(true);
+				((net.minecraft.gametest.framework.GameTestInfo) f.get(helper)).addListener(new net.minecraft.gametest.framework.GameTestListener() {
+					@Override
+					public void testStructureLoaded(net.minecraft.gametest.framework.GameTestInfo info) {
+					}
+
+					@Override
+					public void testPassed(net.minecraft.gametest.framework.GameTestInfo info, net.minecraft.gametest.framework.GameTestRunner runner) {
+						release.run();
+					}
+
+					@Override
+					public void testFailed(net.minecraft.gametest.framework.GameTestInfo info, net.minecraft.gametest.framework.GameTestRunner runner) {
+						release.run();
+					}
+
+					@Override
+					public void testAddedForRerun(net.minecraft.gametest.framework.GameTestInfo a, net.minecraft.gametest.framework.GameTestInfo b,
+							net.minecraft.gametest.framework.GameTestRunner runner) {
+					}
+				});
+			} catch (ReflectiveOperationException e) {
+				Farmings.LOGGER.warn("Game test chunks stay forced: {}", e.toString());
 			}
 			scene.accept(helper);
 		};

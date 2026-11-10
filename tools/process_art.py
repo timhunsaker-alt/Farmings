@@ -103,6 +103,36 @@ def sour(img, seed):
 	return out
 
 
+def face(name, box=(0.0, 0.0, 0.5, 0.5)):
+	"""A block face from a Ludo picture: one window of it (a single fan), 32 px."""
+	img = Image.open(f"{SRC}/{name}.webp").convert("RGB")
+	w, h = img.size
+	return img.crop((int(box[0] * w), int(box[1] * h), int(box[2] * w), int(box[3] * h))).resize((SIZE, SIZE), Image.LANCZOS).convert("RGBA")
+
+
+def cold_room():
+	"""The walk-in fridge's faces (docs/multiblocks/cold-room.md): the evaporator's fan, the condensing unit's fan grille, a grey top, and
+	the door halves drawn on the Ludo insulated panel (a handle, a window, a steel kick plate). Copies go to art/final so make_assets.py
+	keeps them."""
+	panel = Image.open(f"{ASSETS}/block/mat/mat_insulated_panel.png").convert("RGBA")
+	out = {"evaporator_front": face("face_evaporator"), "condensing_unit_side": face("face_condensing_unit")}
+	out["condensing_unit_top"] = ImageEnhance.Brightness(ImageEnhance.Color(panel).enhance(0.2)).enhance(0.62)
+	for half in ("bottom", "top"):
+		im = panel.copy()
+		d = ImageDraw.Draw(im)
+		d.rectangle([0, 0, SIZE - 1, SIZE - 1], outline=(150, 156, 162, 255))
+		if half == "bottom":
+			d.rectangle([24, 4, 26, 18], fill=(90, 96, 104, 255))                 # the handle
+			d.rectangle([1, 24, SIZE - 2, SIZE - 2], fill=(176, 182, 188, 255))   # the kick plate
+		else:
+			d.rectangle([7, 7, 24, 20], fill=(168, 196, 214, 255), outline=(120, 126, 132, 255))   # the window
+		out["cold_room_door_" + half] = im
+	for name, im in out.items():
+		im.save(f"{ASSETS}/block/{name}.png")
+		im.save(f"art/final/{name}.png")
+	out["cold_room_door_bottom"].save(f"{ASSETS}/item/cold_room_door.png")
+
+
 def main():
 	os.makedirs(f"{ASSETS}/block/mat", exist_ok=True)
 	os.makedirs(f"{ASSETS}/item", exist_ok=True)
@@ -116,15 +146,10 @@ def main():
 		img.save(f"{ASSETS}/item/{name}.png")
 		if name.startswith("milk_"):
 			sour(img, name).save(f"{ASSETS}/item/{name}_spoiled.png")
-	milk = Image.open(f"{ASSETS}/block/mat/mat_milk.png").convert("RGBA")
-	for layer in ("humanoid", "humanoid_leggings"):
-		sheet = Image.new("RGBA", (64, 32))
-		for x in range(0, 64, 32):
-			sheet.paste(milk, (x, 0))
-		d = os.path.join(ASSETS, "entity", "equipment", layer)
-		os.makedirs(d, exist_ok=True)
-		sheet.save(f"{d}/milk.png")
-		sour(sheet, layer).save(f"{d}/milk_spoiled.png")
+	# the worn milk armor is drawn by tools/armor_textures.py (face by face, with drips), not from a flat swatch
+	import subprocess, sys
+	subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "armor_textures.py")], check=True)
+	cold_room()
 	hair = cleanest(Image.open(f"{SRC}/mat_cow_hair.webp").convert("RGB")).convert("L").resize((64, 64), Image.BOX)
 	hair.save("art/final/hair.png")
 	print("art:", len(mats), "materials,", len(items), "icons")

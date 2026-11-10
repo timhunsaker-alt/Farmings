@@ -2,7 +2,7 @@
  "parent": "minecraft:block/orientable",
  "textures": {
   "front": "farmings:block/evaporator_front",
-  "side": "farmings:block/evaporator_side",
-  "top": "farmings:block/evaporator_side"
+  "side": "farmings:block/mat/mat_insulated_panel",
+  "top": "farmings:block/mat/mat_insulated_panel"
  }
 }

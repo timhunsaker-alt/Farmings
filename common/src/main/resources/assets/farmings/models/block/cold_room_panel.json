@@ -1,6 +1,6 @@
 {
  "parent": "minecraft:block/cube_all",
  "textures": {
-  "all": "farmings:block/cold_room_panel"
+  "all": "farmings:block/mat/mat_insulated_panel"
  }
 }

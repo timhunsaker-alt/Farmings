@@ -98,6 +98,31 @@ def alley_floor():
 
 
 @part
+def cow_lane():
+	"""A cell of the travel lane between barn and parlor: brushed concrete with anti-slip grooves, and a low galvanised rail and post
+	along each side (drawn only: cows follow the lane by waypoints, so the rails do not block, parlor.md)."""
+	M = model("cow_lane", 1, 1, 1, particle="lane")
+	M.box((0, 0, 0), (1, 0.125, 1), {"up": "lane", "north": "concrete", "south": "concrete", "east": "concrete", "west": "concrete", "down": "concrete"})
+	for x0 in (0.0, 0.94):
+		M.box((x0, 0.125, 0.44), (x0 + 0.06, 0.95, 0.56), "galv")          # a post mid-cell
+		M.box((x0, 0.85, 0), (x0 + 0.06, 0.92, 1), "galv")                # the top rail
+		M.box((x0, 0.45, 0), (x0 + 0.06, 0.52, 1), "galv")                # the mid rail
+	M.collide((0, 0, 0), (1, 0.125, 1))
+	return M
+
+
+@part
+def holding_pen():
+	"""A cell of the holding pen: grooved concrete with a yellow painted border where cows wait for a stall."""
+	M = model("holding_pen", 1, 1, 1, particle="groove")
+	M.box((0, 0, 0), (1, 0.125, 1), {"up": "groove", "north": "concrete", "south": "concrete", "east": "concrete", "west": "concrete", "down": "concrete"})
+	M.box((0, 0.125, 0), (1, 0.135, 0.06), "yellow")
+	M.box((0, 0.125, 0.94), (1, 0.135, 1), "yellow")
+	M.collide((0, 0, 0), (1, 0.125, 1))
+	return M
+
+
+@part
 def scraper_rail():
 	"""The alley's centre cell: grooved concrete with the scraper's steel guide channel set into it."""
 	M = model("scraper_rail", 1, 1, 1, particle="groove")
