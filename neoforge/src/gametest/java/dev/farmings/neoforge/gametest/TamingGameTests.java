@@ -91,17 +91,17 @@ final class TamingGameTests {
 
 	/** A wild sheep follows a player holding wheat, and keeps away from one with empty hands. */
 	static void wildFollowsFeed(GameTestHelper helper) {
-		field(helper, 24);
+		field(helper, 12);
 		ServerLevel level = helper.getLevel();
-		SheepEntity s = SheepGameTests.adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 3L, new BlockPos(6, 1, 12));
+		SheepEntity s = SheepGameTests.adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 3L, new BlockPos(2, 1, 6));
 		s.setWild(true);
 		ServerPlayer p = helper.makeMockServerPlayerInLevel();
 		p.setGameMode(GameType.SURVIVAL);
-		BlockPos stand = helper.absolutePos(new BlockPos(12, 1, 12));
+		BlockPos stand = helper.absolutePos(new BlockPos(8, 1, 6));
 		p.snapTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, 90, 0);
 		p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WHEAT));
 		double start = s.distanceTo(p);
-		waitFor(helper, 0, 500, () -> s.distanceTo(p) < start - 2, "she follows the wheat: " + start, () -> {
+		waitFor(helper, 0, 500, () -> s.distanceTo(p) < start - 2, "she follows the wheat: " + start + " now " + s.distanceTo(p) + " removed " + s.isRemoved() + " noAi " + s.isNoAi() + " shed " + s.shedController() + " pos " + s.blockPosition() + " p " + p.blockPosition() + " goals " + s.goalSelector.getAvailableGoals().stream().filter(g -> g.isRunning()).map(g -> g.getGoal().getClass().getSimpleName()).toList(), () -> {
 			double near = s.distanceTo(p);
 			p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			waitFor(helper, 0, 500, () -> s.distanceTo(p) > near + 1, "she keeps away from empty hands: " + near, () -> {
