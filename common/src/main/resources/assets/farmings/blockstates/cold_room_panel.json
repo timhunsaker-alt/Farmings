@@ -1,0 +1,7 @@
+{
+ "variants": {
+  "": {
+   "model": "farmings:block/cold_room_panel"
+  }
+ }
+}

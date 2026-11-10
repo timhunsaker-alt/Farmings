@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "III",
+  "LLL",
+  "III"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "L": "#minecraft:wool"
+ },
+ "result": {
+  "id": "farmings:cold_room_panel",
+  "count": 4
+ }
+}

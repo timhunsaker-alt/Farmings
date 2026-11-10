@@ -257,6 +257,7 @@ def main():
             os.makedirs(os.path.dirname(path), exist_ok=True)
             img.save(path)
     write(os.path.join(DATA, "tags", "item", "repairs_milk_armor.json"), {"values": ["minecraft:milk_bucket"]})
+    cold_room_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -300,6 +301,11 @@ SHAPED = {
     "aging_shelf": (["WWW", "T T", "WWW"], 1),
     "bottler": (["IGI", "IRI", "III"], 1),
     # tools and the easter egg
+    # the walk-in fridge (docs/multiblocks/cold-room.md): wool stands for the panels' insulation
+    "cold_room_panel": (["III", "LLL", "III"], 4),
+    "cold_room_door": (["II", "LL", "II"], 1),
+    "evaporator": (["SNS", "CRC", "SSS"], 1),
+    "condensing_unit": (["SNS", "CRC", "SIS"], 1),
     "manure_fork": (["I I", " T ", " T "], 1),
     "milk_helmet": (["MMM", "M M"], 1),
     "milk_chestplate": (["M M", "MMM", "MMM"], 1),
@@ -337,6 +343,102 @@ def recipes():
         sig = json.dumps([[KEYS.get(c, " ") for c in row] for row in pattern])
         assert sig not in seen, "%s and %s have the same recipe" % (name, seen[sig])
         seen[sig] = name
+
+
+COLD_ROOM = {"cold_room_panel": "Insulated Panel", "cold_room_door": "Cold-Room Door", "evaporator": "Evaporator",
+             "condensing_unit": "Condensing Unit"}
+
+
+def cold_room_textures():
+    """Drawn stand-ins (tools/process_art.py replaces them when Ludo art is in art/final): white insulated panel with seams, a
+    finned evaporator face, a condensing unit with a fan grille, and the two door halves."""
+    from PIL import Image, ImageDraw
+    tex = os.path.join(ASSETS, "textures", "block")
+    def panel():
+        im = Image.new("RGBA", (16, 16), (232, 234, 236, 255))
+        d = ImageDraw.Draw(im)
+        for y in (0, 15):
+            d.line([(0, y), (15, y)], fill=(196, 200, 204, 255))
+        for x in (0, 15):
+            d.line([(x, 0), (x, 15)], fill=(196, 200, 204, 255))
+        for y in range(3, 15, 4):
+            d.line([(1, y), (14, y)], fill=(220, 222, 226, 255))
+        return im
+    out = {"cold_room_panel": panel()}
+    side = panel()
+    front = Image.new("RGBA", (16, 16), (210, 214, 218, 255))
+    d = ImageDraw.Draw(front)
+    for x in range(1, 15, 2):
+        d.line([(x, 2), (x, 13)], fill=(150, 156, 162, 255))
+    d.ellipse([4, 4, 11, 11], outline=(90, 96, 104, 255))
+    out["evaporator_front"] = front
+    out["evaporator_side"] = side
+    cu = Image.new("RGBA", (16, 16), (120, 128, 136, 255))
+    d = ImageDraw.Draw(cu)
+    d.rectangle([0, 0, 15, 15], outline=(80, 86, 92, 255))
+    d.ellipse([2, 2, 13, 13], fill=(60, 64, 70, 255), outline=(170, 176, 184, 255))
+    for i in range(3, 13, 2):
+        d.line([(3, i), (12, i)], fill=(150, 156, 162, 255))
+    out["condensing_unit_side"] = cu
+    top = Image.new("RGBA", (16, 16), (110, 118, 126, 255))
+    ImageDraw.Draw(top).rectangle([0, 0, 15, 15], outline=(80, 86, 92, 255))
+    out["condensing_unit_top"] = top
+    for half in ("bottom", "top"):
+        im = panel()
+        dd = ImageDraw.Draw(im)
+        dd.rectangle([0, 0, 15, 15], outline=(150, 156, 162, 255))
+        if half == "bottom":
+            dd.rectangle([12, 2, 13, 8], fill=(90, 96, 104, 255))     # the handle
+        else:
+            dd.rectangle([3, 3, 12, 9], fill=(170, 200, 220, 255), outline=(150, 156, 162, 255))   # a small window
+        out["cold_room_door_" + half] = im
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+    item = out["cold_room_door_bottom"].copy()
+    item.save(os.path.join(ASSETS, "textures", "item", "cold_room_door.png"))
+
+
+def cold_room_assets(lang):
+    m = os.path.join(ASSETS, "models", "block")
+    for name, title in COLD_ROOM.items():
+        lang["block.farmings." + name] = title
+    write(os.path.join(m, "cold_room_panel.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/cold_room_panel"}})
+    write(os.path.join(ASSETS, "blockstates", "cold_room_panel.json"), {"variants": {"": {"model": "farmings:block/cold_room_panel"}}})
+    write(os.path.join(m, "condensing_unit.json"), {"parent": "minecraft:block/cube_column",
+          "textures": {"side": "farmings:block/condensing_unit_side", "end": "farmings:block/condensing_unit_top"}})
+    write(os.path.join(ASSETS, "blockstates", "condensing_unit.json"), {"variants": {"": {"model": "farmings:block/condensing_unit"}}})
+    write(os.path.join(m, "evaporator.json"), {"parent": "minecraft:block/orientable", "textures": {
+          "front": "farmings:block/evaporator_front", "side": "farmings:block/evaporator_side", "top": "farmings:block/evaporator_side"}})
+    write(os.path.join(ASSETS, "blockstates", "evaporator.json"), {"variants": {
+          "facing=%s" % f: {"model": "farmings:block/evaporator", **({"y": y} if y else {})}
+          for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270))}})
+    # the door: the vanilla door's eight models and its rotation rule
+    for half in ("bottom", "top"):
+        for hinge in ("left", "right"):
+            for op in ("", "_open"):
+                write(os.path.join(m, "cold_room_door_%s_%s%s.json" % (half, hinge, op)), {"parent": "minecraft:block/door_%s_%s%s" % (half, hinge, op),
+                      "textures": {"bottom": "farmings:block/cold_room_door_bottom", "top": "farmings:block/cold_room_door_top"}})
+    base = {"east": 0, "south": 90, "west": 180, "north": 270}
+    variants = {}
+    for facing, y0 in base.items():
+        for half, hname in (("lower", "bottom"), ("upper", "top")):
+            for hinge in ("left", "right"):
+                for op in ("false", "true"):
+                    y = y0 if op == "false" else (y0 + (90 if hinge == "left" else 270)) % 360
+                    model = "farmings:block/cold_room_door_%s_%s%s" % (hname, hinge, "_open" if op == "true" else "")
+                    variants["facing=%s,half=%s,hinge=%s,open=%s" % (facing, half, hinge, op)] = {"model": model, **({"y": y} if y else {})}
+    write(os.path.join(ASSETS, "blockstates", "cold_room_door.json"), {"variants": variants})
+    write(os.path.join(ASSETS, "models", "item", "cold_room_door.json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/cold_room_door"}})
+    for name in COLD_ROOM:
+        model = "farmings:item/cold_room_door" if name == "cold_room_door" else "farmings:block/" + name
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": model}})
+        drop = loot(name)
+        if name == "cold_room_door":
+            drop["pools"][0]["entries"][0]["conditions"] = [{"condition": "minecraft:block_state_property", "block": "farmings:cold_room_door",
+                                                             "properties": {"half": "lower"}}]
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), drop)
+    cold_room_textures()
 
 
 def loot(name):

@@ -1,0 +1,8 @@
+{
+ "parent": "minecraft:block/orientable",
+ "textures": {
+  "front": "farmings:block/evaporator_front",
+  "side": "farmings:block/evaporator_side",
+  "top": "farmings:block/evaporator_side"
+ }
+}

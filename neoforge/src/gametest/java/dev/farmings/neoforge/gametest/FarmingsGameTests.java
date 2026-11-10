@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -138,10 +138,18 @@ public class FarmingsGameTests {
 			helper.register(id("whey_from_cheese"), loaded(FarmingsGameTests::wheyFromCheese));
 			helper.register(id("milk_spoils_at_room"), loaded(FarmingsGameTests::milkSpoilsAtRoom));
 			helper.register(id("spoiled_food_sickens"), loaded(FarmingsGameTests::spoiledFoodSickens));
+			helper.register(id("cold_room_forms"), loaded(FarmingsGameTests::coldRoomForms));
+			helper.register(id("cold_room_gap_named"), loaded(FarmingsGameTests::coldRoomGapNamed));
+			helper.register(id("fridge_slows_spoilage"), loaded(FarmingsGameTests::fridgeSlowsSpoilage));
+			helper.register(id("cold_room_no_power_warms"), loaded(FarmingsGameTests::coldRoomNoPowerWarms));
 		}));
 		modBus.addListener(RegisterGameTestsEvent.class, event -> {
 			Holder<TestEnvironmentDefinition<?>> plain = event.registerEnvironment(id("plain"));
+			String only = System.getenv("FARMINGS_TESTS");     // a comma-separated filter, for running a few scenes while debugging
 			for (String scene : SCENES) {
+				if (only != null && !only.isBlank() && java.util.Arrays.stream(only.split(",")).noneMatch(f -> scene.contains(f.trim()))) {
+					continue;
+				}
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
 						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") || scene.startsWith("hopper") ? 1200 : 200, 1, true,
 								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 40)));
@@ -1929,6 +1937,111 @@ public class FarmingsGameTests {
 			helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.HUNGER) && player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA),
 					Component.literal(item + " should sicken"));
 		}
+		helper.succeed();
+	}
+
+	// ---- the walk-in fridge (2026-11-09) ----
+
+	private static final BlockPos ROOM = new BlockPos(6, 2, 6);    // the room's inside starts here (relative)
+
+	/**
+	 * A 3 x 2 x 3 walk-in fridge (inside from {@code a}): a full panel box, the evaporator in the west wall facing in, a door in the south
+	 * wall, the condensing unit outside the west wall, and a chest inside. Returns the evaporator's position.
+	 */
+	private static BlockPos buildColdRoom(ServerLevel level, BlockPos a) {
+		for (int x = -1; x <= 3; x++) {
+			for (int y = -1; y <= 2; y++) {
+				for (int z = -1; z <= 3; z++) {
+					boolean in = x >= 0 && x < 3 && y >= 0 && y < 2 && z >= 0 && z < 3;
+					level.setBlock(a.offset(x, y, z), in ? Blocks.AIR.defaultBlockState() : dev.farmings.coldroom.ColdRoomBlocks.PANEL.defaultBlockState(), Block.UPDATE_ALL);
+				}
+			}
+		}
+		BlockPos evap = a.offset(-1, 0, 1);
+		level.setBlock(evap, dev.farmings.coldroom.ColdRoomBlocks.EVAPORATOR.defaultBlockState().setValue(dev.farmings.coldroom.EvaporatorBlock.FACING, Direction.EAST), Block.UPDATE_ALL);
+		BlockState door = dev.farmings.coldroom.ColdRoomBlocks.DOOR.defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.FACING, Direction.NORTH);
+		level.setBlock(a.offset(1, 0, 3), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), Block.UPDATE_CLIENTS);
+		level.setBlock(a.offset(1, 1, 3), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), Block.UPDATE_CLIENTS);
+		level.setBlock(a.offset(-2, 0, 1), dev.farmings.coldroom.ColdRoomBlocks.CONDENSING_UNIT.defaultBlockState(), Block.UPDATE_ALL);
+		level.setBlock(a.offset(1, 0, 1), Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+		return evap;
+	}
+
+	private static dev.farmings.coldroom.ColdRoomEntity room(ServerLevel level, BlockPos evap) {
+		dev.farmings.coldroom.ColdRoomEntity r = (dev.farmings.coldroom.ColdRoomEntity) level.getBlockEntity(evap);
+		r.refresh(level);
+		return r;
+	}
+
+	private static void coldRoomForms(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos evap = buildColdRoom(level, helper.absolutePos(ROOM));
+		var r = room(level, evap);
+		helper.assertTrue(r.formed(), Component.literal("a sealed panel box forms: " + r.readout(level)));
+		helper.assertTrue(r.check().volumeM3() == 18, Component.literal("3 x 2 x 3 inside"));
+		r.condenser(level).forceRunning(true);
+		r.cool(level, level.getGameTime(), dev.farmings.process.food.Spoilage.STEP);
+		double want = dev.farmings.process.coldroom.ColdRoomLoad.electricWatts(18);
+		helper.assertTrue(Math.abs(r.condenser(level).ratedWatts() - want) < 1, Component.literal("the compressor is sized for the room: " + r.condenser(level).ratedWatts() + " W vs " + want));
+		helper.assertTrue(r.readout(level).contains("COLD") && r.readout(level).contains("kW cooling"), Component.literal("readout: " + r.readout(level)));
+		helper.succeed();
+	}
+
+	private static void coldRoomGapNamed(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos a = helper.absolutePos(ROOM);
+		BlockPos evap = buildColdRoom(level, a);
+		level.setBlock(a.offset(1, 2, 1), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);     // a hole in the roof
+		var r = room(level, evap);
+		helper.assertTrue(!r.formed() && r.check().problem().startsWith("The walls are not sealed"), Component.literal("got: " + r.readout(level)));
+		level.setBlock(a.offset(1, 2, 1), dev.farmings.coldroom.ColdRoomBlocks.PANEL.defaultBlockState(), Block.UPDATE_ALL);
+		level.setBlock(a.offset(-2, 0, 1), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+		helper.assertTrue(room(level, evap).check().problem().equals("No condensing unit touching the walls outside"), Component.literal("no unit named"));
+		helper.succeed();
+	}
+
+	private static ItemStack milkMadeAt(long now) {
+		return dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.BOTTLED_MILK, 4), now);
+	}
+
+	/** Milk in a chest inside a powered fridge: each minute cold pushes its spoil tick later by 6/7 of a minute; milk outside does not move. */
+	private static void fridgeSlowsSpoilage(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos a = helper.absolutePos(ROOM);
+		BlockPos evap = buildColdRoom(level, a);
+		var r = room(level, evap);
+		r.condenser(level).forceRunning(true);
+		long now = level.getGameTime();
+		var inside = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(a.offset(1, 0, 1));
+		inside.setItem(0, milkMadeAt(now));
+		level.setBlock(a.offset(6, 0, 1), Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
+		var outside = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(a.offset(6, 0, 1));
+		outside.setItem(0, milkMadeAt(now));
+		long before = dev.farmings.item.Perishables.spoilsAt(inside.getItem(0));
+		for (int i = 0; i < 10; i++) {
+			r.cool(level, now, dev.farmings.process.food.Spoilage.STEP);
+		}
+		long credit = dev.farmings.process.food.Spoilage.coldCredit(dev.farmings.process.food.Spoilage.Food.MILK, dev.farmings.process.food.Spoilage.STEP);
+		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(inside.getItem(0)) == before + 10 * credit,
+				Component.literal("ten cold minutes add " + 10 * credit + " ticks, got " + (dev.farmings.item.Perishables.spoilsAt(inside.getItem(0)) - before)));
+		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(outside.getItem(0)) == before, Component.literal("the milk outside is not helped"));
+		helper.assertTrue(credit > 1000 && credit < 1050, Component.literal("6/7 of a minute: " + credit));
+		helper.succeed();
+	}
+
+	private static void coldRoomNoPowerWarms(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos a = helper.absolutePos(ROOM);
+		BlockPos evap = buildColdRoom(level, a);
+		var r = room(level, evap);
+		long now = level.getGameTime();
+		var inside = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(a.offset(1, 0, 1));
+		inside.setItem(0, milkMadeAt(now));
+		long before = dev.farmings.item.Perishables.spoilsAt(inside.getItem(0));
+		r.cool(level, now, dev.farmings.process.food.Spoilage.STEP);
+		helper.assertTrue(r.fault().equals("NO POWER"), Component.literal("fault: " + r.fault()));
+		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(inside.getItem(0)) == before, Component.literal("no power, no cold: the clock runs as at room temperature"));
+		helper.assertTrue(r.readout(level).contains("NO POWER"), Component.literal("readout: " + r.readout(level)));
 		helper.succeed();
 	}
 

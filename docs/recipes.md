@@ -46,3 +46,11 @@ and cheddar wheels (from the creamery). The game test `recipes_cover_all_items` 
 
 Cooking: each raw steak cooks to its cooked grade in a furnace (200 ticks), smoker (100) or campfire (600).
 Milk armor: the buckets come back empty (vanilla's milk-bucket remainder).
+
+## The walk-in fridge (2026-11-09)
+| Block | Pattern | Key | Makes |
+|---|---|---|---|
+| cold_room_panel | `III / LLL / III` | I iron ingot, L wool | 4 |
+| cold_room_door | `II / LL / II` | I iron ingot, L wool | 1 |
+| evaporator | `SNS / CRC / SSS` | S steel ingot, N iron bars, C copper ingot, R redstone | 1 |
+| condensing_unit | `SNS / CRC / SIS` | S steel ingot, N iron bars, C copper ingot, R redstone, I iron ingot | 1 |

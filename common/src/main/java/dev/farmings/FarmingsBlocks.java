@@ -156,6 +156,9 @@ public final class FarmingsBlocks {
 		for (dev.farmings.creamery.CreameryParts kind : dev.farmings.creamery.CreameryParts.values()) {
 			output.accept(creameryPart(kind));
 		}
+		for (Block b : dev.farmings.coldroom.ColdRoomBlocks.ALL) {
+			output.accept(b);
+		}
 	}
 
 	public static void register() {
@@ -184,6 +187,7 @@ public final class FarmingsBlocks {
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("scraper_drive"), DRIVE_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("hay_feeder"), FEEDER_ENTITY);
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("water_trough"), TROUGH_ENTITY);
+		dev.farmings.coldroom.ColdRoomBlocks.register();
 		FarmingsItems.register();
 	}
 }

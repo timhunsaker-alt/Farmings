@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "farmings:block/evaporator"
+  },
+  "facing=east": {
+   "model": "farmings:block/evaporator",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "farmings:block/evaporator",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "farmings:block/evaporator",
+   "y": 270
+  }
+ }
+}

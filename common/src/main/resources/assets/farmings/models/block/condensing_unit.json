@@ -1,0 +1,7 @@
+{
+ "parent": "minecraft:block/cube_column",
+ "textures": {
+  "side": "farmings:block/condensing_unit_side",
+  "end": "farmings:block/condensing_unit_top"
+ }
+}

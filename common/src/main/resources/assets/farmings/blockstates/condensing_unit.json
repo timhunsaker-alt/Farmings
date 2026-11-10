@@ -1,0 +1,7 @@
+{
+ "variants": {
+  "": {
+   "model": "farmings:block/condensing_unit"
+  }
+ }
+}
