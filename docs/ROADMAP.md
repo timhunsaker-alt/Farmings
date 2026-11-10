@@ -32,8 +32,9 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Processing: creamery and cheese room, built from distinct real parts on Wildcatter power.
 - Waste: composting and fertilizer, and a methane digester with a separator, either alone or one after the other (`docs/waste.md`).
 
-## Phase 4 — More animals — CURRENT (sheep next)
-- Sheep (wool, meat, lambing) and chickens (eggs, hatchery, brooder), each with sexes, breeds and genes.
+## Phase 4 — More animals — CURRENT (chickens next)
+- Sheep (wool, meat, lambing) — **done 2026-11-10** (`docs/animals/sheep.md`, the shed, shearing shed, wool mill, sheep stalls).
+- Chickens (eggs, hatchery, brooder), with sexes, breeds and genes.
 
 ## Ideas (not scheduled, not in code)
 - More species (goats, pigs, horses, ducks).

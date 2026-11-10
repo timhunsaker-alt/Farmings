@@ -133,6 +133,11 @@ def cold_room():
 	out["cold_room_door_bottom"].save(f"{ASSETS}/item/cold_room_door.png")
 
 
+YARN_DYES = {"white": (234, 236, 236), "orange": (249, 128, 29), "magenta": (199, 78, 189), "light_blue": (58, 179, 218), "yellow": (254, 216, 61),
+             "lime": (128, 199, 31), "pink": (243, 139, 170), "gray": (71, 79, 82), "light_gray": (157, 157, 151), "cyan": (22, 156, 156),
+             "purple": (137, 50, 184), "blue": (60, 68, 170), "brown": (131, 84, 50), "green": (94, 124, 22), "red": (176, 46, 38), "black": (40, 40, 46)}
+
+
 def main():
 	os.makedirs(f"{ASSETS}/block/mat", exist_ok=True)
 	os.makedirs(f"{ASSETS}/item", exist_ok=True)
@@ -146,6 +151,17 @@ def main():
 		img.save(f"{ASSETS}/item/{name}.png")
 		if name.startswith("milk_"):
 			sour(img, name).save(f"{ASSETS}/item/{name}_spoiled.png")
+		if name == "yarn":
+			# one white skein, tinted to each of the sixteen dye colours (multiply, keeping its shading)
+			for colour, rgb in YARN_DYES.items():
+				tinted = img.copy()
+				px = tinted.load()
+				for y in range(tinted.height):
+					for x in range(tinted.width):
+						r, g, bl, al = px[x, y]
+						v = (r + g + bl) / (3 * 255)
+						px[x, y] = (int(rgb[0] * v), int(rgb[1] * v), int(rgb[2] * v), al) if colour != "white" else (r, g, bl, al)
+				tinted.save(f"{ASSETS}/item/yarn_{colour}.png")
 	# the worn milk armor is drawn by tools/armor_textures.py (face by face, with drips), not from a flat swatch
 	import subprocess, sys
 	subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "armor_textures.py")], check=True)

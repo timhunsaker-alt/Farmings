@@ -58,3 +58,25 @@ Surfaces (`texture`, Photorealistic 3D):
 | face_evaporator | Front face of a commercial walk-in cooler evaporator unit: brushed aluminium casing with a round black fan guard grille in the centre and fine horizontal aluminium cooling fins around it, flat front view, even lighting, no text, no logos |
 | face_condensing_unit | Side of an outdoor refrigeration condensing unit: grey painted steel casing with a large round black wire fan guard over a fan, copper condenser coil fins visible behind, flat front view, even lighting, no text, no logos |
 | mat_cow_lane | Seamless tileable texture of a brushed concrete livestock walkway with shallow parallel anti-slip grooves and a little straw and dust, top-down, even lighting, no text |
+
+## 2026-11-10: sheep (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+Every prompt ends "game item icon, plain white background, no text" (clothing: "plain grey background").
+| file | prompt |
+|---|---|
+| fleece | A single freshly shorn whole sheep fleece rolled up into a neat bundle, creamy white greasy crimped wool locks |
+| skirtings | A small loose pile of sheep wool skirtings: short dirty belly wool and edge pieces, greyish off-white with bits of straw |
+| wool_bale | A single pressed rectangular wool bale wrapped in white woven nylon pack with steel straps, cream wool showing at the top |
+| loose_wool | A small tuft of shed sheep hair and wool, coarse white and tan fibres loosely tangled |
+| clean_wool | A single fluffy armful of clean scoured wool, bright white soft fibres, washed and dried |
+| sliver | A single coil of carded wool sliver, a soft continuous rope of white combed wool fibres wound in a spiral |
+| lanolin | A single small round tin of pure lanolin wool grease, open lid, thick pale yellow waxy cream inside |
+| wool_cloth | A single folded bolt of woven natural cream wool cloth, visible twill weave texture |
+| felt | A small neat stack of three thick square sheets of dark charcoal grey wool felt, matted fibres, slightly fuzzy edges, three-quarter view (a first try in light grey lost its edges to the background) |
+| udder_balm | A single green square farm tin of udder balm salve with a cream label showing no text, lid tilted open, yellow ointment inside |
+| wool_cap / wool_sweater / wool_trousers / wool_socks | A hand-knitted cream wool beanie with a ribbed brim / a cream fisherman sweater with a cable down the front / thick oatmeal wool trousers laid flat / thick hand-knitted cream wool socks with ribbed tops |
+| lamb_chop / cooked_lamb_chop | A single raw lamb loin chop, pink meat, white fat rim, small T-bone / the same grilled with crisscross marks |
+| mutton_chop / cooked_mutton_chop | A single large raw mutton chop, deep dark red meat, thick creamy fat rim, bone / the same roasted, dark crust |
+| spoiled_mutton | A single spoiled raw mutton chop: dull grey-green discoloured meat, slimy sheen, yellowed fat, a couple of mould spots |
+| sheep_milk_bottle | A single old-fashioned 1 litre clear glass bottle full of rich ivory-white sheep milk, a cardboard cap with a small sheep silhouette |
+| sheep_cheese_wheel / sheep_cheese | A whole aged sheep milk cheese wheel like pecorino, pale straw basket-weave rind / a wedge of it, ivory crumbly interior |
+| yarn | A single twisted skein of pure white wool yarn, soft plied strands. `process_art.py` tints it to the sixteen dye colours |

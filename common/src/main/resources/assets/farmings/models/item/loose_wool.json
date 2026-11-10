@@ -1,6 +1,6 @@
 {
  "parent": "minecraft:item/generated",
  "textures": {
-  "layer0": "farmings:item/loose_wool_placeholder"
+  "layer0": "farmings:item/loose_wool"
  }
 }

@@ -54,3 +54,30 @@ Milk armor: the buckets come back empty (vanilla's milk-bucket remainder).
 | cold_room_door | `II / LL / II` | I iron ingot, L wool | 1 |
 | evaporator | `SNS / CRC / SSS` | S steel ingot, N iron bars, C copper ingot, R redstone | 1 |
 | condensing_unit | `SNS / CRC / SIS` | S steel ingot, N iron bars, C copper ingot, R redstone, I iron ingot | 1 |
+
+## Sheep (2026-11-10)
+| Block or item | Pattern | Key | Makes |
+|---|---|---|---|
+| shed_controller | `WRW / WHW / WWW` | W planks, R redstone, H hay block | 1 |
+| sheep_pen | `HHH / WWW` | H hay block, W planks | 6 |
+| lambing_pen | `F.F / HHH / WWW` | F wooden fence, H hay block, W planks | 2 |
+| pasture_gate | `FWF / FWF` | F wooden fence, W planks | 1 |
+| shearing_stand | `SRS / CIC / WWW` | S steel ingot, R redstone, C copper ingot, I iron ingot, W planks | 1 |
+| catching_pen | `F.F / WWW` | F wooden fence, W planks | 4 |
+| wool_table | `WWW / T.T` | W planks, T stick | 1 |
+| wool_press | `III / W.W / WWW` | I iron ingot, W planks | 1 |
+| sheep_stall | `SNS / KKK` | S steel ingot, N iron bars, K gray concrete | 2 |
+| scouring_bowl | `SBS / S.S / SCS` | S steel ingot, B bucket, C copper ingot | 1 |
+| carding_machine | `NNN / CRC / SSS` | N iron bars, C copper ingot, R redstone, S steel ingot | 1 |
+| spinning_frame | `TTT / CRC / SSS` | T stick, C copper ingot, R redstone, S steel ingot | 1 |
+| loom_frame | `WWW / TRT / SSS` | W planks, T stick, R redstone, S steel ingot | 1 |
+| felting_table | `WBW / SRS` | W planks, B bucket, S steel ingot, R redstone | 1 |
+| wool_cap / wool_sweater / wool_trousers / wool_socks | the armour shapes | X wool cloth | 1 |
+| udder_balm | shapeless | 2 lanolin | 1 |
+| sheep_cheese | shapeless | 1 sheep cheese wheel | 8 |
+| (colour)_wool, vanilla | `YY / YY` | 4 yarn of that colour | 1 |
+| yarn_(colour) | shapeless | white yarn + that dye | 1 |
+| cold_room_panel (felt) | `III / EEE / III` | I iron ingot, E felt | 4 |
+
+Cooking: lamb and mutton chops cook in a furnace, smoker or campfire. Fleece, skirtings, bales, clean wool, sliver, lanolin, white yarn,
+cloth, felt, sheep milk and sheep cheese wheels come from animals and machines, not recipes.

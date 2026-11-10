@@ -158,7 +158,25 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     short of memory).
   - 141 unit tests and 81 of 81 game tests. Client evidence: scenes coats, armor, dairy (recording), fridge (recording), hoppers,
     showroom, barn.
-- Next: sheep (Phase 4).
+- Step 12 (2026-11-10): sheep, approved by Tim in plan mode with his popup answers (Merino, Suffolk, Dorper, East Friesian; FarmChain's sheep
+  genes plus milk yield; own model and coat genes; shed + pasture; shearing shed + mill; all four wool uses; ewes in the same parlor).
+  Commits f4c5a6a to the art commit.
+  - Spec with sources (`docs/animals/sheep.md`): 17-day cycle, 147-day gestation, first breeding at 7 months and 65-70% of mature weight,
+    breed weights, litters, fleece, micron, staple, yield, East Friesian milk, intake, water, housing, dressing.
+  - Genetics for more than one species: `Species`, sheep traits and baselines (proposed), sheep coat genes (agouti, extension, brown,
+    spotting, head colour, three-allele sex-influenced horns, coat type, crimp). Cattle values are unchanged (pinned in `CattlePinTest`).
+  - The sheep: stages, natural service by a ram, litters of 1-3, fleece growth, hand shears, Dorper shedding, East Friesian milk, lamb and
+    mutton chops; its own model with a fleece layer sized by wool growth; coats drawn by `tools/sheep_textures.py`.
+  - Sheep shed and pasture (`docs/multiblocks/sheep-shed.md`): pens, lambing pens, the barn's hay feeder and trough reused, a fenced
+    pasture behind a gate; out by day, in at dusk or in rain; grazing turns grass to dirt.
+  - Shearing shed (`docs/multiblocks/shearing-shed.md`): a powered stand calls in ready sheep, skirts the fleece, presses bales.
+  - Wool mill (`docs/multiblocks/wool-mill.md`): scouring bowl (water, lanolin), card, spinning frame, loom, felting table; hoppers chain
+    them. Wool uses (`docs/wool.md`): yarn in 16 colours, vanilla wool blocks, warm clothing (freeze-immune), felt panels, udder balm.
+  - Sheep milk: sheep stalls in the parlor, one milk kind per bulk tank and per creamery, sheep milk bottles and sheep cheese.
+  - Game-test harness: a scene detaches its Wildcatter circuit parts when it ends (87 scenes ran the server out of heap: the solver kept
+    reloading released chunks).
+  - 170 unit tests and 105 of 105 game tests. Art: 24 Ludo icons (`art/source/PROMPTS.md`), yarn tinted to 16 colours.
+- Next: chickens (Phase 4, second half).
 
 ## Known gaps
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
@@ -166,3 +184,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - NeoForge has not been launched with a client; Fabric has.
 - ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
 - Not built: products by pipe, a plain-text genome code, a cold room temperature model, lane collision rails, spoiled food in compost.
+- Sheep, not built: bedding that gets dirty, sheep dogs, seasons (sheep breed all year, proposed), sheep straws, cloth filters, natural
+  spawns (neither cattle nor sheep spawn on their own yet: they come from /summon), stillbirths for lambs.
+- Sheep proposals with no source: breed baselines, litter odds shape, fleece-trait swings, grass block 1.5 kg DM, pen and pasture caps,
+  shearing time and motor, skirting share, bale size, mill motors, lanolin recovery, carding loss, spin bonus, yarn/cloth/felt sizes,
+  balm healing, clothing armor (leather's), body proportions.

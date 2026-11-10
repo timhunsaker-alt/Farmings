@@ -177,3 +177,16 @@ Nothing is sold (cattle rule, 2026-11-07).
 - Seasons, if ever added (sheep breed in short days).
 - Per-breed gestation (147 used for all).
 - Better primary sources for the breed weights marked TO VERIFY.
+
+## Built, 2026-11-10
+Everything above is in the game:
+- **Rules and genes:** `husbandry/Flock`, `SheepBreed` and `SheepStage`; genetics in `Species`, `SheepLocus`, `SheepGenes` and
+  `SheepLook`.
+- **The animal:** `entity/SheepEntity`, with its model and renderer in `client/Sheep*`.
+- **Buildings and machines:** the shed and pasture (`docs/multiblocks/sheep-shed.md`), the shearing shed (`shearing-shed.md`) and
+  the mill (`wool-mill.md`).
+- **Products:** wool uses in `docs/wool.md`; sheep milk in `parlor.md` and `creamery.md`.
+- **Where the model differs from this spec:**
+  - Spotting shows only on coloured sheep.
+  - The grey of an old black fleece shows on the shorn fleece, not on the living sheep.
+  - Horns follow the three-allele model.
