@@ -1,7 +1,8 @@
 package dev.farmings.genetics;
 
 /**
- * The eight core traits, ported from FarmChain (BREED-SPEC 8.1). Scores are integers on a 0-1000 scale.
+ * The core traits of every species (see {@link Species} for which species carries which), ported from FarmChain (BREED-SPEC 8.1
+ * for cattle; the gene-catalog for sheep). Scores are integers on a 0-1000 scale.
  * The {@link #id} is FarmChain's locus name and is used in the canonical genome string.
  */
 public enum Trait {
@@ -12,7 +13,11 @@ public enum Trait {
 	HEALTH("health", "H", true),
 	FERTILITY("fertility", "F", true),
 	LONGEVITY("longevity", "L", true),
-	TEMPERAMENT("temperament", "T", false);
+	TEMPERAMENT("temperament", "T", false),
+	// Sheep (FarmChain's proposed sheep gene list; added 2026-11-10 after the cattle traits so cattle ordinals never move).
+	WOOL_YIELD("wool_yield", "WY", false),
+	FLEECE_QUALITY("fleece_quality", "FQ", false),
+	HARDINESS("hardiness", "HD", true);
 
 	public final String id;
 	/** Short code used in allele ids (milk_yield -> MY, so MY_A0 ... MY_A6). */

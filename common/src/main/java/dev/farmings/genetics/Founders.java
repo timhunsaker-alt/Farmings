@@ -21,13 +21,14 @@ public final class Founders {
 		}
 		Rng rng = new Rng(seed);
 		Map<Trait, AllelePair> core = new EnumMap<>(Trait.class);
-		for (Trait t : Trait.values()) {
+		Species species = Breeds.species(breedCode);
+		for (Trait t : species.traits()) {
 			List<String> pool = AlleleRegistry.pool(t);
 			String a = pool.get((int) Math.floor(rng.next() * pool.size()));
 			String b = pool.get((int) Math.floor(rng.next() * pool.size()));
 			core.put(t, new AllelePair(a, b));
 		}
-		Genome genome = new Genome(Genome.SCHEMA_V1, 0, BreedComposition.purebred(breedCode), core, rules.version());
+		Genome genome = new Genome(species.schema, 0, BreedComposition.purebred(breedCode), core, rules.version());
 		Phenotype phenotype = Phenotype.express(genome, 0, 0, rules, rng);
 		return new Result(sex, genome, phenotype);
 	}

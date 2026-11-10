@@ -121,7 +121,7 @@ public class HerdBookItem extends Item {
 		b.append("Dam ").append(cow.damId().isEmpty() ? "founder" : cow.damId()).append('\n');
 		b.append("Sire ").append(cow.sireId().isEmpty() ? "founder" : cow.sireId()).append('\n');
 		b.append("Calves ").append(cow.lactations()).append(cow.freemartin() ? ", freemartin" : "").append('\n');
-		for (Trait t : Trait.values()) {
+		for (Trait t : dev.farmings.genetics.Species.CATTLE.traits()) {
 			b.append(t.id.replace('_', ' ')).append(' ').append(cow.score(t)).append('\n');
 		}
 		Carcass.Yield y = cow.carcass();

@@ -15,7 +15,7 @@ class GeneticsTest {
 	/** The parents used to take golden values from FarmChain's own TypeScript (see PROGRESS.md). */
 	static Genome parent(Map<String, Integer> composition, int offsetA, int offsetB) {
 		Map<Trait, AllelePair> core = new EnumMap<>(Trait.class);
-		Trait[] traits = Trait.values();
+		Trait[] traits = Species.CATTLE.traits().toArray(new Trait[0]);
 		for (int i = 0; i < traits.length; i++) {
 			core.put(traits[i], new AllelePair(AlleleRegistry.alleleId(traits[i], (i + offsetA) % 7), AlleleRegistry.alleleId(traits[i], (i + offsetB) % 7)));
 		}
@@ -68,7 +68,7 @@ class GeneticsTest {
 		assertEquals(new AllelePair("MY_A0", "MY_A1"), r.genome().coreGenome().get(Trait.MILK_YIELD));
 		assertEquals(new AllelePair("L_A6", "L_A0"), r.genome().coreGenome().get(Trait.LONGEVITY));
 		int[] expected = {779, 696, 688, 756, 626, 647, 679, 680}; // milk, fat, protein, efficiency, health, fertility, longevity, temperament
-		for (Trait t : Trait.values()) {
+		for (Trait t : Species.CATTLE.traits()) {
 			assertEquals(expected[t.ordinal()], r.phenotype().score(t), t.id);
 		}
 		assertEquals(10000, r.phenotype().heterosisBp());
@@ -81,7 +81,7 @@ class GeneticsTest {
 		assertEquals(Sex.FEMALE, r.sex());
 		assertEquals(comp("BSW", 5000, "HOL", 3750, "JER", 1250), r.genome().breedCompositionBp());
 		int[] expected = {846, 638, 685, 717, 686, 635, 780, 750};
-		for (Trait t : Trait.values()) {
+		for (Trait t : Species.CATTLE.traits()) {
 			assertEquals(expected[t.ordinal()], r.phenotype().score(t), t.id);
 		}
 	}
@@ -92,7 +92,7 @@ class GeneticsTest {
 		assertEquals(Sex.MALE, r.sex());
 		assertEquals(0, r.phenotype().heterosisBp());
 		int[] expected = {871, 561, 631, 651, 639, 550, 699, 750};
-		for (Trait t : Trait.values()) {
+		for (Trait t : Species.CATTLE.traits()) {
 			assertEquals(expected[t.ordinal()], r.phenotype().score(t), t.id);
 		}
 	}
@@ -137,7 +137,7 @@ class GeneticsTest {
 		Genome s = sire(comp("JER", 10000));
 		for (int i = 0; i < 50; i++) {
 			Genome c = Offspring.create(d, s, "c" + i, "w", RULES, null).genome();
-			for (Trait t : Trait.values()) {
+			for (Trait t : Species.CATTLE.traits()) {
 				assertTrue(d.coreGenome().get(t).contains(c.coreGenome().get(t).first()));
 				assertTrue(s.coreGenome().get(t).contains(c.coreGenome().get(t).second()));
 			}
@@ -195,7 +195,7 @@ class GeneticsTest {
 			Founders.Result f = Founders.create("HOL", Sex.FEMALE, i, RULES);
 			Founders.Result g = Founders.create("JER", Sex.MALE, 1000 + i, RULES);
 			Offspring.Result c = Offspring.create(f.genome(), g.genome(), "e" + i, "w", RULES, null);
-			for (Trait t : Trait.values()) {
+			for (Trait t : Species.CATTLE.traits()) {
 				assertTrue(c.phenotype().score(t) >= 0 && c.phenotype().score(t) <= 1000);
 				assertTrue(f.phenotype().score(t) >= 0 && f.phenotype().score(t) <= 1000);
 			}

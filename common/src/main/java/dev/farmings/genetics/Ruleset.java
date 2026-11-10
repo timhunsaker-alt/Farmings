@@ -20,6 +20,11 @@ public record Ruleset(String version, Map<Trait, Integer> heterosisMaxBp, Map<Tr
 		het.put(Trait.FERTILITY, 800);
 		het.put(Trait.LONGEVITY, 600);
 		het.put(Trait.TEMPERAMENT, 100);
+		// Sheep traits (proposed, 2026-11-10: wool yield like milk yield, fleece quality like the milk components, hardiness a
+		// fitness trait like health).
+		het.put(Trait.WOOL_YIELD, 200);
+		het.put(Trait.FLEECE_QUALITY, 0);
+		het.put(Trait.HARDINESS, 600);
 		Map<Trait, Integer> inbreeding = new EnumMap<>(Trait.class);
 		for (Trait t : Trait.values()) {
 			inbreeding.put(t, 500);

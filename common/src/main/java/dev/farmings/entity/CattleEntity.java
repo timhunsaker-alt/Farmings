@@ -366,7 +366,7 @@ public class CattleEntity extends Animal {
 		this.sex = sex;
 		this.genome = f.genome();
 		this.visual = dev.farmings.genetics.VisualGenome.founder(breed.code, seed);
-		for (Trait t : Trait.values()) {
+		for (Trait t : dev.farmings.genetics.Species.CATTLE.traits()) {
 			this.scores[t.ordinal()] = f.phenotype().score(t);
 		}
 		this.birthTick = nowTick - TimeScale.realDaysToTicks(ageRealDays);
@@ -770,7 +770,7 @@ public class CattleEntity extends Animal {
 		this.breed = CattleBreed.byCode(top);
 		this.sex = r.sex();
 		this.genome = r.genome();
-		for (Trait t : Trait.values()) {
+		for (Trait t : dev.farmings.genetics.Species.CATTLE.traits()) {
 			this.scores[t.ordinal()] = r.phenotype().score(t);
 		}
 		this.birthTick = nowTick;
@@ -1061,8 +1061,9 @@ public class CattleEntity extends Animal {
 			Farmings.LOGGER.warn("A cattle record could not be read; keeping defaults: {}", e.getMessage());
 		}
 		input.getIntArray("Scores").ifPresent(saved -> {
-			if (saved.length == scores.length) {
-				scores = saved.clone();
+			// Saves from before sheep traits were added hold only the eight cattle scores; they are a prefix of the trait order.
+			if (saved.length <= scores.length) {
+				System.arraycopy(saved, 0, scores, 0, saved.length);
 			}
 		});
 		birthTick = input.getLongOr("BirthTick", 0L);

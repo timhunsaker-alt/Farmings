@@ -274,7 +274,7 @@ public class FarmingsGameTests {
 		helper.assertTrue(b.sex() == Sex.FEMALE, Component.literal("sex should survive"));
 		helper.assertTrue(b.genome() != null && b.genome().equals(a.genome()), Component.literal("genome should survive exactly"));
 		helper.assertTrue(b.genome().hash().equals(a.genome().hash()), Component.literal("genome hash should survive"));
-		for (Trait t : Trait.values()) {
+		for (Trait t : dev.farmings.genetics.Species.CATTLE.traits()) {
 			helper.assertTrue(b.score(t) == a.score(t), Component.literal("trait score " + t.id + " should survive"));
 		}
 		helper.assertTrue(b.weightKg() == a.weightKg(), Component.literal("weight should survive"));

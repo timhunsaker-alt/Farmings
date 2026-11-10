@@ -23,7 +23,7 @@ public record Phenotype(Map<Trait, Integer> traitScores, int heterosisBp, int in
 	 */
 	public static Phenotype express(Genome genome, int heterosisBp, int inbreedingBp, Ruleset rules, Rng rng) {
 		Map<Trait, Integer> scores = new EnumMap<>(Trait.class);
-		for (Trait trait : Trait.values()) {
+		for (Trait trait : genome.species().traits()) {
 			double acc = 0;
 			for (Map.Entry<String, Integer> e : genome.breedCompositionBp().entrySet()) {
 				acc += (double) e.getValue() * Breeds.baseline(e.getKey(), trait);

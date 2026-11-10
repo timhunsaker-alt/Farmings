@@ -19,6 +19,12 @@ import java.util.TreeMap;
  */
 public record Genome(String schema, int generation, Map<String, Integer> breedCompositionBp, Map<Trait, AllelePair> coreGenome, String rulesetVersion) {
 	public static final String SCHEMA_V1 = "farmings.cattle.genome.v1";
+	public static final String SCHEMA_SHEEP_V1 = "farmings.sheep.genome.v1";
+
+	/** The species this genome's schema names. */
+	public Species species() {
+		return Species.ofSchema(schema);
+	}
 
 	public Genome {
 		breedCompositionBp = Collections.unmodifiableMap(new TreeMap<>(breedCompositionBp));
@@ -86,7 +92,7 @@ public record Genome(String schema, int generation, Map<String, Integer> breedCo
 	/** Reads {@link #encode()} back. Throws {@link IllegalArgumentException} on text that is not a genome. */
 	public static Genome decode(String text) {
 		String[] parts = text.split(";", -1);
-		if (parts.length != 5 || !SCHEMA_V1.equals(parts[0])) {
+		if (parts.length != 5 || !(SCHEMA_V1.equals(parts[0]) || SCHEMA_SHEEP_V1.equals(parts[0]))) {
 			throw new IllegalArgumentException("not a Farmings genome: " + text);
 		}
 		try {

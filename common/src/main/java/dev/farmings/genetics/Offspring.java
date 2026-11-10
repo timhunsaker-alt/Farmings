@@ -35,7 +35,11 @@ public final class Offspring {
 
 		Map<String, Integer> composition = BreedComposition.average(dam.breedCompositionBp(), sire.breedCompositionBp());
 
-		List<Trait> order = new ArrayList<>(List.of(Trait.values()));
+		Species species = dam.species();
+		if (sire.species() != species) {
+			throw new IllegalArgumentException("a " + species + " dam cannot breed with a " + sire.species() + " sire");
+		}
+		List<Trait> order = new ArrayList<>(species.traits());
 		order.sort(Comparator.comparing(t -> t.id));
 		Map<Trait, AllelePair> core = new EnumMap<>(Trait.class);
 		for (Trait t : order) {
@@ -52,7 +56,7 @@ public final class Offspring {
 		int het = Heterosis.coefficientBp(dam.breedCompositionBp(), sire.breedCompositionBp());
 		int inbr = Inbreeding.relatednessBp(dam.coreGenome(), sire.coreGenome());
 
-		Genome genome = new Genome(Genome.SCHEMA_V1, Math.max(dam.generation(), sire.generation()) + 1, composition, core, rules.version());
+		Genome genome = new Genome(species.schema, Math.max(dam.generation(), sire.generation()) + 1, composition, core, rules.version());
 		Phenotype phenotype = Phenotype.express(genome, het, inbr, rules, rng);
 		return new Result(sex, genome, phenotype);
 	}

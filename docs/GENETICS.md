@@ -107,3 +107,37 @@ seeded by its genome hash, so they are always the same. New straws carry the bul
   - the dominance order, blends and layers;
   - breed founders, the F1 body blend, packing, saving and the fallback.
 - Game test `coat_inherited`.
+
+## Sheep (built 2026-11-10; Tim chose FarmChain's sheep list plus milk yield)
+- **Species.** A genome now names its species through its schema: `farmings.cattle.genome.v1` (unchanged) or
+  `farmings.sheep.genome.v1`. `Species` lists each species' core traits. Cattle keep exactly the eight dairy loci, so every cattle
+  canonical string, hash, calf and score is unchanged; `CattlePinTest` pins values taken before the change.
+- **Sheep traits:** FarmChain's proposed sheep gene list (`packages/genetics` gene-catalog: wool_yield, fleece_quality,
+  feed_efficiency, health, fertility, longevity, temperament, hardiness), plus milk_yield for dairy sheep (Farmings' addition).
+  FarmChain marks its non-dairy lists as proposed, and so do we. New allele codes: WY, FQ, HD (same seven-step effect ladder).
+- **Breed baselines** (0-100, all *proposed*; FarmChain has no sheep breeds), in `Breeds`:
+
+| Breed | wool | fleece | efficiency | health | fertility | longevity | temperament | hardiness | milk |
+|---|---|---|---|---|---|---|---|---|---|
+| Merino | 95 | 95 | 60 | 60 | 45 | 70 | 70 | 65 | 20 |
+| Suffolk | 45 | 45 | 75 | 70 | 75 | 60 | 65 | 60 | 30 |
+| Dorper | 10 | 10 | 85 | 85 | 70 | 75 | 75 | 95 | 30 |
+| East Friesian | 55 | 50 | 60 | 55 | 90 | 60 | 80 | 45 | 95 |
+
+- **Heterosis** for the new traits *(proposed)*: wool_yield 200 bp (like milk yield), fleece_quality 0 (like the milk components),
+  hardiness 600 (a fitness trait, like health). Inbreeding penalty 500 bp, as for every trait.
+- A cattle parent and a sheep parent cannot breed (`Offspring` refuses).
+- **Coat genes** (`SheepLocus`, `SheepGenes`, `SheepLook`), sources in `docs/animals/sheep.md`:
+  - agouti: white/tan A^Wt dominant over non-agouti;
+  - extension: dominant black E^D masks agouti;
+  - brown: recessive (moorit);
+  - spotting: dominant, shows only on a coloured sheep;
+  - head colour: white, mottled or black, a blend *(proposed)*;
+  - horns: polled dominant and sex-influenced (P/H rams grow scurs, P/H ewes are polled);
+  - coat type: wool, part hair or hair, a blend *(proposed)*;
+  - crimp: drawn only.
+- They inherit like the cattle coat genes: one allele from each parent, drawn from the breeding seed with the same salt.
+- **Founders:** all four breeds are white. Suffolk and Dorper have black heads, Merino is H/H, the rest are polled, and Dorper is
+  a hair sheep. 5% hidden non-agouti and brown *(proposed)*.
+- Natural wool colours for fleece and yarn: white, black, brown, and grey for a spotted coloured sheep or a black one past two
+  years *(proposed age)*.

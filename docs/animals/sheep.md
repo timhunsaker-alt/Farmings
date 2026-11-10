@@ -150,8 +150,8 @@ One hay rack block serves 2 sheep (50 cm each, the top of the Penn State range r
 - **Dressing percentage:** about 50% of live weight for planning (54% shorn, 52% unshorn)
   ([Montana State: understanding dressing percentage](https://montana.edu/extension/sanders/understanding%20the%20dressing%20percenage.pdf)).
 - **Retail cuts:** bone-in cuts are 65-75% of the carcass ([UW-Madison livestock extension](https://livestock.extension.wisc.edu/articles/how-much-meat-should-a-lamb-yield)).
-- **Items:** lamb chops from animals under a year, mutton from older sheep. One item per 0.25 kg of retail meat *(proposed,
-  matching the cattle steak size)*.
+- **Items:** lamb chops from animals under a year, mutton from older sheep. One item per 2.5 kg of retail meat *(proposed;
+  beef uses 10 kg, so a 90 kg Suffolk gives 12 items and a 40 kg lamb 5)*.
 
 ## Coat genes (sheep loci)
 | Locus | Alleles (dominance) | Source |
