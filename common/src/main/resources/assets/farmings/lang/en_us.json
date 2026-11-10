@@ -1,6 +1,7 @@
 {
  "block.farmings.aging_shelf": "Aging Shelf",
  "block.farmings.alley_floor": "Alley Floor",
+ "block.farmings.bait_trough": "Bait Trough",
  "block.farmings.barn_controller": "Barn Controller",
  "block.farmings.batch_pasteurizer": "Batch Pasteurizer",
  "block.farmings.bottler": "Bottler",
@@ -14,6 +15,8 @@
  "block.farmings.cold_room_panel": "Insulated Panel",
  "block.farmings.collection_pit": "Collection Pit",
  "block.farmings.condensing_unit": "Condensing Unit",
+ "block.farmings.corral_gate": "Corral Gate (one-way)",
+ "block.farmings.corral_post": "Corral Post",
  "block.farmings.cow_lane": "Cow Lane",
  "block.farmings.cream_separator": "Cream Separator",
  "block.farmings.creamery_controller": "Creamery Controller",

@@ -43,9 +43,15 @@ public final class Wild {
 
 		double dailyWaterL();
 
+		/** Where a corral's bait is drawing this wild animal, or null. Not saved: the corral sets it again. */
+		net.minecraft.core.@Nullable BlockPos lure();
+
+		void setLure(net.minecraft.core.@Nullable BlockPos to);
+
 		default void tame(@Nullable UUID owner) {
 			setWild(false);
 			setOwner(owner);
+			setLure(null);
 		}
 	}
 
@@ -65,6 +71,7 @@ public final class Wild {
 
 	/** A wild animal follows feed, and keeps away from a player with none. Herd animals follow feed too (vanilla tempt). */
 	public static void addGoals(PathfinderMob mob, GoalSelector goals, BooleanSupplier wild) {
+		goals.addGoal(2, new LureGoal(mob));
 		goals.addGoal(3, new TemptGoal(mob, 1.1, Wild::feed, false));
 		goals.addGoal(4, new FleeGoal(mob, wild));
 	}
@@ -134,6 +141,51 @@ public final class Wild {
 		@Override
 		public void stop() {
 			from = null;
+		}
+	}
+
+	/** A wild animal walks to the bait a corral is drawing it to (docs/taming.md, "Luring"). */
+	static final class LureGoal extends Goal {
+		private final PathfinderMob mob;
+		private int repath;
+
+		LureGoal(PathfinderMob mob) {
+			this.mob = mob;
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		private net.minecraft.core.@Nullable BlockPos to() {
+			return mob instanceof Animal a && a.isWild() ? a.lure() : null;
+		}
+
+		@Override
+		public boolean canUse() {
+			return to() != null;
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			net.minecraft.core.BlockPos t = to();
+			return t != null && mob.distanceToSqr(t.getX() + 0.5, t.getY(), t.getZ() + 0.5) > 2.25;
+		}
+
+		@Override
+		public void start() {
+			repath = 0;
+		}
+
+		@Override
+		public void tick() {
+			net.minecraft.core.BlockPos t = to();
+			if (t != null && --repath <= 0) {
+				repath = 20;
+				mob.getNavigation().moveTo(t.getX() + 0.5, t.getY(), t.getZ() + 0.5, 1.0);
+			}
+		}
+
+		@Override
+		public void stop() {
+			mob.getNavigation().stop();
 		}
 	}
 

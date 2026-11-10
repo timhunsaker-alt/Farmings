@@ -175,3 +175,5 @@ every barn game test, rebuilt to the longer alley.
 ## Open decisions
 None. All eight were settled on 2026-11-07 (see the top of this file). The *(unverified)* tags remain: the scraper motor size has no
 source, the trough ratio has no source, and the dirty-stall effect size has no source. Each is revisited when a source is found.
+
+**Wild cattle** (docs/taming.md) are not given stalls until they have been tamed in a corral.

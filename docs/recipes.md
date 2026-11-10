@@ -81,3 +81,12 @@ Milk armor: the buckets come back empty (vanilla's milk-bucket remainder).
 
 Cooking: lamb and mutton chops cook in a furnace, smoker or campfire. Fleece, skirtings, bales, clean wool, sliver, lanolin, white yarn,
 cloth, felt, sheep milk and sheep cheese wheels come from animals and machines, not recipes.
+
+## Taming corral (2026-11-10)
+| Block or item | Pattern | Key | Makes |
+|---|---|---|---|
+| corral_post | `T / W / W` | T stick, W planks | 1 |
+| corral_gate | `TFT / TWT` | T stick, F wooden fence, W planks | 1 |
+| bait_trough | `WHW / WWW` | W planks, H hay block | 1 |
+
+The corral's water trough is the barn's `water_trough`.

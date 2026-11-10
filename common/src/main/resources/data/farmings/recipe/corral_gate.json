@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "TFT",
+  "TWT"
+ ],
+ "key": {
+  "F": "#minecraft:wooden_fences",
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:corral_gate",
+  "count": 1
+ }
+}

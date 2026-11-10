@@ -1,6 +1,6 @@
 # Wild animals and the taming corral
 
-**Status: spec 2026-11-10.** Tim: "Animals should still spawn on their own and you have to lure them into a taming corral to make
+**Status: built 2026-11-10.** Tim: "Animals should still spawn on their own and you have to lure them into a taming corral to make
 them part of your herd. This goes for all animals."
 
 Tim's choices:
@@ -118,3 +118,16 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
 - Predators.
 - Vanilla cows and sheep becoming Farmings animals.
 - Chickens (they follow these rules in their own pass).
+
+## Built
+- **Wild flag:** saved on each animal, set by natural spawns. A wild animal doesn't breed, and the barn and sheep shed don't take it in.
+  Straws and natural service need `canConceive`, which is false for a wild animal.
+- **Spawns:** each loader swaps every biome's vanilla cow and sheep entries for Farmings ones with the same weight and group size (Fabric
+  `BiomeModifications`, NeoForge biome modifier `farmings:wild_spawns`). The spawn rule is the vanilla animal rule, checked in the
+  entity's own `checkSpawnRules`, the same on both loaders.
+- **Corral:** `corral_post`, `corral_gate` and `bait_trough` (`dev.farmings.corral`), with the layout in `husbandry/corral/CorralLayout`.
+- **Gate:** an animal passes while any part of it is outside the gate's inner face. Once wholly inside, it meets a fence 1.5 blocks high.
+- **Luring:** every second the post points each wild animal within 32 blocks at the floor cell beside the bait trough. Its path runs
+  through the gate.
+- **Path finding:** cattle now have a follow range of 64, as sheep do, so the path can be found from 32 blocks away.
+- **Tests:** `WildBreedsTest`, `CorralLayoutTest`; game tests `wild_*` and `corral_*`.

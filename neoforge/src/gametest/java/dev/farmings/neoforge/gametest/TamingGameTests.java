@@ -158,6 +158,146 @@ final class TamingGameTests {
 		helper.succeed();
 	}
 
+	// ---- the taming corral (docs/taming.md) ----
+
+	/**
+	 * A corral on a stone field x 0-10, z 0-13: oak fence round x 1-9, z 1-9; the post at (2,1,2); a one-way gate at (5,1,9) facing
+	 * north (into the corral); a bait trough at (5,1,4); a water trough at (6,1,6)-(7,1,6). Outside the gate is open field, z 10-13.
+	 */
+	static BlockPos buildCorral(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		for (int x = 0; x <= 10; x++) {
+			for (int z = 0; z <= 13; z++) {
+				helper.setBlock(new BlockPos(x, 0, z), net.minecraft.world.level.block.Blocks.STONE);
+				for (int y = 1; y <= 3; y++) {
+					helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+				}
+				if ((x == 1 || x == 9) && z >= 1 && z <= 9 || (z == 1 || z == 9) && x >= 1 && x <= 9) {
+					helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.OAK_FENCE);
+				}
+			}
+		}
+		helper.setBlock(new BlockPos(5, 1, 9), dev.farmings.corral.CorralBlocks.CORRAL_GATE.defaultBlockState()
+				.setValue(dev.farmings.corral.CorralGateBlock.FACING, net.minecraft.core.Direction.NORTH));
+		helper.setBlock(new BlockPos(2, 1, 2), dev.farmings.corral.CorralBlocks.CORRAL_POST);
+		helper.setBlock(new BlockPos(5, 1, 4), dev.farmings.corral.CorralBlocks.BAIT_TROUGH);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.WATER_TROUGH, helper.absolutePos(new BlockPos(6, 1, 6)), net.minecraft.core.Direction.NORTH);
+		return helper.absolutePos(new BlockPos(2, 1, 2));
+	}
+
+	static dev.farmings.corral.CorralPostEntity post(GameTestHelper helper, BlockPos c) {
+		return (dev.farmings.corral.CorralPostEntity) helper.getLevel().getBlockEntity(c);
+	}
+
+	static void fillCorral(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		var bait = (dev.farmings.corral.BaitTroughEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 4)));
+		bait.addBlock();
+		bait.addBlock();
+		((dev.farmings.barn.TroughEntity) level.getBlockEntity(dev.wildcatter.multiblock.BigParts.owner(level, helper.absolutePos(new BlockPos(6, 1, 6))))).pourBucket();
+	}
+
+	/** The corral forms; without its gate, then its bait trough, it names what is missing. */
+	static void corralForms(GameTestHelper helper) {
+		BlockPos c = buildCorral(helper);
+		ServerLevel level = helper.getLevel();
+		var post = post(helper, c);
+		post.refresh(level);
+		helper.assertTrue(post.check().formed(), Component.literal("the corral should form: " + post.check().problem()));
+		helper.assertTrue(post.check().gates().size() == 1 && post.check().baits().size() == 1 && post.check().troughs().size() >= 1,
+				Component.literal("a gate, a bait trough, a water trough"));
+		helper.assertTrue(post.readout(level).contains("FORMED"), Component.literal(post.readout(level)));
+		helper.setBlock(new BlockPos(5, 1, 9), net.minecraft.world.level.block.Blocks.OAK_FENCE);
+		post.refresh(level);
+		helper.assertTrue(post.check().problem().startsWith("NO GATE"), Component.literal(post.check().problem()));
+		helper.setBlock(new BlockPos(5, 1, 9), dev.farmings.corral.CorralBlocks.CORRAL_GATE.defaultBlockState()
+				.setValue(dev.farmings.corral.CorralGateBlock.FACING, net.minecraft.core.Direction.NORTH));
+		helper.setBlock(new BlockPos(5, 1, 4), net.minecraft.world.level.block.Blocks.AIR);
+		post.refresh(level);
+		helper.assertTrue(post.check().problem().startsWith("NO BAIT"), Component.literal(post.check().problem()));
+		helper.succeed();
+	}
+
+	/** The gate lets an animal through from outside, holds it from inside, holds a player unless opened. */
+	static void gateIsOneWay(GameTestHelper helper) {
+		buildCorral(helper);
+		ServerLevel level = helper.getLevel();
+		BlockPos g = helper.absolutePos(new BlockPos(5, 1, 9));
+		SheepEntity out = SheepGameTests.adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 5L, new BlockPos(5, 1, 11));
+		SheepEntity in = SheepGameTests.adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 6L, new BlockPos(5, 1, 7));
+		out.setNoAi(true);
+		in.setNoAi(true);
+		var state = level.getBlockState(g);
+		helper.assertTrue(state.getCollisionShape(level, g, net.minecraft.world.phys.shapes.CollisionContext.of(out)).isEmpty(),
+				Component.literal("from outside an animal passes"));
+		helper.assertTrue(!state.getCollisionShape(level, g, net.minecraft.world.phys.shapes.CollisionContext.of(in)).isEmpty(),
+				Component.literal("from inside it is a fence"));
+		ServerPlayer p = helper.makeMockServerPlayerInLevel();
+		helper.assertTrue(!state.getCollisionShape(level, g, net.minecraft.world.phys.shapes.CollisionContext.of(p)).isEmpty(),
+				Component.literal("a player is held while it is shut"));
+		var open = state.setValue(dev.farmings.corral.CorralGateBlock.OPEN, true);
+		helper.assertTrue(open.getCollisionShape(level, g, net.minecraft.world.phys.shapes.CollisionContext.of(in)).isEmpty(),
+				Component.literal("opened, it lets the animal out"));
+		p.discard();
+		helper.succeed();
+	}
+
+	/** A wild sheep outside is drawn by the bait, walks through the gate and stays in. */
+	static void baitDrawsWildThroughGate(GameTestHelper helper) {
+		BlockPos c = buildCorral(helper);
+		ServerLevel level = helper.getLevel();
+		fillCorral(helper);
+		var post = post(helper, c);
+		post.refresh(level);
+		SheepEntity s = SheepGameTests.adult(helper, SheepBreed.MERINO, Sex.FEMALE, 7L, new BlockPos(5, 1, 12));
+		s.setWild(true);
+		waitFor(helper, 0, 900, () -> post.inside(s) && s.lure() == null, "the wild sheep should walk in through the gate, at " + s.blockPosition(), () -> {
+			helper.assertTrue(s.lure() == null, Component.literal("inside, the lure stops"));
+			helper.runAfterDelay(100, () -> {
+				helper.assertTrue(post.inside(s), Component.literal("she stays in"));
+				helper.succeed();
+			});
+		});
+	}
+
+	/** A wild animal fed and watered in the corral for 7 real days becomes the corral owner's; then a shed would take it in. */
+	static void wildSettlesIntoHerd(GameTestHelper helper) {
+		BlockPos c = buildCorral(helper);
+		ServerLevel level = helper.getLevel();
+		fillCorral(helper);
+		var post = post(helper, c);
+		java.util.UUID tim = java.util.UUID.randomUUID();
+		post.claim(tim);
+		post.refresh(level);
+		SheepEntity s = SheepGameTests.adult(helper, SheepBreed.MERINO, Sex.FEMALE, 8L, new BlockPos(4, 1, 6));
+		s.setWild(true);
+		s.setNoAi(true);
+		int half = (int) dev.farmings.husbandry.TimeScale.realDaysToTicks(3.5);
+		post.tend(level, s, s, half);
+		helper.assertTrue(s.isWild() && Math.abs(s.settledDays() - 3.5) < 0.01, Component.literal("half way: " + s.settledDays()));
+		post.tend(level, s, s, half);
+		helper.assertTrue(!s.isWild(), Component.literal("after 7 days fed and watered she is tamed"));
+		helper.assertTrue(tim.equals(s.owner()), Component.literal("she belongs to the corral's owner"));
+		helper.assertTrue(!s.readout().startsWith("WILD"), Component.literal(s.readout()));
+		helper.succeed();
+	}
+
+	/** Without hay a wild animal does not settle; nothing it had is lost. */
+	static void unfedWildDoesNotSettle(GameTestHelper helper) {
+		BlockPos c = buildCorral(helper);
+		ServerLevel level = helper.getLevel();
+		((dev.farmings.barn.TroughEntity) level.getBlockEntity(dev.wildcatter.multiblock.BigParts.owner(level, helper.absolutePos(new BlockPos(6, 1, 6))))).pourBucket();
+		var post = post(helper, c);
+		post.refresh(level);
+		SheepEntity s = SheepGameTests.adult(helper, SheepBreed.MERINO, Sex.FEMALE, 9L, new BlockPos(4, 1, 6));
+		s.setWild(true);
+		s.setNoAi(true);
+		s.setSettledDays(2);
+		post.tend(level, s, s, (int) dev.farmings.husbandry.TimeScale.realDaysToTicks(7));
+		helper.assertTrue(s.isWild() && Math.abs(s.settledDays() - 2) < 1e-9, Component.literal("no hay, no settling: " + s.settledDays()));
+		helper.succeed();
+	}
+
 	/** Checks every 10 ticks until the condition holds, then runs next; fails after limit ticks. */
 	static void waitFor(GameTestHelper helper, int waited, int limit, java.util.function.BooleanSupplier cond, String what, Runnable next) {
 		if (cond.getAsBoolean()) {

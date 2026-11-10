@@ -34,7 +34,8 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 
 ## Phase 4 — More animals — CURRENT (chickens next)
 - Sheep (wool, meat, lambing) — **done 2026-11-10** (`docs/animals/sheep.md`, the shed, shearing shed, wool mill, sheep stalls).
-- Chickens (eggs, hatchery, brooder), with sexes, breeds and genes.
+- Wild animals and the taming corral — **done 2026-11-10** (`docs/taming.md`). Every species spawns wild and is tamed in a corral.
+- Chickens (eggs, hatchery, brooder), with sexes, breeds and genes; wild, tamed in the corral.
 
 ## Ideas (not scheduled, not in code)
 - More species (goats, pigs, horses, ducks).

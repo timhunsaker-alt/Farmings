@@ -27,7 +27,7 @@ Fault messages name the first thing missing. Walls and fences are the player's: 
 
 **Capacity:** 1.5 m² per pregnant or lactating ewe (OMAFRA), so **3 sheep-pen cells hold 2 sheep** (`Flock.penCapacity`). A lambing
 pen holds one ewe and her lambs. Lambs under weaning age (120 days, proposed) do not count. The controller takes in sheep within
-**48 blocks** *(proposed)* that have no shed, until the shed is full.
+**48 blocks** *(proposed)* that have no shed and are not wild (docs/taming.md), until the shed is full.
 
 **Lambing pens:** about 10% of a 100-ewe flock (Penn State G5). The readout warns when there are fewer. A ewe due within **3 real
 days** *(proposed)* is sent to a free lambing pen and stays there for **14 real days** after lambing *(proposed)*. If no jug is free,

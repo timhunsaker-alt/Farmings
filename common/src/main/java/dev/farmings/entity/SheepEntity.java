@@ -431,6 +431,18 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		return bredTick >= 0;
 	}
 
+	private @Nullable BlockPos lure;
+
+	@Override
+	public @Nullable BlockPos lure() {
+		return lure;
+	}
+
+	@Override
+	public void setLure(@Nullable BlockPos to) {
+		this.lure = to;
+	}
+
 	@Override
 	public boolean isWild() {
 		return wild;

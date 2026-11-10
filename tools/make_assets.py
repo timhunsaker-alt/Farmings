@@ -315,6 +315,7 @@ def main():
     wool_mill_assets(lang)
     cold_room_assets(lang)
     shed_assets(lang)
+    corral_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -370,6 +371,10 @@ SHAPED = {
     "sheep_pen": (["HHH", "WWW"], 6),
     "lambing_pen": (["F F", "HHH", "WWW"], 2),
     "pasture_gate": (["FWF", "FWF"], 1),
+    # the taming corral (docs/taming.md): a log post, a fence-and-plank gate, a plank trough with hay
+    "corral_post": (["T", "W", "W"], 1),
+    "corral_gate": (["TFT", "TWT"], 1),
+    "bait_trough": (["WHW", "WWW"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -673,6 +678,72 @@ def shed_assets(lang):
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     shed_textures()
+
+
+CORRAL = {"corral_post": "Corral Post", "corral_gate": "Corral Gate (one-way)", "bait_trough": "Bait Trough"}
+
+
+def corral_textures():
+    """Drawn faces: a weathered post with a tally board, gate rails, and a plank trough holding hay."""
+    from PIL import Image, ImageDraw
+    import random
+    tex = os.path.join(ASSETS, "textures", "block")
+    rnd = random.Random(23)
+    out = {}
+    post = Image.new("RGBA", (16, 16), (112, 82, 50, 255))
+    d = ImageDraw.Draw(post)
+    for x in range(0, 16, 3):
+        d.line([(x, 0), (x, 15)], fill=(96, 70, 42, 255))           # grain
+    d.rectangle([4, 3, 11, 9], fill=(232, 226, 204, 255), outline=(70, 52, 34, 255))   # the tally card
+    for y in (5, 7):
+        d.line([(6, y), (9, y)], fill=(70, 70, 80, 255))
+    out["corral_post"] = post
+    rail = Image.new("RGBA", (16, 16), (150, 112, 66, 255))
+    d = ImageDraw.Draw(rail)
+    for y in (3, 8, 13):
+        d.line([(0, y), (15, y)], fill=(118, 86, 50, 255))
+    out["corral_gate"] = rail
+    top = Image.new("RGBA", (16, 16), (130, 96, 58, 255))
+    d = ImageDraw.Draw(top)
+    d.rectangle([2, 2, 13, 13], fill=(196, 168, 92, 255))           # hay in the trough
+    for _ in range(30):
+        x, y = rnd.randrange(2, 14), rnd.randrange(2, 14)
+        d.line([(x, y), (min(13, x + rnd.choice((1, 2))), y)], fill=rnd.choice(((226, 200, 120), (170, 140, 70))) + (255,))
+    out["bait_trough_top"] = top
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+
+
+def corral_assets(lang):
+    m = os.path.join(ASSETS, "models", "block")
+    for name, title in CORRAL.items():
+        lang["block.farmings." + name] = title
+    faces = lambda tex: {f: {"texture": tex} for f in ("north", "south", "east", "west", "up", "down")}
+    write(os.path.join(m, "corral_post.json"), {"textures": {"wood": "farmings:block/corral_post", "particle": "farmings:block/corral_post"},
+          "elements": [{"from": [5, 0, 5], "to": [11, 16, 11], "faces": faces("#wood")}]})
+    # the gate runs along x and faces north (into the corral) in the model; the blockstate turns it
+    posts = [{"from": [0, 0, 6], "to": [2, 16, 10], "faces": faces("#rail")}, {"from": [14, 0, 6], "to": [16, 16, 10], "faces": faces("#rail")}]
+    rails = [{"from": [2, y, 7], "to": [14, y + 2, 9], "faces": faces("#rail")} for y in (4, 8, 12)]
+    rails.append({"from": [2, 4, 7.5], "to": [14, 14, 8.5], "rotation": {"angle": 45, "axis": "z", "origin": [8, 9, 8]}, "faces": faces("#rail")})
+    write(os.path.join(m, "corral_gate.json"), {"textures": {"rail": "farmings:block/corral_gate", "particle": "farmings:block/corral_gate"},
+          "elements": posts + rails[:3] + [{"from": [6, 4, 7.5], "to": [10, 14, 8.5], "faces": faces("#rail")}]})
+    write(os.path.join(m, "corral_gate_open.json"), {"textures": {"rail": "farmings:block/corral_gate", "particle": "farmings:block/corral_gate"},
+          "elements": posts + [{"from": [0, y, 9], "to": [2, y + 2, 16], "faces": faces("#rail")} for y in (4, 8, 12)]})
+    write(os.path.join(m, "bait_trough.json"), {"textures": {"top": "farmings:block/bait_trough_top", "side": "farmings:block/corral_gate",
+                                                              "particle": "farmings:block/bait_trough_top"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 10, 16], "faces": {"up": {"texture": "#top"}, "down": {"texture": "#side"},
+                        **{f: {"texture": "#side"} for f in ("north", "south", "east", "west")}}}]})
+    rot = {"north": 0, "east": 90, "south": 180, "west": 270}
+    write(os.path.join(ASSETS, "blockstates", "corral_gate.json"), {"variants": {
+        "facing=%s,open=%s" % (f, o): {"model": "farmings:block/corral_gate" + ("_open" if o == "true" else ""), "y": r}
+        for f, r in rot.items() for o in ("false", "true")}})
+    for name in ("corral_post", "bait_trough"):
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+    for name in CORRAL:
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    corral_textures()
 
 
 def loot(name):

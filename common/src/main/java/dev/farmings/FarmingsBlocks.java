@@ -159,6 +159,9 @@ public final class FarmingsBlocks {
 		for (Block b : dev.farmings.coldroom.ColdRoomBlocks.ALL) {
 			output.accept(b);
 		}
+		for (Block b : dev.farmings.corral.CorralBlocks.ALL) {
+			output.accept(b);
+		}
 		for (Block b : dev.farmings.shed.ShedBlocks.ALL) {
 			output.accept(b);
 		}
@@ -198,6 +201,7 @@ public final class FarmingsBlocks {
 		Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Farmings.id("water_trough"), TROUGH_ENTITY);
 		dev.farmings.coldroom.ColdRoomBlocks.register();
 		dev.farmings.shed.ShedBlocks.register();
+		dev.farmings.corral.CorralBlocks.register();
 		dev.farmings.shearing.ShearingBlocks.register();
 		dev.farmings.woolmill.WoolMillBlocks.register();
 		FarmingsItems.register();

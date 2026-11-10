@@ -185,7 +185,8 @@ public class CattleEntity extends Animal implements Wild.Animal {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		// Vanilla cow values until real ones are decided; there is no source for either.
-		return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, 0.2F);
+		// FOLLOW_RANGE 64 so a corral's bait can draw a wild cow from 32 blocks (docs/taming.md), as sheep have.
+		return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 10.0).add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.FOLLOW_RANGE, 64.0);
 	}
 
 	// ---- the barn ----
@@ -521,6 +522,18 @@ public class CattleEntity extends Animal implements Wild.Animal {
 	/** For game tests and art: opens a heat window now. */
 	public void startHeatForDisplay() {
 		this.nextHeatTick = level().getGameTime();
+	}
+
+	private @Nullable BlockPos lure;
+
+	@Override
+	public @Nullable BlockPos lure() {
+		return lure;
+	}
+
+	@Override
+	public void setLure(@Nullable BlockPos to) {
+		this.lure = to;
 	}
 
 	@Override

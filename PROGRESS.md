@@ -176,7 +176,15 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Game-test harness: a scene detaches its Wildcatter circuit parts when it ends (87 scenes ran the server out of heap: the solver kept
     reloading released chunks).
   - 170 unit tests and 105 of 105 game tests. Art: 24 Ludo icons (`art/source/PROMPTS.md`), yarn tinted to 16 colours.
-- Next: chickens (Phase 4, second half).
+- Step 13 (2026-11-10): wild animals and the taming corral (`docs/taming.md`), approved by Tim in plan mode with his popup answers
+  (replace vanilla cows and sheep; lure with held feed and a bait block through one-way gates; a corral where animals settle over days;
+  breed by biome).
+  - Natural spawns are wild and replace vanilla cows and sheep at vanilla weights and group sizes; the breed is matched to the biome.
+  - Wild animals follow held wheat or hay, keep 6 blocks from empty hands, and don't breed. Barns and sheds don't take them in.
+  - The taming corral: post, one-way gate, bait trough, and the barn's water trough. The bait draws wild animals within 32 blocks.
+    After 7 real days fed and watered inside (FutureBeef, yard weaning, 5-10 days), the animal belongs to the corral's owner.
+  - `/summon`, spawn eggs and newborns are herd animals *(proposed)*.
+- Next: chickens (Phase 4, second half), wild and tamed in the corral from the start.
 
 ## Known gaps
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
