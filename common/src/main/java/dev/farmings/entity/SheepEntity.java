@@ -63,7 +63,7 @@ import org.jspecify.annotations.Nullable;
  * apart from {@link CattleEntity} rather than sharing a base class: the two share rules, not state, and the cattle entity is guarded by its
  * game tests as it is.
  */
-public class SheepEntity extends Animal {
+public class SheepEntity extends Animal implements Wild.Animal {
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.LONG);
@@ -102,6 +102,9 @@ public class SheepEntity extends Animal {
 	private int lastLitter;
 	private long nextHeatTick = -1;
 	private @Nullable UUID ownerId;
+	/** Wild until tamed in a corral (docs/taming.md). */
+	private boolean wild;
+	private double settledDays;
 	private String damId = "";
 	private String sireId = "";
 	/** Parlor milk in the udder, kg; only East Friesian blood gives any (Flock.milkKg). Refilled once per game day. */
@@ -428,8 +431,38 @@ public class SheepEntity extends Animal {
 		return bredTick >= 0;
 	}
 
+	@Override
+	public boolean isWild() {
+		return wild;
+	}
+
+	@Override
+	public void setWild(boolean wild) {
+		this.wild = wild;
+	}
+
+	@Override
+	public double settledDays() {
+		return settledDays;
+	}
+
+	@Override
+	public void setSettledDays(double days) {
+		this.settledDays = days;
+	}
+
+	@Override
+	public double dailyDryMatterKg() {
+		return Flock.intakeKgDm(weightKg, lambsNursing());
+	}
+
+	@Override
+	public double dailyWaterL() {
+		return dailyDryMatterKg() * Flock.WATER_L_PER_KG_DM;
+	}
+
 	public boolean canConceive() {
-		return genome != null && inHeat() && bredTick < 0 && !retired;
+		return genome != null && !wild && inHeat() && bredTick < 0 && !retired;
 	}
 
 	public boolean conceive(Genome sire, SheepGenes sireCoat, long now) {
@@ -797,6 +830,7 @@ public class SheepEntity extends Animal {
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+		Wild.addGoals(this, this.goalSelector, this::isWild);
 	}
 
 	// ---- the once-a-second bookkeeping ----
@@ -932,6 +966,9 @@ public class SheepEntity extends Animal {
 
 	public String readout() {
 		StringBuilder b = new StringBuilder();
+		if (wild) {
+			b.append(String.format(Locale.ROOT, "WILD (settled %.1f of %.0f days), ", settledDays, dev.farmings.husbandry.WildBreeds.SETTLE_DAYS));
+		}
 		b.append(breedLabel()).append(' ').append(sex == Sex.FEMALE ? "ewe" : castrated ? "wether" : "ram");
 		b.append(String.format(Locale.ROOT, ", %.0f months, %.0f kg, %s", ageRealDays() / 30.4, weightKg, stage().label()));
 		if (genome != null) {
@@ -988,6 +1025,15 @@ public class SheepEntity extends Animal {
 		if (genome == null) {
 			SheepBreed b = SheepBreed.values()[level.getRandom().nextInt(SheepBreed.values().length)];
 			Sex s = level.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE;
+			if (Wild.wildReason(reason)) {
+				// A wild founder: the breed comes from the biome, one ram per spawn group (docs/taming.md).
+				Wild.Group g = Wild.group(groupData, level);
+				data = g;
+				b = dev.farmings.husbandry.WildBreeds.sheep(Wild.biome(level, blockPosition()), g.roll);
+				s = g.maleGiven ? Sex.FEMALE : Sex.MALE;
+				g.maleGiven = true;
+				wild = true;
+			}
 			Map<String, Integer> c = Map.of(b.code, 10_000);
 			initFounder(b, s, level.getRandom().nextLong(), Flock.FIRST_BREEDING_AGE_DAYS + 30, Flock.targetKg(c, Flock.FIRST_BREEDING_AGE_DAYS + 30),
 					level.getLevel().getGameTime());
@@ -1029,6 +1075,8 @@ public class SheepEntity extends Animal {
 		if (ownerId != null) {
 			out.putString("Owner", ownerId.toString());
 		}
+		out.putBoolean("Wild", wild);
+		out.putDouble("SettledDays", settledDays);
 		out.putString("Dam", damId);
 		out.putString("SireId", sireId);
 		out.putDouble("MilkKg", milkKg);
@@ -1075,6 +1123,8 @@ public class SheepEntity extends Animal {
 		nextHeatTick = in.getLongOr("NextHeat", -1L);
 		String own = in.getStringOr("Owner", "");
 		ownerId = own.isEmpty() ? null : UUID.fromString(own);
+		wild = in.getBooleanOr("Wild", false);
+		settledDays = in.getDoubleOr("SettledDays", 0);
 		damId = in.getStringOr("Dam", "");
 		sireId = in.getStringOr("SireId", "");
 		milkKg = in.getDoubleOr("MilkKg", 0);

@@ -52,7 +52,7 @@ import org.jspecify.annotations.Nullable;
  * <p>This is the animal itself. It does not breed, milk or eat yet: vanilla breeding, bucket milking and wheat-tempting are left
  * out on purpose, because those come with the barn, the parlor and the genetics step. Its look is a vanilla cow until the Ludo art.
  */
-public class CattleEntity extends Animal {
+public class CattleEntity extends Animal implements Wild.Animal {
 	/** Breed and stage, sent to the client so the renderer can pick the right coat, model and udder. */
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
@@ -96,6 +96,9 @@ public class CattleEntity extends Animal {
 	private long dueTick = -1;
 	/** The player whose barn houses her; calf counts for the tutorial sex rule are kept per player. */
 	private @Nullable UUID ownerId;
+	/** Wild until tamed in a corral (docs/taming.md). */
+	private boolean wild;
+	private double settledDays;
 	/** Game-day index since calving at which the udder was last refilled. */
 	private long lastMilkDay = -1;
 	private boolean retired;
@@ -352,6 +355,7 @@ public class CattleEntity extends Animal {
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+		Wild.addGoals(this, this.goalSelector, this::isWild);
 	}
 
 	// --- the animal's facts ---
@@ -519,8 +523,38 @@ public class CattleEntity extends Animal {
 		this.nextHeatTick = level().getGameTime();
 	}
 
+	@Override
+	public boolean isWild() {
+		return wild;
+	}
+
+	@Override
+	public void setWild(boolean wild) {
+		this.wild = wild;
+	}
+
+	@Override
+	public double settledDays() {
+		return settledDays;
+	}
+
+	@Override
+	public void setSettledDays(double days) {
+		this.settledDays = days;
+	}
+
+	@Override
+	public double dailyDryMatterKg() {
+		return dryMatterIntakeKgPerDay();
+	}
+
+	@Override
+	public double dailyWaterL() {
+		return dev.farmings.feed.Hay.waterLitresPerDay(dryMatterIntakeKgPerDay(), 0);
+	}
+
 	public boolean canConceive() {
-		return genome != null && !freemartin && inHeat() && bredTick < 0;
+		return genome != null && !wild && !freemartin && inHeat() && bredTick < 0;
 	}
 
 	/** A service in heat conceives (decided 2026-11-08). The sire's genome is kept until the calf is born. */
@@ -934,6 +968,9 @@ public class CattleEntity extends Animal {
 	/** One line about the animal, as the readout shows it. */
 	public String readout() {
 		StringBuilder b = new StringBuilder();
+		if (wild) {
+			b.append(String.format(java.util.Locale.ROOT, "WILD (settled %.1f of %.0f days), ", settledDays, dev.farmings.husbandry.WildBreeds.SETTLE_DAYS));
+		}
 		b.append(breedLabel()).append(' ').append(sex == Sex.FEMALE ? "female" : castrated ? "steer" : "male");
 		b.append(", ").append(String.format(java.util.Locale.ROOT, "%.0f months", ageRealDays() / 30.4));
 		b.append(", ").append(String.format(java.util.Locale.ROOT, "%.0f kg", weightKg));
@@ -994,7 +1031,16 @@ public class CattleEntity extends Animal {
 	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason reason,
 			@Nullable SpawnGroupData groupData) {
 		SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, groupData);
-		if (genome == null) {
+		if (genome == null && Wild.wildReason(reason)) {
+			// A wild founder: the breed comes from the biome, one bull per spawn group (docs/taming.md).
+			Wild.Group g = Wild.group(groupData, level);
+			data = g;
+			CattleBreed b = dev.farmings.husbandry.WildBreeds.cattle(Wild.biome(level, blockPosition()), g.roll);
+			Sex sex = g.maleGiven ? Sex.FEMALE : Sex.MALE;
+			g.maleGiven = true;
+			initFounder(b, sex, level.getRandom().nextLong(), Lifecycle.FIRST_BREEDING_AGE_DAYS, b.breedingWeightKg(), level.getLevel().getGameTime());
+			wild = true;
+		} else if (genome == null) {
 			// An adult that can be bred today: old enough, and at the breeding weight.
 			Sex rolled = level.getRandom().nextBoolean() ? Sex.FEMALE : Sex.MALE;
 			initFounder(CattleBreed.HOLSTEIN, rolled, level.getRandom().nextLong(), Lifecycle.FIRST_BREEDING_AGE_DAYS,
@@ -1033,6 +1079,8 @@ public class CattleEntity extends Animal {
 		if (ownerId != null) {
 			output.putString("Owner", ownerId.toString());
 		}
+		output.putBoolean("Wild", wild);
+		output.putDouble("SettledDays", settledDays);
 		output.putLong("LastMilkDay", lastMilkDay);
 		output.putBoolean("Retired", retired);
 		output.putLong("StallStand", stallStand == null ? Long.MIN_VALUE : stallStand.asLong());
@@ -1082,6 +1130,8 @@ public class CattleEntity extends Animal {
 		dueTick = input.getLongOr("Due", -1L);
 		String own = input.getStringOr("Owner", "");
 		ownerId = own.isEmpty() ? null : java.util.UUID.fromString(own);
+		wild = input.getBooleanOr("Wild", false);
+		settledDays = input.getDoubleOr("SettledDays", 0);
 		lastMilkDay = input.getLongOr("LastMilkDay", -1L);
 		retired = input.getBooleanOr("Retired", false);
 		long stand = input.getLongOr("StallStand", Long.MIN_VALUE);

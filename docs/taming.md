@@ -20,7 +20,7 @@ This applies to every Farmings species: cattle and sheep now, chickens and later
 | Owner | none | the player who tamed it (corral owner) or bred it |
 | Barn, sheep shed, parlor, shearing stand, straws | **refuse it** | use it as before |
 | Follows a player holding its feed | yes | yes (vanilla tempt) |
-| Moves away from a player who holds no feed | within **6 blocks** *(proposed)* | no |
+| Moves away from a player who holds no feed (any game mode but spectator) | within **6 blocks** *(proposed)* | no |
 | Breeds | no *(proposed: wild numbers stay what the spawn cycle makes)* | yes |
 | Readout | `WILD`, plus days settled in a corral | as before |
 
@@ -104,7 +104,7 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
   (85 kg dry matter per hay block, as the barn) and drinks from the trough.
   - Cattle intake comes from the cattle rules; sheep intake from `Flock.intakeKgDm` and 2.6 L of water per kg of dry matter.
 - **Clock:** an animal that was fully fed and watered for the day gains a settled day.
-- **Taming:** after **7 real days** settled it is tamed. The `Wild` flag is cleared and the corral owner becomes its owner. From then
+- **Taming:** after **7 real days** settled (about half a game day at the Farmings time scale, `TimeScale`) it is tamed. The `Wild` flag is cleared and the corral owner becomes its owner. From then
   on a barn or sheep shed takes it in as usual.
   - Source: yard weaning, which settles cattle in yards on hay, takes 5 to 10 days ("Cattle weaned in the yards onto hay or silage
     for 5 to 10 days adapted quickly": [FutureBeef, Yard weaning and

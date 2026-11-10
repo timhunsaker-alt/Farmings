@@ -313,7 +313,7 @@ public class BarnControllerEntity extends BlockEntity {
 				if (cow.stallController() != null && worldPosition.equals(cow.stallController())) {
 					cow.clearStall();
 				}
-				if (cow.stallController() == null) {
+				if (cow.stallController() == null && !cow.isWild()) {
 					homeless.add(cow);
 				}
 			} else {

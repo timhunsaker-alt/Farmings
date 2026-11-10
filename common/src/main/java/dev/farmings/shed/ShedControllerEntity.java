@@ -210,7 +210,7 @@ public class ShedControllerEntity extends BlockEntity {
 				adults++;
 			}
 		}
-		for (SheepEntity s : level.getEntitiesOfClass(SheepEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> s.shedController() == null)) {
+		for (SheepEntity s : level.getEntitiesOfClass(SheepEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> s.shedController() == null && !s.isWild())) {
 			if (s.stage().lamb() || adults < room) {
 				s.assignShed(worldPosition, null);
 				if (!s.stage().lamb()) {
