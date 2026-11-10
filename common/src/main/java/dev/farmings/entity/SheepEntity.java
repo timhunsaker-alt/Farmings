@@ -127,7 +127,8 @@ public class SheepEntity extends Animal {
 
 	public static AttributeSupplier.Builder createAttributes() {
 		// The vanilla sheep's values (8 health, 0.23 speed); no source for either.
-		return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.23F);
+		// Follow range 64 so a sheep can path across a pasture to the spot its shed picks (proposed; vanilla animals use 16).
+		return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.23F).add(Attributes.FOLLOW_RANGE, 64.0);
 	}
 
 	@Override
@@ -442,6 +443,11 @@ public class SheepEntity extends Animal {
 		return true;
 	}
 
+	/** For game tests: she is due in this many real days. */
+	public void setDueInForTest(double realDays) {
+		this.dueTick = level().getGameTime() + TimeScale.realDaysToTicks(realDays);
+	}
+
 	public void makeDueNow() {
 		this.dueTick = level().getGameTime();
 	}
@@ -453,6 +459,11 @@ public class SheepEntity extends Animal {
 	/** Real days to lambing, or -1 if she is not in lamb. */
 	public double daysToLambing() {
 		return bredTick < 0 || dueTick < 0 ? -1 : TimeScale.ticksToRealDays(dueTick - level().getGameTime());
+	}
+
+	/** Real days since she last lambed, or a large number if she never has. */
+	public double daysSinceLambing() {
+		return hasLambed ? TimeScale.ticksToRealDays(level().getGameTime() - lambedTick) : Double.MAX_VALUE;
 	}
 
 	public void forceLambsForTest(int n) {
@@ -677,14 +688,14 @@ public class SheepEntity extends Animal {
 	}
 
 	/** Somewhere she is sent for a while (pasture spot, shearing stand, parlor stall); null to let her go home. */
-	public void setTarget(@Nullable BlockPos target) {
+	public void sendTo(@Nullable BlockPos target) {
 		this.target = target;
 		if (target != null) {
 			this.route = null;
 		}
 	}
 
-	public @Nullable BlockPos target() {
+	public @Nullable BlockPos sentTo() {
 		return target;
 	}
 

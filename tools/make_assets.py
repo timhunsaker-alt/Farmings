@@ -267,6 +267,7 @@ def main():
             img.save(path)
     write(os.path.join(DATA, "tags", "item", "repairs_milk_armor.json"), {"values": ["minecraft:milk_bucket"]})
     cold_room_assets(lang)
+    shed_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -276,7 +277,8 @@ def main():
 # K gray concrete, W planks, N iron bars, L wool, M milk bucket.
 KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecraft:copper_ingot", "R": "minecraft:redstone",
         "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
-        "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick"}
+        "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick",
+        "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences"}
 SHAPED = {
     # barn
     "barn_controller": (["SRS", "CIC", "SSS"], 1),
@@ -315,6 +317,11 @@ SHAPED = {
     "cold_room_door": (["II", "LL", "II"], 1),
     "evaporator": (["SNS", "CRC", "SSS"], 1),
     "condensing_unit": (["SNS", "CRC", "SIS"], 1),
+    # the sheep shed (docs/multiblocks/sheep-shed.md): straw over boards, hurdles, a field gate
+    "shed_controller": (["WRW", "WHW", "WWW"], 1),
+    "sheep_pen": (["HHH", "WWW"], 6),
+    "lambing_pen": (["F F", "HHH", "WWW"], 2),
+    "pasture_gate": (["FWF", "FWF"], 1),
     "manure_fork": (["I I", " T ", " T "], 1),
     "milk_helmet": (["MMM", "M M"], 1),
     "milk_chestplate": (["M M", "MMM", "MMM"], 1),
@@ -447,6 +454,71 @@ def cold_room_assets(lang):
                                                              "properties": {"half": "lower"}}]
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), drop)
     cold_room_textures()
+
+
+SHED = {"shed_controller": "Sheep Shed Controller", "sheep_pen": "Sheep Pen", "lambing_pen": "Lambing Pen", "pasture_gate": "Pasture Gate"}
+
+
+def shed_textures():
+    """Drawn stand-ins (tools/process_art.py replaces them when Ludo art is in art/final): straw bedding, straw with hurdles round the
+    edge, gate slats, and the controller's board with a tally sheet."""
+    from PIL import Image, ImageDraw
+    import random
+    tex = os.path.join(ASSETS, "textures", "block")
+    rnd = random.Random(11)
+    def straw():
+        im = Image.new("RGBA", (16, 16), (196, 168, 92, 255))
+        d = ImageDraw.Draw(im)
+        for _ in range(46):
+            x, y = rnd.randrange(16), rnd.randrange(16)
+            dx = rnd.choice((-3, -2, 2, 3))
+            c = rnd.choice(((226, 200, 120), (170, 140, 70), (210, 186, 104)))
+            d.line([(x, y), (x + dx, y + rnd.choice((-1, 0, 1)))], fill=c + (255,))
+        return im
+    out = {"sheep_pen_top": straw()}
+    lp = straw()
+    d = ImageDraw.Draw(lp)
+    d.rectangle([0, 0, 15, 15], outline=(120, 84, 48, 255))
+    d.rectangle([1, 1, 14, 14], outline=(150, 108, 64, 255))
+    out["lambing_pen_top"] = lp
+    gate = Image.new("RGBA", (16, 16), (140, 104, 60, 255))
+    d = ImageDraw.Draw(gate)
+    for y in range(1, 16, 4):
+        d.rectangle([0, y, 15, y + 1], fill=(170, 128, 76, 255))
+    d.line([(0, 15), (15, 0)], fill=(110, 80, 46, 255), width=2)
+    out["pasture_gate_top"] = gate
+    side = Image.new("RGBA", (16, 16), (150, 112, 66, 255))
+    ImageDraw.Draw(side).line([(0, 14), (15, 14)], fill=(110, 80, 46, 255))
+    out["shed_floor_side"] = side
+    board = Image.new("RGBA", (16, 16), (150, 108, 64, 255))
+    d = ImageDraw.Draw(board)
+    for y in (4, 8, 12):
+        d.line([(0, y), (15, y)], fill=(120, 84, 48, 255))
+    d.rectangle([4, 2, 11, 13], fill=(236, 232, 214, 255), outline=(90, 70, 50, 255))
+    for y in range(4, 12, 2):
+        d.line([(6, y), (9, y)], fill=(70, 70, 80, 255))
+    out["shed_controller"] = board
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+
+
+def shed_assets(lang):
+    m = os.path.join(ASSETS, "models", "block")
+    for name, title in SHED.items():
+        lang["block.farmings." + name] = title
+    write(os.path.join(m, "shed_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/shed_controller"}})
+    for name in ("sheep_pen", "lambing_pen", "pasture_gate"):
+        write(os.path.join(m, name + ".json"), {
+            "textures": {"top": "farmings:block/%s_top" % name, "side": "farmings:block/shed_floor_side", "particle": "farmings:block/%s_top" % name},
+            "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {
+                "up": {"texture": "#top"}, "down": {"texture": "#side", "cullface": "down"},
+                **{f: {"texture": "#side", "uv": [0, 14, 16, 16]} for f in ("north", "south", "east", "west")}}}]})
+    for name in SHED:
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    shed_textures()
 
 
 def loot(name):

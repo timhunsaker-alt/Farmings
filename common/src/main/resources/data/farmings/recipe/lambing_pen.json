@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "F F",
+  "HHH",
+  "WWW"
+ ],
+ "key": {
+  "F": "#minecraft:wooden_fences",
+  "H": "minecraft:hay_block",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:lambing_pen",
+  "count": 2
+ }
+}

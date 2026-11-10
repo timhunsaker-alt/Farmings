@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WRW",
+  "WHW",
+  "WWW"
+ ],
+ "key": {
+  "H": "minecraft:hay_block",
+  "R": "minecraft:redstone",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:shed_controller",
+  "count": 1
+ }
+}

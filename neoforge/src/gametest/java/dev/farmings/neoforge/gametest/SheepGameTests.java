@@ -196,4 +196,164 @@ final class SheepGameTests {
 			helper.succeed();
 		});
 	}
+
+	// ---- the sheep shed (docs/multiblocks/sheep-shed.md) ----
+
+	/**
+	 * A shed and pasture, relative to the scene: stone under the shed, grass under the pasture. Controller at (1,1,2); pen cells x 2-4,
+	 * z 1-3; hay rack north of the pen at (2,1,0); trough south at (3,1,4)-(4,1,4); a lambing pen at (5,1,1) and the pasture gate at
+	 * (5,1,3), both in the pasture's west fence; the pasture is x 6-13, z 0-5 inside an oak fence.
+	 */
+	static BlockPos buildShed(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		for (int x = -1; x <= 15; x++) {
+			for (int z = -2; z <= 8; z++) {
+				helper.setBlock(new BlockPos(x, 0, z), x >= 6 && x <= 13 && z >= 0 && z <= 5 ? net.minecraft.world.level.block.Blocks.GRASS_BLOCK
+						: net.minecraft.world.level.block.Blocks.STONE);
+				for (int y = 1; y <= 3; y++) {
+					helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+				}
+			}
+		}
+		for (int x = 5; x <= 14; x++) {
+			for (int z = -1; z <= 6; z++) {
+				if (x == 5 || x == 14 || z == -1 || z == 6) {
+					helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.OAK_FENCE);
+				}
+			}
+		}
+		helper.setBlock(new BlockPos(1, 1, 2), dev.farmings.shed.ShedBlocks.SHED_CONTROLLER);
+		for (int x = 2; x <= 4; x++) {
+			for (int z = 1; z <= 3; z++) {
+				helper.setBlock(new BlockPos(x, 1, z), dev.farmings.shed.ShedBlocks.SHEEP_PEN);
+			}
+		}
+		helper.setBlock(new BlockPos(5, 1, 1), dev.farmings.shed.ShedBlocks.LAMBING_PEN);
+		helper.setBlock(new BlockPos(5, 1, 3), dev.farmings.shed.ShedBlocks.PASTURE_GATE);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.HAY_FEEDER, helper.absolutePos(new BlockPos(2, 1, 0)), net.minecraft.core.Direction.NORTH);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.WATER_TROUGH, helper.absolutePos(new BlockPos(3, 1, 4)), net.minecraft.core.Direction.NORTH);
+		return helper.absolutePos(new BlockPos(1, 1, 2));
+	}
+
+	static dev.farmings.shed.ShedControllerEntity shed(GameTestHelper helper, BlockPos c) {
+		return (dev.farmings.shed.ShedControllerEntity) helper.getLevel().getBlockEntity(c);
+	}
+
+	static void fill(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		if (level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 0))) instanceof dev.farmings.barn.FeederEntity f) {
+			f.addBlock();
+			f.addBlock();
+		}
+		if (level.getBlockEntity(dev.wildcatter.multiblock.BigParts.owner(level, helper.absolutePos(new BlockPos(3, 1, 4)))) instanceof dev.farmings.barn.TroughEntity t) {
+			t.pourBucket();
+		}
+	}
+
+	/** The shed forms with its pen, rack, trough, lambing pen and a fenced pasture behind the gate. */
+	static void shedForms(GameTestHelper helper) {
+		BlockPos c = buildShed(helper);
+		dev.farmings.shed.ShedControllerEntity shed = shed(helper, c);
+		shed.refresh(helper.getLevel());
+		helper.assertTrue(shed.check().formed(), Component.literal("the shed should form: " + shed.check().status()));
+		helper.assertTrue(shed.check().pen().size() == 9 && shed.check().capacity() == 6, Component.literal("9 pen cells hold 6 sheep"));
+		helper.assertTrue(shed.check().lambing().size() == 1 && shed.check().gates().size() == 1, Component.literal("a lambing pen and a gate"));
+		helper.assertTrue(shed.pasture() != null && shed.pasture().found(), Component.literal("pasture: " + (shed.pasture() == null ? "none" : shed.pasture().problem())));
+		helper.assertTrue(shed.pasture().spots().size() == 48 && shed.pasture().grass() == 48, Component.literal("an 8 x 6 grass pasture, got " + shed.pasture().spots().size()));
+		helper.assertTrue(shed.readout().contains("FORMED"), Component.literal(shed.readout()));
+		helper.succeed();
+	}
+
+	/** Without a trough the shed names it; a gap in the pasture fence is named too. */
+	static void shedGapNamed(GameTestHelper helper) {
+		BlockPos c = buildShed(helper);
+		ServerLevel level = helper.getLevel();
+		dev.farmings.shed.ShedControllerEntity shed = shed(helper, c);
+		level.destroyBlock(helper.absolutePos(new BlockPos(3, 1, 4)), false);
+		shed.refresh(level);
+		helper.assertTrue(shed.check().status().equals("No water trough beside the pen"), Component.literal(shed.check().status()));
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.WATER_TROUGH, helper.absolutePos(new BlockPos(3, 1, 4)), net.minecraft.core.Direction.NORTH);
+		helper.setBlock(new BlockPos(14, 1, 2), net.minecraft.world.level.block.Blocks.AIR);
+		for (int x = 15; x <= 40; x++) {
+			for (int z = -10; z <= 16; z++) {
+				helper.setBlock(new BlockPos(x, 0, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
+				helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.AIR);
+				helper.setBlock(new BlockPos(x, 2, z), net.minecraft.world.level.block.Blocks.AIR);
+			}
+		}
+		shed.refresh(level);
+		helper.assertTrue(shed.check().formed(), Component.literal("the shed forms again: " + shed.check().status()));
+		// the gap lets the pasture run out into the open field (the not-fenced-in limit itself is in ShedLayoutTest)
+		helper.assertTrue(shed.pasture().spots().size() > 48, Component.literal("the pasture should spill through the gap: " + shed.readout()));
+		helper.succeed();
+	}
+
+	/** By day the flock goes out through the gate onto the pasture; at night it comes back to the pen. */
+	static void flockGoesToPastureAndBack(GameTestHelper helper) {
+		BlockPos c = buildShed(helper);
+		ServerLevel level = helper.getLevel();
+		dev.farmings.shed.ShedControllerEntity shed = shed(helper, c);
+		fill(helper);
+		shed.forceDayForTest(true);
+		SheepEntity a = adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 61L, new BlockPos(3, 1, 2));
+		SheepEntity b = adult(helper, SheepBreed.MERINO, Sex.FEMALE, 62L, new BlockPos(2, 1, 1));
+		a.assignShed(c, null);       // scenes run side by side: tie these sheep to this scene's shed
+		b.assignShed(c, null);
+		helper.runAfterDelay(500, () -> {
+			for (SheepEntity s : List.of(a, b)) {
+				double x = s.getX() - helper.absolutePos(BlockPos.ZERO).getX();
+				helper.assertTrue(x > 5.5, Component.literal("by day she should be out on the pasture, at x " + x + "; " + shed.readout()));
+			}
+			shed.forceDayForTest(false);
+			helper.runAfterDelay(500, () -> {
+				for (SheepEntity s : List.of(a, b)) {
+					double x = s.getX() - helper.absolutePos(BlockPos.ZERO).getX();
+					helper.assertTrue(x < 5.5, Component.literal("at night she should be back in the pen, at x " + x));
+				}
+				helper.succeed();
+			});
+		});
+	}
+
+	/** A ewe due within three days goes to the lambing pen. */
+	static void eweMovesToLambingPen(GameTestHelper helper) {
+		BlockPos c = buildShed(helper);
+		ServerLevel level = helper.getLevel();
+		dev.farmings.shed.ShedControllerEntity shed = shed(helper, c);
+		fill(helper);
+		shed.forceDayForTest(false);
+		SheepEntity ewe = adult(helper, SheepBreed.EAST_FRIESIAN, Sex.FEMALE, 71L, new BlockPos(3, 1, 2));
+		SheepEntity ram = adult(helper, SheepBreed.SUFFOLK, Sex.MALE, 72L, new BlockPos(3, 1, 3));
+		ewe.assignShed(c, null);
+		ram.assignShed(c, null);
+		ewe.startHeatForDisplay();
+		ewe.conceive(ram.genome(), ram.genes(), level.getGameTime());
+		ewe.setDueInForTest(2);
+		helper.runAfterDelay(200, () -> {
+			BlockPos jug = helper.absolutePos(new BlockPos(5, 1, 1));
+			helper.assertTrue(jug.equals(ewe.home()), Component.literal("she should be given the lambing pen " + jug + ", home " + ewe.home() + ", shed " + ewe.shedController() + " (mine " + c + "), due in "
+					+ ewe.daysToLambing() + " days; " + shed.readout()));
+			helper.assertTrue(ewe.blockPosition().distManhattan(jug) <= 2, Component.literal("and walk to it, at " + ewe.blockPosition()));
+			helper.succeed();
+		});
+	}
+
+	/** On pasture a sheep grazes: grass turns to dirt and she is fed with no hay in the racks. */
+	static void grazingFeeds(GameTestHelper helper) {
+		BlockPos c = buildShed(helper);
+		ServerLevel level = helper.getLevel();
+		dev.farmings.shed.ShedControllerEntity shed = shed(helper, c);
+		shed.forceDayForTest(true);
+		shed.refresh(level);
+		SheepEntity s = adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 81L, new BlockPos(9, 1, 3));
+		s.assignShed(c, helper.absolutePos(new BlockPos(3, 1, 2)));
+		s.recordTending(0, 1);
+		for (int i = 0; i < 100; i++) {
+			shed.tend(level, List.of(s), 0.01);
+		}
+		helper.assertTrue(shed.grazedBlocks() >= 1, Component.literal("she should have grazed a grass block, grazed " + shed.grazedBlocks()));
+		helper.assertTrue(s.lastFed() > 0.5, Component.literal("and be fed from it, fed " + s.lastFed()));
+		helper.succeed();
+	}
+
 }

@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "FWF",
+  "FWF"
+ ],
+ "key": {
+  "F": "#minecraft:wooden_fences",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:pasture_gate",
+  "count": 1
+ }
+}

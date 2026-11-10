@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "HHH",
+  "WWW"
+ ],
+ "key": {
+  "H": "minecraft:hay_block",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:sheep_pen",
+  "count": 6
+ }
+}
