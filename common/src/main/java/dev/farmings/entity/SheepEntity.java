@@ -117,6 +117,8 @@ public class SheepEntity extends Animal {
 	private java.util.@Nullable List<BlockPos> route;
 	private int routeIndex;
 	private boolean routeHome;
+	/** The shearing stand that has called her in, or null; while set, her shed leaves her be. Not saved: the stand calls again. */
+	private @Nullable BlockPos reservedBy;
 	/** Game tests: the next lambing gives this many lambs (0 = roll). */
 	private int forcedLambs;
 	private final List<String> lastLambing = new ArrayList<>();
@@ -693,6 +695,14 @@ public class SheepEntity extends Animal {
 		if (target != null) {
 			this.route = null;
 		}
+	}
+
+	public @Nullable BlockPos reservedBy() {
+		return reservedBy;
+	}
+
+	public void reserve(@Nullable BlockPos stand) {
+		this.reservedBy = stand;
 	}
 
 	public @Nullable BlockPos sentTo() {

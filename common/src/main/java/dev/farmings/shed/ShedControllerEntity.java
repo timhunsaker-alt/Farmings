@@ -278,6 +278,9 @@ public class ShedControllerEntity extends BlockEntity {
 	private void pasture(ServerLevel level, List<SheepEntity> members, long now) {
 		List<PastureLayout.Spot> spots = pasture != null && pasture.found() ? pasture.spots() : List.of();
 		for (SheepEntity s : members) {
+			if (s.reservedBy() != null) {
+				continue;     // called in to be shorn
+			}
 			boolean stays = needsJug(s) || (s.stage().lamb() && s.ageRealDays() < LAMBS_STAY_IN_DAYS);
 			if (!out || stays || spots.isEmpty()) {
 				if (s.sentTo() != null) {

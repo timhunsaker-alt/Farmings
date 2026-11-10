@@ -78,6 +78,8 @@ ITEMS = [
     # sheep (docs/animals/sheep.md)
     ("fleece", "Fleece", (236, 228, 206), "blob"),
     ("loose_wool", "Loose Wool", (214, 206, 186), "blob"),
+    ("skirtings", "Skirtings", (200, 190, 160), "blob"),
+    ("wool_bale", "Wool Bale", (226, 218, 196), "blob"),
     ("lamb_chop", "Lamb Chop", (214, 120, 120), "steak"),
     ("cooked_lamb_chop", "Cooked Lamb Chop", (150, 96, 60), "steak"),
     ("mutton_chop", "Mutton Chop", (176, 70, 66), "steak"),
@@ -322,6 +324,11 @@ SHAPED = {
     "sheep_pen": (["HHH", "WWW"], 6),
     "lambing_pen": (["F F", "HHH", "WWW"], 2),
     "pasture_gate": (["FWF", "FWF"], 1),
+    # the shearing shed (docs/multiblocks/shearing-shed.md)
+    "shearing_stand": (["SRS", "CIC", "WWW"], 1),
+    "catching_pen": (["F F", "WWW"], 4),
+    "wool_table": (["WWW", "T T"], 1),
+    "wool_press": (["III", "W W", "WWW"], 1),
     "manure_fork": (["I I", " T ", " T "], 1),
     "milk_helmet": (["MMM", "M M"], 1),
     "milk_chestplate": (["M M", "MMM", "MMM"], 1),
@@ -456,7 +463,9 @@ def cold_room_assets(lang):
     cold_room_textures()
 
 
-SHED = {"shed_controller": "Sheep Shed Controller", "sheep_pen": "Sheep Pen", "lambing_pen": "Lambing Pen", "pasture_gate": "Pasture Gate"}
+SHED = {"shed_controller": "Sheep Shed Controller", "sheep_pen": "Sheep Pen", "lambing_pen": "Lambing Pen", "pasture_gate": "Pasture Gate",
+        "shearing_stand": "Shearing Stand", "catching_pen": "Catching Pen", "wool_table": "Wool Table", "wool_press": "Wool Press"}
+SHED_FLOORS = ("sheep_pen", "lambing_pen", "pasture_gate", "catching_pen")
 
 
 def shed_textures():
@@ -498,6 +507,29 @@ def shed_textures():
     for y in range(4, 12, 2):
         d.line([(6, y), (9, y)], fill=(70, 70, 80, 255))
     out["shed_controller"] = board
+    catching = Image.new("RGBA", (16, 16), (128, 96, 58, 255))
+    d = ImageDraw.Draw(catching)
+    for x in range(0, 16, 3):
+        d.line([(x, 0), (x, 15)], fill=(100, 74, 44, 255))         # slatted boards
+    out["catching_pen_top"] = catching
+    stand = Image.new("RGBA", (16, 16), (138, 100, 60, 255))
+    d = ImageDraw.Draw(stand)
+    d.rectangle([5, 0, 10, 15], fill=(110, 110, 116, 255))           # the down tube
+    d.rectangle([3, 9, 12, 13], fill=(60, 60, 66, 255))             # the handpiece
+    d.line([(3, 13), (12, 13)], fill=(200, 200, 206, 255))          # the comb
+    out["shearing_stand"] = stand
+    table = Image.new("RGBA", (16, 16), (176, 136, 84, 255))
+    d = ImageDraw.Draw(table)
+    for x in range(1, 16, 2):
+        d.line([(x, 0), (x, 15)], fill=(150, 112, 66, 255))         # the slatted top lets dust and short bits fall through
+    out["wool_table_top"] = table
+    press = Image.new("RGBA", (16, 16), (126, 92, 54, 255))
+    d = ImageDraw.Draw(press)
+    d.rectangle([1, 1, 14, 14], outline=(80, 80, 86, 255))
+    d.rectangle([3, 3, 12, 12], fill=(226, 218, 196, 255))          # a bale showing in the box
+    for y in (5, 8, 11):
+        d.line([(3, y), (12, y)], fill=(196, 186, 160, 255))
+    out["wool_press"] = press
     for name, im in out.items():
         if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
             im.save(os.path.join(tex, name + ".png"))
@@ -507,8 +539,15 @@ def shed_assets(lang):
     m = os.path.join(ASSETS, "models", "block")
     for name, title in SHED.items():
         lang["block.farmings." + name] = title
-    write(os.path.join(m, "shed_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/shed_controller"}})
-    for name in ("sheep_pen", "lambing_pen", "pasture_gate"):
+    for cube in ("shed_controller", "shearing_stand", "wool_press"):
+        write(os.path.join(m, cube + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + cube}})
+    leg = lambda x, z: {"from": [x, 0, z], "to": [x + 2, 10, z + 2], "faces": {f: {"texture": "#side"} for f in ("north", "south", "east", "west", "up", "down")}}
+    write(os.path.join(m, "wool_table.json"), {
+        "textures": {"top": "farmings:block/wool_table_top", "side": "farmings:block/shed_floor_side", "particle": "farmings:block/wool_table_top"},
+        "elements": [{"from": [0, 10, 0], "to": [16, 13, 16], "faces": {"up": {"texture": "#top"}, "down": {"texture": "#top"},
+                      **{f: {"texture": "#side", "uv": [0, 13, 16, 16]} for f in ("north", "south", "east", "west")}}},
+                     leg(1, 1), leg(13, 1), leg(1, 13), leg(13, 13)]})
+    for name in SHED_FLOORS:
         write(os.path.join(m, name + ".json"), {
             "textures": {"top": "farmings:block/%s_top" % name, "side": "farmings:block/shed_floor_side", "particle": "farmings:block/%s_top" % name},
             "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {

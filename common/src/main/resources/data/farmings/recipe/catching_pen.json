@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "F F",
+  "WWW"
+ ],
+ "key": {
+  "F": "#minecraft:wooden_fences",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:catching_pen",
+  "count": 4
+ }
+}

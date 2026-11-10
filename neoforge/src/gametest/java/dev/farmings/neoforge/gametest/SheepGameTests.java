@@ -356,4 +356,100 @@ final class SheepGameTests {
 		helper.succeed();
 	}
 
+
+	// ---- the shearing shed (docs/multiblocks/shearing-shed.md) ----
+
+	/** The shed of {@link #buildShed} plus a catching pen at (4,1,0) off the pen, the stand at (4,1,-1), table (3,1,-1), press (2,1,-1). */
+	static BlockPos buildShearing(GameTestHelper helper) {
+		buildShed(helper);
+		helper.setBlock(new BlockPos(4, 1, 0), dev.farmings.shearing.ShearingBlocks.CATCHING_PEN);
+		helper.setBlock(new BlockPos(4, 1, -1), dev.farmings.shearing.ShearingBlocks.SHEARING_STAND);
+		helper.setBlock(new BlockPos(3, 1, -1), dev.farmings.shearing.ShearingBlocks.WOOL_TABLE);
+		helper.setBlock(new BlockPos(2, 1, -1), dev.farmings.shearing.ShearingBlocks.WOOL_PRESS);
+		return helper.absolutePos(new BlockPos(4, 1, -1));
+	}
+
+	static dev.farmings.shearing.ShearingStandEntity stand(GameTestHelper helper, BlockPos at) {
+		return (dev.farmings.shearing.ShearingStandEntity) helper.getLevel().getBlockEntity(at);
+	}
+
+	static dev.farmings.shearing.WoolStoreEntity store(GameTestHelper helper, BlockPos rel) {
+		return (dev.farmings.shearing.WoolStoreEntity) helper.getLevel().getBlockEntity(helper.absolutePos(rel));
+	}
+
+	static void shearingShedForms(GameTestHelper helper) {
+		BlockPos at = buildShearing(helper);
+		dev.farmings.shearing.ShearingStandEntity st = stand(helper, at);
+		st.refresh(helper.getLevel());
+		helper.assertTrue(st.check().formed(), Component.literal("the shearing shed should form: " + st.check().status()));
+		helper.assertTrue(helper.absolutePos(new BlockPos(1, 1, 2)).equals(st.shed()), Component.literal("it serves the sheep shed, got " + st.shed()));
+		helper.assertTrue(st.check().press() != null, Component.literal("the press is found"));
+		helper.setBlock(new BlockPos(3, 1, -1), net.minecraft.world.level.block.Blocks.AIR);
+		st.refresh(helper.getLevel());
+		helper.assertTrue(st.check().status().equals("No wool table beside the shearing stand"), Component.literal(st.check().status()));
+		helper.succeed();
+	}
+
+	/** A powered stand calls in a ewe with a ready fleece, shears her, and puts the fleece and skirtings on the table; grade follows genes. */
+	static void sheepShornByStand(GameTestHelper helper) {
+		BlockPos at = buildShearing(helper);
+		BlockPos c = helper.absolutePos(new BlockPos(1, 1, 2));
+		fill(helper);
+		shed(helper, c).forceDayForTest(false);
+		dev.farmings.shearing.ShearingStandEntity st = stand(helper, at);
+		st.forceRunning(true);
+		SheepEntity m = adult(helper, SheepBreed.MERINO, Sex.FEMALE, 91L, new BlockPos(3, 1, 2));
+		m.assignShed(c, null);
+		m.setFleeceDaysForTest(365);
+		double kg = m.fleeceKg();
+		Flock.Grade grade = Flock.grade(m.micron());
+		helper.runAfterDelay(400, () -> {
+			helper.assertTrue(st.shorn() == 1, Component.literal("one sheep shorn, got " + st.shorn() + "; " + st.readout() + "; sheep at "
+					+ m.position().subtract(net.minecraft.world.phys.Vec3.atLowerCornerOf(helper.absolutePos(BlockPos.ZERO))) + " sent to " + m.sentTo() + " home " + m.home()));
+			helper.assertTrue(m.fleeceKg() < 0.01 && m.reservedBy() == null, Component.literal("she is shorn and let go"));
+			dev.farmings.shearing.WoolStoreEntity table = store(helper, new BlockPos(3, 1, -1));
+			ItemStack fleece = table.items().stream().filter(s -> s.is(FarmingsItems.FLEECE)).findFirst().orElse(ItemStack.EMPTY);
+			ItemStack skirt = table.items().stream().filter(s -> s.is(FarmingsItems.SKIRTINGS)).findFirst().orElse(ItemStack.EMPTY);
+			helper.assertTrue(!fleece.isEmpty() && !skirt.isEmpty(), Component.literal("fleece and skirtings on the table"));
+			double total = FleeceItem.greasyKg(fleece) + FleeceItem.greasyKg(skirt);
+			helper.assertTrue(Math.abs(total - kg) < 0.03, Component.literal("fleece and skirtings weigh what she grew: " + total + " vs " + kg));
+			helper.assertTrue(FleeceItem.grade(fleece) == grade && grade == Flock.Grade.FINE, Component.literal("a Merino fleece is fine: " + FleeceItem.grade(fleece)));
+			helper.assertTrue(FleeceItem.grade(skirt) == grade.lower(), Component.literal("skirtings a grade lower"));
+			helper.succeed();
+		});
+	}
+
+	/** Without power the stand does nothing and says so. */
+	static void noPowerNoShearing(GameTestHelper helper) {
+		BlockPos at = buildShearing(helper);
+		BlockPos c = helper.absolutePos(new BlockPos(1, 1, 2));
+		fill(helper);
+		shed(helper, c).forceDayForTest(false);
+		dev.farmings.shearing.ShearingStandEntity st = stand(helper, at);
+		SheepEntity m = adult(helper, SheepBreed.MERINO, Sex.FEMALE, 92L, new BlockPos(3, 1, 2));
+		m.assignShed(c, null);
+		m.setFleeceDaysForTest(365);
+		helper.runAfterDelay(200, () -> {
+			helper.assertTrue(st.shorn() == 0 && m.fleeceKg() > 1, Component.literal("no power, no shearing"));
+			helper.assertTrue(st.readout().contains("NO POWER"), Component.literal(st.readout()));
+			helper.succeed();
+		});
+	}
+
+	/** The press bales eight fleeces of one grade and colour into one bale of their combined weight. */
+	static void pressMakesBale(GameTestHelper helper) {
+		BlockPos at = buildShearing(helper);
+		dev.farmings.shearing.ShearingStandEntity st = stand(helper, at);
+		st.refresh(helper.getLevel());
+		dev.farmings.shearing.WoolStoreEntity table = store(helper, new BlockPos(3, 1, -1));
+		for (int i = 0; i < 9; i++) {
+			table.insert(FleeceItem.make(FarmingsItems.FLEECE, 4.0, 21.0, 8.0, 0.5, Flock.Grade.FINE, dev.farmings.genetics.SheepLook.Wool.WHITE));
+		}
+		st.press(helper.getLevel());
+		dev.farmings.shearing.WoolStoreEntity press = store(helper, new BlockPos(2, 1, -1));
+		ItemStack bale = press.items().get(0);
+		helper.assertTrue(bale.is(FarmingsItems.WOOL_BALE) && Math.abs(FleeceItem.greasyKg(bale) - 32.0) < 0.01, Component.literal("a 32 kg bale, got " + bale));
+		helper.assertTrue(table.count(s -> s.is(FarmingsItems.FLEECE)) == 1, Component.literal("one fleece left on the table"));
+		helper.succeed();
+	}
 }

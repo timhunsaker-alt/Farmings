@@ -88,6 +88,10 @@ public final class FarmingsItems {
 
 	// Sheep (docs/animals/sheep.md). Lamb chops from sheep under a year, mutton chops from older ones; food values are vanilla mutton's.
 	public static final Item FLEECE = item("fleece", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
+	/** Belly and edge wool taken off a fleece at the wool table: one grade lower (docs/multiblocks/shearing-shed.md). */
+	public static final Item SKIRTINGS = item("skirtings", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
+	/** Pressed fleeces of one grade and colour. */
+	public static final Item WOOL_BALE = item("wool_bale", p -> new dev.farmings.item.FleeceItem(p.stacksTo(1)));
 	/** The little wool a hair sheep sheds each year (0.5-1 kg, sheep.md): the lowest grade *(proposed)*. */
 	public static final Item LOOSE_WOOL = item("loose_wool", Item::new);
 	public static final Item LAMB_CHOP = item("lamb_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
@@ -153,6 +157,8 @@ public final class FarmingsItems {
 		ALL.put("cheddar", CHEDDAR);
 		ALL.put("fleece", FLEECE);
 		ALL.put("loose_wool", LOOSE_WOOL);
+		ALL.put("skirtings", SKIRTINGS);
+		ALL.put("wool_bale", WOOL_BALE);
 		ALL.put("lamb_chop", LAMB_CHOP);
 		ALL.put("cooked_lamb_chop", COOKED_LAMB_CHOP);
 		ALL.put("mutton_chop", MUTTON_CHOP);

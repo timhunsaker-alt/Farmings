@@ -34,17 +34,30 @@ public class FleeceItem extends Item {
 
 	/** One fleece item for a shorn fleece; {@code byHand} lowers the grade one step. */
 	public static ItemStack of(SheepEntity.Fleece f, boolean byHand) {
-		ItemStack stack = new ItemStack(FarmingsItems.FLEECE);
-		Flock.Grade g = byHand ? f.grade().lower() : f.grade();
+		return make(FarmingsItems.FLEECE, f.greasyKg(), f.micron(), f.stapleCm(), f.cleanYield(), byHand ? f.grade().lower() : f.grade(), f.colour());
+	}
+
+	/** A wool item (fleece, skirtings, bale, clean wool, sliver) carrying its weight and quality. */
+	public static ItemStack make(Item item, double kg, double micron, double stapleCm, double cleanYield, Flock.Grade grade, SheepLook.Wool colour) {
+		ItemStack stack = new ItemStack(item);
 		CustomData.update(DataComponents.CUSTOM_DATA, stack, t -> {
-			t.putDouble(KG, Math.round(f.greasyKg() * 100) / 100.0);
-			t.putDouble(MICRON, Math.round(f.micron() * 10) / 10.0);
-			t.putDouble(STAPLE, Math.round(f.stapleCm() * 10) / 10.0);
-			t.putDouble(YIELD, f.cleanYield());
-			t.putString(GRADE, g.name());
-			t.putString(COLOUR, f.colour().name());
+			t.putDouble(KG, Math.round(kg * 100) / 100.0);
+			t.putDouble(MICRON, Math.round(micron * 10) / 10.0);
+			t.putDouble(STAPLE, Math.round(stapleCm * 10) / 10.0);
+			t.putDouble(YIELD, cleanYield);
+			t.putString(GRADE, grade.name());
+			t.putString(COLOUR, colour.name());
 		});
 		return stack;
+	}
+
+	public static double stapleCm(ItemStack stack) {
+		return tag(stack).getDoubleOr(STAPLE, 0);
+	}
+
+	/** True for any item carrying wool data. */
+	public static boolean isWool(ItemStack stack) {
+		return stack.getItem() instanceof FleeceItem && grade(stack) != null;
 	}
 
 	private static CompoundTag tag(ItemStack stack) {
@@ -88,7 +101,8 @@ public class FleeceItem extends Item {
 			return;
 		}
 		out.accept(Component.literal(String.format(Locale.ROOT, "%s, %s", g.label, colour(stack).name().toLowerCase(Locale.ROOT))));
-		out.accept(Component.literal(String.format(Locale.ROOT, "%.2f kg greasy, %.1f micron, %.1f cm staple", greasyKg(stack), micron(stack),
-				tag(stack).getDoubleOr(STAPLE, 0))));
+		boolean greasy = stack.is(FarmingsItems.FLEECE) || stack.is(FarmingsItems.SKIRTINGS) || stack.is(FarmingsItems.WOOL_BALE);
+		out.accept(Component.literal(String.format(Locale.ROOT, "%.2f kg%s, %.1f micron, %.1f cm staple", greasyKg(stack), greasy ? " greasy" : "",
+				micron(stack), tag(stack).getDoubleOr(STAPLE, 0))));
 	}
 }

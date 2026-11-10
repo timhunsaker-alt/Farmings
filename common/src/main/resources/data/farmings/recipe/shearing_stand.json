@@ -1,0 +1,20 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SRS",
+  "CIC",
+  "WWW"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:shearing_stand",
+  "count": 1
+ }
+}

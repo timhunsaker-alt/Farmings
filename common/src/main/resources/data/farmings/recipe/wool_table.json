@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WWW",
+  "T T"
+ ],
+ "key": {
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:wool_table",
+  "count": 1
+ }
+}
