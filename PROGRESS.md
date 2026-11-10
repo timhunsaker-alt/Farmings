@@ -140,11 +140,29 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Recipes for every block and hand-made item (`docs/recipes.md`).
   - Art: Ludo materials and icons (`art/source/PROMPTS.md`, `tools/process_art.py`), true-size part models built with Wildcatter's model library and materials (`tools/models/`), a Ludo hair grain on the approved coats. No placeholder texture is left.
   - 112 unit tests and 67 of 67 game tests. Client evidence: scenes showroom, breeding, beef, creamery, armor, parlor, scraper (screenshots and recordings, sent to Tim).
+- Step 11 (2026-11-09): the weak spots and the dairy connection, approved by Tim in plan mode with his popup answers. Commits 2138ebf to 3c62431.
+  - Barn: the scrape alley is twice the stall rows, open stretches at both ends (barn.md).
+  - Cow lane and holding pen link a parlor to its barn; the parlor milks only that barn's cows, who walk the lane, wait in the pen
+    (15 sq ft a cow, Dairyland Initiative) and walk home (parlor.md).
+  - Coat genes from FarmChain's visual genome (MC1R ED > EBR > E+ > e per UC Davis VGL, dilution, pattern, white, face, polled, hump,
+    dewlap, ears), inherited and saved apart from the core genome (GENETICS.md).
+  - Cattle model and coats from the genes: one model with gene-driven parts and body blends, tinted hair, white markings cut from 3D noise
+    (cattle.md, "Models and coats").
+  - Worn milk armor drawn from Ludo milk surfaces (milk-armor.md).
+  - Creamery: whey by mass balance; hoppers take bottles, butter and wheels and feed the bottler glass (creamery.md).
+  - Food spoilage: FoodKeeper fridge lives, a game day out of the cold (proposed, Tim's choice), spoiled items that sicken, freshness bar
+    (food.md).
+  - Walk-in fridge: insulated panel box, door, evaporator controller, condensing unit sized by a vendor load table (cold-room.md).
+  - Art: Ludo icons for whey and spoiled food; insulated panel, evaporator, condensing unit and cow lane surfaces; lane and pen models.
+  - Game tests now let go of their forced chunks when they end (with ~1,300 left forced, the run sometimes ran out of heap on a machine
+    short of memory).
+  - 141 unit tests and 81 of 81 game tests. Client evidence: scenes coats, armor, dairy (recording), fridge (recording), hoppers,
+    showroom, barn.
 - Next: sheep (Phase 4).
 
 ## Known gaps
-- Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the worn armor look).
+- Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.
 - ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
-- Not built: products by hopper or pipe, whey, spoilage of dairy products, a plain-text genome code.
+- Not built: products by pipe, a plain-text genome code, a cold room temperature model, lane collision rails, spoiled food in compost.

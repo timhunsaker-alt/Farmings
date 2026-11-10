@@ -249,68 +249,218 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	}
 
 	/** Four cows 30 days in milk walk into a 4-stall parlor and are milked into the bulk tank. Filmed, with screenshots. */
-	private static void parlor(ClientGameTestContext context, TestServerContext server, int y) {
+	/**
+	 * The whole dairy (docs/multiblocks/parlor.md, "The cow lane and holding pen"): a 4-stall barn with the doubled alley, a cow lane from
+	 * its pit-end open stretch north to a holding pen, and a 4-stall parlor. Four milking Holsteins take stalls, are called along the lane,
+	 * wait in the pen, are milked and walk home, on their own AI. Filmed from above.
+	 */
+	private static void dairy(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
-		int cz = 60;
-		int stalls = 4;
-		BlockPos c = new BlockPos(cx, y + 1, cz);
+		int cz = 70;
+		BlockPos c = new BlockPos(cx, y + 1, cz);                 // the barn controller
+		BlockPos p = new BlockPos(cx, y + 1, cz - 13);            // the parlor controller
 		CattleEntity[] cows = new CattleEntity[4];
 		server.runOnServer(srv -> {
 			ServerLevel level = srv.overworld();
-			for (int x = cx - 12; x <= cx + 8; x++) {
-				for (int z = cz - 6; z <= cz + 14; z++) {
-					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
-					for (int h = 0; h < 6; h++) {
-						level.setBlockAndUpdate(new BlockPos(x, y + h, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			clear(level, cx - 10, cz - 6, y, 14, 12, 7);
+			for (int x = cx - 24; x <= cx + 4; x++) {
+				for (int z = cz - 18; z <= cz + 6; z++) {
+					boolean pit = x >= cx && x <= cx + 1 && z >= cz - 1 && z <= cz + 1;
+					if (!pit) {
+						level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
 					}
 				}
 			}
-			int fl = c.getY() - 1;
-			level.setBlock(c, FarmingsBlocks.PARLOR_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
-			parlorPart(level, dev.farmings.parlor.ParlorParts.BULK_TANK, new BlockPos(c.getX() + 1, fl, c.getZ()));
-			int xp = c.getX() - stalls - 1;
-			parlorPart(level, dev.farmings.parlor.ParlorParts.VACUUM_PUMP, new BlockPos(xp, fl, c.getZ()));
-			for (int x = xp + 1; x <= c.getX(); x++) {
-				parlorPart(level, dev.farmings.parlor.ParlorParts.MILK_LINE, new BlockPos(x, fl, c.getZ()));
+			buildBarn(level, c, 4);
+			int fl = y;
+			level.setBlock(p, FarmingsBlocks.PARLOR_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+			parlorPart(level, dev.farmings.parlor.ParlorParts.BULK_TANK, new BlockPos(p.getX() + 1, fl, p.getZ()));
+			int xp = p.getX() - 5;
+			parlorPart(level, dev.farmings.parlor.ParlorParts.VACUUM_PUMP, new BlockPos(xp, fl, p.getZ()));
+			for (int x = xp + 1; x <= p.getX(); x++) {
+				parlorPart(level, dev.farmings.parlor.ParlorParts.MILK_LINE, new BlockPos(x, fl, p.getZ()));
 			}
-			for (int x = xp + 1; x < c.getX(); x++) {
-				parlorPart(level, dev.farmings.parlor.ParlorParts.MILKING_UNIT, new BlockPos(x, c.getY(), c.getZ()));
-				parlorPart(level, dev.farmings.parlor.ParlorParts.PARLOR_STALL, new BlockPos(x, fl, c.getZ() + 1));
+			for (int x = xp + 1; x < p.getX(); x++) {
+				parlorPart(level, dev.farmings.parlor.ParlorParts.MILKING_UNIT, new BlockPos(x, p.getY(), p.getZ()));
+				parlorPart(level, dev.farmings.parlor.ParlorParts.PARLOR_STALL, new BlockPos(x, fl, p.getZ() + 1));
+				parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, fl, p.getZ() + 3));
+				parlorPart(level, dev.farmings.parlor.ParlorParts.HOLDING_PEN, new BlockPos(x, fl, p.getZ() + 4));
 			}
-			dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) level.getBlockEntity(c);
-			ctl.refresh(level);
-			ctl.pump(level).forceRunning(true);
-			ctl.tank(level).forceChilling(true);
+			for (int z = p.getZ() + 5; z <= cz - 2; z++) {
+				parlorPart(level, dev.farmings.parlor.ParlorParts.COW_LANE, new BlockPos(cx - 3, fl, z));
+			}
+			dev.farmings.barn.BarnControllerEntity barn = (dev.farmings.barn.BarnControllerEntity) level.getBlockEntity(c);
+			barn.refresh(level);
+			dev.farmings.parlor.ParlorControllerEntity parlor = (dev.farmings.parlor.ParlorControllerEntity) level.getBlockEntity(p);
+			parlor.refresh(level);
+			parlor.pump(level).forceRunning(true);
+			parlor.tank(level).forceChilling(true);
 			for (int i = 0; i < cows.length; i++) {
 				CattleEntity cow = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
 				cow.initFounder(CattleBreed.HOLSTEIN, Sex.FEMALE, 90L + i, 900, 650, level.getGameTime());
 				cow.setCalvedForDisplay(30);
-				cow.setPos(cx - 5 + i * 1.5, y, cz + 9 + 0.5);
+				cow.setPos(cx - 12 + i * 2 + 0.5, y + 0.2, cz + 0.5);
 				cow.settle(level);
 				cows[i] = cow;
 				level.addFreshEntity(cow);
 			}
+			barn.tend(level, 20);
 		});
 		context.waitTicks(40);
-		server.runCommand("tp @p " + (cx - 2) + " " + (y + 6) + " " + (cz + 12) + " 180 45");
+		server.runCommand("tp @p " + (cx + 7) + " " + (y + 17) + " " + (cz + 5) + " 125 48");
 		context.waitTicks(20);
-		Filming film = context.computeOnClient(client -> Filming.start(client, "parlor"));
-		context.waitTicks(20);
-		context.takeScreenshot("farmings-parlor-start");
-		for (int i = 0; i < 16; i++) {
+		Filming film = context.computeOnClient(client -> Filming.start(client, "dairy-lane"));
+		context.takeScreenshot("farmings-dairy-start");
+		for (int i = 0; i < 45; i++) {
 			context.waitTicks(20);
 			String text = server.computeOnServer(srv -> {
-				dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) srv.overworld().getBlockEntity(c);
-				ctl.milk(srv.overworld(), 20);
+				dev.farmings.parlor.ParlorControllerEntity ctl = (dev.farmings.parlor.ParlorControllerEntity) srv.overworld().getBlockEntity(p);
 				return ctl.readout(srv.overworld());
 			});
-			server.runCommand("title @p actionbar \"" + text + "\"");
-			if (i == 5) {
-				context.takeScreenshot("farmings-parlor-walking");
+			actionbar(server, text);
+			if (i == 10) {
+				context.takeScreenshot("farmings-dairy-lane");
+			}
+			if (i == 22) {
+				context.takeScreenshot("farmings-dairy-pen-and-parlor");
 			}
 		}
-		context.takeScreenshot("farmings-parlor-milked");
+		context.takeScreenshot("farmings-dairy-home");
 		film.stop();
+	}
+
+	/**
+	 * The walk-in fridge (docs/multiblocks/cold-room.md) from outside and inside, with chests of dairy, and food freshness: the bars on
+	 * fresh, half-gone and nearly spoiled milk, and a bottle turning spoiled in the hotbar (filmed).
+	 */
+	private static void fridge(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 60;
+		int cz = 60;
+		BlockPos a = new BlockPos(cx, y + 1, cz);       // the inside's corner: 4 x 3 x 4 inside
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx + 2, cz + 2, y, 9, 9, 7);
+			for (int x = -1; x <= 4; x++) {
+				for (int yy = -1; yy <= 3; yy++) {
+					for (int z = -1; z <= 4; z++) {
+						boolean in = x >= 0 && x < 4 && yy >= 0 && yy < 3 && z >= 0 && z < 4;
+						level.setBlockAndUpdate(a.offset(x, yy, z), in ? net.minecraft.world.level.block.Blocks.AIR.defaultBlockState()
+								: dev.farmings.coldroom.ColdRoomBlocks.PANEL.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(a.offset(-1, 1, 2), dev.farmings.coldroom.ColdRoomBlocks.EVAPORATOR.defaultBlockState()
+					.setValue(dev.farmings.coldroom.EvaporatorBlock.FACING, Direction.EAST));
+			BlockState door = dev.farmings.coldroom.ColdRoomBlocks.DOOR.defaultBlockState().setValue(net.minecraft.world.level.block.DoorBlock.FACING, Direction.NORTH)
+					.setValue(net.minecraft.world.level.block.DoorBlock.OPEN, true);
+			level.setBlock(a.offset(1, 0, 4), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), Block.UPDATE_CLIENTS);
+			level.setBlock(a.offset(1, 1, 4), door.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), Block.UPDATE_CLIENTS);
+			level.setBlockAndUpdate(a.offset(-2, 0, 2), dev.farmings.coldroom.ColdRoomBlocks.CONDENSING_UNIT.defaultBlockState());
+			long now = level.getGameTime();
+			for (int i = 0; i < 4; i++) {
+				BlockPos chest = a.offset(i, 0, 0);
+				level.setBlockAndUpdate(chest, net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState());
+				var box = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(chest);
+				box.setItem(0, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.BOTTLED_MILK, 12), now));
+				box.setItem(1, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.BUTTER, 20), now));
+				box.setItem(2, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.CHEDDAR_WHEEL, 4), now));
+			}
+			level.setBlockAndUpdate(a.offset(3, 0, 2), net.minecraft.world.level.block.Blocks.BARREL.defaultBlockState());
+			var room = (dev.farmings.coldroom.ColdRoomEntity) level.getBlockEntity(a.offset(-1, 1, 2));
+			room.refresh(level);
+			room.condenser(level).forceRunning(true);
+			room.cool(level, now, dev.farmings.process.food.Spoilage.STEP);
+		});
+		context.waitTicks(40);
+		String readout = server.computeOnServer(srv -> ((dev.farmings.coldroom.ColdRoomEntity) srv.overworld().getBlockEntity(a.offset(-1, 1, 2))).readout(srv.overworld()));
+		actionbar(server, readout);
+		server.runCommand("tp @p " + (cx + 7.5) + " " + (y + 4) + " " + (cz + 9.5) + " 145 20");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-fridge-outside");
+		server.runCommand("tp @p " + (cx + 3.5) + " " + (y + 2.6) + " " + (cz + 3.5) + " 135 25");
+		actionbar(server, readout);
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-fridge-inside");
+		// freshness bars in the hotbar: fresh, half gone, nearly spoiled, whey, and the four spoiled foods
+		server.runCommand("gamemode survival @p");
+		server.runOnServer(srv -> {
+			var player = srv.getPlayerList().getPlayers().get(0);
+			long now = srv.overworld().getGameTime();
+			player.getInventory().clearContent();
+			long room = dev.farmings.process.food.Spoilage.Food.MILK.roomTicks();
+			ItemStack fresh = new ItemStack(FarmingsItems.BOTTLED_MILK, 4);
+			dev.farmings.item.Perishables.setSpoilsAt(fresh, now + room);
+			ItemStack half = new ItemStack(FarmingsItems.BOTTLED_MILK, 4);
+			dev.farmings.item.Perishables.setSpoilsAt(half, now + room / 2);
+			ItemStack last = new ItemStack(FarmingsItems.BOTTLED_MILK, 4);
+			dev.farmings.item.Perishables.setSpoilsAt(last, now + 200);
+			ItemStack[] bar = {fresh, half, last, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.WHEY_BOTTLE, 2), now),
+					new ItemStack(FarmingsItems.SPOILED_BOTTLE), new ItemStack(FarmingsItems.RANCID_BUTTER), new ItemStack(FarmingsItems.MOLDY_CHEESE),
+					new ItemStack(FarmingsItems.SPOILED_STEAK)};
+			for (int i = 0; i < bar.length; i++) {
+				player.getInventory().setItem(i, bar[i]);
+			}
+			player.getInventory().setSelectedSlot(8);
+		});
+		server.runCommand("tp @p " + (cx + 7.5) + " " + (y + 1) + " " + (cz + 9.5) + " 145 0");
+		actionbar(server, "fresh milk | half a day left | about to spoil | whey | spoiled bottle, rancid butter, moldy cheese, spoiled steak");
+		context.waitTicks(30);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "milk-spoils"));
+		context.takeScreenshot("farmings-food-freshness");
+		context.waitTicks(260);           // the third stack runs out and turns
+		actionbar(server, "the third stack has spoiled");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-food-spoiled");
+		film.stop();
+	}
+
+	/** Hoppers on the creamery (creamery.md, "Hoppers"): butter, wheels and bottles taken into chests in front, glass fed from above. */
+	private static void hoppers(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 56;
+		int cz = 60;
+		BlockPos c = new BlockPos(cx, y, cz);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx + 6, cz, y, 10, 6, 5);
+			level.setBlock(c, FarmingsBlocks.CREAMERY_CONTROLLER.defaultBlockState(), Block.UPDATE_ALL);
+			int x = cx + 1;
+			java.util.Map<dev.farmings.creamery.CreameryParts, Integer> at = new java.util.EnumMap<>(dev.farmings.creamery.CreameryParts.class);
+			for (dev.farmings.creamery.CreameryParts k : dev.farmings.creamery.CreameryParts.values()) {
+				placePart(level, FarmingsBlocks.creameryPart(k), new BlockPos(x, y, cz));
+				at.put(k, x);
+				x += k.part.length();
+			}
+			dev.farmings.creamery.CreameryControllerEntity ctl = (dev.farmings.creamery.CreameryControllerEntity) level.getBlockEntity(c);
+			ctl.refresh(level);
+			ctl.creamery().addMilk(20, 3.72, 3.06);
+			for (int i = 0; i < 6; i++) {
+				ctl.run(level, 24_000);
+			}
+			ctl.creamery().returnButter(30);
+			ctl.creamery().returnWheels(3);
+			for (dev.farmings.creamery.CreameryParts k : new dev.farmings.creamery.CreameryParts[] {dev.farmings.creamery.CreameryParts.BUTTER_CHURN,
+					dev.farmings.creamery.CreameryParts.AGING_SHELF, dev.farmings.creamery.CreameryParts.BOTTLER}) {
+				int px = at.get(k);
+				// a trench in front, the hopper under the part pointing into a chest in the trench
+				for (int dy = 1; dy <= 2; dy++) {
+					level.setBlockAndUpdate(new BlockPos(px, y - dy, cz + 1), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+				}
+				level.setBlockAndUpdate(new BlockPos(px, y - 1, cz), net.minecraft.world.level.block.Blocks.HOPPER.defaultBlockState()
+						.setValue(net.minecraft.world.level.block.HopperBlock.FACING, Direction.SOUTH));
+				level.setBlockAndUpdate(new BlockPos(px, y - 2, cz + 1), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+				level.setBlockAndUpdate(new BlockPos(px, y - 1, cz + 1), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState());
+			}
+			int bx = at.get(dev.farmings.creamery.CreameryParts.BOTTLER);
+			level.setBlockAndUpdate(new BlockPos(bx, y + 1, cz), net.minecraft.world.level.block.Blocks.HOPPER.defaultBlockState());
+			var top = (net.minecraft.world.level.block.entity.HopperBlockEntity) level.getBlockEntity(new BlockPos(bx, y + 1, cz));
+			top.setItem(0, new ItemStack(net.minecraft.world.item.Items.GLASS_BOTTLE, 16));
+		});
+		server.runCommand("tp @p " + (cx + 6) + " " + (y + 2.5) + " " + (cz + 6) + " 180 25");
+		context.waitTicks(200);
+		String text = server.computeOnServer(srv -> ((dev.farmings.creamery.CreameryControllerEntity) srv.overworld().getBlockEntity(c)).readout());
+		actionbar(server, "hoppers took the butter, the aged wheels and the bottled milk; " + text);
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-creamery-hoppers");
 	}
 
 	private static void calving(ClientGameTestContext context, TestServerContext server, int y) {
@@ -801,9 +951,19 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 				milkArmor(context, server, y);
 				return;
 			}
-			if ("parlor".equals(System.getenv("FARMINGS_ONLY"))) {
+			if ("parlor".equals(only) || "dairy".equals(only)) {
 				context.waitTicks(200);
-				parlor(context, server, y);
+				dairy(context, server, y);
+				return;
+			}
+			if ("fridge".equals(only)) {
+				context.waitTicks(200);
+				fridge(context, server, y);
+				return;
+			}
+			if ("hoppers".equals(only)) {
+				context.waitTicks(200);
+				hoppers(context, server, y);
 				return;
 			}
 			if ("calving".equals(System.getenv("FARMINGS_ONLY"))) {
