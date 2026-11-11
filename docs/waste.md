@@ -69,7 +69,9 @@ A mechanical separator (a screw press or a centrifuge) splits digestate into sol
 - **Fertilizer works like bone meal:** using it advances growth as bone meal does in vanilla Minecraft, on all crops and trees. Amount per use
   and what it works on are decided: **same as bone meal, on all crops and on trees** (Tim, 2026-11-07). The strength per use is that of
   vanilla bone meal; do not invent numbers.
-- **Biogas fuel:** proposed in Wildcatter's ROADMAP Ideas (a genset that can burn biogas). No Wildcatter code change.
+- **Biogas fuel:** Wildcatter 0.6.0 (released 2026-11-11) has a pipe product, `biogas, 60 % CH4`. Another mod offers it on Wildcatter's
+  steel pipe through `FluidNode`, and its gas sets burn it derated to 850 kW (Wildcatter `docs/biogas.md`). Farmings builds against
+  0.6.0, and its digester offers biogas this way (Phase 3).
 
 ## Phasing
 - **Phase 1:** collection in the barn (manure item, dirty-stall rule, hand collection and a powered scraper), because it is part of the barn. No
