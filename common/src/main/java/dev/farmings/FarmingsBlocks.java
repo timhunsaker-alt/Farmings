@@ -171,6 +171,7 @@ public final class FarmingsBlocks {
 		for (Block b : dev.farmings.hatchery.HatcheryBlocks.ALL) {
 			output.accept(b);
 		}
+		output.accept(dev.farmings.eggs.EggBlocks.EGG_GRADER);
 		for (Block b : dev.farmings.shearing.ShearingBlocks.ALL) {
 			output.accept(b);
 		}
@@ -210,6 +211,7 @@ public final class FarmingsBlocks {
 		dev.farmings.corral.CorralBlocks.register();
 		dev.farmings.coop.CoopBlocks.register();
 		dev.farmings.hatchery.HatcheryBlocks.register();
+		dev.farmings.eggs.EggBlocks.register();
 		dev.farmings.shearing.ShearingBlocks.register();
 		dev.farmings.woolmill.WoolMillBlocks.register();
 		FarmingsItems.register();

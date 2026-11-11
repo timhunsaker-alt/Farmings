@@ -106,3 +106,15 @@ since laying *(proposed thresholds)*:
 - Smoking.
 - Feather meal.
 - Plucking machines: a bird is processed as cattle and sheep are, by killing it.
+
+## Built, 2026-11-11
+- **Code:**
+  - Egg grading rules in `husbandry/poultry/EggGrading` (unit-tested).
+  - The table is `dev.farmings.eggs.EggGraderEntity`, with cartons in `item/EggCartonItem`.
+  - Spoilage entries EGG, RAW_POULTRY and COOKED_POULTRY in `Spoilage`.
+- **Vanilla recipes:** a cake and a pumpkin pie made with any `#farmings:eggs`, and a white bed from down, sit beside vanilla's own recipes.
+- **Not built as written:**
+  - A rotten egg can't be thrown; it is a plain item.
+  - Vanilla chicken meat from Farmings chickens does not spoil; it's the vanilla item.
+  - Eggs in a carton keep their own spoil clocks but aren't checked until the carton is opened.
+- **Game tests:** grading_packs_cartons, table_eggs_spoil_fertile_dont, poultry_meat_and_down.

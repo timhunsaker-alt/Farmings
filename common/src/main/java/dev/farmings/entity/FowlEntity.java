@@ -633,8 +633,10 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		double grams = LayingCycle.eggGrams(composition(), ageRealDays(now), score(Trait.EGG_WEIGHT));
 		boolean fertile = fertile();
 		eggsLaid++;
-		return FowlEggs.egg(species, grams, genes().expressed(dev.farmings.genetics.PoultryLocus.SHELL, sex), now, fertile ? genome : null,
+		ItemStack egg = FowlEggs.egg(species, grams, genes().expressed(dev.farmings.genetics.PoultryLocus.SHELL, sex), now, fertile ? genome : null,
 				fertile ? genes() : null, fertile ? sireGenome : "", fertile ? sireGenes : new int[0], herdId(), sireId);
+		// a table egg's spoil clock starts at laying (docs/eggs.md); a fertile egg has none
+		return fertile ? egg : dev.farmings.item.Perishables.stamp(egg, now);
 	}
 
 	/** Where a laid egg goes: the coop's nest (set by the coop), else the ground (a floor egg). */

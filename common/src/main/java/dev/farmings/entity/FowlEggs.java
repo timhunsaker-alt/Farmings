@@ -172,7 +172,7 @@ public final class FowlEggs {
 		return chick;
 	}
 
-	/** What a killed bird leaves: meat by dressed weight (chicken: the vanilla items; the others in the products part), and feathers. */
+	/** What a killed bird leaves: meat by dressed weight (chicken: the vanilla items), feathers, and down from a duck. */
 	static void dropCarcass(ServerLevel level, FowlEntity bird, boolean cooked) {
 		if (bird.young()) {
 			return;
@@ -182,13 +182,16 @@ public final class FowlEggs {
 		if (meat != null) {
 			while (items > 0) {
 				int n = Math.min(64, items);
-				bird.spawnAtLocation(level, new ItemStack(meat, n));
+				bird.spawnAtLocation(level, dev.farmings.item.Perishables.stamp(new ItemStack(meat, n), level.getGameTime()));
 				items -= n;
 			}
 		}
 		int feathers = bird.species() == Species.QUAIL ? level.getRandom().nextInt(2) : 1 + level.getRandom().nextInt(2);
 		if (feathers > 0) {
 			bird.spawnAtLocation(level, new ItemStack(Items.FEATHER, feathers));
+		}
+		if (bird.species() == Species.DUCK) {
+			bird.spawnAtLocation(level, new ItemStack(FarmingsItems.DOWN));     // about 30 g of down a duck (docs/eggs.md)
 		}
 	}
 }

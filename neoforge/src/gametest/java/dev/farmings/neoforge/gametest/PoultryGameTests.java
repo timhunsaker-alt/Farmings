@@ -513,4 +513,68 @@ final class PoultryGameTests {
 			helper.succeed();
 		});
 	}
+
+	// ---- products (docs/eggs.md) ----
+
+	/** Twelve Leghorn eggs of one size and grade fill a carton; fertile eggs are refused; the carton opens back into its eggs. */
+	static void gradingPacksCartons(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(3, 1, 3), dev.farmings.eggs.EggBlocks.EGG_GRADER);
+		var g = (dev.farmings.eggs.EggGraderEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 3)));
+		FowlEntity hen = adult(helper, FowlBreed.LEGHORN, Sex.FEMALE, 81L, new BlockPos(6, 1, 6));
+		hen.advanceForTest((32 - 20.4) * 7 - 30);      // about 32 weeks old: 58.5 g eggs, USDA Large
+		String label = null;
+		for (int i = 0; i < 12; i++) {
+			ItemStack egg = hen.makeEgg(level.getGameTime());
+			label = dev.farmings.eggs.EggGraderEntity.label(egg, level.getGameTime());
+			helper.assertTrue(g.grade(egg), Component.literal("a table egg is graded"));
+		}
+		helper.assertTrue("Large, Grade AA".equals(label), Component.literal("fresh Leghorn eggs are Large AA: " + label + " (" + g.readout() + ")"));
+		helper.assertTrue(g.cartons().size() == 1, Component.literal("one carton of 12: " + g.readout()));
+		ItemStack carton = g.removeItem(1, 1);
+		helper.assertTrue(dev.farmings.item.EggCartonItem.eggs(carton).size() == 12 && dev.farmings.item.EggCartonItem.label(carton).equals("Large, Grade AA"),
+				Component.literal("the carton holds the 12 eggs and their label"));
+		var fertile = fertileEggs(helper, FowlBreed.LEGHORN, 1, 82L).get(0);
+		helper.assertTrue(!g.grade(fertile), Component.literal("a fertile egg is a hatching egg, not graded"));
+		helper.succeed();
+	}
+
+	/** A table egg's spoil clock starts at laying (7 days out, 35 cold); a fertile egg has none. */
+	static void tableEggsSpoil(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity hen = adult(helper, FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE, 83L, new BlockPos(2, 1, 2));
+		ItemStack table = hen.makeEgg(level.getGameTime());
+		long at = dev.farmings.item.Perishables.spoilsAt(table);
+		helper.assertTrue(at >= level.getGameTime() + 7 * 24_000 && at < level.getGameTime() + 7 * 24_000 + 2_000, Component.literal("spoils 7 days on: " + at));
+		ItemStack rotten = dev.farmings.item.Perishables.spoiledVersion(table, at);
+		helper.assertTrue(rotten != null && rotten.is(dev.farmings.FarmingsItems.ROTTEN_EGG), Component.literal("it becomes a rotten egg"));
+		ItemStack fertile = fertileEggs(helper, FowlBreed.RHODE_ISLAND_RED, 1, 84L).get(0);
+		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(fertile) == Long.MIN_VALUE, Component.literal("a fertile egg has no spoil clock"));
+		helper.assertTrue(dev.farmings.FarmingsItems.POULTRY_LITTER.getDefaultInstance().has(net.minecraft.core.component.DataComponents.COMPOSTABLE),
+				Component.literal("poultry litter goes in the composter"));
+		helper.succeed();
+	}
+
+	/** A Bronze tom gives turkey by dressed weight and feathers; a duck gives duck meat and down. */
+	static void poultryMeatAndDown(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity tom = adult(helper, FowlBreed.BRONZE, Sex.MALE, 85L, new BlockPos(2, 1, 2));
+		FowlEntity duck = adult(helper, FowlBreed.PEKIN, Sex.FEMALE, 86L, new BlockPos(6, 1, 6));
+		int turkeyWant = dev.farmings.husbandry.poultry.Fowl.meatItems(tom.composition(), tom.weightKg());
+		tom.kill(level);
+		duck.kill(level);
+		helper.runAfterDelay(5, () -> {
+			var items = level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12));
+			int turkey = items.stream().filter(i -> i.getItem().is(dev.farmings.FarmingsItems.TURKEY_MEAT)).mapToInt(i -> i.getItem().getCount()).sum();
+			int duckMeat = items.stream().filter(i -> i.getItem().is(dev.farmings.FarmingsItems.DUCK_MEAT)).mapToInt(i -> i.getItem().getCount()).sum();
+			boolean down = items.stream().anyMatch(i -> i.getItem().is(dev.farmings.FarmingsItems.DOWN));
+			boolean feathers = items.stream().anyMatch(i -> i.getItem().is(net.minecraft.world.item.Items.FEATHER));
+			helper.assertTrue(turkey == turkeyWant && turkey >= 20, Component.literal("turkey " + turkey + ", expected " + turkeyWant));
+			helper.assertTrue(duckMeat > 0 && down && feathers, Component.literal("duck " + duckMeat + ", down " + down + ", feathers " + feathers));
+			helper.succeed();
+		});
+	}
 }

@@ -178,11 +178,45 @@ public final class FarmingsItems {
 
 	/** Poultry meat: chicken is the vanilla item (docs/eggs.md); the other species' meat comes with the products part. */
 	public static @org.jspecify.annotations.Nullable Item fowlMeat(dev.farmings.genetics.Species s, boolean cooked) {
-		return s == dev.farmings.genetics.Species.CHICKEN ? (cooked ? net.minecraft.world.item.Items.COOKED_CHICKEN : net.minecraft.world.item.Items.CHICKEN) : null;
+		return switch (s) {
+			case TURKEY -> cooked ? COOKED_TURKEY : TURKEY_MEAT;
+			case DUCK -> cooked ? COOKED_DUCK : DUCK_MEAT;
+			case QUAIL -> cooked ? COOKED_QUAIL : QUAIL_MEAT;
+			default -> cooked ? net.minecraft.world.item.Items.COOKED_CHICKEN : net.minecraft.world.item.Items.CHICKEN;
+		};
 	}
 
-	/** Poultry litter from the coop, 10 kg an item (docs/eggs.md, proposed). */
-	public static final Item POULTRY_LITTER = item("poultry_litter", Item::new);
+	/** Poultry litter from the coop, 10 kg an item (docs/eggs.md, proposed); the vanilla composter takes it at bread's 85% (proposed). */
+	public static final Item POULTRY_LITTER = item("poultry_litter",
+			p -> new Item(p.compostable(net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders.COMPOSTABLE_MEDIUM_HIGH)));
+	// Poultry meat (docs/eggs.md): chicken is vanilla's; the others copy vanilla chicken's food (raw with its hunger risk) (proposed).
+	public static final Item TURKEY_MEAT = rawPoultry("turkey");
+	public static final Item COOKED_TURKEY = cookedPoultry("cooked_turkey");
+	public static final Item DUCK_MEAT = rawPoultry("duck");
+	public static final Item COOKED_DUCK = cookedPoultry("cooked_duck");
+	public static final Item QUAIL_MEAT = rawPoultry("quail");
+	public static final Item COOKED_QUAIL = cookedPoultry("cooked_quail");
+	public static final Item SPOILED_POULTRY = item("spoiled_poultry", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+	/** A fried egg: 3 hunger, 3.6 saturation (proposed). */
+	public static final Item FRIED_EGG = item("fried_egg", p -> new Item(p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(3).saturationModifier(0.6F).build())));
+	/** A spoiled table egg; not food. */
+	public static final Item ROTTEN_EGG = item("rotten_egg", Item::new);
+	/** Duck down: about 30 g a duck (Farrell review, TO VERIFY). */
+	public static final Item DOWN = item("down", Item::new);
+	/** A down jacket: warm like the wool clothing, leather's protection (proposed). */
+	public static final Item DOWN_JACKET = item("down_jacket", p -> new dev.farmings.item.WoolClothingItem(p, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+	/** A carton of 12 graded eggs; use it to open it. */
+	public static final Item EGG_CARTON = item("egg_carton", p -> new dev.farmings.item.EggCartonItem(p.stacksTo(16)));
+
+	private static Item rawPoultry(String name) {
+		return item(name, p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_POULTRY,
+				p.food(net.minecraft.world.food.Foods.CHICKEN, net.minecraft.world.item.component.Consumables.CHICKEN)));
+	}
+
+	private static Item cookedPoultry(String name) {
+		return item(name, p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_POULTRY,
+				p.food(net.minecraft.world.food.Foods.COOKED_CHICKEN)));
+	}
 
 	public static final java.util.Map<String, Item> ALL = new java.util.LinkedHashMap<>();
 
@@ -218,6 +252,18 @@ public final class FarmingsItems {
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
 		ALL.put("poultry_litter", POULTRY_LITTER);
+		ALL.put("turkey", TURKEY_MEAT);
+		ALL.put("cooked_turkey", COOKED_TURKEY);
+		ALL.put("duck", DUCK_MEAT);
+		ALL.put("cooked_duck", COOKED_DUCK);
+		ALL.put("quail", QUAIL_MEAT);
+		ALL.put("cooked_quail", COOKED_QUAIL);
+		ALL.put("spoiled_poultry", SPOILED_POULTRY);
+		ALL.put("fried_egg", FRIED_EGG);
+		ALL.put("rotten_egg", ROTTEN_EGG);
+		ALL.put("down", DOWN);
+		ALL.put("down_jacket", DOWN_JACKET);
+		ALL.put("egg_carton", EGG_CARTON);
 		ALL.put("chicken_egg", CHICKEN_EGG);
 		ALL.put("turkey_egg", TURKEY_EGG);
 		ALL.put("quail_egg", QUAIL_EGG);

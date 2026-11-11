@@ -68,6 +68,8 @@ public final class Perishables {
 			case CHEESE -> FarmingsItems.MOLDY_CHEESE;
 			case STEAK -> FarmingsItems.SPOILED_STEAK;
 			case MUTTON -> FarmingsItems.SPOILED_MUTTON;
+			case EGG -> FarmingsItems.ROTTEN_EGG;
+			case POULTRY -> FarmingsItems.SPOILED_POULTRY;
 		};
 	}
 }

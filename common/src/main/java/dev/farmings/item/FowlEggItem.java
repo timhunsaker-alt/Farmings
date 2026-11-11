@@ -10,10 +10,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
-/** An egg of one species (docs/eggs.md): weight, shell colour and whether it is fertile, shown in the tooltip. */
-public class FowlEggItem extends Item {
+/**
+ * An egg of one species (docs/eggs.md): weight, shell colour and whether it is fertile, shown in the tooltip. Table eggs spoil (35 days
+ * cold, 7 out); a fertile egg does not rot in a pocket, it only stops being hatchable after 7 days unwarmed (poultry.md).
+ */
+public class FowlEggItem extends PerishableItem {
 	public FowlEggItem(Properties props) {
-		super(props);
+		super(dev.farmings.process.food.Spoilage.Food.EGG, props);
+	}
+
+	@Override
+	public void inventoryTick(ItemStack stack, net.minecraft.server.level.ServerLevel level, net.minecraft.world.entity.Entity entity,
+			net.minecraft.world.entity.@org.jspecify.annotations.Nullable EquipmentSlot slot) {
+		if (!FowlEggs.fertile(stack)) {
+			super.inventoryTick(stack, level, entity, slot);
+		}
 	}
 
 	@Override

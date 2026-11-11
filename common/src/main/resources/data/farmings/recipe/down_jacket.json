@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "QPQ",
+  "QQQ",
+  "QQQ"
+ ],
+ "key": {
+  "P": "farmings:felt",
+  "Q": "farmings:down"
+ },
+ "result": {
+  "id": "farmings:down_jacket",
+  "count": 1
+ }
+}

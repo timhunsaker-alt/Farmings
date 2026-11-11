@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:smelting",
+ "category": "food",
+ "ingredient": "farmings:quail",
+ "result": {
+  "id": "farmings:cooked_quail"
+ },
+ "experience": 0.35,
+ "cookingtime": 200
+}

@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WGW",
+  "T T"
+ ],
+ "key": {
+  "G": "minecraft:glass",
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:egg_grader",
+  "count": 1
+ }
+}

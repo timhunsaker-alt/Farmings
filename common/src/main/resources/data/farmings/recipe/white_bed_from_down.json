@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "QQQ",
+  "WWW"
+ ],
+ "key": {
+  "Q": "farmings:down",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "minecraft:white_bed",
+  "count": 1
+ }
+}

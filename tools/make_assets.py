@@ -119,6 +119,18 @@ ITEMS = [
     ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
     # eggs (docs/eggs.md); placeholders until the Ludo icons
     ("poultry_litter", "Poultry Litter", (120, 100, 70), "blob"),
+    ("turkey", "Raw Turkey", (226, 150, 140), "steak"),
+    ("cooked_turkey", "Roast Turkey", (184, 120, 64), "steak"),
+    ("duck", "Raw Duck", (214, 120, 110), "steak"),
+    ("cooked_duck", "Roast Duck", (166, 96, 50), "steak"),
+    ("quail", "Raw Quail", (220, 140, 130), "steak"),
+    ("cooked_quail", "Roast Quail", (176, 110, 60), "steak"),
+    ("spoiled_poultry", "Spoiled Poultry", (130, 120, 80), "steak"),
+    ("fried_egg", "Fried Egg", (250, 240, 200), "blob"),
+    ("rotten_egg", "Rotten Egg", (150, 150, 100), "blob"),
+    ("down", "Down", (244, 242, 236), "blob"),
+    ("down_jacket", "Down Jacket", (90, 110, 150), "clothing"),
+    ("egg_carton", "Egg Carton", (200, 190, 170), "blob"),
     ("chicken_egg", "Chicken Egg", (226, 196, 150), "blob"),
     ("turkey_egg", "Turkey Egg", (214, 190, 150), "blob"),
     ("quail_egg", "Quail Egg", (170, 140, 100), "blob"),
@@ -181,7 +193,7 @@ def item_texture(name, colour, fork):
     if fork == "armor":
         piece = name.split("_")[1]
         shapes = {"helmet": [(3, 4, 12, 9)], "chestplate": [(2, 3, 13, 13)], "leggings": [(4, 3, 7, 14), (8, 3, 11, 14)], "boots": [(2, 9, 6, 14), (9, 9, 13, 14)]}
-        piece = {"cap": "helmet", "sweater": "chestplate", "trousers": "leggings", "socks": "boots"}.get(piece, piece)
+        piece = {"cap": "helmet", "sweater": "chestplate", "jacket": "chestplate", "trousers": "leggings", "socks": "boots"}.get(piece, piece)
         for box in shapes[piece]:
             d.rectangle(box, fill=colour, outline=tuple(max(0, c - 60) for c in colour))
     elif fork == "yarn":
@@ -318,13 +330,18 @@ def main():
           {"layers": {"humanoid": [{"texture": "farmings:wool"}], "humanoid_leggings": [{"texture": "farmings:wool"}]}})
     write(os.path.join(DATA, "tags", "item", "repairs_wool_clothing.json"), {"values": ["farmings:wool_cloth"]})
     write(os.path.join(ROOT_DATA, "minecraft", "tags", "item", "freeze_immune_wearables.json"),
-          {"replace": False, "values": ["farmings:wool_cap", "farmings:wool_sweater", "farmings:wool_trousers", "farmings:wool_socks"]})
+          {"replace": False, "values": ["farmings:wool_cap", "farmings:wool_sweater", "farmings:wool_trousers", "farmings:wool_socks",
+                                      "farmings:down_jacket"]})
+    # poultry products (docs/eggs.md): every Farmings egg counts where a recipe takes an egg
+    write(os.path.join(DATA, "tags", "item", "eggs.json"), {"values": ["farmings:chicken_egg", "farmings:turkey_egg", "farmings:quail_egg",
+                                                                       "farmings:duck_egg"]})
     wool_mill_assets(lang)
     cold_room_assets(lang)
     shed_assets(lang)
     corral_assets(lang)
     coop_assets(lang)
     hatchery_assets(lang)
+    egg_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -336,7 +353,7 @@ KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecr
         "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
         "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick",
         "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences", "X": "farmings:wool_cloth",
-        "D": "minecraft:wheat_seeds"}
+        "D": "minecraft:wheat_seeds", "Q": "farmings:down", "P": "farmings:felt"}
 SHAPED = {
     # barn
     "barn_controller": (["SRS", "CIC", "SSS"], 1),
@@ -395,6 +412,9 @@ SHAPED = {
     # the hatchery (docs/multiblocks/hatchery.md): a glass-fronted cabinet with a heater, a heat lamp on a bracket
     "incubator": (["IGI", "IRI", "WWW"], 1),
     "brooder": ([" N ", "IRI", " G "], 1),
+    # egg grading and down (docs/eggs.md): a plank table with a candling lamp; a down jacket on a felt lining
+    "egg_grader": (["WGW", "T T"], 1),
+    "down_jacket": (["QPQ", "QQQ", "QQQ"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -425,7 +445,8 @@ SHAPELESS = {
     "sheep_cheese": (["farmings:sheep_cheese_wheel"], 8),
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
-           "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop"}
+           "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop",
+           "turkey": "cooked_turkey", "duck": "cooked_duck", "quail": "cooked_quail"}
 
 
 def ingredient(ref):
@@ -445,6 +466,19 @@ def recipes():
         for kind, time in (("smelting", 200), ("smoking", 100), ("campfire_cooking", 600)):
             write(os.path.join(out, "%s_from_%s.json" % (cooked, kind)), {"type": "minecraft:" + kind, "category": "food",
                   "ingredient": "farmings:" + raw, "result": {"id": "farmings:" + cooked}, "experience": 0.35, "cookingtime": time})
+    # poultry recipes with vanilla results or several inputs (docs/eggs.md)
+    for egg in ("chicken_egg", "turkey_egg", "quail_egg", "duck_egg"):
+        for kind, time in (("smelting", 200), ("smoking", 100), ("campfire_cooking", 600)):
+            fname = "fried_egg" if (egg, kind) == ("chicken_egg", "smelting") else "fried_egg_from_%s_%s" % (egg, kind)
+            write(os.path.join(out, fname + ".json"), {"type": "minecraft:" + kind, "category": "food",
+                  "ingredient": "farmings:" + egg, "result": {"id": "farmings:fried_egg"}, "experience": 0.35, "cookingtime": time})
+    write(os.path.join(out, "cake_with_farmings_eggs.json"), {"type": "minecraft:crafting_shaped", "category": "misc",
+          "pattern": ["MMM", "SES", "WWW"], "key": {"M": "minecraft:milk_bucket", "S": "minecraft:sugar", "E": "#farmings:eggs", "W": "minecraft:wheat"},
+          "result": {"id": "minecraft:cake", "count": 1}})
+    write(os.path.join(out, "pumpkin_pie_with_farmings_eggs.json"), {"type": "minecraft:crafting_shapeless", "category": "misc",
+          "ingredients": ["minecraft:pumpkin", "minecraft:sugar", "#farmings:eggs"], "result": {"id": "minecraft:pumpkin_pie", "count": 1}})
+    write(os.path.join(out, "white_bed_from_down.json"), {"type": "minecraft:crafting_shaped", "category": "misc",
+          "pattern": ["QQQ", "WWW"], "key": {"Q": "farmings:down", "W": "#minecraft:planks"}, "result": {"id": "minecraft:white_bed", "count": 1}})
     # no two shaped recipes may share a pattern and key
     seen = {}
     for name, (pattern, _) in SHAPED.items():
@@ -874,6 +908,28 @@ def hatchery_assets(lang):
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+
+
+def egg_assets(lang):
+    """The egg grading table: a plank top with a lit candling hole and egg trays."""
+    from PIL import Image, ImageDraw
+    tex = os.path.join(ASSETS, "textures", "block")
+    top = Image.new("RGBA", (16, 16), (170, 128, 80, 255))
+    d = ImageDraw.Draw(top)
+    for x in range(1, 15, 3):
+        for y in (2, 5, 8):
+            d.ellipse([x, y, x + 1, y + 1], fill=(236, 214, 170, 255))
+    d.ellipse([10, 11, 13, 14], fill=(255, 230, 140, 255))         # the candling light
+    if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", "egg_grader.png")):
+        top.save(os.path.join(tex, "egg_grader.png"))
+    write(os.path.join(ASSETS, "models", "block", "egg_grader.json"), {"textures": {"top": "farmings:block/egg_grader", "side": "farmings:block/coop_controller",
+                                                                       "particle": "farmings:block/egg_grader"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 14, 16], "faces": {"up": {"texture": "#top"}, "down": {"texture": "#side"},
+                        **{f: {"texture": "#side"} for f in ("north", "south", "east", "west")}}}]})
+    lang["block.farmings.egg_grader"] = "Egg Grading Table"
+    write(os.path.join(ASSETS, "blockstates", "egg_grader.json"), {"variants": {"": {"model": "farmings:block/egg_grader"}}})
+    write(os.path.join(ASSETS, "items", "egg_grader.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/egg_grader"}})
+    write(os.path.join(DATA, "loot_table", "blocks", "egg_grader.json"), loot("egg_grader"))
 
 
 def loot(name):

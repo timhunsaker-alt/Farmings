@@ -1,0 +1,41 @@
+{
+ "textures": {
+  "top": "farmings:block/egg_grader",
+  "side": "farmings:block/coop_controller",
+  "particle": "farmings:block/egg_grader"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    14,
+    16
+   ],
+   "faces": {
+    "up": {
+     "texture": "#top"
+    },
+    "down": {
+     "texture": "#side"
+    },
+    "north": {
+     "texture": "#side"
+    },
+    "south": {
+     "texture": "#side"
+    },
+    "east": {
+     "texture": "#side"
+    },
+    "west": {
+     "texture": "#side"
+    }
+   }
+  }
+ ]
+}

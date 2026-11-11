@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:campfire_cooking",
+ "category": "food",
+ "ingredient": "farmings:duck",
+ "result": {
+  "id": "farmings:cooked_duck"
+ },
+ "experience": 0.35,
+ "cookingtime": 600
+}
