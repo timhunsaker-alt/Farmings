@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "III",
+  "NCN",
+  "T T"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "I": "minecraft:iron_ingot",
+  "N": "minecraft:iron_bars",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:tool_mower",
+  "count": 1
+ }
+}

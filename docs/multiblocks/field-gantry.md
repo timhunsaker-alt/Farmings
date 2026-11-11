@@ -71,3 +71,23 @@ the span as the working width.
 - Two gantries on one pair of rails.
 - Autosteer.
 - Field mapping.
+
+## Built, 2026-11-11
+- **Code:**
+  - `farm/gantry/GantryTool` holds speeds and power and is plain Java with a unit test.
+  - The cab, parts, junction and swath are in `gantry/`.
+- **It steps as blocks.** The gantry moves its own blocks one cell at a time and carries the cab's saved state with it, instead of lifting
+  into one entity the way the TBM does. The motion is a step every 0.45-0.72 s. It can be tested without a client.
+- **The tool head is an item fitted to the cab.** It shows as a head hanging under every beam cell.
+- **The swath:**
+  - Mown perennials keep their swath on the regrowing plant, as a `swath` property drawn over the crop.
+  - The combine's straw is a `swath` block.
+  - The cab times each row's drying in real days and pauses it in rain.
+  - Hand raking is not built.
+- **What the tools take:**
+  - The harvester also takes ripe vanilla crops, with their own drops.
+  - The seed drill sows any crop seed, vanilla seeds included.
+  - The spreader takes bone meal now; compost and liquid digestate join with their parts.
+- **The bin:** each product is kept in kg. It unloads as round bales of 454 kg, 1 kg grain items and 25 kg chopped forage. A remainder
+  stays in the bin.
+- **Game tests:** gantry_plants_strip, gantry_harvests_to_stop, gantry_mows_rakes_bales, gantry_runs_on_its_clock.

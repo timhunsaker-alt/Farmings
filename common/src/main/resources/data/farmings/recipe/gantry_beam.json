@@ -1,0 +1,15 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SSS",
+  " S "
+ ],
+ "key": {
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:gantry_beam",
+  "count": 4
+ }
+}

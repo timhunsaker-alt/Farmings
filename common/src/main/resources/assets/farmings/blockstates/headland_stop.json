@@ -1,0 +1,53 @@
+{
+ "variants": {
+  "axis=x,tool=none": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=x,tool=seed_drill": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=x,tool=harvester": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=x,tool=mower": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=x,tool=rake": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=x,tool=baler": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=x,tool=spreader": {
+   "model": "farmings:block/headland_stop"
+  },
+  "axis=z,tool=none": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  },
+  "axis=z,tool=seed_drill": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  },
+  "axis=z,tool=harvester": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  },
+  "axis=z,tool=mower": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  },
+  "axis=z,tool=rake": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  },
+  "axis=z,tool=baler": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  },
+  "axis=z,tool=spreader": {
+   "model": "farmings:block/headland_stop",
+   "y": 90
+  }
+ }
+}

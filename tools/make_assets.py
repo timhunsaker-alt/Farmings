@@ -344,6 +344,7 @@ def main():
     egg_assets(lang)
     crop_assets(lang)
     conveyor_assets(lang)
+    gantry_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -422,6 +423,19 @@ SHAPED = {
     "farm_belt_drive": (["ICI", "IRI", "III"], 1),
     "grain_auger": (["I", "T", "I"], 4),
     "grain_auger_drive": (["ICI", "RTR"], 1),
+    # the field gantry (docs/multiblocks/field-gantry.md): steel, a redstone controller, tool heads of iron
+    "field_rail": (["I I", "SSS", "I I"], 16),
+    "gantry_truck": (["SSS", "SCS", "IRI"], 1),
+    "gantry_beam": (["SSS", " S "], 4),
+    "headland_stop": (["SKS"], 1),
+    "gantry_cab": (["SGS", "SRS", "SCS"], 1),
+    "field_junction": (["SCS", "CRC", "SCS"], 1),
+    "tool_seed_drill": (["DDD", "III", "T T"], 1),
+    "tool_harvester": (["NNN", "ICI", "T T"], 1),
+    "tool_mower": (["III", "NCN", "T T"], 1),
+    "tool_rake": (["TTT", "III", "T T"], 1),
+    "tool_baler": (["III", "IRI", "T T"], 1),
+    "tool_spreader": (["I I", "IBI", "T T"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -1005,9 +1019,15 @@ def crop_assets(lang):
         if name == "corn":
             variants = {"age=%d,ripe=false" % i: {"model": "farmings:block/corn_stage%d" % i} for i in range(8)}
             variants.update({"age=%d,ripe=true" % i: {"model": "farmings:block/corn_ripe"} for i in range(8)})
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
+        elif name in ("alfalfa", "timothy", "orchardgrass"):
+            parts = [{"when": {"age": str(i)}, "apply": {"model": "farmings:block/%s_stage%d" % (name, i)}} for i in range(8)]
+            parts.append({"when": {"swath": "1"}, "apply": {"model": "farmings:block/swath_flat_hay"}})
+            parts.append({"when": {"swath": "2"}, "apply": {"model": "farmings:block/swath_row_hay"}})
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"multipart": parts})
         else:
             variants = {"age=%d" % i: {"model": "farmings:block/%s_stage%d" % (name, i)} for i in range(8)}
-        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
         seed = name + "_seeds"
         item_texture(seed, CROPS[name][2], False)
         write(os.path.join(ASSETS, "models", "item", seed + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/%s_placeholder" % seed}})
@@ -1106,6 +1126,85 @@ def conveyor_assets(lang):
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"facing=" + f: {"model": "farmings:block/" + name, **r} for f, r in rot.items()}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+
+
+GANTRY = {"field_rail": "Field Rail", "gantry_truck": "Gantry End Truck", "gantry_beam": "Gantry Bridge Beam", "headland_stop": "Headland Stop",
+          "gantry_cab": "Gantry Cab (controller)", "field_junction": "Field Cable Junction"}
+GANTRY_TOOLS = {"seed_drill": ("Seed Drill Head", (60, 120, 60)), "harvester": ("Combine / Forage Chopper Head", (200, 60, 40)),
+                "mower": ("Mower Head", (220, 170, 40)), "rake": ("Rake Head", (90, 90, 160)), "baler": ("Round Baler Head", (40, 120, 160)),
+                "spreader": ("Spreader Head", (130, 90, 50))}
+
+
+def gantry_assets(lang):
+    """Galvanised rail on sleepers, a yellow-painted frame, a cab with a window, tool heads hanging under the beam, straw and hay swaths."""
+    tex = os.path.join(ASSETS, "textures", "block")
+    m = os.path.join(ASSETS, "models", "block")
+    def fill(name, base, lines=None, box=None):
+        img = Image.new("RGBA", (16, 16), base + (255,))
+        d = ImageDraw.Draw(img)
+        for l in (lines or []):
+            d.line(l[0], fill=l[1] + (255,))
+        if box:
+            d.rectangle(box[0], fill=box[1] + (255,))
+        img.save(os.path.join(tex, name + ".png"))
+    fill("gantry_steel", (214, 176, 40), [([(0, 0), (15, 0)], (160, 130, 30)), ([(0, 15), (15, 15)], (160, 130, 30)), ([(0, 0), (15, 15)], (180, 150, 34))])
+    fill("field_rail", (110, 84, 56), [([(0, 3), (15, 3)], (180, 182, 186)), ([(0, 12), (15, 12)], (180, 182, 186))])
+    fill("gantry_cab", (214, 176, 40), None, ([3, 3, 12, 9], (120, 170, 200)))
+    fill("field_junction", (120, 124, 128), None, ([5, 3, 10, 12], (230, 200, 40)))
+    fill("headland_stop", (230, 200, 40), [([(0, y), (15, y)], (30, 30, 30)) for y in (2, 6, 10, 14)])
+    for kind, col in (("hay", (176, 170, 90)), ("oat_straw", (220, 200, 120)), ("barley_straw", (214, 190, 110))):
+        fill("swath_" + kind, col, [([(x, 0), (x, 15)], tuple(max(0, c - 30) for c in col)) for x in range(1, 16, 3)])
+    tools = {"seed_drill": (60, 120, 60), "harvester": (200, 60, 40), "mower": (220, 170, 40), "rake": (90, 90, 160), "baler": (40, 120, 160),
+             "spreader": (130, 90, 50)}
+    for t, col in tools.items():
+        fill("tool_" + t, col, [([(0, 8), (15, 8)], (40, 40, 40))])
+    faces = lambda t: {f: {"texture": t} for f in ("north", "south", "east", "west", "up", "down")}
+    write(os.path.join(m, "field_rail.json"), {"textures": {"t": "farmings:block/field_rail", "particle": "farmings:block/field_rail"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 3, 16], "faces": faces("#t")}]})
+    write(os.path.join(m, "gantry_truck.json"), {"textures": {"t": "farmings:block/gantry_steel", "particle": "farmings:block/gantry_steel"},
+          "elements": [{"from": [2, 0, 2], "to": [14, 16, 14], "faces": faces("#t")}]})
+    beam = {"from": [0, 8, 4], "to": [16, 16, 12], "faces": faces("#t")}
+    write(os.path.join(m, "gantry_beam.json"), {"textures": {"t": "farmings:block/gantry_steel", "particle": "farmings:block/gantry_steel"}, "elements": [beam]})
+    for t in tools:
+        write(os.path.join(m, "gantry_beam_" + t + ".json"), {"textures": {"t": "farmings:block/gantry_steel", "h": "farmings:block/tool_" + t,
+                                                                            "particle": "farmings:block/gantry_steel"},
+              "elements": [beam, {"from": [0, -12, 5], "to": [16, 8, 11], "faces": faces("#h")}]})
+    write(os.path.join(m, "gantry_cab.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/gantry_cab"}})
+    write(os.path.join(m, "field_junction.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/field_junction"}})
+    write(os.path.join(m, "headland_stop.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/headland_stop"}})
+    for kind in ("hay", "oat_straw", "barley_straw"):
+        write(os.path.join(m, "swath_flat_" + kind + ".json"), {"textures": {"t": "farmings:block/swath_" + kind, "particle": "farmings:block/swath_" + kind},
+              "elements": [{"from": [0, 0, 0], "to": [16, 1, 16], "faces": faces("#t")}]})
+        write(os.path.join(m, "swath_row_" + kind + ".json"), {"textures": {"t": "farmings:block/swath_" + kind, "particle": "farmings:block/swath_" + kind},
+              "elements": [{"from": [4, 0, 0], "to": [12, 5, 16], "faces": faces("#t")}]})
+    tool_names = ["none"] + list(tools)
+    def axis_rot(axis):
+        return {"y": 90} if axis == "z" else {}
+    for name in ("field_rail", "gantry_truck", "gantry_beam", "headland_stop"):
+        variants = {}
+        for axis in ("x", "z"):
+            for t in tool_names:
+                model = "farmings:block/" + name
+                if name == "gantry_beam" and t != "none":
+                    model = "farmings:block/gantry_beam_" + t
+                variants["axis=%s,tool=%s" % (axis, t)] = {"model": model, **axis_rot(axis)}
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
+    for name in ("gantry_cab", "field_junction"):
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+    write(os.path.join(ASSETS, "blockstates", "swath.json"), {"variants": {
+        "kind=%s,raked=%s" % (k, r): {"model": "farmings:block/swath_%s_%s" % ("row" if r == "true" else "flat", k)}
+        for k in ("oat_straw", "barley_straw") for r in ("false", "true")}})
+    lang["block.farmings.swath"] = "Swath"
+    for name, title in GANTRY.items():
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    for t, (title, colour) in GANTRY_TOOLS.items():
+        n = "tool_" + t
+        lang["item.farmings." + n] = title
+        item_texture(n, colour, False)
+        write(os.path.join(ASSETS, "models", "item", n + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/%s_placeholder" % n}})
+        write(os.path.join(ASSETS, "items", n + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + n}})
 
 
 def loot(name):

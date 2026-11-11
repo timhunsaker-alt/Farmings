@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SGS",
+  "SRS",
+  "SCS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "G": "minecraft:glass",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:gantry_cab",
+  "count": 1
+ }
+}

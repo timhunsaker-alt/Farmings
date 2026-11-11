@@ -1,0 +1,16 @@
+{
+ "variants": {
+  "kind=oat_straw,raked=false": {
+   "model": "farmings:block/swath_flat_oat_straw"
+  },
+  "kind=oat_straw,raked=true": {
+   "model": "farmings:block/swath_row_oat_straw"
+  },
+  "kind=barley_straw,raked=false": {
+   "model": "farmings:block/swath_flat_barley_straw"
+  },
+  "kind=barley_straw,raked=true": {
+   "model": "farmings:block/swath_row_barley_straw"
+  }
+ }
+}

@@ -1,0 +1,53 @@
+{
+ "variants": {
+  "axis=x,tool=none": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=x,tool=seed_drill": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=x,tool=harvester": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=x,tool=mower": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=x,tool=rake": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=x,tool=baler": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=x,tool=spreader": {
+   "model": "farmings:block/gantry_truck"
+  },
+  "axis=z,tool=none": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  },
+  "axis=z,tool=seed_drill": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  },
+  "axis=z,tool=harvester": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  },
+  "axis=z,tool=mower": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  },
+  "axis=z,tool=rake": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  },
+  "axis=z,tool=baler": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  },
+  "axis=z,tool=spreader": {
+   "model": "farmings:block/gantry_truck",
+   "y": 90
+  }
+ }
+}

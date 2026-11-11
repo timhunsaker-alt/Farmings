@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "III",
+  "IRI",
+  "T T"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:tool_baler",
+  "count": 1
+ }
+}

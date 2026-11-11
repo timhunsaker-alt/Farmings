@@ -14,16 +14,18 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 /** Alfalfa, timothy, orchardgrass (docs/crops.md): cut, they drop back to stage 3 and regrow; after their stand's cuts they die. */
 public class PerennialCropBlock extends FieldCropBlock {
 	public static final IntegerProperty CUTS = IntegerProperty.create("cuts", 0, 31);
+	/** The cut hay lying on the stubble: 0 none, 1 a mown swath (drying), 2 raked into a windrow (field-gantry.md). */
+	public static final IntegerProperty SWATH = IntegerProperty.create("swath", 0, 2);
 
 	public PerennialCropBlock(FieldCrop crop, Supplier<ItemLike> seed, Properties properties) {
 		super(crop, seed, properties);
-		registerDefaultState(defaultBlockState().setValue(CUTS, 0));
+		registerDefaultState(defaultBlockState().setValue(CUTS, 0).setValue(SWATH, 0));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(CUTS);
+		builder.add(CUTS, SWATH);
 	}
 
 	@Override
@@ -32,8 +34,8 @@ public class PerennialCropBlock extends FieldCropBlock {
 	}
 
 	/**
-	 * Cuts a ripe plant: it drops to its regrowth stage, or dies at the end of its stand (back to dirt). Returns the dry matter cut, kg, or
-	 * 0 if it was not ripe.
+	 * Cuts a ripe plant: it drops to its regrowth stage with the cut lying on it as a swath, or dies at the end of its stand (its last swath
+	 * is lost with it, proposed). Returns the dry matter cut, kg, or 0 if it was not ripe.
 	 */
 	public double cut(ServerLevel level, BlockPos pos) {
 		BlockState state = level.getBlockState(pos);
@@ -44,7 +46,7 @@ public class PerennialCropBlock extends FieldCropBlock {
 		if (cuts >= crop.standCuts) {
 			level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 		} else {
-			BlockState next = state.setValue(AGE, FieldCrop.REGROWTH_STAGE).setValue(CUTS, Math.min(31, cuts));
+			BlockState next = state.setValue(AGE, FieldCrop.REGROWTH_STAGE).setValue(CUTS, Math.min(31, cuts)).setValue(SWATH, 1);
 			level.setBlock(pos, next, 3);
 			level.scheduleTick(pos, this, (int) crop.regrowthStageTicks());
 		}

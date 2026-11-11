@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "I I",
+  "IBI",
+  "T T"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "I": "minecraft:iron_ingot",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:tool_spreader",
+  "count": 1
+ }
+}

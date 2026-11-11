@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "TTT",
+  "III",
+  "T T"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:tool_rake",
+  "count": 1
+ }
+}

@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "DDD",
+  "III",
+  "T T"
+ ],
+ "key": {
+  "D": "minecraft:wheat_seeds",
+  "I": "minecraft:iron_ingot",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:tool_seed_drill",
+  "count": 1
+ }
+}

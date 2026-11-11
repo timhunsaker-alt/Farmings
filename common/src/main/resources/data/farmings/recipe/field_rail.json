@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "I I",
+  "SSS",
+  "I I"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:field_rail",
+  "count": 16
+ }
+}

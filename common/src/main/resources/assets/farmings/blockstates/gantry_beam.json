@@ -1,0 +1,53 @@
+{
+ "variants": {
+  "axis=x,tool=none": {
+   "model": "farmings:block/gantry_beam"
+  },
+  "axis=x,tool=seed_drill": {
+   "model": "farmings:block/gantry_beam_seed_drill"
+  },
+  "axis=x,tool=harvester": {
+   "model": "farmings:block/gantry_beam_harvester"
+  },
+  "axis=x,tool=mower": {
+   "model": "farmings:block/gantry_beam_mower"
+  },
+  "axis=x,tool=rake": {
+   "model": "farmings:block/gantry_beam_rake"
+  },
+  "axis=x,tool=baler": {
+   "model": "farmings:block/gantry_beam_baler"
+  },
+  "axis=x,tool=spreader": {
+   "model": "farmings:block/gantry_beam_spreader"
+  },
+  "axis=z,tool=none": {
+   "model": "farmings:block/gantry_beam",
+   "y": 90
+  },
+  "axis=z,tool=seed_drill": {
+   "model": "farmings:block/gantry_beam_seed_drill",
+   "y": 90
+  },
+  "axis=z,tool=harvester": {
+   "model": "farmings:block/gantry_beam_harvester",
+   "y": 90
+  },
+  "axis=z,tool=mower": {
+   "model": "farmings:block/gantry_beam_mower",
+   "y": 90
+  },
+  "axis=z,tool=rake": {
+   "model": "farmings:block/gantry_beam_rake",
+   "y": 90
+  },
+  "axis=z,tool=baler": {
+   "model": "farmings:block/gantry_beam_baler",
+   "y": 90
+  },
+  "axis=z,tool=spreader": {
+   "model": "farmings:block/gantry_beam_spreader",
+   "y": 90
+  }
+ }
+}
