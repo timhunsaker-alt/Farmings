@@ -26,6 +26,12 @@ public final class FarmingsFabric implements ModInitializer {
 		for (var type : FarmingsEntities.FOWL) {
 			FabricDefaultAttributeRegistry.register(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)));
 		}
+		// new crop seeds from grass a player breaks (docs/crops.md, "Seeds")
+		net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
+			if (world instanceof net.minecraft.server.level.ServerLevel level) {
+				dev.farmings.crops.GrassSeeds.onBreak(level, player, pos, state);
+			}
+		});
 		// wild animals replace vanilla cows, sheep and chickens, same weights and group sizes (docs/taming.md)
 		net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(Farmings.id("wild_spawns")).add(net.fabricmc.fabric.api.biome.v1.ModificationPhase.REPLACEMENTS,
 				sel -> true, (sel, ctx) -> {

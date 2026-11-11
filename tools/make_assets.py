@@ -342,6 +342,7 @@ def main():
     coop_assets(lang)
     hatchery_assets(lang)
     egg_assets(lang)
+    crop_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -477,6 +478,11 @@ def recipes():
           "result": {"id": "minecraft:cake", "count": 1}})
     write(os.path.join(out, "pumpkin_pie_with_farmings_eggs.json"), {"type": "minecraft:crafting_shapeless", "category": "misc",
           "ingredients": ["minecraft:pumpkin", "minecraft:sugar", "#farmings:eggs"], "result": {"id": "minecraft:pumpkin_pie", "count": 1}})
+    for bale in ("alfalfa_bale", "grass_bale"):
+        write(os.path.join(out, "hay_block_from_%s.json" % bale), {"type": "minecraft:crafting_shapeless", "category": "misc",
+              "ingredients": ["farmings:" + bale], "result": {"id": "minecraft:hay_block", "count": 4}})
+    write(os.path.join(out, "straw.json"), {"type": "minecraft:crafting_shapeless", "category": "misc",
+          "ingredients": ["farmings:straw_bale"], "result": {"id": "farmings:straw", "count": 45}})
     write(os.path.join(out, "white_bed_from_down.json"), {"type": "minecraft:crafting_shaped", "category": "misc",
           "pattern": ["QQQ", "WWW"], "key": {"Q": "farmings:down", "W": "#minecraft:planks"}, "result": {"id": "minecraft:white_bed", "count": 1}})
     # no two shaped recipes may share a pattern and key
@@ -930,6 +936,114 @@ def egg_assets(lang):
     write(os.path.join(ASSETS, "blockstates", "egg_grader.json"), {"variants": {"": {"model": "farmings:block/egg_grader"}}})
     write(os.path.join(ASSETS, "items", "egg_grader.json"), {"model": {"type": "minecraft:model", "model": "farmings:block/egg_grader"}})
     write(os.path.join(DATA, "loot_table", "blocks", "egg_grader.json"), loot("egg_grader"))
+
+
+CROPS = {"alfalfa": ("Alfalfa", (96, 150, 60), (150, 110, 200)), "timothy": ("Timothy", (110, 160, 70), (150, 150, 110)),
+         "orchardgrass": ("Orchardgrass", (90, 140, 70), (120, 130, 90)), "corn": ("Corn", (80, 150, 50), (230, 200, 90)),
+         "oats": ("Oats", (120, 170, 80), (220, 205, 140)), "barley": ("Barley", (120, 165, 70), (225, 195, 110))}
+CROP_PRODUCTS = {"alfalfa_hay": ("Alfalfa Hay (loose, 10 kg)", (150, 170, 90)), "grass_hay": ("Grass Hay (loose, 10 kg)", (180, 175, 110)),
+                 "straw": ("Straw (loose, 10 kg)", (220, 200, 120)), "alfalfa_bale": ("Round Bale of Alfalfa Hay", (140, 160, 80)),
+                 "grass_bale": ("Round Bale of Grass Hay", (175, 170, 100)), "straw_bale": ("Round Bale of Straw", (220, 200, 120)),
+                 "corn_grain": ("Corn (grain, 1 kg)", (235, 190, 60)), "oat_grain": ("Oats (grain, 1 kg)", (215, 195, 140)),
+                 "barley_grain": ("Barley (grain, 1 kg)", (215, 185, 110)), "chopped_corn": ("Chopped Corn (25 kg)", (140, 160, 60)),
+                 "chopped_alfalfa": ("Chopped Alfalfa (25 kg)", (100, 140, 60)), "corn_silage": ("Corn Silage (25 kg)", (160, 150, 70)),
+                 "haylage": ("Haylage (25 kg)", (120, 130, 60))}
+
+
+def crop_textures():
+    """Drawn crop stages: stems that grow with the stage, then each crop's head colour at the last stage."""
+    import random
+    tex = os.path.join(ASSETS, "textures", "block")
+    for name, (_, green, head) in CROPS.items():
+        rnd = random.Random(name)
+        stems = [rnd.randrange(1, 15) for _ in range(9)]
+        for stage in range(8):
+            img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+            d = ImageDraw.Draw(img)
+            h = 2 + int(13 * (stage + 1) / 8)
+            for i, x in enumerate(stems):
+                top = 15 - h + (i % 3)
+                c = tuple(max(0, min(255, v + rnd.randrange(-15, 15))) for v in green)
+                d.line([(x, 15), (x, max(0, top))], fill=c + (255,))
+                if stage >= 6:
+                    d.rectangle([x - (1 if name in ("alfalfa", "corn") else 0), max(0, top), x, max(0, top) + 2], fill=head + (255,))
+            img.save(os.path.join(tex, "%s_stage%d.png" % (name, stage)))
+        if name == "corn":
+            img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+            d = ImageDraw.Draw(img)
+            for x in stems:
+                d.line([(x, 15), (x, 1)], fill=(190, 170, 100, 255))
+                d.rectangle([x, 6, x + 1, 9], fill=(235, 195, 70, 255))
+            img.save(os.path.join(tex, "corn_ripe.png"))
+
+
+def crop_assets(lang):
+    m = os.path.join(ASSETS, "models", "block")
+    for name, (title, _, _) in CROPS.items():
+        lang["block.farmings." + name] = title
+        lang["item.farmings.%s_seeds" % name] = ("Seed Corn" if name == "corn" else title + " Seeds")
+        stages = ["%s_stage%d" % (name, i) for i in range(8)] + (["corn_ripe"] if name == "corn" else [])
+        for st in stages:
+            if name == "corn":
+                height = 16 if st.endswith(("0", "1", "2")) else 32 if st in ("corn_stage6", "corn_stage7", "corn_ripe") else 24
+                planes = []
+                for x in (4, 12):
+                    planes.append({"from": [x, 0, 0], "to": [x, height, 16], "shade": False,
+                                   "faces": {"east": {"uv": [0, 0, 16, 16], "texture": "#crop"}, "west": {"uv": [0, 0, 16, 16], "texture": "#crop"}}})
+                    planes.append({"from": [0, 0, x], "to": [16, height, x], "shade": False,
+                                   "faces": {"north": {"uv": [0, 0, 16, 16], "texture": "#crop"}, "south": {"uv": [0, 0, 16, 16], "texture": "#crop"}}})
+                write(os.path.join(m, st + ".json"), {"ambientocclusion": False, "textures": {"crop": "farmings:block/" + st, "particle": "farmings:block/" + st},
+                                                       "elements": planes, "render_type": "minecraft:cutout"})
+            else:
+                write(os.path.join(m, st + ".json"), {"parent": "minecraft:block/crop", "textures": {"crop": "farmings:block/" + st}, "render_type": "minecraft:cutout"})
+        if name == "corn":
+            variants = {"age=%d,ripe=false" % i: {"model": "farmings:block/corn_stage%d" % i} for i in range(8)}
+            variants.update({"age=%d,ripe=true" % i: {"model": "farmings:block/corn_ripe"} for i in range(8)})
+        else:
+            variants = {"age=%d" % i: {"model": "farmings:block/%s_stage%d" % (name, i)} for i in range(8)}
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
+        seed = name + "_seeds"
+        item_texture(seed, CROPS[name][2], False)
+        write(os.path.join(ASSETS, "models", "item", seed + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/%s_placeholder" % seed}})
+        write(os.path.join(ASSETS, "items", seed + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + seed}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), crop_loot(name))
+    for name, (title, colour) in CROP_PRODUCTS.items():
+        lang["item.farmings." + name] = title
+        real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
+        if not real:
+            item_texture(name, colour, False)
+        tex = "farmings:item/" + name + ("" if real else "_placeholder")
+        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+    crop_textures()
+
+
+def crop_loot(name):
+    """By hand (docs/crops.md): the ripe crop's product at its block yield (10 kg loose hay or straw as a chance, 1 kg grain as a count),
+    and seeds back. The gantry harvests in code."""
+    ripe = {"type": "minecraft:match_block", "blocks": "farmings:" + name, "state": {"age": "7"}}
+    if name == "corn":
+        ripe = {"type": "minecraft:match_block", "blocks": "farmings:corn", "state": {"ripe": "true"}}
+    seed = "farmings:%s_seeds" % name
+    pools = [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": seed}]},
+             {"rolls": 1, "condition": ripe, "entries": [{"type": "minecraft:item", "name": seed,
+                                                           "modifier": {"type": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 0, "max": 1}}}]}]
+    def chance(item, p):
+        return {"rolls": 1, "condition": {"type": "minecraft:all_of", "terms": [ripe, {"type": "minecraft:random_chance", "chance": p}]},
+                "entries": [{"type": "minecraft:item", "name": item}]}
+    def count(item, n):
+        return {"rolls": 1, "condition": ripe, "entries": [{"type": "minecraft:item", "name": item, "modifier": {"type": "minecraft:set_count", "count": n}}]}
+    if name == "alfalfa":
+        pools.append(chance("farmings:alfalfa_hay", 0.225))
+    elif name in ("timothy", "orchardgrass"):
+        pools.append(chance("farmings:grass_hay", 0.223))
+    elif name == "oats":
+        pools += [count("farmings:oat_grain", 2), chance("farmings:straw", 0.455)]
+    elif name == "barley":
+        pools += [count("farmings:barley_grain", 4), chance("farmings:straw", 0.226)]
+    elif name == "corn":
+        pools.append(count("farmings:corn_grain", 11))
+    return {"type": "minecraft:block", "modifier": {"type": "minecraft:explosion_decay"}, "pools": pools, "random_sequence": "farmings:blocks/" + name}
 
 
 def loot(name):

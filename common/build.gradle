@@ -72,12 +72,12 @@ artifacts {
 
 // Genetics, husbandry, feed and process stay plain Java (no Minecraft or loader imports). See CLAUDE.md.
 tasks.register('verifyPlainJava') {
-	def sources = fileTree('src/main/java/dev/farmings') { include 'genetics/**/*.java', 'husbandry/**/*.java', 'feed/**/*.java', 'process/**/*.java' }
+	def sources = fileTree('src/main/java/dev/farmings') { include 'genetics/**/*.java', 'husbandry/**/*.java', 'feed/**/*.java', 'process/**/*.java', 'farm/**/*.java' }
 	inputs.files(sources)
 	doLast {
 		sources.each { f ->
 			if (f.text =~ /(?m)^\s*import\s+(net\.minecraft|net\.fabricmc|net\.neoforged|com\.mojang)\./) {
-				throw new GradleException("${f.name} imports Minecraft or a loader; genetics, husbandry, feed and process must be plain Java")
+				throw new GradleException("${f.name} imports Minecraft or a loader; genetics, husbandry, feed, process and farm must be plain Java")
 			}
 		}
 	}

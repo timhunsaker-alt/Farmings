@@ -1,0 +1,11 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:grass_bale"
+ ],
+ "result": {
+  "id": "minecraft:hay_block",
+  "count": 4
+ }
+}

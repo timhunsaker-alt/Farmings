@@ -1,0 +1,52 @@
+{
+ "variants": {
+  "age=0,ripe=false": {
+   "model": "farmings:block/corn_stage0"
+  },
+  "age=1,ripe=false": {
+   "model": "farmings:block/corn_stage1"
+  },
+  "age=2,ripe=false": {
+   "model": "farmings:block/corn_stage2"
+  },
+  "age=3,ripe=false": {
+   "model": "farmings:block/corn_stage3"
+  },
+  "age=4,ripe=false": {
+   "model": "farmings:block/corn_stage4"
+  },
+  "age=5,ripe=false": {
+   "model": "farmings:block/corn_stage5"
+  },
+  "age=6,ripe=false": {
+   "model": "farmings:block/corn_stage6"
+  },
+  "age=7,ripe=false": {
+   "model": "farmings:block/corn_stage7"
+  },
+  "age=0,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=1,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=2,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=3,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=4,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=5,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=6,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  },
+  "age=7,ripe=true": {
+   "model": "farmings:block/corn_ripe"
+  }
+ }
+}

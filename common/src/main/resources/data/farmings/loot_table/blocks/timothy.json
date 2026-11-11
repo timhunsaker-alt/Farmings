@@ -1,0 +1,67 @@
+{
+ "type": "minecraft:block",
+ "modifier": {
+  "type": "minecraft:explosion_decay"
+ },
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "farmings:timothy_seeds"
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "minecraft:match_block",
+    "blocks": "farmings:timothy",
+    "state": {
+     "age": "7"
+    }
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "farmings:timothy_seeds",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "min": 0,
+       "max": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:match_block",
+      "blocks": "farmings:timothy",
+      "state": {
+       "age": "7"
+      }
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.223
+     }
+    ]
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "farmings:grass_hay"
+    }
+   ]
+  }
+ ],
+ "random_sequence": "farmings:blocks/timothy"
+}

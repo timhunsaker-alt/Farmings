@@ -16,7 +16,7 @@
 | Manure | 50 kg | 20 | 87% *(**TO VERIFY**: as excreted; separated solids are 65-80%)* | C:N: [NDSU NM1478](https://www.ndsu.edu/agriculture/extension/publications/composting-animal-manures-guide-process-and-management-animal-manure-compost), Table 1 |
 | Poultry litter | 10 kg | 10.5 (raw litter 9-12) | 30% *(**TO VERIFY**)* | [Univ. of Arkansas](https://poultry-science.uark.edu/_resources/pdf/November2018_AvianAdvice.pdf) |
 | Separated digestate solids | 10 kg | 20 *(proposed: manure's)* | 72.5% (20-35% DM) | Cornell PRO-DAIRY (digester.md) |
-| Straw (oat or barley) | 454 kg bale, or loose 25 kg | 80 *(**TO VERIFY**: no source looked up)* | 10% (90% DM, Auburn table) | |
+| Straw (oat or barley) | 454 kg bale, or loose 10 kg | 80 *(**TO VERIFY**: no source looked up)* | 10% (90% DM, Auburn table) | |
 | Water | 1 bucket = 1,000 kg *(as the trough's 1,000 L)* | | | |
 
 **Targets:**

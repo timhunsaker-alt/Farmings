@@ -123,3 +123,15 @@ Tim's choices:
 - Weeds.
 - Irrigation.
 - Crop disease.
+
+## Built, 2026-11-11 (crops part)
+- **Code:**
+  - Rules in `farm/crops/FieldCrop`, which is plain Java; `verifyPlainJava` now covers the `farm` package.
+  - Blocks in `crops/` (FieldCropBlock, PerennialCropBlock with a `cuts` count, CornCropBlock with `ripe`) and items in `crops/FieldCrops`.
+  - `crops/GrassSeeds` gives seeds from grass.
+- **Seeds come only from grass a player breaks** (both loaders' break events). Grass broken by water or explosions gives none.
+- **Loose hay and straw are 10 kg items.** By hand, a ripe block drops one with the chance of its yield (alfalfa 2.25 kg of hay: 22.5%).
+- **Round bales:**
+  - A hay bale crafts into 4 vanilla hay blocks. The bale's other 54 kg is lost to rounding *(proposed)*.
+  - A straw bale crafts into 45 loose straw.
+- **Game tests:** crop_grows_on_clock, alfalfa_regrows_and_dies, corn_ripens_for_grain, ripe_oats_by_hand.

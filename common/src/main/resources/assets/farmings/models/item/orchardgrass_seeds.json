@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "farmings:item/orchardgrass_seeds_placeholder"
+ }
+}
