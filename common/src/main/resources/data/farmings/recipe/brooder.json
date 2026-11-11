@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  " N ",
+  "IRI",
+  " G "
+ ],
+ "key": {
+  "G": "minecraft:glass",
+  "I": "minecraft:iron_ingot",
+  "N": "minecraft:iron_bars",
+  "R": "minecraft:redstone"
+ },
+ "result": {
+  "id": "farmings:brooder",
+  "count": 1
+ }
+}

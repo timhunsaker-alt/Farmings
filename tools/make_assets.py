@@ -324,6 +324,7 @@ def main():
     shed_assets(lang)
     corral_assets(lang)
     coop_assets(lang)
+    hatchery_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -391,6 +392,9 @@ SHAPED = {
     "nest_box": (["W W", "WHW"], 2),
     "perch": (["TTT"], 3),
     "grain_feeder": (["I I", "IDI", "III"], 1),
+    # the hatchery (docs/multiblocks/hatchery.md): a glass-fronted cabinet with a heater, a heat lamp on a bracket
+    "incubator": (["IGI", "IRI", "WWW"], 1),
+    "brooder": ([" N ", "IRI", " G "], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -837,6 +841,39 @@ def coop_assets(lang):
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     coop_textures()
+
+
+HATCHERY = {"incubator": "Incubator", "brooder": "Brooder (heat lamp)"}
+
+
+def hatchery_assets(lang):
+    """A white cabinet with a window onto the egg trays; a red heat lamp in a steel shade."""
+    from PIL import Image, ImageDraw
+    tex = os.path.join(ASSETS, "textures", "block")
+    m = os.path.join(ASSETS, "models", "block")
+    cab = Image.new("RGBA", (16, 16), (228, 228, 222, 255))
+    d = ImageDraw.Draw(cab)
+    d.rectangle([2, 3, 13, 10], fill=(150, 190, 200, 255), outline=(120, 120, 120, 255))      # the window
+    for x in range(3, 13, 2):
+        d.ellipse([x, 6, x + 1, 8], fill=(236, 214, 170, 255))                               # eggs on the tray
+    d.rectangle([10, 12, 13, 13], fill=(200, 60, 40, 255))                                    # the thermostat light
+    lamp = Image.new("RGBA", (16, 16), (150, 156, 160, 255))
+    d = ImageDraw.Draw(lamp)
+    d.rectangle([3, 3, 12, 12], fill=(220, 70, 40, 255))
+    d.rectangle([5, 5, 10, 10], fill=(255, 150, 80, 255))
+    for name, im in (("incubator", cab), ("brooder", lamp)):
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+    faces = lambda t: {f: {"texture": t} for f in ("north", "south", "east", "west", "up", "down")}
+    write(os.path.join(m, "incubator.json"), {"textures": {"t": "farmings:block/incubator", "particle": "farmings:block/incubator"},
+          "elements": [{"from": [1, 0, 1], "to": [15, 12, 15], "faces": faces("#t")}]})
+    write(os.path.join(m, "brooder.json"), {"textures": {"t": "farmings:block/brooder", "particle": "farmings:block/brooder"},
+          "elements": [{"from": [5, 8, 5], "to": [11, 12, 11], "faces": faces("#t")}, {"from": [7.5, 12, 7.5], "to": [8.5, 16, 8.5], "faces": faces("#t")}]})
+    for name, title in HATCHERY.items():
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
 
 
 def loot(name):

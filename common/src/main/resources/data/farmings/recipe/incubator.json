@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "IGI",
+  "IRI",
+  "WWW"
+ ],
+ "key": {
+  "G": "minecraft:glass",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:incubator",
+  "count": 1
+ }
+}

@@ -424,4 +424,93 @@ final class PoultryGameTests {
 		helper.assertTrue(cold.readout().contains("NEEDS HEAT"), Component.literal(cold.readout()));
 		helper.succeed();
 	}
+
+	// ---- the hatchery (docs/multiblocks/hatchery.md) ----
+
+	static java.util.List<ItemStack> fertileEggs(GameTestHelper helper, FowlBreed breed, int n, long seed) {
+		ServerLevel level = helper.getLevel();
+		FowlEntity hen = adult(helper, breed, Sex.FEMALE, seed, new BlockPos(8, 1, 8));
+		FowlEntity male = adult(helper, breed, Sex.MALE, seed + 1, new BlockPos(9, 1, 8));
+		hen.mate(male);
+		java.util.List<ItemStack> eggs = new java.util.ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			eggs.add(hen.makeEgg(level.getGameTime() + i));
+		}
+		hen.discard();
+		male.discard();
+		return eggs;
+	}
+
+	/** A powered incubator hatches chicken eggs after 21 days and duck eggs after 28; it refuses infertile eggs. */
+	static void incubatorHatches(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(3, 1, 3), dev.farmings.hatchery.HatcheryBlocks.INCUBATOR);
+		var inc = (dev.farmings.hatchery.IncubatorEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 3)));
+		inc.forceRunning(true);
+		for (ItemStack e : fertileEggs(helper, FowlBreed.LEGHORN, 3, 31L)) {
+			inc.add(e);
+		}
+		for (ItemStack e : fertileEggs(helper, FowlBreed.PEKIN, 2, 41L)) {
+			inc.add(e);
+		}
+		FowlEntity layer = adult(helper, FowlBreed.LEGHORN, Sex.FEMALE, 51L, new BlockPos(7, 1, 1));
+		helper.assertTrue(!inc.add(layer.makeEgg(level.getGameTime())), Component.literal("an infertile egg is refused"));
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(20.9));
+		helper.assertTrue(inc.hatched() == 0 && inc.count() == 5, Component.literal("nothing at 20.9 days: " + inc.readout()));
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(0.2));
+		helper.assertTrue(inc.hatched() == 3 && inc.count() == 2, Component.literal("the chicks hatch at 21 days: " + inc.readout()));
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(7));
+		helper.assertTrue(inc.hatched() == 5 && inc.count() == 0, Component.literal("the ducklings at 28: " + inc.readout()));
+		var ducklings = level.getEntitiesOfClass(FowlEntity.class, new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(3, 1, 3))).inflate(2),
+				f -> f.species() == Species.DUCK && f.young());
+		helper.assertTrue(ducklings.size() == 2, Component.literal("two ducklings beside it: " + ducklings.size()));
+		helper.succeed();
+	}
+
+	/** Without power the incubator's clocks stop; nothing is lost. */
+	static void incubatorNoPower(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(3, 1, 3), dev.farmings.hatchery.HatcheryBlocks.INCUBATOR);
+		var inc = (dev.farmings.hatchery.IncubatorEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 3)));
+		inc.forceRunning(true);
+		inc.add(fertileEggs(helper, FowlBreed.COTURNIX, 1, 61L).get(0));
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(5));
+		inc.forceRunning(false);
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(30));
+		helper.assertTrue(inc.count() == 1 && Math.abs(FowlEggs.warmDays(inc.getItem(0)) - 5) < 0.01, Component.literal("paused at 5 days: " + inc.readout()));
+		helper.assertTrue(inc.readout().contains("NO POWER"), Component.literal(inc.readout()));
+		inc.forceRunning(true);
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(12));
+		helper.assertTrue(inc.hatched() == 1, Component.literal("a quail hatches at 17 days: " + inc.readout()));
+		helper.succeed();
+	}
+
+	/** A powered brooder keeps the chicks under it warm, and feeds the ones with no coop from a feeder nearby. */
+	static void brooderKeepsChicks(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(3, 2, 3), dev.farmings.hatchery.HatcheryBlocks.BROODER);
+		helper.setBlock(new BlockPos(5, 1, 3), dev.farmings.coop.CoopBlocks.GRAIN_FEEDER);
+		var feeder = (dev.farmings.coop.GrainFeederEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 3)));
+		for (int i = 0; i < 10; i++) {
+			feeder.addItem();
+		}
+		var br = (dev.farmings.hatchery.BrooderEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 2, 3)));
+		var eggs = fertileEggs(helper, FowlBreed.RHODE_ISLAND_RED, 2, 71L);
+		FowlEntity under = FowlEggs.hatch(level, eggs.get(0), helper.absolutePos(new BlockPos(3, 1, 3)), null);
+		FowlEntity away = FowlEggs.hatch(level, eggs.get(1), helper.absolutePos(new BlockPos(8, 1, 8)), null);
+		under.setNoAi(true);
+		away.setNoAi(true);
+		br.forceRunning(true);
+		br.step(level, 20);
+		helper.assertTrue(under.warm() && !away.warm(), Component.literal("warm under the lamp, cold away from it"));
+		helper.assertTrue(feeder.kg() < 1.0, Component.literal("the chick under it ate from the feeder: " + feeder.kg()));
+		br.forceRunning(false);
+		helper.runAfterDelay(60, () -> {
+			helper.assertTrue(!under.warm(), Component.literal("no power, no warmth"));
+			helper.succeed();
+		});
+	}
 }

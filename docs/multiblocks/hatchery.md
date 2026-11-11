@@ -40,3 +40,14 @@ In `docs/recipes.md`, made in the art and recipe part.
 - Candling.
 - Hatch rate below 100%.
 - Sexing chicks.
+
+## Built, 2026-11-11
+- **Code:**
+  - `dev.farmings.hatchery`: `IncubatorEntity` and `BrooderEntity`.
+  - Both are Wildcatter low-voltage loads: 0.1 kW and 0.25 kW, both *(proposed)*.
+- **Incubator:**
+  - Eggs go in by hand or by hopper.
+  - A hatchling belongs to the player who last set eggs.
+  - The readout shows eggs in lockdown and eggs too old to start.
+- **Brooder:** the lamp has no collision, so young birds walk under it.
+- **Game tests:** incubator_hatches, incubator_no_power, brooder_keeps_chicks.
