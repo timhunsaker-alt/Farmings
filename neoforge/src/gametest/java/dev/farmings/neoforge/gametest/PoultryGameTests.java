@@ -225,4 +225,203 @@ final class PoultryGameTests {
 		helper.assertTrue(bait.grainKg() < 2.0, Component.literal("she ate grain: " + bait.grainKg()));
 		helper.succeed();
 	}
+
+	// ---- the coop (docs/multiblocks/coop.md) ----
+
+	/**
+	 * A coop on a stone field x -1..14, z -2..7: the controller at (1,1,2); floor x 2-4, z 1-3; nest boxes at (2,1,0) and (3,1,0); a
+	 * perch at (4,1,0); a grain feeder at (2,1,4) and a water trough at (3,1,4); a pop hole at (5,1,2) into a fenced run x 6-12, z 0-5.
+	 */
+	static BlockPos buildCoop(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		for (int x = -1; x <= 14; x++) {
+			for (int z = -2; z <= 7; z++) {
+				helper.setBlock(new BlockPos(x, 0, z), x >= 6 ? net.minecraft.world.level.block.Blocks.GRASS_BLOCK : net.minecraft.world.level.block.Blocks.STONE);
+				for (int y = 1; y <= 3; y++) {
+					helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+				}
+			}
+		}
+		for (int x = 5; x <= 13; x++) {
+			for (int z = -1; z <= 6; z++) {
+				if (x == 5 || x == 13 || z == -1 || z == 6) {
+					helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.OAK_FENCE);
+				}
+			}
+		}
+		helper.setBlock(new BlockPos(1, 1, 2), dev.farmings.coop.CoopBlocks.COOP_CONTROLLER);
+		for (int x = 2; x <= 4; x++) {
+			for (int z = 1; z <= 3; z++) {
+				helper.setBlock(new BlockPos(x, 1, z), dev.farmings.coop.CoopBlocks.COOP_FLOOR);
+			}
+		}
+		helper.setBlock(new BlockPos(5, 1, 2), dev.farmings.coop.CoopBlocks.POP_HOLE);
+		helper.setBlock(new BlockPos(2, 1, 0), dev.farmings.coop.CoopBlocks.NEST_BOX);
+		helper.setBlock(new BlockPos(3, 1, 0), dev.farmings.coop.CoopBlocks.NEST_BOX);
+		helper.setBlock(new BlockPos(4, 1, 0), dev.farmings.coop.CoopBlocks.PERCH);
+		helper.setBlock(new BlockPos(2, 1, 4), dev.farmings.coop.CoopBlocks.GRAIN_FEEDER);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.WATER_TROUGH, helper.absolutePos(new BlockPos(3, 1, 4)), net.minecraft.core.Direction.NORTH);
+		return helper.absolutePos(new BlockPos(1, 1, 2));
+	}
+
+	static dev.farmings.coop.CoopControllerEntity coop(GameTestHelper helper, BlockPos c) {
+		return (dev.farmings.coop.CoopControllerEntity) helper.getLevel().getBlockEntity(c);
+	}
+
+	static void fillCoop(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		var feeder = (dev.farmings.coop.GrainFeederEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 4)));
+		for (int i = 0; i < 100; i++) {
+			feeder.addItem();
+		}
+		((dev.farmings.barn.TroughEntity) level.getBlockEntity(dev.wildcatter.multiblock.BigParts.owner(level, helper.absolutePos(new BlockPos(3, 1, 4))))).pourBucket();
+	}
+
+	static dev.farmings.coop.NestBoxEntity nest(GameTestHelper helper, int x) {
+		return (dev.farmings.coop.NestBoxEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(x, 1, 0)));
+	}
+
+	/** The coop forms with its run; without its grain feeder it names it. */
+	static void coopForms(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		helper.assertTrue(coop.check().formed(), Component.literal("the coop should form: " + coop.check().problem()));
+		helper.assertTrue(coop.check().floor().size() == 9 && coop.check().nests().size() == 2 && coop.check().perches().size() == 1,
+				Component.literal("9 floor cells, 2 nests, 1 perch: " + coop.readout()));
+		helper.assertTrue(coop.run() != null && coop.run().spots().size() > 30, Component.literal("a run behind the pop hole: " + coop.readout()));
+		helper.setBlock(new BlockPos(2, 1, 4), net.minecraft.world.level.block.Blocks.AIR);
+		coop.refresh(level);
+		helper.assertTrue(coop.check().problem().startsWith("No grain feeder"), Component.literal(coop.check().problem()));
+		helper.succeed();
+	}
+
+	/** The coop takes in a tame bird beside it but leaves a wild one alone. */
+	static void coopTakesTameBirds(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		FowlEntity tame = adult(helper, FowlBreed.LEGHORN, Sex.FEMALE, 21L, new BlockPos(3, 1, 2));
+		FowlEntity wild = adult(helper, FowlBreed.LEGHORN, Sex.FEMALE, 22L, new BlockPos(4, 1, 2));
+		wild.setWild(true);
+		helper.runAfterDelay(41, () -> {
+			helper.assertTrue(c.equals(tame.coop()) && tame.home() != null, Component.literal("the tame hen is taken in"));
+			helper.assertTrue(wild.coop() == null, Component.literal("the wild hen is not"));
+			helper.succeed();
+		});
+	}
+
+	/** A hen in a coop lays into a nest box, not on the floor. */
+	static void henLaysInNest(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		coop(helper, c).refresh(level);
+		FowlEntity hen = adult(helper, FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE, 23L, new BlockPos(3, 1, 1));
+		hen.assignCoop(c, null);
+		hen.layNowForTest(level);
+		hen.layNowForTest(level);
+		int inNests = nest(helper, 2).count() + nest(helper, 3).count();
+		helper.assertTrue(inNests == 2 && hen.laidForTest().isEmpty(), Component.literal("two eggs in the nests, none on the floor: " + inNests));
+		helper.assertTrue(!FowlEggs.floor(nest(helper, 3).getItem(0).isEmpty() ? nest(helper, 2).getItem(0) : nest(helper, 3).getItem(0)),
+				Component.literal("a nest egg is not a floor egg"));
+		helper.succeed();
+	}
+
+	/** A broody Silkie sits on six fertile eggs; after 21 days of warmth they hatch beside the nest and she mothers the chicks. */
+	static void broodyHenHatches(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		FowlEntity hen = adult(helper, FowlBreed.SILKIE, Sex.FEMALE, 24L, new BlockPos(2, 1, 1));
+		FowlEntity cock = adult(helper, FowlBreed.SILKIE, Sex.MALE, 25L, new BlockPos(4, 1, 3));
+		hen.mate(cock);
+		cock.discard();
+		for (int i = 0; i < 6; i++) {
+			nest(helper, 2).add(hen.makeEgg(level.getGameTime() + i));
+		}
+		hen.assignCoop(c, helper.absolutePos(new BlockPos(2, 1, 1)));
+		hen.setBroody(true, helper.absolutePos(new BlockPos(2, 1, 1)));
+		hen.setNoAi(true);
+		java.util.List<FowlEntity> members = java.util.List.of(hen);
+		long half = dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(10.5);
+		coop.brood(level, members, half);
+		helper.assertTrue(hen.broody() && nest(helper, 2).count() == 6, Component.literal("half way, still sitting"));
+		helper.assertTrue(FowlEggs.warmDays(nest(helper, 2).getItem(0)) > 10, Component.literal("the eggs are warmed"));
+		coop.brood(level, members, half);
+		helper.assertTrue(coop.hatched() == 6 && nest(helper, 2).count() == 0, Component.literal("six chicks hatch: " + coop.hatched()));
+		coop.brood(level, members, 20);
+		helper.assertTrue(!hen.broody() && hen.mothering(), Component.literal("she stops sitting and mothers them: " + hen.readout()));
+		var chicks = level.getEntitiesOfClass(FowlEntity.class, hen.getBoundingBox().inflate(4), f -> f.young());
+		helper.assertTrue(chicks.size() == 6 && chicks.stream().allMatch(f -> c.equals(f.coop())), Component.literal("six chicks in the coop: " + chicks.size()));
+		helper.succeed();
+	}
+
+	/** By day the birds go out on the run; at night they come in. */
+	static void birdsOutByDayInAtNight(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		fillCoop(helper);
+		var coop = coop(helper, c);
+		coop.forceDayForTest(true);
+		FowlEntity hen = adult(helper, FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 26L, new BlockPos(3, 1, 2));
+		TamingGameTests.waitFor(helper, 0, 200, () -> hen.sentTo() != null && hen.sentTo().getX() >= helper.absolutePos(new BlockPos(6, 1, 0)).getX(),
+				"she is sent out to the run: " + coop.readout(), () -> {
+					coop.forceDayForTest(false);
+					TamingGameTests.waitFor(helper, 0, 100, () -> hen.sentTo() == null, "she is called in at night", helper::succeed);
+				});
+	}
+
+	/** Ducks without water in or beside their run lose a little health each day; with a pond they don't. */
+	static void duckNeedsPond(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		FowlEntity duck = adult(helper, FowlBreed.PEKIN, Sex.FEMALE, 27L, new BlockPos(3, 1, 2));
+		duck.assignCoop(c, null);
+		java.util.List<FowlEntity> members = java.util.List.of(duck);
+		float full = duck.getMaxHealth();
+		coop.daily(level, members);
+		helper.assertTrue(duck.getHealth() < full, Component.literal("no pond: she loses health: " + duck.getHealth()));
+		helper.setBlock(new BlockPos(10, 0, 3), net.minecraft.world.level.block.Blocks.WATER);
+		coop.refresh(level);
+		helper.assertTrue(coop.pond() >= 1, Component.literal("the pond counts: " + coop.readout()));
+		duck.setHealth(full);
+		coop.daily(level, members);
+		helper.assertTrue(duck.getHealth() == full, Component.literal("with a pond she keeps her health"));
+		helper.succeed();
+	}
+
+	/** Birds leave litter; a hopper under the controller pulls it out as 10 kg items. */
+	static void litterBuildsUp(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		fillCoop(helper);
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		FowlEntity hen = adult(helper, FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 28L, new BlockPos(3, 1, 2));
+		hen.assignCoop(c, null);
+		coop.tend(level, java.util.List.of(hen), 100);          // 100 real days of one 3.4 kg hen: 3.4 x 0.05 x 100 = 17 kg
+		helper.assertTrue(Math.abs(coop.litterKg() - 17.0) < 0.1, Component.literal("17 kg of litter: " + coop.litterKg()));
+		ItemStack out = coop.removeItem(0, 64);
+		helper.assertTrue(out.is(dev.farmings.FarmingsItems.POULTRY_LITTER) && out.getCount() == 1, Component.literal("one 10 kg item: " + out));
+		helper.succeed();
+	}
+
+	/** A chick out of the warmth loses health each day; a warm one does not. */
+	static void chickColdWithoutHeat(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity hen = adult(helper, FowlBreed.LEGHORN, Sex.FEMALE, 29L, new BlockPos(2, 1, 2));
+		FowlEntity cock = adult(helper, FowlBreed.LEGHORN, Sex.MALE, 30L, new BlockPos(5, 1, 5));
+		hen.mate(cock);
+		FowlEntity cold = FowlEggs.hatch(level, hen.makeEgg(level.getGameTime()), helper.absolutePos(new BlockPos(3, 1, 3)), null);
+		FowlEntity warm = FowlEggs.hatch(level, hen.makeEgg(level.getGameTime() + 1), helper.absolutePos(new BlockPos(4, 1, 3)), null);
+		warm.keepWarm(level.getGameTime() + 1000);
+		float full = cold.getHealth();
+		cold.coldDayForTest();
+		warm.coldDayForTest();
+		helper.assertTrue(cold.getHealth() < full && warm.getHealth() == full, Component.literal("cold " + cold.getHealth() + ", warm " + warm.getHealth()));
+		helper.assertTrue(cold.readout().contains("NEEDS HEAT"), Component.literal(cold.readout()));
+		helper.succeed();
+	}
 }

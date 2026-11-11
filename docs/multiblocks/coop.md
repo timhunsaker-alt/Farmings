@@ -92,3 +92,22 @@ floor; nothing is lost *(proposed)*. Fault messages name the first thing missing
 - Predators.
 - Mixed-species disease.
 - Moving a flock between coops.
+
+## Built, 2026-11-11
+- **Code:**
+  - Layout in `husbandry/coop/CoopLayout` (plain Java, unit-tested).
+  - Blocks and the controller in `dev.farmings.coop`.
+  - The run is found by the shed's `PastureLayout`.
+- **Health "points" are a share of the health bar:** a bird's health bar is small (a chicken has 4), so the doc's "points on a 100-point
+  scale" are applied as that share of each bird's bar:
+  - a dry duck loses 5% a day;
+  - full litter costs 2% a day;
+  - a cold chick loses 10% a day.
+  - Health never drops below 1.
+- **Perches:** a roosting bird's home is a floor cell beside a perch. Birds don't sit on the bar itself.
+- **Hoppers:**
+  - A hopper under the controller pulls litter.
+  - A hopper under a nest box pulls eggs.
+  - Grain goes into the feeder by hand or by hopper.
+- **Game tests:** coop_forms, coop_takes_tame_birds, hen_lays_in_nest, broody_hen_hatches, birds_out_by_day_in_at_night, duck_needs_pond,
+  litter_builds_up, chick_cold_without_heat.

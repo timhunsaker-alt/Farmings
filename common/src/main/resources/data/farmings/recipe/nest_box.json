@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "W W",
+  "WHW"
+ ],
+ "key": {
+  "H": "minecraft:hay_block",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:nest_box",
+  "count": 2
+ }
+}

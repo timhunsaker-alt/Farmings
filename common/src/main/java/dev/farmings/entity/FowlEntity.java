@@ -108,6 +108,9 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	private @Nullable BlockPos target;
 	/** Whether the bird was warm on its last check (a brooder, or its mother near); set by the brooder and the coop. */
 	private long warmUntilTick = Long.MIN_VALUE;
+	/** Until when this hen mothers her hatched young (warms them); after a broody hatch. */
+	private long motherUntilTick = -1;
+	private long lastColdDay = -1;
 	private final List<ItemStack> laidForTest = new ArrayList<>();
 
 	public FowlEntity(EntityType<? extends FowlEntity> type, Level level) {
@@ -230,7 +233,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		sync(now);
 	}
 
-	static FowlBreed topBreed(Map<String, Integer> composition, Species s) {
+	public static FowlBreed topBreed(Map<String, Integer> composition, Species s) {
 		FowlBreed top = null;
 		int best = -1;
 		for (Map.Entry<String, Integer> e : composition.entrySet()) {
@@ -371,6 +374,14 @@ public class FowlEntity extends Animal implements Wild.Animal {
 
 	public boolean warm() {
 		return level().getGameTime() <= warmUntilTick;
+	}
+
+	public void becomeMother(long untilTick) {
+		this.motherUntilTick = untilTick;
+	}
+
+	public boolean mothering() {
+		return level().getGameTime() < motherUntilTick;
 	}
 
 	public void recordTending(double fed, double watered) {
@@ -517,6 +528,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	public void settle(ServerLevel level) {
 		long now = level.getGameTime();
 		grow(now);
+		cold(now);
 		if (sex == Sex.FEMALE && !wild) {
 			if (!fertile()) {
 				serveFromNearbyMale(level);
@@ -524,6 +536,29 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			lay(level, now);
 		}
 		sync(now);
+	}
+
+	/** For game tests: the once-a-day cold check, now. */
+	public void coldDayForTest() {
+		if (young() && !warm()) {
+			setHealth((float) Math.max(1.0, getHealth() - Fowl.COLD_HEALTH_LOSS / 100.0 * getMaxHealth()));
+		}
+	}
+
+	/** Once a game day, a young bird out of the warmth loses health (poultry.md, "Brooding": 10 points on 100, proposed). */
+	private void cold(long now) {
+		long day = now / TimeScale.TICKS_PER_GAME_DAY;
+		if (lastColdDay < 0) {
+			lastColdDay = day;
+			return;
+		}
+		if (day <= lastColdDay) {
+			return;
+		}
+		lastColdDay = day;
+		if (young() && !warm()) {
+			setHealth((float) Math.max(1.0, getHealth() - Fowl.COLD_HEALTH_LOSS / 100.0 * getMaxHealth()));
+		}
 	}
 
 	private void grow(long now) {
@@ -539,6 +574,9 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		}
 		double age = ageRealDays(now);
 		double fed = coop != null ? lastFed : 1;
+		if (young() && !warm()) {
+			fed = 0;     // a cold young bird does not grow that day
+		}
 		double gain = (Fowl.weightKg(composition(), sex, age) - Fowl.weightKg(composition(), sex, age - span)) * fed;
 		double mature = Fowl.matureKg(composition(), sex);
 		if (gain > 0 && weightKg < mature) {
@@ -738,6 +776,8 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		if (sex == Sex.FEMALE && !wild) {
 			if (broody) {
 				b.append(", BROODY (sitting)");
+			} else if (mothering()) {
+				b.append(", mothering her young");
 			} else if (LayingCycle.retired(composition(), age)) {
 				b.append(", retired");
 			} else if (laying()) {
@@ -851,6 +891,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		out.putDouble("LastFed", lastFed);
 		out.putDouble("LastWatered", lastWatered);
 		out.putBoolean("Broody", broody);
+		out.putLong("MotherUntil", motherUntilTick);
 		out.putLong("Nest", nest == null ? Long.MIN_VALUE : nest.asLong());
 		out.putLong("Coop", coop == null ? Long.MIN_VALUE : coop.asLong());
 		out.putLong("Home", home == null ? Long.MIN_VALUE : home.asLong());
@@ -892,6 +933,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		lastFed = in.getDoubleOr("LastFed", 1);
 		lastWatered = in.getDoubleOr("LastWatered", 1);
 		broody = in.getBooleanOr("Broody", false);
+		motherUntilTick = in.getLongOr("MotherUntil", -1L);
 		nest = pos(in.getLongOr("Nest", Long.MIN_VALUE));
 		coop = pos(in.getLongOr("Coop", Long.MIN_VALUE));
 		home = pos(in.getLongOr("Home", Long.MIN_VALUE));

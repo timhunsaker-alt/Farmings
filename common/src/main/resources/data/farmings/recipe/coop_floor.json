@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "DHD",
+  "WWW"
+ ],
+ "key": {
+  "D": "minecraft:wheat_seeds",
+  "H": "minecraft:hay_block",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:coop_floor",
+  "count": 6
+ }
+}

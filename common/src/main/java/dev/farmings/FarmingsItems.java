@@ -181,6 +181,9 @@ public final class FarmingsItems {
 		return s == dev.farmings.genetics.Species.CHICKEN ? (cooked ? net.minecraft.world.item.Items.COOKED_CHICKEN : net.minecraft.world.item.Items.CHICKEN) : null;
 	}
 
+	/** Poultry litter from the coop, 10 kg an item (docs/eggs.md, proposed). */
+	public static final Item POULTRY_LITTER = item("poultry_litter", Item::new);
+
 	public static final java.util.Map<String, Item> ALL = new java.util.LinkedHashMap<>();
 
 	static {
@@ -214,6 +217,7 @@ public final class FarmingsItems {
 		ALL.put("sheep_milk_bottle", SHEEP_MILK_BOTTLE);
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
+		ALL.put("poultry_litter", POULTRY_LITTER);
 		ALL.put("chicken_egg", CHICKEN_EGG);
 		ALL.put("turkey_egg", TURKEY_EGG);
 		ALL.put("quail_egg", QUAIL_EGG);

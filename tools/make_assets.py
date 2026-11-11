@@ -118,6 +118,7 @@ ITEMS = [
     ("cooked_mutton_chop", "Cooked Mutton Chop", (124, 76, 46), "steak"),
     ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
     # eggs (docs/eggs.md); placeholders until the Ludo icons
+    ("poultry_litter", "Poultry Litter", (120, 100, 70), "blob"),
     ("chicken_egg", "Chicken Egg", (226, 196, 150), "blob"),
     ("turkey_egg", "Turkey Egg", (214, 190, 150), "blob"),
     ("quail_egg", "Quail Egg", (170, 140, 100), "blob"),
@@ -322,6 +323,7 @@ def main():
     cold_room_assets(lang)
     shed_assets(lang)
     corral_assets(lang)
+    coop_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -332,7 +334,8 @@ def main():
 KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecraft:copper_ingot", "R": "minecraft:redstone",
         "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
         "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick",
-        "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences", "X": "farmings:wool_cloth"}
+        "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences", "X": "farmings:wool_cloth",
+        "D": "minecraft:wheat_seeds"}
 SHAPED = {
     # barn
     "barn_controller": (["SRS", "CIC", "SSS"], 1),
@@ -381,6 +384,13 @@ SHAPED = {
     "corral_post": (["T", "W", "W"], 1),
     "corral_gate": (["TFT", "TWT"], 1),
     "bait_trough": (["WHW", "WWW"], 1),
+    # the coop (docs/multiblocks/coop.md): planks and seed, litter over boards, a small door, a straw-lined box, a roost bar, a tin feeder
+    "coop_controller": (["WDW", "WTW", "WWW"], 1),
+    "coop_floor": (["DHD", "WWW"], 6),
+    "pop_hole": (["TWT", "TWT"], 1),
+    "nest_box": (["W W", "WHW"], 2),
+    "perch": (["TTT"], 3),
+    "grain_feeder": (["I I", "IDI", "III"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -750,6 +760,83 @@ def corral_assets(lang):
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     corral_textures()
+
+
+COOP = {"coop_controller": "Coop Controller", "coop_floor": "Coop Floor", "pop_hole": "Pop Hole", "nest_box": "Nest Box", "perch": "Perch",
+        "grain_feeder": "Grain Feeder"}
+
+
+def coop_textures():
+    """Drawn faces: a plank coop wall with a little door, wood-shaving litter, a straw-lined nest, a roost bar, a galvanised feeder."""
+    from PIL import Image, ImageDraw
+    import random
+    tex = os.path.join(ASSETS, "textures", "block")
+    rnd = random.Random(31)
+    out = {}
+    wall = Image.new("RGBA", (16, 16), (150, 108, 64, 255))
+    d = ImageDraw.Draw(wall)
+    for y in (0, 4, 8, 12):
+        d.line([(0, y), (15, y)], fill=(118, 84, 48, 255))
+    d.rectangle([5, 7, 10, 15], fill=(70, 50, 30, 255))             # the little door
+    d.line([(5, 7), (10, 7)], fill=(196, 196, 186, 255))             # a white trim
+    out["coop_controller"] = wall
+    litter = Image.new("RGBA", (16, 16), (196, 170, 118, 255))
+    d = ImageDraw.Draw(litter)
+    for _ in range(60):
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        d.point((x, y), fill=rnd.choice(((222, 198, 140), (170, 142, 92), (150, 120, 76))) + (255,))
+    out["coop_floor"] = litter
+    hole = litter.copy()
+    d = ImageDraw.Draw(hole)
+    d.rectangle([0, 0, 15, 2], fill=(118, 84, 48, 255))
+    d.rectangle([0, 13, 15, 15], fill=(118, 84, 48, 255))
+    out["pop_hole"] = hole
+    nest = Image.new("RGBA", (16, 16), (150, 108, 64, 255))
+    d = ImageDraw.Draw(nest)
+    d.rectangle([2, 2, 13, 13], fill=(206, 180, 100, 255))           # straw
+    for _ in range(24):
+        x, y = rnd.randrange(2, 14), rnd.randrange(2, 14)
+        d.line([(x, y), (min(13, x + 2), y)], fill=rnd.choice(((232, 210, 130), (178, 150, 72))) + (255,))
+    out["nest_box_top"] = nest
+    bar = Image.new("RGBA", (16, 16), (128, 92, 54, 255))
+    d = ImageDraw.Draw(bar)
+    for x in range(0, 16, 4):
+        d.line([(x, 0), (x, 15)], fill=(108, 76, 44, 255))
+    out["perch"] = bar
+    tin = Image.new("RGBA", (16, 16), (170, 176, 180, 255))
+    d = ImageDraw.Draw(tin)
+    for y in range(0, 16, 3):
+        d.line([(0, y), (15, y)], fill=(150, 156, 160, 255))
+    d.rectangle([0, 12, 15, 15], fill=(200, 172, 96, 255))           # grain in the pan
+    out["grain_feeder"] = tin
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+
+
+def coop_assets(lang):
+    m = os.path.join(ASSETS, "models", "block")
+    for name, title in COOP.items():
+        lang["block.farmings." + name] = title
+    faces = lambda tex: {f: {"texture": tex} for f in ("north", "south", "east", "west", "up", "down")}
+    write(os.path.join(m, "coop_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/coop_controller"}})
+    for name in ("coop_floor", "pop_hole"):
+        write(os.path.join(m, name + ".json"), {"textures": {"t": "farmings:block/" + name, "particle": "farmings:block/" + name},
+              "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": faces("#t")}]})
+    write(os.path.join(m, "nest_box.json"), {"textures": {"top": "farmings:block/nest_box_top", "side": "farmings:block/coop_controller",
+                                                           "particle": "farmings:block/nest_box_top"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 12, 16], "faces": {"up": {"texture": "#top"}, "down": {"texture": "#side"},
+                        **{f: {"texture": "#side"} for f in ("north", "south", "east", "west")}}}]})
+    write(os.path.join(m, "perch.json"), {"textures": {"t": "farmings:block/perch", "particle": "farmings:block/perch"},
+          "elements": [{"from": [0, 6, 6], "to": [16, 9, 10], "faces": faces("#t")},
+                       {"from": [1, 0, 7], "to": [3, 6, 9], "faces": faces("#t")}, {"from": [13, 0, 7], "to": [15, 6, 9], "faces": faces("#t")}]})
+    write(os.path.join(m, "grain_feeder.json"), {"textures": {"t": "farmings:block/grain_feeder", "particle": "farmings:block/grain_feeder"},
+          "elements": [{"from": [4, 2, 4], "to": [12, 14, 12], "faces": faces("#t")}, {"from": [2, 0, 2], "to": [14, 2, 14], "faces": faces("#t")}]})
+    for name in COOP:
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    coop_textures()
 
 
 def loot(name):

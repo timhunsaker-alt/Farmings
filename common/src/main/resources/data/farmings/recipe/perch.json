@@ -1,0 +1,14 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "TTT"
+ ],
+ "key": {
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:perch",
+  "count": 3
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "TWT",
+  "TWT"
+ ],
+ "key": {
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:pop_hole",
+  "count": 1
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "I I",
+  "IDI",
+  "III"
+ ],
+ "key": {
+  "D": "minecraft:wheat_seeds",
+  "I": "minecraft:iron_ingot"
+ },
+ "result": {
+  "id": "farmings:grain_feeder",
+  "count": 1
+ }
+}

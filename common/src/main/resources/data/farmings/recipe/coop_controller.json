@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WDW",
+  "WTW",
+  "WWW"
+ ],
+ "key": {
+  "D": "minecraft:wheat_seeds",
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:coop_controller",
+  "count": 1
+ }
+}
