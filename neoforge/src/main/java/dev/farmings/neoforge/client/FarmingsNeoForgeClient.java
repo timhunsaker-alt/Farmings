@@ -21,11 +21,15 @@ public final class FarmingsNeoForgeClient {
 					event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer);
 					event.registerLayerDefinition(dev.farmings.client.SheepModels.SHEEP, dev.farmings.client.SheepModels::createLayer);
 					event.registerLayerDefinition(dev.farmings.client.SheepModels.FLEECE, dev.farmings.client.SheepModels::createFleeceLayer);
+					event.registerLayerDefinition(dev.farmings.client.FowlModels.FOWL, dev.farmings.client.FowlModels::createLayer);
 				});
 		modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
 				event -> {
 					event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.SHEEP, dev.farmings.client.SheepRenderer::new);
+					for (var type : FarmingsEntities.FOWL) {
+						event.registerEntityRenderer(type, dev.farmings.client.FowlRenderer::new);
+					}
 				});
 	}
 }

@@ -53,6 +53,11 @@ public final class Wild {
 			return dev.farmings.husbandry.TimeScale.LIVESTOCK;
 		}
 
+		/** Whether this item is the species' feed: what it follows and eats from a bait trough. Cattle and sheep: wheat or hay. */
+		default boolean isFeed(ItemStack stack) {
+			return feed(stack);
+		}
+
 		default void tame(@Nullable UUID owner) {
 			setWild(false);
 			setOwner(owner);
@@ -70,15 +75,25 @@ public final class Wild {
 		return stack.is(Items.WHEAT) || stack.is(Items.HAY_BLOCK);
 	}
 
-	private static boolean holdsFeed(Player p) {
-		return feed(p.getMainHandItem()) || feed(p.getOffhandItem());
+	/** Poultry feed (docs/animals/poultry.md, "Feed and water"): the vanilla chicken food seeds, and wheat. */
+	public static boolean grain(ItemStack stack) {
+		return stack.is(net.minecraft.tags.ItemTags.CHICKEN_FOOD) || stack.is(Items.WHEAT);
+	}
+
+	private static boolean holdsFeed(Player p, java.util.function.Predicate<ItemStack> feed) {
+		return feed.test(p.getMainHandItem()) || feed.test(p.getOffhandItem());
 	}
 
 	/** A wild animal follows feed, and keeps away from a player with none. Herd animals follow feed too (vanilla tempt). */
 	public static void addGoals(PathfinderMob mob, GoalSelector goals, BooleanSupplier wild) {
+		addGoals(mob, goals, wild, Wild::feed);
+	}
+
+	/** The same, for a species with its own feed. */
+	public static void addGoals(PathfinderMob mob, GoalSelector goals, BooleanSupplier wild, java.util.function.Predicate<ItemStack> feed) {
 		goals.addGoal(2, new LureGoal(mob));
-		goals.addGoal(3, new TemptGoal(mob, 1.1, Wild::feed, false));
-		goals.addGoal(4, new FleeGoal(mob, wild));
+		goals.addGoal(3, new TemptGoal(mob, 1.1, feed, false));
+		goals.addGoal(4, new FleeGoal(mob, wild, feed));
 	}
 
 	/** The biome path where a spawn happens, e.g. "minecraft:plains". */
@@ -104,11 +119,13 @@ public final class Wild {
 	static final class FleeGoal extends Goal {
 		private final PathfinderMob mob;
 		private final BooleanSupplier wild;
+		private final java.util.function.Predicate<ItemStack> feed;
 		private @Nullable Player from;
 
-		FleeGoal(PathfinderMob mob, BooleanSupplier wild) {
+		FleeGoal(PathfinderMob mob, BooleanSupplier wild, java.util.function.Predicate<ItemStack> feed) {
 			this.mob = mob;
 			this.wild = wild;
+			this.feed = feed;
 			setFlags(EnumSet.of(Goal.Flag.MOVE));
 		}
 
@@ -120,7 +137,7 @@ public final class Wild {
 			double best = WildBreeds.FLIGHT_BLOCKS * WildBreeds.FLIGHT_BLOCKS;
 			for (Player p : mob.level().players()) {
 				double d = p.distanceToSqr(mob);
-				if (d < best && p.isAlive() && !p.isSpectator() && !holdsFeed(p)) {
+				if (d < best && p.isAlive() && !p.isSpectator() && !holdsFeed(p, feed)) {
 					best = d;
 					near = p;
 				}

@@ -170,6 +170,17 @@ public final class FarmingsItems {
 	}
 
 	/** Every item this class registers, by name, for registration and the asset/recipe checks. */
+	// Eggs (docs/eggs.md): one per species, carrying weight, shell and, if fertile, the parents' genes. Only identical eggs stack.
+	public static final Item CHICKEN_EGG = item("chicken_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
+	public static final Item TURKEY_EGG = item("turkey_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
+	public static final Item QUAIL_EGG = item("quail_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
+	public static final Item DUCK_EGG = item("duck_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
+
+	/** Poultry meat: chicken is the vanilla item (docs/eggs.md); the other species' meat comes with the products part. */
+	public static @org.jspecify.annotations.Nullable Item fowlMeat(dev.farmings.genetics.Species s, boolean cooked) {
+		return s == dev.farmings.genetics.Species.CHICKEN ? (cooked ? net.minecraft.world.item.Items.COOKED_CHICKEN : net.minecraft.world.item.Items.CHICKEN) : null;
+	}
+
 	public static final java.util.Map<String, Item> ALL = new java.util.LinkedHashMap<>();
 
 	static {
@@ -203,6 +214,10 @@ public final class FarmingsItems {
 		ALL.put("sheep_milk_bottle", SHEEP_MILK_BOTTLE);
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
+		ALL.put("chicken_egg", CHICKEN_EGG);
+		ALL.put("turkey_egg", TURKEY_EGG);
+		ALL.put("quail_egg", QUAIL_EGG);
+		ALL.put("duck_egg", DUCK_EGG);
 		ALL.put("fleece", FLEECE);
 		ALL.put("loose_wool", LOOSE_WOOL);
 		ALL.put("skirtings", SKIRTINGS);

@@ -1369,6 +1369,115 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-taming-tamed-sheep");
 	}
 
+	/** A bird of one breed, grown to {@code age} real days, standing still (docs/animals/poultry.md). */
+	private static dev.farmings.entity.FowlEntity bird(ServerLevel level, dev.farmings.husbandry.poultry.FowlBreed breed, Sex sex, long seed, double age) {
+		dev.farmings.entity.FowlEntity f = FarmingsEntities.fowl(breed.species).create(level, EntitySpawnReason.COMMAND);
+		f.initFounder(breed, sex, seed, age, level.getGameTime());
+		f.setPos(200.5, 0, 200.5);
+		f.setNoAi(true);
+		level.addFreshEntity(f);
+		return f;
+	}
+
+	/** A hatchling from a mated pair, through a fertile egg. */
+	private static dev.farmings.entity.FowlEntity hatchling(ServerLevel level, dev.farmings.entity.FowlEntity hen, dev.farmings.entity.FowlEntity male, long t) {
+		hen.mate(male);
+		ItemStack egg = hen.makeEgg(level.getGameTime() + t);
+		dev.farmings.entity.FowlEntity c = dev.farmings.entity.FowlEggs.hatch(level, egg, new BlockPos(200, 0, 200), null);
+		c.setNoAi(true);
+		return c;
+	}
+
+	/** Every poultry breed, hen and male, the young of each species, and a cross: a row per species, then close-ups. */
+	private static void poultry(ClientGameTestContext context, TestServerContext server, int y) {
+		java.util.List<java.util.List<dev.farmings.entity.FowlEntity>> rows = new java.util.ArrayList<>();
+		java.util.List<dev.farmings.entity.FowlEntity> close = new java.util.ArrayList<>();
+		java.util.List<String> closeNames = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 0, 30, y, 20, 20, 6);
+			long seed = 300;
+			for (dev.farmings.genetics.Species sp : new dev.farmings.genetics.Species[] {dev.farmings.genetics.Species.CHICKEN,
+					dev.farmings.genetics.Species.TURKEY, dev.farmings.genetics.Species.QUAIL, dev.farmings.genetics.Species.DUCK}) {
+				java.util.List<dev.farmings.entity.FowlEntity> row = new java.util.ArrayList<>();
+				dev.farmings.entity.FowlEntity firstHen = null;
+				dev.farmings.entity.FowlEntity firstMale = null;
+				for (dev.farmings.husbandry.poultry.FowlBreed b : dev.farmings.husbandry.poultry.FowlBreed.values()) {
+					if (b.species != sp) {
+						continue;
+					}
+					dev.farmings.entity.FowlEntity hen = bird(level, b, Sex.FEMALE, seed++, b.firstEggDays + 60);
+					dev.farmings.entity.FowlEntity male = bird(level, b, Sex.MALE, seed++, b.firstEggDays + 60);
+					row.add(hen);
+					row.add(male);
+					if (firstHen == null) {
+						firstHen = hen;
+					} else if (firstMale == null) {
+						firstMale = male;
+					}
+				}
+				dev.farmings.entity.FowlEntity young = hatchling(level, firstHen, firstMale, seed++);
+				row.add(young);
+				rows.add(row);
+			}
+			// close-ups: the birds with the most to show
+			Object[][] picks = {{0, 3, "rhode island red rooster"}, {0, 6, "silkie hen"}, {1, 3, "bronze tom"}, {3, 5, "mallard drake"},
+					{3, 6, "muscovy duck"}, {3, 0, "pekin duck"}, {2, 0, "coturnix hen"}, {0, 8, "chick"}};
+			for (Object[] pk : picks) {
+				close.add(rows.get((Integer) pk[0]).get((Integer) pk[1]));
+				closeNames.add((String) pk[2]);
+			}
+		});
+		context.waitTicks(60);
+		double[] spacing = {1.4, 2.6, 0.7, 1.5};
+		double[] back = {6.5, 9.5, 3.2, 7.0};
+		String[] names = {"chickens", "turkeys", "quail", "ducks"};
+		for (int r = 0; r < rows.size(); r++) {
+			int row = r;
+			server.runOnServer(srv -> {
+				for (int k = 0; k < rows.size(); k++) {
+					java.util.List<dev.farmings.entity.FowlEntity> l = rows.get(k);
+					for (int j = 0; j < l.size(); j++) {
+						dev.farmings.entity.FowlEntity f = l.get(j);
+						if (k == row) {
+							f.setPos(-(l.size() - 1) * spacing[row] / 2 + j * spacing[row] + 0.5, y, 30.5);
+						} else {
+							f.setPos(200.5 + 3 * j, y, 200.5 + 10 * k);
+						}
+						f.setYRot(90);
+						f.setYHeadRot(90);
+						f.setYBodyRot(90);
+					}
+				}
+			});
+			actionbar(server, names[row] + ": each breed hen then male, and a hatchling");
+			server.runCommand("tp @p 0.5 " + (y + back[row] * 0.35) + " " + (30.5 + back[row]) + " 180 20");
+			context.waitTicks(40);
+			context.takeScreenshot("farmings-poultry-" + names[row]);
+		}
+		for (int i = 0; i < close.size(); i++) {
+			int shown = i;
+			server.runOnServer(srv -> {
+				for (java.util.List<dev.farmings.entity.FowlEntity> l : rows) {
+					for (dev.farmings.entity.FowlEntity f : l) {
+						f.setPos(200.5, y, 200.5);
+					}
+				}
+				dev.farmings.entity.FowlEntity f = close.get(shown);
+				f.setPos(0.5, y, 30.5);
+				f.setYRot(0);
+				f.setYHeadRot(0);
+				f.setYBodyRot(0);
+			});
+			dev.farmings.entity.FowlEntity f = close.get(i);
+			actionbar(server, closeNames.get(i) + ": " + f.readout());
+			double d = f.species() == dev.farmings.genetics.Species.TURKEY ? 3.6 : f.species() == dev.farmings.genetics.Species.QUAIL || f.young() ? 1.1 : 2.0;
+			server.runCommand("tp @p " + (0.5 + d * 0.7) + " " + (y + d * 0.35) + " " + (30.5 + d * 0.7) + " 135 18");
+			context.waitTicks(30);
+			context.takeScreenshot("farmings-poultry-close-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + closeNames.get(i).replace(' ', '-'));
+		}
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		// the taming scene needs a generated world (biomes and their animals); every other scene uses the flat test world
@@ -1384,6 +1493,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("poultry".equals(only)) {
+				context.waitTicks(200);
+				poultry(context, server, y);
 				return;
 			}
 			if ("taming".equals(only)) {

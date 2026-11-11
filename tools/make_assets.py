@@ -117,6 +117,11 @@ ITEMS = [
     ("mutton_chop", "Mutton Chop", (176, 70, 66), "steak"),
     ("cooked_mutton_chop", "Cooked Mutton Chop", (124, 76, 46), "steak"),
     ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
+    # eggs (docs/eggs.md); placeholders until the Ludo icons
+    ("chicken_egg", "Chicken Egg", (226, 196, 150), "blob"),
+    ("turkey_egg", "Turkey Egg", (214, 190, 150), "blob"),
+    ("quail_egg", "Quail Egg", (170, 140, 100), "blob"),
+    ("duck_egg", "Duck Egg", (236, 234, 222), "blob"),
 ]
 SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
@@ -222,7 +227,8 @@ def block_model(name, box):
 
 
 def main():
-    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "block.farmings.barn_controller": CONTROLLER[0]}
+    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "entity.farmings.chicken": "Chicken", "entity.farmings.turkey": "Turkey",
+            "entity.farmings.quail": "Quail", "entity.farmings.duck": "Duck", "block.farmings.barn_controller": CONTROLLER[0]}
     lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
         lang["block.farmings." + name] = title

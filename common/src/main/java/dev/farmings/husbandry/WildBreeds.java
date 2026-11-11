@@ -1,5 +1,9 @@
 package dev.farmings.husbandry;
 
+import dev.farmings.genetics.Species;
+import dev.farmings.husbandry.poultry.FowlBreed;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +60,69 @@ public final class WildBreeds {
 	public static SheepBreed sheep(String biome, int roll) {
 		List<SheepBreed> l = group(biome).sheep;
 		return l.get(Math.floorMod(roll, l.size()));
+	}
+
+	// ---- wild fowl (docs/animals/poultry.md, "Wild fowl"; the mapping is proposed, the habitats are sourced there) ----
+
+	private static final List<FowlBreed> JUNGLE = List.of(FowlBreed.SILKIE);
+	private static final List<FowlBreed> FOREST = List.of(FowlBreed.BRONZE, FowlBreed.BOURBON_RED);
+	private static final List<FowlBreed> TAIGA = List.of(FowlBreed.BRONZE);
+	private static final List<FowlBreed> PLAINS = List.of(FowlBreed.BOBWHITE, FowlBreed.RHODE_ISLAND_RED, FowlBreed.PLYMOUTH_ROCK);
+	private static final List<FowlBreed> SAVANNA = List.of(FowlBreed.COTURNIX);
+	private static final List<FowlBreed> DRY = List.of(FowlBreed.LEGHORN);
+	private static final List<FowlBreed> HILLS = List.of(FowlBreed.PLYMOUTH_ROCK, FowlBreed.BOURBON_RED);
+	private static final List<FowlBreed> SWAMP = List.of(FowlBreed.MALLARD, FowlBreed.MUSCOVY);
+	private static final List<FowlBreed> RIVER = List.of(FowlBreed.MALLARD, FowlBreed.PEKIN, FowlBreed.KHAKI_CAMPBELL);
+	private static final List<FowlBreed> MANGROVE = List.of(FowlBreed.MUSCOVY);
+	/** Biomes not listed, modded ones included, get the farmyard chickens of the plains. */
+	private static final List<FowlBreed> OTHER = List.of(FowlBreed.RHODE_ISLAND_RED, FowlBreed.PLYMOUTH_ROCK);
+
+	private static final Map<String, List<FowlBreed>> FOWL = Map.ofEntries(
+			Map.entry("jungle", JUNGLE), Map.entry("sparse_jungle", JUNGLE), Map.entry("bamboo_jungle", JUNGLE),
+			Map.entry("forest", FOREST), Map.entry("flower_forest", FOREST), Map.entry("birch_forest", FOREST),
+			Map.entry("old_growth_birch_forest", FOREST), Map.entry("dark_forest", FOREST), Map.entry("dappled_forest", FOREST),
+			Map.entry("taiga", TAIGA), Map.entry("snowy_taiga", TAIGA), Map.entry("old_growth_pine_taiga", TAIGA),
+			Map.entry("old_growth_spruce_taiga", TAIGA),
+			Map.entry("plains", PLAINS), Map.entry("sunflower_plains", PLAINS),
+			Map.entry("savanna", SAVANNA), Map.entry("savanna_plateau", SAVANNA), Map.entry("windswept_savanna", SAVANNA),
+			Map.entry("badlands", DRY), Map.entry("eroded_badlands", DRY), Map.entry("wooded_badlands", DRY),
+			Map.entry("windswept_hills", HILLS), Map.entry("windswept_gravelly_hills", HILLS), Map.entry("windswept_forest", HILLS),
+			Map.entry("swamp", SWAMP), Map.entry("river", RIVER), Map.entry("mangrove_swamp", MANGROVE));
+
+	private static String path(String biome) {
+		int colon = biome.indexOf(':');
+		return colon >= 0 ? biome.substring(colon + 1) : biome;
+	}
+
+	/** The wild fowl breeds of a biome; each is equally likely. */
+	public static List<FowlBreed> fowlBreeds(String biome) {
+		return FOWL.getOrDefault(path(biome), OTHER);
+	}
+
+	/** A wild breed of this species for the biome, or null if the species doesn't live there. */
+	public static FowlBreed fowl(Species species, String biome, int roll) {
+		List<FowlBreed> l = new ArrayList<>();
+		for (FowlBreed b : fowlBreeds(biome)) {
+			if (b.species == species) {
+				l.add(b);
+			}
+		}
+		return l.isEmpty() ? null : l.get(Math.floorMod(roll, l.size()));
+	}
+
+	/**
+	 * How a vanilla chicken entry's weight is shared between the species of the biome: by their share of its breeds, rounded, at least
+	 * 1 each (proposed). Plains (one quail breed, two chicken breeds) turn a weight of 10 into quail 3 and chicken 7.
+	 */
+	public static Map<Species, Integer> fowlWeights(String biome, int weight) {
+		List<FowlBreed> l = fowlBreeds(biome);
+		Map<Species, Integer> count = new EnumMap<>(Species.class);
+		for (FowlBreed b : l) {
+			count.merge(b.species, 1, Integer::sum);
+		}
+		Map<Species, Integer> out = new EnumMap<>(Species.class);
+		count.forEach((sp, n) -> out.put(sp, Math.max(1, (int) Math.round(weight * (double) n / l.size()))));
+		return out;
 	}
 
 	/** Real days a wild animal must spend fed and watered in a corral before it is tamed (docs/taming.md: FutureBeef, 5-10 days). */

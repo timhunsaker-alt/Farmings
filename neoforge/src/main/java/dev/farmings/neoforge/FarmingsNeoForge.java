@@ -38,6 +38,9 @@ public final class FarmingsNeoForge {
 				event -> {
 					event.put(FarmingsEntities.CATTLE, CattleEntity.createAttributes().build());
 					event.put(FarmingsEntities.SHEEP, dev.farmings.entity.SheepEntity.createAttributes().build());
+					for (var type : FarmingsEntities.FOWL) {
+						event.put(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)).build());
+					}
 				});
 		if (FMLEnvironment.getDist() == Dist.CLIENT) {
 			dev.farmings.neoforge.client.FarmingsNeoForgeClient.init(modBus);

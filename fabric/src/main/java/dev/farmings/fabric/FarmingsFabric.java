@@ -23,6 +23,9 @@ public final class FarmingsFabric implements ModInitializer {
 				.build());
 		FabricDefaultAttributeRegistry.register(FarmingsEntities.CATTLE, CattleEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(FarmingsEntities.SHEEP, dev.farmings.entity.SheepEntity.createAttributes());
+		for (var type : FarmingsEntities.FOWL) {
+			FabricDefaultAttributeRegistry.register(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)));
+		}
 		// wild animals replace vanilla cows and sheep, same weights and group sizes (docs/taming.md)
 		net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(Farmings.id("wild_spawns")).add(net.fabricmc.fabric.api.biome.v1.ModificationPhase.REPLACEMENTS,
 				sel -> true, (sel, ctx) -> {
