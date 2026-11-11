@@ -90,3 +90,25 @@ cloth, felt, sheep milk and sheep cheese wheels come from animals and machines, 
 | bait_trough | `WHW / WWW` | W planks, H hay block | 1 |
 
 The corral's water trough is the barn's `water_trough`.
+
+## Poultry (2026-11-11)
+| Block or item | Pattern | Key | Makes |
+|---|---|---|---|
+| coop_controller | `WDW / WTW / WWW` | W planks, D wheat seeds, T stick | 1 |
+| coop_floor | `DHD / WWW` | D wheat seeds, H hay block, W planks | 6 |
+| pop_hole | `TWT / TWT` | T stick, W planks | 1 |
+| nest_box | `W W / WHW` | W planks, H hay block | 2 |
+| perch | `TTT` | T stick | 3 |
+| grain_feeder | `I I / IDI / III` | I iron ingot, D wheat seeds | 1 |
+| incubator | `IGI / IRI / WWW` | I iron ingot, G glass, R redstone, W planks | 1 |
+| brooder | ` N / IRI / G ` | N iron bars, I iron ingot, R redstone, G glass | 1 |
+| egg_grader | `WGW / T T` | W planks, G glass, T stick | 1 |
+| down_jacket | `QPQ / QQQ / QQQ` | Q down, P felt | 1 |
+| white_bed, vanilla | `QQQ / WWW` | Q down, W planks | 1 |
+| cake, vanilla | `MMM / SES / WWW` | as vanilla, E any Farmings egg (`#farmings:eggs`) | 1 |
+| pumpkin_pie, vanilla | shapeless | pumpkin, sugar, any Farmings egg | 1 |
+
+- **Cooking:**
+  - Turkey, duck and quail cook in a furnace, smoker or campfire.
+  - Any Farmings egg fries into a fried egg.
+- **Not made by recipe:** eggs, meat, down, litter and egg cartons come from birds and machines.

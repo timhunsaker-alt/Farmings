@@ -80,3 +80,26 @@ Every prompt ends "game item icon, plain white background, no text" (clothing: "
 | sheep_milk_bottle | A single old-fashioned 1 litre clear glass bottle full of rich ivory-white sheep milk, a cardboard cap with a small sheep silhouette |
 | sheep_cheese_wheel / sheep_cheese | A whole aged sheep milk cheese wheel like pecorino, pale straw basket-weave rind / a wedge of it, ivory crumbly interior |
 | yarn | A single twisted skein of pure white wool yarn, soft plied strands. `process_art.py` tints it to the sixteen dye colours |
+
+## 2026-11-11: poultry (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+Every prompt ends "game item icon, plain white background, no text" (the down jacket: "plain grey background").
+
+| File | Prompt |
+|---|---|
+| chicken_egg | A single brown hen's egg, smooth matte shell |
+| turkey_egg | A single large turkey egg, pale cream shell covered in small brown speckles |
+| quail_egg | A single small coturnix quail egg, cream shell mottled with dark brown and black blotches |
+| duck_egg | A single large duck egg, smooth chalky white shell with a faint blue-green tint |
+| fried_egg | A single fried egg sunny side up, bright yellow yolk, crisp white edges, seen from above at a slight angle |
+| rotten_egg | A single rotten egg, dirty grey-green stained cracked shell with dark ooze leaking from the crack |
+| egg_carton | A closed grey molded pulp cardboard egg carton for a dozen eggs, lid shut, seen at an angle |
+| turkey / cooked_turkey | A single raw whole turkey drumstick and thigh, pale pink skin with goose bumps / A single roast turkey drumstick, golden brown crispy glazed skin |
+| duck / cooked_duck | A single raw duck breast fillet with a thick layer of pale fat and skin on top, deep red meat / A single roast duck breast, crisp mahogany brown skin, sliced to show pink meat inside |
+| quail / cooked_quail | A single small whole raw plucked quail, pale pink skin, legs tucked / A single small whole roast quail, golden brown glossy skin |
+| spoiled_poultry | A single spoiled rotten raw poultry drumstick, grey-green slimy discoloured skin |
+| down | A small fluffy cluster of white duck down feathers, soft wispy plumules |
+| down_jacket | A single quilted puffy down jacket, navy blue with horizontal baffles, front view laid flat |
+| poultry_litter | A small heap of used chicken coop litter, brown wood shavings mixed with dark droppings and a few small feathers |
+
+Bird plumages are drawn by `tools/poultry_textures.py`. The coop, hatchery and grader faces are drawn by `tools/make_assets.py`, as for the
+sheep shed.

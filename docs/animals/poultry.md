@@ -1,6 +1,6 @@
 # Poultry: chickens, turkeys, quail and ducks
 
-**Status: spec, 2026-11-11 (Phase 4, Tim's answers of 2026-11-10).** Real figures carry a source. A figure marked *(proposed)*
+**Status: built 2026-11-11 (Phase 4, Tim's answers of 2026-11-10).** Real figures carry a source. A figure marked *(proposed)*
 has no source and is a game choice. **TO VERIFY** marks a figure from a secondary source (a breed society, a review quoting
 another paper, a search summary), used until a better one is found. **NOT FOUND** names a figure no source gave; its game value
 is then proposed.
@@ -403,3 +403,14 @@ Nothing is sold (cattle rule, 2026-11-07).
 - Better sources for the TO VERIFY rows; the turkey's daily feed; egg weights for Silkie and Mallard.
 - Poultry artificial insemination, for Broad Breasted White.
 - Geese and guinea fowl.
+
+## Built, 2026-11-11
+- **Rules and genes:**
+  - `husbandry/poultry` (FowlBreed, Fowl, LayingCycle, Clutch, EggGrading) and `husbandry/TimeScale` (`of(species)`).
+  - Genetics in `Species`, `Trait`, `Breeds`, `PoultryLocus`, `PoultryGenes` and `PoultryLook`.
+- **The bird:** `entity/FowlEntity` (one class for all four species), `entity/FowlEggs`, and its model and renderer in `client/Fowl*`.
+- **Buildings:** the coop (`coop.md`), the hatchery (`hatchery.md`) and the products (`docs/eggs.md`).
+- **Where the code differs from this spec:**
+  - Mating is with the nearest male within 8 blocks. The hens-per-male figures are not enforced yet.
+  - Crossing the two quail species is allowed; in reality Coturnix and Bobwhite don't cross.
+  - A hen's body weight grows in a straight line; no growth curve was found.

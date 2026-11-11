@@ -84,6 +84,9 @@ public class BrooderEntity extends BlockEntity implements CircuitPart, Inspectab
 			if (f.coop() != null) {
 				continue;     // a coop feeds its own young
 			}
+			if (f.home() == null) {
+				f.assignCoop(null, worldPosition.below(worldPosition.getY() - (int) Math.floor(f.getY())));     // stays under the lamp
+			}
 			double need = Fowl.feedKgPerDay(f.species(), f.weightKg()) * dayShare;
 			double got = 0;
 			for (GrainFeederEntity g : feeders) {

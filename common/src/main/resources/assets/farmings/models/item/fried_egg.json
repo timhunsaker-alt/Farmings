@@ -1,6 +1,6 @@
 {
  "parent": "minecraft:item/generated",
  "textures": {
-  "layer0": "farmings:item/fried_egg_placeholder"
+  "layer0": "farmings:item/fried_egg"
  }
 }

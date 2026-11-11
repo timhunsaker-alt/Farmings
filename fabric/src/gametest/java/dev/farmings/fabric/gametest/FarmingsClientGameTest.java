@@ -1430,7 +1430,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		});
 		context.waitTicks(60);
 		double[] spacing = {1.4, 2.6, 0.7, 1.5};
-		double[] back = {6.5, 9.5, 3.2, 7.0};
+		double[] back = {6.5, 9.5, 2.2, 7.0};
 		String[] names = {"chickens", "turkeys", "quail", "ducks"};
 		for (int r = 0; r < rows.size(); r++) {
 			int row = r;
@@ -1471,11 +1471,182 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			});
 			dev.farmings.entity.FowlEntity f = close.get(i);
 			actionbar(server, closeNames.get(i) + ": " + f.readout());
-			double d = f.species() == dev.farmings.genetics.Species.TURKEY ? 3.6 : f.species() == dev.farmings.genetics.Species.QUAIL || f.young() ? 1.1 : 2.0;
-			server.runCommand("tp @p " + (0.5 + d * 0.7) + " " + (y + d * 0.35) + " " + (30.5 + d * 0.7) + " 135 18");
+			double d = f.species() == dev.farmings.genetics.Species.TURKEY ? 5.0 : f.species() == dev.farmings.genetics.Species.QUAIL || f.young() ? 1.3 : 2.6;
+			server.runCommand("tp @p " + (0.5 + d * 0.7) + " " + (y + d * 0.55) + " " + (30.5 + d * 0.7) + " 135 30");
 			context.waitTicks(30);
 			context.takeScreenshot("farmings-poultry-close-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + closeNames.get(i).replace(' ', '-'));
 		}
+	}
+
+	/** Places one of the barn's big parts (the water trough) facing north at {@code at}. */
+	private static void trough(ServerLevel level, BlockPos at) {
+		barnPart(level, BarnParts.WATER_TROUGH, at);
+		if (level.getBlockEntity(BigParts.owner(level, at)) instanceof TroughEntity t) {
+			t.pourBucket();
+		}
+	}
+
+	/**
+	 * Poultry at work, filmed: a coop's flock goes out to its run and pond by day and back in at dusk; wild hens are drawn into a corral by
+	 * grain; an incubator hatches a clutch under a brooder.
+	 */
+	private static void poultryFarm(ClientGameTestContext context, TestServerContext server, int y) {
+		// 1. the coop: controller (0,y,0); floor x 1-3, z -1..1; nests north; perch; feeder and trough south; pop hole (4,y,0); run x 5-13
+		BlockPos c = new BlockPos(0, y, 0);
+		java.util.List<dev.farmings.entity.FowlEntity> flock = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 6, 0, y, 16, 12, 6);
+			for (int x = 4; x <= 14; x++) {
+				for (int z = -5; z <= 5; z++) {
+					if (x == 4 || x == 14 || z == -5 || z == 5) {
+						level.setBlockAndUpdate(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(c, dev.farmings.coop.CoopBlocks.COOP_CONTROLLER.defaultBlockState());
+			for (int x = 1; x <= 3; x++) {
+				for (int z = -1; z <= 1; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y, z), dev.farmings.coop.CoopBlocks.COOP_FLOOR.defaultBlockState());
+				}
+			}
+			level.setBlockAndUpdate(new BlockPos(4, y, 0), dev.farmings.coop.CoopBlocks.POP_HOLE.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(1, y, -2), dev.farmings.coop.CoopBlocks.NEST_BOX.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(2, y, -2), dev.farmings.coop.CoopBlocks.NEST_BOX.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(3, y, -2), dev.farmings.coop.CoopBlocks.PERCH.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(1, y, 2), dev.farmings.coop.CoopBlocks.GRAIN_FEEDER.defaultBlockState());
+			if (level.getBlockEntity(new BlockPos(1, y, 2)) instanceof dev.farmings.coop.GrainFeederEntity g) {
+				for (int i = 0; i < 200; i++) {
+					g.addItem();
+				}
+			}
+			trough(level, new BlockPos(2, y, 2));
+			for (int x = 10; x <= 12; x++) {
+				for (int z = 1; z <= 3; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+				}
+			}
+			long seed = 700;
+			Object[][] birds = {{dev.farmings.husbandry.poultry.FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE}, {dev.farmings.husbandry.poultry.FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE},
+					{dev.farmings.husbandry.poultry.FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE}, {dev.farmings.husbandry.poultry.FowlBreed.LEGHORN, Sex.FEMALE},
+					{dev.farmings.husbandry.poultry.FowlBreed.RHODE_ISLAND_RED, Sex.MALE}, {dev.farmings.husbandry.poultry.FowlBreed.PEKIN, Sex.FEMALE},
+					{dev.farmings.husbandry.poultry.FowlBreed.KHAKI_CAMPBELL, Sex.FEMALE}};
+			for (Object[] b : birds) {
+				dev.farmings.husbandry.poultry.FowlBreed br = (dev.farmings.husbandry.poultry.FowlBreed) b[0];
+				dev.farmings.entity.FowlEntity f = bird(level, br, (Sex) b[1], seed++, br.firstEggDays + 60);
+				f.setNoAi(false);
+				f.setPos(2.5, y, 0.5);
+				flock.add(f);
+			}
+			var coop = (dev.farmings.coop.CoopControllerEntity) level.getBlockEntity(c);
+			coop.forceDayForTest(false);
+		});
+		server.runCommand("tp @p 8.5 " + (y + 9) + " 13.5 160 40");
+		context.waitTicks(80);
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.coop.CoopControllerEntity) srv.overworld().getBlockEntity(c)).readout()));
+		context.takeScreenshot("farmings-poultryfarm-coop-night");
+		server.runOnServer(srv -> ((dev.farmings.coop.CoopControllerEntity) srv.overworld().getBlockEntity(c)).forceDayForTest(true));
+		Filming out = context.computeOnClient(client -> Filming.start(client, "coop-birds-out-to-run"));
+		for (int i = 0; i < 16; i++) {
+			context.waitTicks(20);
+			actionbar(server, "Morning: the flock goes out through the pop hole to the run and the pond");
+		}
+		context.takeScreenshot("farmings-poultryfarm-run-by-day");
+		out.stop();
+		server.runOnServer(srv -> ((dev.farmings.coop.CoopControllerEntity) srv.overworld().getBlockEntity(c)).forceDayForTest(false));
+		Filming in = context.computeOnClient(client -> Filming.start(client, "coop-birds-in-at-dusk"));
+		for (int i = 0; i < 16; i++) {
+			context.waitTicks(20);
+			actionbar(server, "Dusk: the flock comes home to the coop and its perch");
+		}
+		context.takeScreenshot("farmings-poultryfarm-in-at-dusk");
+		in.stop();
+		// 2. wild hens drawn into a corral by grain (x 20-30, z -10..-1; gate on the south side)
+		int cx = 20;
+		int cz = -12;
+		BlockPos post = new BlockPos(cx + 1, y, cz + 1);
+		java.util.List<dev.farmings.entity.FowlEntity> wild = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx + 5, cz + 10, y, 10, 14, 6);
+			for (int x = cx; x <= cx + 10; x++) {
+				for (int z = cz; z <= cz + 9; z++) {
+					if (x == cx || x == cx + 10 || z == cz || z == cz + 9) {
+						level.setBlockAndUpdate(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(new BlockPos(cx + 5, y, cz + 9), dev.farmings.corral.CorralBlocks.CORRAL_GATE.defaultBlockState()
+					.setValue(dev.farmings.corral.CorralGateBlock.FACING, Direction.NORTH));
+			level.setBlockAndUpdate(post, dev.farmings.corral.CorralBlocks.CORRAL_POST.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(cx + 5, y, cz + 3), dev.farmings.corral.CorralBlocks.BAIT_TROUGH.defaultBlockState());
+			if (level.getBlockEntity(new BlockPos(cx + 5, y, cz + 3)) instanceof dev.farmings.corral.BaitTroughEntity b) {
+				for (int i = 0; i < 64; i++) {
+					b.addGrain();
+				}
+			}
+			trough(level, new BlockPos(cx + 7, y, cz + 5));
+			net.minecraft.world.entity.SpawnGroupData group = null;
+			for (int i = 0; i < 4; i++) {
+				dev.farmings.entity.FowlEntity h = FarmingsEntities.CHICKEN.create(level, EntitySpawnReason.NATURAL);
+				h.snapTo(cx + 3.5 + i * 1.2, y, cz + 18.5, 0, 0);
+				group = h.finalizeSpawn(level, level.getCurrentDifficultyAt(h.blockPosition()), EntitySpawnReason.NATURAL, group);
+				level.addFreshEntity(h);
+				wild.add(h);
+			}
+			((dev.farmings.corral.CorralPostEntity) level.getBlockEntity(post)).claim(srv.getPlayerList().getPlayers().get(0).getUUID());
+		});
+		server.runCommand("tp @p " + (cx + 5.5) + " " + (y + 9) + " " + (cz - 4.5) + " 0 40");
+		context.waitTicks(40);
+		actionbar(server, server.computeOnServer(srv -> wild.get(0).readout()));
+		context.takeScreenshot("farmings-poultryfarm-wild-hens");
+		Filming lure = context.computeOnClient(client -> Filming.start(client, "grain-draws-wild-hens"));
+		for (int i = 0; i < 24; i++) {
+			context.waitTicks(20);
+			actionbar(server, server.computeOnServer(srv -> ((dev.farmings.corral.CorralPostEntity) srv.overworld().getBlockEntity(post)).readout(srv.overworld())));
+		}
+		context.takeScreenshot("farmings-poultryfarm-hens-in-corral");
+		lure.stop();
+		// 3. an incubator one hour of real time from hatching, under a brooder (x -12)
+		BlockPos inc = new BlockPos(-12, y, 0);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, -12, 0, y, 5, 5, 6);
+			level.setBlockAndUpdate(inc, dev.farmings.hatchery.HatcheryBlocks.INCUBATOR.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(-12, y + 2, 2), dev.farmings.hatchery.HatcheryBlocks.BROODER.defaultBlockState());
+			var incubator = (dev.farmings.hatchery.IncubatorEntity) level.getBlockEntity(inc);
+			incubator.forceRunning(true);
+			((dev.farmings.hatchery.BrooderEntity) level.getBlockEntity(new BlockPos(-12, y + 2, 2))).forceRunning(true);
+			dev.farmings.entity.FowlEntity hen = bird(level, dev.farmings.husbandry.poultry.FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 760, 200);
+			dev.farmings.entity.FowlEntity cock = bird(level, dev.farmings.husbandry.poultry.FowlBreed.RHODE_ISLAND_RED, Sex.MALE, 761, 200);
+			hen.mate(cock);
+			for (int i = 0; i < 6; i++) {
+				ItemStack egg = hen.makeEgg(level.getGameTime() + i);
+				dev.farmings.entity.FowlEggs.setWarmDays(egg, 20.97 - 0.004 * i);
+				incubator.add(egg);
+			}
+			hen.discard();
+			cock.discard();
+		});
+		server.runCommand("tp @p -12.5 " + (y + 4) + " 6.5 180 35");
+		context.waitTicks(30);
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.hatchery.IncubatorEntity) srv.overworld().getBlockEntity(inc)).readout()));
+		context.takeScreenshot("farmings-poultryfarm-incubator");
+		Filming hatch = context.computeOnClient(client -> Filming.start(client, "incubator-hatch"));
+		for (int i = 0; i < 20; i++) {
+			context.waitTicks(20);
+			actionbar(server, server.computeOnServer(srv -> ((dev.farmings.hatchery.IncubatorEntity) srv.overworld().getBlockEntity(inc)).readout()));
+		}
+		context.takeScreenshot("farmings-poultryfarm-hatched");
+		hatch.stop();
+		String chick = server.computeOnServer(srv -> {
+			var l = srv.overworld().getEntitiesOfClass(dev.farmings.entity.FowlEntity.class, new net.minecraft.world.phys.AABB(inc).inflate(4), dev.farmings.entity.FowlEntity::young);
+			return l.isEmpty() ? "no chicks" : l.size() + " chicks; " + l.get(0).readout();
+		});
+		System.out.println("[farmings] " + chick);
+		actionbar(server, chick);
+		context.waitTicks(30);
+		context.takeScreenshot("farmings-poultryfarm-chick-readout");
 	}
 
 	@Override
@@ -1493,6 +1664,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("poultryfarm".equals(only)) {
+				context.waitTicks(200);
+				poultryFarm(context, server, y);
 				return;
 			}
 			if ("poultry".equals(only)) {

@@ -184,9 +184,50 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - The taming corral: post, one-way gate, bait trough, and the barn's water trough. The bait draws wild animals within 32 blocks.
     After 7 real days fed and watered inside (FutureBeef, yard weaning, 5-10 days), the animal belongs to the corral's owner.
   - `/summon`, spawn eggs and newborns are herd animals *(proposed)*.
-- Next: chickens (Phase 4, second half), wild and tamed in the corral from the start.
+- Step 14 (2026-11-11): poultry. Approved by Tim in plan mode, with his popup answers:
+  - chickens, turkeys, quail and ducks in one pass, on one shared bird base;
+  - 3 real days per game day for birds, and one real day's eggs per game day;
+  - a coop with nest boxes and a run, a hatchery with an incubator and a brooder, broody hens and a duck pond;
+  - vanilla chickens replaced by wild fowl chosen by biome, tamed in the corral on grain;
+  - meat, feathers and down, egg grading and cartons, and litter to compost;
+  - 3-4 breeds per species.
+  - **Spec:** `docs/animals/poultry.md`, `docs/multiblocks/coop.md`, `docs/multiblocks/hatchery.md` and `docs/eggs.md`. Sources cover
+    incubation, laying, weights, feed, space, brooding, dressing and manure.
+  - **Time scale:** `TimeScale.of(species)`. Cattle and sheep keep 15:1; birds run at 3:1.
+  - **Genetics:**
+    - species CHICKEN, TURKEY, QUAIL and DUCK, with the traits egg production, egg weight and broodiness;
+    - 13 breeds with proposed baselines;
+    - plumage, comb and shell loci, including sex-linked barring and duck brown.
+  - **Rules:** `husbandry/poultry` (FowlBreed, Fowl, LayingCycle, Clutch, EggGrading) and `husbandry/coop/CoopLayout`.
+  - **The bird:** one `FowlEntity` with a shared model and drawn plumage. It covers growth, mating (a Broad Breasted White tom can't
+    mate), laying from the Hy-Line curve, fertile eggs that carry both parents' genes, and slow fall.
+  - **Wild:** fowl replace vanilla chickens by biome, and ducks come to rivers and mangroves. The bait trough also takes grain.
+  - **Buildings:**
+    - the coop, with its run and pond, broody hens and mothers, and litter;
+    - the incubator and the brooder;
+    - the egg grading table, which packs cartons of 12.
+  - **Products:** turkey, duck and quail meat, fried eggs, rotten eggs, down, a down jacket, and litter that goes in the composter.
+  - **Tests:** 140 game tests and the unit tests pass. Art: 17 Ludo icons (`art/source/PROMPTS.md`).
+- Next: not set. Ideas: geese, guinea fowl, predators.
 
 ## Known gaps
+- **Poultry, not built:**
+  - throwing rotten eggs;
+  - spoilage for vanilla chicken meat;
+  - foraging on the run;
+  - artificial insemination for Broad Breasted White turkeys;
+  - colour mutants for Muscovies and quail.
+- **Poultry proposals with no source:**
+  - breed baselines and the biome-to-fowl mapping;
+  - the feed exponent and the turkey's daily feed;
+  - egg weights for Silkie and Mallard;
+  - first-egg age for Pekin, Mallard and Muscovy;
+  - capacities for nests, perches, grain, litter and the incubator;
+  - power for the incubator and the brooder;
+  - grade age thresholds;
+  - the plumage dominance orders.
+- **Flaky game tests:** two sheep walking scenes (ewe_moves_to_lambing_pen, flock_goes_to_pasture_and_back) each failed once in about 10
+  full runs (2026-11-11) and passed on rerun.
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.
