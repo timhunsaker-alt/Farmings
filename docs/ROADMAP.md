@@ -35,10 +35,12 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 ## Phase 4 — More animals — CURRENT (chickens next)
 - Sheep (wool, meat, lambing) — **done 2026-11-10** (`docs/animals/sheep.md`, the shed, shearing shed, wool mill, sheep stalls).
 - Wild animals and the taming corral — **done 2026-11-10** (`docs/taming.md`). Every species spawns wild and is tamed in a corral.
-- Chickens (eggs, hatchery, brooder), with sexes, breeds and genes; wild, tamed in the corral.
+- Poultry: chickens, turkeys, quail and ducks (eggs, coop and run, duck pond, broody hens, hatchery, brooder, egg grading, meat,
+  feathers and down), with sexes, breeds and genes, at 3 real days per game day; wild, tamed in the corral. Spec 2026-11-11
+  (`docs/animals/poultry.md`, `docs/multiblocks/coop.md`, `docs/multiblocks/hatchery.md`, `docs/eggs.md`).
 
 ## Ideas (not scheduled, not in code)
-- More species (goats, pigs, horses, ducks).
+- More species (goats, pigs, horses, geese, guinea fowl).
 - Animal health and a vet cycle; disease and quarantine.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).

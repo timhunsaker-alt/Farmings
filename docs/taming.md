@@ -11,7 +11,9 @@ Tim's choices:
 
 Values without a source are marked *(proposed)*.
 
-This applies to every Farmings species: cattle and sheep now, chickens and later ones as they are built.
+This applies to every Farmings species: cattle and sheep, and the four poultry species (chickens, turkeys, quail, ducks;
+`docs/animals/poultry.md`, "Wild fowl"), which replace vanilla chickens. Birds follow grain, eat grain from the bait trough, and
+settle for the same 7 real days at their own 3:1 time scale *(proposed for birds)*.
 
 ## Wild and herd animals
 | | Wild | Herd |
@@ -117,7 +119,7 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
 - Wild animals breeding in the wild.
 - Predators.
 - Vanilla cows and sheep becoming Farmings animals.
-- Chickens (they follow these rules in their own pass).
+- Poultry: specified in `docs/animals/poultry.md` (2026-11-11), built in the poultry pass.
 
 ## Built
 - **Wild flag:** saved on each animal, set by natural spawns. A wild animal doesn't breed, and the barn and sheep shed don't take it in.

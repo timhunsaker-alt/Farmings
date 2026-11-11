@@ -22,7 +22,8 @@ What stays from FarmChain is the *science*: quantitative traits, inheritance, br
 From FarmChain, with the source value copied and cited, not invented:
 - **Trait genome.** FarmChain's core eight: milk yield, butterfat, protein, feed efficiency, health, fertility, longevity and
   temperament, as in BREED-SPEC section 8.1. Farmings adds per-species traits as each species doc needs them (wool
-  fineness for sheep, egg production for chickens). Each added trait is a **DECISION** until approved.
+  fineness for sheep, egg production for chickens). Each added trait is a **DECISION** until approved. Poultry traits
+  egg production, egg weight and broodiness were approved with the poultry plan (Tim, 2026-11-10; `docs/animals/poultry.md`).
 - **Breed composition** in basis points that sum to 10,000, with child = average of the parents (BREED-SPEC 7.1), and the
   label rules for purebred, influenced, cross and composite (7.5).
 - **Inheritance modes** for visual loci: dominant/recessive, incomplete dominance, codominant, polygenic blend and a

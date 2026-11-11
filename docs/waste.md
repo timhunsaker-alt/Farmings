@@ -76,3 +76,7 @@ A mechanical separator (a screw press or a centrifuge) splits digestate into sol
   digester or composter yet.
 - **Phase 3:** digester, separator, composting and fertilizer, alongside the field and crop processing, since fertilizer feeds back
   into the field.
+
+## Poultry litter (2026-11-11)
+The coop collects poultry litter (`docs/multiblocks/coop.md`): 10 kg items *(proposed)*. Until the compost line is built, litter goes
+into the vanilla composter (`docs/eggs.md`). It is an input to the compost line when that is built.
