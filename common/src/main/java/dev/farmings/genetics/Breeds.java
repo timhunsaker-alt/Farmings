@@ -30,6 +30,37 @@ public final class Breeds {
 		sheep("SUF", 45, 45, 75, 70, 75, 60, 65, 60, 30);
 		sheep("DOR", 10, 10, 85, 85, 70, 75, 75, 95, 30);
 		sheep("EFR", 55, 50, 60, 55, 90, 60, 80, 45, 95);
+		// Poultry: all proposed (2026-11-11), set from the direction of the real differences in docs/animals/poultry.md (eggs a
+		// year, egg size, broodiness, the broad-breasted turkey's poor fertility, the Silkie's calm, the Mallard's wildness).
+		//    species          code   eff health fert long temp eggs egg-wt broody
+		fowl(Species.CHICKEN, "LEG", 85, 70, 75, 60, 45, 95, 70, 5);
+		fowl(Species.CHICKEN, "RIR", 75, 85, 80, 70, 65, 85, 72, 60);
+		fowl(Species.CHICKEN, "PLR", 70, 85, 75, 75, 75, 70, 72, 65);
+		fowl(Species.CHICKEN, "SLK", 50, 65, 60, 80, 95, 30, 35, 98);
+		fowl(Species.TURKEY, "BBW", 90, 50, 30, 40, 70, 70, 72, 10);
+		fowl(Species.TURKEY, "BRZ", 65, 75, 70, 70, 60, 50, 72, 80);
+		fowl(Species.TURKEY, "BRD", 60, 80, 70, 75, 65, 35, 72, 80);
+		fowl(Species.QUAIL, "COT", 85, 70, 85, 40, 60, 90, 70, 5);
+		fowl(Species.QUAIL, "BOB", 55, 70, 65, 50, 30, 45, 65, 70);
+		fowl(Species.DUCK, "PEK", 85, 75, 70, 60, 70, 50, 70, 10);
+		fowl(Species.DUCK, "KHC", 75, 80, 75, 65, 65, 90, 70, 15);
+		fowl(Species.DUCK, "MAL", 50, 85, 70, 70, 25, 15, 60, 90);
+		fowl(Species.DUCK, "MUS", 70, 85, 70, 75, 60, 35, 70, 90);
+	}
+
+	private static void fowl(Species species, String code, int efficiency, int health, int fertility, int longevity, int temperament, int eggs,
+			int eggWeight, int broodiness) {
+		Map<Trait, Integer> m = new EnumMap<>(Trait.class);
+		m.put(Trait.FEED_EFFICIENCY, efficiency);
+		m.put(Trait.HEALTH, health);
+		m.put(Trait.FERTILITY, fertility);
+		m.put(Trait.LONGEVITY, longevity);
+		m.put(Trait.TEMPERAMENT, temperament);
+		m.put(Trait.EGG_PRODUCTION, eggs);
+		m.put(Trait.EGG_WEIGHT, eggWeight);
+		m.put(Trait.BROODINESS, broodiness);
+		BASELINES.put(code, m);
+		SPECIES.put(code, species);
 	}
 
 	private static void sheep(String code, int wool, int fleece, int efficiency, int health, int fertility, int longevity, int temperament, int hardiness,

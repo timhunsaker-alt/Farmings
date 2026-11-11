@@ -1046,7 +1046,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 		if (Wild.wildReason(reason)) {
 			return net.minecraft.world.entity.animal.Animal.checkAnimalSpawnRules(dev.farmings.FarmingsEntities.CATTLE, level, reason, blockPosition(), getRandom());
 		}
-		return super.checkSpawnRules(level, reason);
+		return true;     // a summon, spawn egg or birth goes where it is put (docs/taming.md); vanilla would test the light here
 	}
 
 	@Override

@@ -359,9 +359,12 @@ Every breed has a fixed founder look. The loci below give crosses a believable m
 | Duck | Muscovy | its own species: black with white wing patch; colour loci not in this pass |
 | All | Shell colour | brown is polygenic: a 0-100 shade score per breed, inherited as the mid-parent value plus noise *(proposed)* |
 
-**TO VERIFY:** these dominance orders are standard poultry-genetics textbook loci, but no primary source is cited yet. The
-genetics part must cite one (for example OMIA or a university poultry-genetics page) for each row, or mark it *(proposed)*, before
-the code is committed.
+**Proposed until sourced:** these dominance orders are the usual poultry-genetics loci, but no primary source is cited yet, so
+the code (`genetics/PoultryLocus`) marks them *(proposed)*. They are simplified:
+- one "red" extension allele stands for the Rhode Island Red's set;
+- Muscovy and quail colour mutants are left out.
+
+Sex-linked loci (barring, duck brown) follow the bird rule: a hen has one Z, from her sire.
 
 ## Meat, feathers, down
 | Quantity | Value | Source |

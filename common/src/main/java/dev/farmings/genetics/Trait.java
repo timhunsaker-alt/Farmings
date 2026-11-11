@@ -17,7 +17,11 @@ public enum Trait {
 	// Sheep (FarmChain's proposed sheep gene list; added 2026-11-10 after the cattle traits so cattle ordinals never move).
 	WOOL_YIELD("wool_yield", "WY", false),
 	FLEECE_QUALITY("fleece_quality", "FQ", false),
-	HARDINESS("hardiness", "HD", true);
+	HARDINESS("hardiness", "HD", true),
+	// Poultry (approved with the poultry plan, Tim 2026-11-10; docs/animals/poultry.md). Appended so earlier ordinals never move.
+	EGG_PRODUCTION("egg_production", "EP", false),
+	EGG_WEIGHT("egg_weight", "EW", false),
+	BROODINESS("broodiness", "BR", false);
 
 	public final String id;
 	/** Short code used in allele ids (milk_yield -> MY, so MY_A0 ... MY_A6). */
