@@ -41,3 +41,13 @@
 - Bagged silage.
 - Grain drying.
 - Moisture shrink.
+
+## Built, 2026-11-11
+- **Code:**
+  - `farm/silo` (`SiloLayout`, `Silage`) is plain Java and unit-tested.
+  - The parts are in `silo/`: the unloader is the silo's controller, the hopper is the bin's, the blower feeds the silo and the roof's
+    fill hole feeds the bin.
+- **Dry-matter loss:** the whole 10.5% is taken when forage goes in *(proposed simplification)*.
+- **What the bin takes:** vanilla wheat goes in at oats' density *(proposed)*.
+- **Hand-off:** the unloader and the bin hopper pass items to a belt, an auger, a Farmings machine or a container beside them.
+- **Game tests:** silo_ferments_and_unloads, grain_bin_fills_and_empties.

@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "KIK",
+  "KIK"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:silo_stave",
+  "count": 8
+ }
+}

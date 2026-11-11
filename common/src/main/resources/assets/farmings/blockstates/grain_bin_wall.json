@@ -1,0 +1,7 @@
+{
+ "variants": {
+  "": {
+   "model": "farmings:block/grain_bin_wall"
+  }
+ }
+}

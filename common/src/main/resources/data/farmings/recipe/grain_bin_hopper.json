@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "I I",
+  "IBI",
+  " I "
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "I": "minecraft:iron_ingot"
+ },
+ "result": {
+  "id": "farmings:grain_bin_hopper",
+  "count": 1
+ }
+}

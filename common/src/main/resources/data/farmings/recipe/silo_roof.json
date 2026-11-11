@@ -1,0 +1,15 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SSS",
+  "S S"
+ ],
+ "key": {
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:silo_roof",
+  "count": 1
+ }
+}

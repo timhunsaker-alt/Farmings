@@ -345,6 +345,7 @@ def main():
     crop_assets(lang)
     conveyor_assets(lang)
     gantry_assets(lang)
+    silo_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -436,6 +437,14 @@ SHAPED = {
     "tool_rake": (["TTT", "III", "T T"], 1),
     "tool_baler": (["III", "IRI", "T T"], 1),
     "tool_spreader": (["I I", "IBI", "T T"], 1),
+    # the tower silo and grain bin (docs/multiblocks/silo.md)
+    "silo_stave": (["KIK", "KIK"], 8),
+    "silo_roof": (["SSS", "S S"], 1),
+    "forage_blower": (["SNS", "IRI", "SCS"], 1),
+    "silo_unloader": (["SCS", "IRI", "SNS"], 1),
+    "grain_bin_wall": (["I I", "SIS", "I I"], 8),
+    "grain_bin_roof": (["  I", " I ", "IBI"], 1),
+    "grain_bin_hopper": (["I I", "IBI", " I "], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -1205,6 +1214,35 @@ def gantry_assets(lang):
         item_texture(n, colour, False)
         write(os.path.join(ASSETS, "models", "item", n + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/%s_placeholder" % n}})
         write(os.path.join(ASSETS, "items", n + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + n}})
+
+
+SILO = {"silo_stave": ("Silo Stave", (190, 188, 180)), "silo_roof": ("Silo Roof", (120, 60, 50)), "forage_blower": ("Forage Blower", (190, 50, 40)),
+        "silo_unloader": ("Silo Unloader", (190, 50, 40)), "grain_bin_wall": ("Grain Bin Wall", (190, 194, 196)),
+        "grain_bin_roof": ("Grain Bin Roof (fill hole)", (170, 174, 176)), "grain_bin_hopper": ("Grain Bin Hopper", (150, 154, 156))}
+
+
+def silo_assets(lang):
+    """Concrete staves with hoops, a dome roof, red machines, corrugated bin steel."""
+    tex = os.path.join(ASSETS, "textures", "block")
+    for name, (title, col) in SILO.items():
+        img = Image.new("RGBA", (16, 16), col + (255,))
+        d = ImageDraw.Draw(img)
+        dark = tuple(max(0, c - 30) for c in col)
+        if name == "silo_stave":
+            for y in (0, 5, 10, 15):
+                d.line([(0, y), (15, y)], fill=dark + (255,))
+            d.line([(0, 7), (15, 7)], fill=(90, 90, 90, 255))
+        elif name.startswith("grain_bin"):
+            for x in range(0, 16, 2):
+                d.line([(x, 0), (x, 15)], fill=dark + (255,))
+        else:
+            d.rectangle([3, 3, 12, 12], fill=dark + (255,))
+        img.save(os.path.join(tex, name + ".png"))
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
 
 
 def loot(name):
