@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "ICI",
+  "IRI",
+  "III"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone"
+ },
+ "result": {
+  "id": "farmings:farm_belt_drive",
+  "count": 1
+ }
+}

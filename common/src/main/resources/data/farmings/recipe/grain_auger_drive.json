@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "ICI",
+  "RTR"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:grain_auger_drive",
+  "count": 1
+ }
+}

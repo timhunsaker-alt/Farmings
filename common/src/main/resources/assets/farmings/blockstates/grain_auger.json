@@ -1,0 +1,27 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "farmings:block/grain_auger"
+  },
+  "facing=east": {
+   "model": "farmings:block/grain_auger",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "farmings:block/grain_auger",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "farmings:block/grain_auger",
+   "y": 270
+  },
+  "facing=up": {
+   "model": "farmings:block/grain_auger",
+   "x": 270
+  },
+  "facing=down": {
+   "model": "farmings:block/grain_auger",
+   "x": 90
+  }
+ }
+}

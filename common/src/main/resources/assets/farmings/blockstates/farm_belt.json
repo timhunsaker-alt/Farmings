@@ -1,0 +1,27 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "farmings:block/farm_belt"
+  },
+  "facing=east": {
+   "model": "farmings:block/farm_belt",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "farmings:block/farm_belt",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "farmings:block/farm_belt",
+   "y": 270
+  },
+  "facing=up": {
+   "model": "farmings:block/farm_belt",
+   "x": 270
+  },
+  "facing=down": {
+   "model": "farmings:block/farm_belt",
+   "x": 90
+  }
+ }
+}

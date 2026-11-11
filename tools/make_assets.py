@@ -343,6 +343,7 @@ def main():
     hatchery_assets(lang)
     egg_assets(lang)
     crop_assets(lang)
+    conveyor_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -354,7 +355,7 @@ KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecr
         "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
         "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick",
         "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences", "X": "farmings:wool_cloth",
-        "D": "minecraft:wheat_seeds", "Q": "farmings:down", "P": "farmings:felt"}
+        "D": "minecraft:wheat_seeds", "Q": "farmings:down", "P": "farmings:felt", "E": "minecraft:leather"}
 SHAPED = {
     # barn
     "barn_controller": (["SRS", "CIC", "SSS"], 1),
@@ -416,6 +417,11 @@ SHAPED = {
     # egg grading and down (docs/eggs.md): a plank table with a candling lamp; a down jacket on a felt lining
     "egg_grader": (["WGW", "T T"], 1),
     "down_jacket": (["QPQ", "QQQ", "QQQ"], 1),
+    # belts and augers (docs/conveyors.md): rubber is leather here
+    "farm_belt": (["EEE", "III"], 6),
+    "farm_belt_drive": (["ICI", "IRI", "III"], 1),
+    "grain_auger": (["I", "T", "I"], 4),
+    "grain_auger_drive": (["ICI", "RTR"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -1044,6 +1050,62 @@ def crop_loot(name):
     elif name == "corn":
         pools.append(count("farmings:corn_grain", 11))
     return {"type": "minecraft:block", "modifier": {"type": "minecraft:explosion_decay"}, "pools": pools, "random_sequence": "farmings:blocks/" + name}
+
+
+CONVEYORS = {"farm_belt": "Belt Conveyor", "farm_belt_drive": "Belt Drive (head pulley)", "grain_auger": "Grain Auger",
+             "grain_auger_drive": "Grain Auger Drive"}
+
+
+def conveyor_assets(lang):
+    """A black belt on a steel frame, an animated belt surface, a motor box, a galvanised auger tube. Every model faces north (the load
+    moves to -z); the blockstates turn them."""
+    tex = os.path.join(ASSETS, "textures", "block")
+    m = os.path.join(ASSETS, "models", "block")
+    frames = 4
+    belt = Image.new("RGBA", (16, 16 * frames), (0, 0, 0, 255))
+    d = ImageDraw.Draw(belt)
+    for f in range(frames):
+        d.rectangle([0, 16 * f, 15, 16 * f + 15], fill=(36, 36, 38, 255))
+        for y in range(0, 16, 4):
+            yy = 16 * f + (y + f) % 16
+            d.line([(1, yy), (14, yy)], fill=(60, 60, 64, 255))
+        d.line([(0, 16 * f), (0, 16 * f + 15)], fill=(150, 150, 150, 255))
+        d.line([(15, 16 * f), (15, 16 * f + 15)], fill=(150, 150, 150, 255))
+    belt.save(os.path.join(tex, "farm_belt.png"))
+    with open(os.path.join(tex, "farm_belt.png.mcmeta"), "w") as fh:
+        json.dump({"animation": {"frametime": 2}}, fh)
+    frame = Image.new("RGBA", (16, 16), (150, 152, 156, 255))
+    d = ImageDraw.Draw(frame)
+    d.rectangle([0, 6, 15, 9], fill=(110, 112, 116, 255))
+    frame.save(os.path.join(tex, "farm_belt_frame.png"))
+    motor = Image.new("RGBA", (16, 16), (60, 100, 150, 255))
+    d = ImageDraw.Draw(motor)
+    for y in range(2, 14, 3):
+        d.line([(2, y), (13, y)], fill=(40, 70, 110, 255))
+    d.rectangle([5, 5, 10, 10], fill=(150, 152, 156, 255))
+    motor.save(os.path.join(tex, "conveyor_motor.png"))
+    tube = Image.new("RGBA", (16, 16), (176, 180, 182, 255))
+    d = ImageDraw.Draw(tube)
+    for x in range(0, 16, 4):
+        d.line([(x, 0), (x, 15)], fill=(150, 154, 156, 255))
+    tube.save(os.path.join(tex, "grain_auger.png"))
+    faces = lambda t: {f: {"texture": t} for f in ("north", "south", "east", "west", "up", "down")}
+    write(os.path.join(m, "farm_belt.json"), {"textures": {"belt": "farmings:block/farm_belt", "frame": "farmings:block/farm_belt_frame",
+                                                            "particle": "farmings:block/farm_belt_frame"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 3, 16], "faces": {**faces("#frame"), "up": {"texture": "#belt", "uv": [1, 0, 15, 16]}}},
+                       {"from": [0, 3, 0], "to": [1, 5, 16], "faces": faces("#frame")}, {"from": [15, 3, 0], "to": [16, 5, 16], "faces": faces("#frame")}]})
+    write(os.path.join(m, "grain_auger.json"), {"textures": {"t": "farmings:block/grain_auger", "particle": "farmings:block/grain_auger"},
+          "elements": [{"from": [4, 4, 0], "to": [12, 12, 16], "faces": faces("#t")}]})
+    for drive in ("farm_belt_drive", "grain_auger_drive"):
+        write(os.path.join(m, drive + ".json"), {"textures": {"t": "farmings:block/conveyor_motor", "f": "farmings:block/farm_belt_frame",
+                                                               "particle": "farmings:block/conveyor_motor"},
+              "elements": [{"from": [0, 0, 0], "to": [16, 10, 16], "faces": faces("#f")}, {"from": [3, 10, 3], "to": [13, 16, 13], "faces": faces("#t")}]})
+    rot = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+    for name, title in CONVEYORS.items():
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"facing=" + f: {"model": "farmings:block/" + name, **r} for f, r in rot.items()}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
 
 
 def loot(name):

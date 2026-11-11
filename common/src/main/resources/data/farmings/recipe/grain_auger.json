@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "I",
+  "T",
+  "I"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:grain_auger",
+  "count": 4
+ }
+}

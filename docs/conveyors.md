@@ -25,3 +25,16 @@
 - Belt wear.
 - Spillage.
 - Belt scales.
+
+## Built, 2026-11-11
+- **Code:**
+  - `farm/conveyor/Travel` is plain Java and unit-tested.
+  - `conveyor/` holds the cell blocks, the drive (a Wildcatter 480 V load, rated by run length) and `ItemSink`, through which Farmings
+    machines take from a run.
+- **Belts are level only in this pass.** Augers run in any direction.
+- **Items riding a belt are not drawn yet.** The belt's surface is animated, and the drive's readout lists its parcels.
+- **Recipes:**
+  - belt: 3 leather (for rubber) over 3 iron, makes 6;
+  - auger: iron, stick, iron, makes 4;
+  - drives from iron, copper and redstone.
+- **Game tests:** belt_carries_to_chest, belt_blocked_head_holds, auger_lifts_grain.
