@@ -38,11 +38,20 @@ public class BaitTroughBlock extends BaseEntityBlock {
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!stack.is(Items.HAY_BLOCK)) {
+		boolean grain = dev.farmings.entity.Wild.grain(stack);
+		if (!stack.is(Items.HAY_BLOCK) && !grain) {
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
-		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof BaitTroughEntity t && t.addBlock()) {
-			stack.consume(1, player);
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof BaitTroughEntity t) {
+			// grain goes in a handful at a time: the whole stack in hand, as far as there is room
+			int n = 0;
+			while (n < stack.getCount() && (grain ? t.addGrain() : t.addBlock())) {
+				n++;
+				if (!grain) {
+					break;
+				}
+			}
+			stack.consume(n, player);
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -50,7 +59,8 @@ public class BaitTroughBlock extends BaseEntityBlock {
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof BaitTroughEntity t) {
-			player.sendSystemMessage(Component.literal(String.format(java.util.Locale.ROOT, "Bait trough: %.0f kg of hay (dry matter)", t.dryMatterKg())));
+			player.sendSystemMessage(Component.literal(String.format(java.util.Locale.ROOT, "Bait trough: %.0f kg of hay (dry matter), %.1f kg of grain",
+					t.dryMatterKg(), t.grainKg())));
 		}
 		return InteractionResult.SUCCESS;
 	}

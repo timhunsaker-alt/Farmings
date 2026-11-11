@@ -152,23 +152,29 @@ public class CorralPostEntity extends BlockEntity {
 		if (now % TEND_TICKS != 0 || check == null || !check.formed()) {
 			return;
 		}
-		boolean bait = baitKg(level) > 0;
+		boolean hay = baitKg(level, false) > 0;
+		boolean grain = baitKg(level, true) > 0;
 		for (Mob m : level.getEntitiesOfClass(Mob.class, new AABB(worldPosition).inflate(LURE_RADIUS), e -> e instanceof Wild.Animal a && a.isWild())) {
 			Wild.Animal a = (Wild.Animal) m;
 			if (inside(m)) {
 				a.setLure(null);
 				tend(level, m, a, TEND_TICKS);
 			} else {
-				a.setLure(bait ? baitSpot : null);
+				// the bait draws only the animals it can feed: hay for cattle and sheep, grain for birds
+				a.setLure((a.eatsGrain() ? grain : hay) ? baitSpot : null);
 			}
 		}
 	}
 
 	private double baitKg(ServerLevel level) {
+		return baitKg(level, false);
+	}
+
+	private double baitKg(ServerLevel level, boolean grain) {
 		double kg = 0;
 		for (BlockPos b : baits) {
 			if (level.getBlockEntity(b) instanceof BaitTroughEntity t) {
-				kg += t.dryMatterKg();
+				kg += t.feedKg(grain);
 			}
 		}
 		return kg;
@@ -185,7 +191,7 @@ public class CorralPostEntity extends BlockEntity {
 		double eaten = 0;
 		for (BlockPos b : baits) {
 			if (eaten < wantKg && level.getBlockEntity(b) instanceof BaitTroughEntity t) {
-				eaten += t.take(wantKg - eaten);
+				eaten += t.take(a.eatsGrain(), wantKg - eaten);
 			}
 		}
 		double drunk = 0;
@@ -225,8 +231,8 @@ public class CorralPostEntity extends BlockEntity {
 				water += t.litres();
 			}
 		}
-		return String.format(java.util.Locale.ROOT, "Corral: FORMED, %d cells, %d gate(s); %d wild inside (most settled %.1f of %.0f days); bait %.0f kg hay, water %.0f L; %d tamed",
-				check.floor().size(), check.gates().size(), wild, most, WildBreeds.SETTLE_DAYS, baitKg(level), water, tamed);
+		return String.format(java.util.Locale.ROOT, "Corral: FORMED, %d cells, %d gate(s); %d wild inside (most settled %.1f of %.0f days); bait %.0f kg hay and %.1f kg grain, water %.0f L; %d tamed",
+				check.floor().size(), check.gates().size(), wild, most, WildBreeds.SETTLE_DAYS, baitKg(level), baitKg(level, true), water, tamed);
 	}
 
 	@Override

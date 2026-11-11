@@ -14,15 +14,20 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The corral's bait trough (docs/taming.md): up to 4 hay blocks, kept as kilograms of dry matter as the barn's feeder does. Its hay is the
- * lure and the corral's feed. A hopper can put hay blocks in; nothing comes out.
+ * The corral's bait trough (docs/taming.md): up to 4 hay blocks, kept as kilograms of dry matter as the barn's feeder does, and up to 256
+ * grain items for birds, kept as kilograms of feed (docs/animals/poultry.md: 100 g an item, proposed). Its feed is the lure and the
+ * corral's feed; each animal eats only its own. A hopper can put hay blocks and grain in; nothing comes out.
  */
 public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 	public static final int MAX_BLOCKS = 4;
 	public static final double CAPACITY_KG = MAX_BLOCKS * Hay.blockDryMatterKg();
 	private static final int[] SLOTS = {0};
 
+	/** Grain the trough holds: 256 items (proposed, the coop's grain feeder). */
+	public static final double GRAIN_CAPACITY_KG = 256 * dev.farmings.husbandry.poultry.Fowl.GRAIN_ITEM_KG;
+
 	private double dryMatterKg;
+	private double grainKg;
 
 	public BaitTroughEntity(BlockPos pos, BlockState state) {
 		super(CorralBlocks.BAIT_TROUGH_ENTITY, pos, state);
@@ -39,6 +44,37 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 		dryMatterKg += Hay.blockDryMatterKg();
 		setChanged();
 		return true;
+	}
+
+	public double grainKg() {
+		return grainKg;
+	}
+
+	public boolean addGrain() {
+		if (grainKg + dev.farmings.husbandry.poultry.Fowl.GRAIN_ITEM_KG > GRAIN_CAPACITY_KG + 1e-9) {
+			return false;
+		}
+		grainKg += dev.farmings.husbandry.poultry.Fowl.GRAIN_ITEM_KG;
+		setChanged();
+		return true;
+	}
+
+	public double takeGrain(double kg) {
+		double taken = Math.max(0, Math.min(kg, grainKg));
+		if (taken > 0) {
+			grainKg -= taken;
+			setChanged();
+		}
+		return taken;
+	}
+
+	/** Feed for this animal: grain for birds, hay for the rest. */
+	public double feedKg(boolean grain) {
+		return grain ? grainKg : dryMatterKg;
+	}
+
+	public double take(boolean grain, double kg) {
+		return grain ? takeGrain(kg) : take(kg);
 	}
 
 	public double take(double kg) {
@@ -59,6 +95,9 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 
 	@Override
 	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) {
+		if (dev.farmings.entity.Wild.grain(stack)) {
+			return grainKg + dev.farmings.husbandry.poultry.Fowl.GRAIN_ITEM_KG <= GRAIN_CAPACITY_KG + 1e-9;
+		}
 		return stack.is(Items.HAY_BLOCK) && dryMatterKg + Hay.blockDryMatterKg() <= CAPACITY_KG + 1e-9;
 	}
 
@@ -97,6 +136,9 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 		for (int i = 0; i < stack.getCount() && stack.is(Items.HAY_BLOCK); i++) {
 			addBlock();
 		}
+		for (int i = 0; i < stack.getCount() && dev.farmings.entity.Wild.grain(stack); i++) {
+			addGrain();
+		}
 	}
 
 	@Override
@@ -112,11 +154,13 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		output.putDouble("dry_matter_kg", dryMatterKg);
+		output.putDouble("grain_kg", grainKg);
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
 		dryMatterKg = Math.max(0, Math.min(CAPACITY_KG, input.getDoubleOr("dry_matter_kg", 0)));
+		grainKg = Math.max(0, Math.min(GRAIN_CAPACITY_KG, input.getDoubleOr("grain_kg", 0)));
 	}
 }

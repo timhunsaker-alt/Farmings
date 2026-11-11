@@ -111,7 +111,7 @@ final class TamingGameTests {
 		});
 	}
 
-	private static java.util.List<net.minecraft.util.random.Weighted<net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData>> creatures(ServerLevel level,
+	static java.util.List<net.minecraft.util.random.Weighted<net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData>> creatures(ServerLevel level,
 			net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome> key) {
 		var biome = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.BIOME).getOrThrow(key);
 		var settings = biome.value().getAttributes().applyModifier(net.minecraft.world.attribute.EnvironmentAttributes.NATURAL_MOB_SPAWNS,

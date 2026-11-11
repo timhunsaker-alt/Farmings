@@ -58,6 +58,11 @@ public final class Wild {
 			return feed(stack);
 		}
 
+		/** True for birds: they eat grain from a bait trough, not hay. */
+		default boolean eatsGrain() {
+			return false;
+		}
+
 		default void tame(@Nullable UUID owner) {
 			setWild(false);
 			setOwner(owner);

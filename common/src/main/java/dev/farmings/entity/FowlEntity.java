@@ -445,6 +445,11 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	}
 
 	@Override
+	public boolean eatsGrain() {
+		return true;
+	}
+
+	@Override
 	public boolean isFeed(ItemStack stack) {
 		return Wild.grain(stack);
 	}

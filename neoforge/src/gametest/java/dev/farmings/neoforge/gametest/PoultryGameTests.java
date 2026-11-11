@@ -131,4 +131,98 @@ final class PoultryGameTests {
 		helper.assertTrue(bbwHen.fertile(), Component.literal("a Bronze tom serves her"));
 		helper.succeed();
 	}
+
+	// ---- wild fowl (docs/animals/poultry.md, "Wild fowl") ----
+
+	/** Natural spawns are wild; a group shares a breed and has one male; wild hens lay nothing; summoned birds are herd birds. */
+	static void fowlSpawnIsWild(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		BlockPos at = helper.absolutePos(new BlockPos(2, 1, 2));
+		FowlEntity a = FarmingsEntities.CHICKEN.create(level, EntitySpawnReason.NATURAL);
+		a.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0, 0);
+		var data = a.finalizeSpawn(level, level.getCurrentDifficultyAt(a.blockPosition()), EntitySpawnReason.NATURAL, null);
+		FowlEntity b = FarmingsEntities.CHICKEN.create(level, EntitySpawnReason.NATURAL);
+		b.snapTo(a.getX() + 1, a.getY(), a.getZ(), 0, 0);
+		b.finalizeSpawn(level, level.getCurrentDifficultyAt(b.blockPosition()), EntitySpawnReason.NATURAL, data);
+		level.addFreshEntity(a);
+		level.addFreshEntity(b);
+		helper.assertTrue(a.isWild() && b.isWild(), Component.literal("natural spawns are wild"));
+		helper.assertTrue(a.breed() == b.breed(), Component.literal("a spawn group shares one breed"));
+		helper.assertTrue(a.sex() == Sex.MALE && b.sex() == Sex.FEMALE, Component.literal("the first of a group is the rooster"));
+		helper.assertTrue(b.adult() && !b.laying(), Component.literal("a wild hen lays no eggs: " + b.readout()));
+		helper.assertTrue(b.readout().startsWith("WILD"), Component.literal(b.readout()));
+		FowlEntity tame = helper.spawn(FarmingsEntities.DUCK, new BlockPos(5, 1, 5), EntitySpawnReason.COMMAND);
+		helper.assertTrue(!tame.isWild(), Component.literal("a summoned duck is a herd bird"));
+		helper.succeed();
+	}
+
+	/**
+	 * Vanilla chickens are gone from every biome: plains share the chicken entry (weight 10, groups of 4) between quail (3) and chickens
+	 * (7); forests get turkeys, savannas quail, rivers ducks.
+	 */
+	static void fowlBiomeSpawnsReplaced(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		var plains = TamingGameTests.creatures(level, net.minecraft.world.level.biome.Biomes.PLAINS);
+		helper.assertTrue(plains.stream().noneMatch(w -> w.value().type() == net.minecraft.world.entity.EntityTypes.CHICKEN),
+				Component.literal("no vanilla chickens in plains"));
+		helper.assertTrue(plains.stream().anyMatch(w -> w.value().type() == FarmingsEntities.CHICKEN && w.weight() == 7 && w.value().count().maxInclusive() == 4),
+				Component.literal("plains chickens at weight 7, groups of 4"));
+		helper.assertTrue(plains.stream().anyMatch(w -> w.value().type() == FarmingsEntities.QUAIL && w.weight() == 3), Component.literal("plains quail at weight 3"));
+		helper.assertTrue(TamingGameTests.creatures(level, net.minecraft.world.level.biome.Biomes.FOREST).stream()
+				.anyMatch(w -> w.value().type() == FarmingsEntities.TURKEY && w.weight() == 10), Component.literal("forest turkeys"));
+		helper.assertTrue(TamingGameTests.creatures(level, net.minecraft.world.level.biome.Biomes.SAVANNA).stream()
+				.anyMatch(w -> w.value().type() == FarmingsEntities.QUAIL && w.weight() == 10), Component.literal("savanna quail"));
+		helper.assertTrue(TamingGameTests.creatures(level, net.minecraft.world.level.biome.Biomes.RIVER).stream()
+				.anyMatch(w -> w.value().type() == FarmingsEntities.DUCK && w.weight() == 10), Component.literal("river ducks"));
+		helper.succeed();
+	}
+
+	/** A wild chicken follows wheat seeds and keeps away from empty hands. */
+	static void fowlFollowsSeeds(GameTestHelper helper) {
+		TamingGameTests.field(helper, 12);
+		FowlEntity hen = adult(helper, FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE, 11L, new BlockPos(2, 1, 6));
+		hen.setWild(true);
+		net.minecraft.server.level.ServerPlayer p = helper.makeMockServerPlayerInLevel();
+		p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+		BlockPos stand = helper.absolutePos(new BlockPos(8, 1, 6));
+		p.snapTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, 90, 0);
+		p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.WHEAT_SEEDS));
+		double start = hen.distanceTo(p);
+		TamingGameTests.waitFor(helper, 0, 500, () -> hen.distanceTo(p) < start - 2, "she follows the seeds: " + start, () -> {
+			double near = hen.distanceTo(p);
+			p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			TamingGameTests.waitFor(helper, 0, 500, () -> hen.distanceTo(p) > near + 1, "she keeps away from empty hands: " + near, () -> {
+				p.discard();
+				helper.succeed();
+			});
+		});
+	}
+
+	/** A wild hen in a corral settles on grain, not hay: 7 real days fed and watered tames her (2.3 game days at 3:1). */
+	static void fowlSettlesInCorral(GameTestHelper helper) {
+		BlockPos c = TamingGameTests.buildCorral(helper);
+		ServerLevel level = helper.getLevel();
+		TamingGameTests.fillCorral(helper);
+		var post = TamingGameTests.post(helper, c);
+		java.util.UUID tim = java.util.UUID.randomUUID();
+		post.claim(tim);
+		post.refresh(level);
+		FowlEntity hen = adult(helper, FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 12L, new BlockPos(4, 1, 6));
+		hen.setWild(true);
+		hen.setNoAi(true);
+		int half = (int) dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(3.5);
+		post.tend(level, hen, hen, half);
+		helper.assertTrue(hen.settledDays() == 0, Component.literal("hay is no feed for a hen: " + hen.settledDays()));
+		var bait = (dev.farmings.corral.BaitTroughEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 4)));
+		for (int i = 0; i < 20; i++) {
+			bait.addGrain();
+		}
+		post.tend(level, hen, hen, half);
+		helper.assertTrue(hen.isWild() && Math.abs(hen.settledDays() - 3.5) < 0.01, Component.literal("half way on grain: " + hen.settledDays()));
+		post.tend(level, hen, hen, half);
+		helper.assertTrue(!hen.isWild() && tim.equals(hen.owner()), Component.literal("tamed, and the corral owner's"));
+		helper.assertTrue(bait.grainKg() < 2.0, Component.literal("she ate grain: " + bait.grainKg()));
+		helper.succeed();
+	}
 }

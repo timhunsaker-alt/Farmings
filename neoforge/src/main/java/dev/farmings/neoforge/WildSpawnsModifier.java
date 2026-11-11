@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.MobSpawnSettingsBuilder;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo;
 
-/** Swaps vanilla cows and sheep for Farmings animals in every biome, keeping weights and group sizes (docs/taming.md). */
+/** Swaps vanilla cows, sheep and chickens for Farmings animals in every biome, keeping weights and group sizes (docs/taming.md). */
 public record WildSpawnsModifier() implements BiomeModifier {
 	public static final MapCodec<WildSpawnsModifier> CODEC = MapCodec.unit(WildSpawnsModifier::new);
 
@@ -24,14 +24,13 @@ public record WildSpawnsModifier() implements BiomeModifier {
 		}
 		MobSpawnSettingsBuilder spawns = builder.getMobSpawnSettings();
 		List<Weighted<SpawnerData>> add = new ArrayList<>();
+		String name = biome.unwrapKey().map(k -> k.identifier().toString()).orElse("");
 		spawns.removeSpawns(w -> {
-			Weighted<SpawnerData> r = WildSpawns.replacement(w);
-			if (r != null) {
-				add.add(r);
-			}
-			return r != null;
+			List<Weighted<SpawnerData>> r = WildSpawns.replacements(w, name);
+			add.addAll(r);
+			return !r.isEmpty();
 		});
-		add.addAll(WildSpawns.extra(biome.unwrapKey().map(k -> k.identifier().toString()).orElse("")));
+		add.addAll(WildSpawns.extra(name));
 		for (Weighted<SpawnerData> w : add) {
 			spawns.addSpawn(w.value().type(), w.weight(), w.value().count());
 		}

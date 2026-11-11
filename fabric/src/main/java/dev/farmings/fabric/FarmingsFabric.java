@@ -26,18 +26,16 @@ public final class FarmingsFabric implements ModInitializer {
 		for (var type : FarmingsEntities.FOWL) {
 			FabricDefaultAttributeRegistry.register(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)));
 		}
-		// wild animals replace vanilla cows and sheep, same weights and group sizes (docs/taming.md)
+		// wild animals replace vanilla cows, sheep and chickens, same weights and group sizes (docs/taming.md)
 		net.fabricmc.fabric.api.biome.v1.BiomeModifications.create(Farmings.id("wild_spawns")).add(net.fabricmc.fabric.api.biome.v1.ModificationPhase.REPLACEMENTS,
 				sel -> true, (sel, ctx) -> {
 					var spawns = ctx.getMobSpawnSettings();
 					java.util.List<net.minecraft.util.random.Weighted<net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData>> add = new java.util.ArrayList<>();
+					String biome = sel.getBiomeKey().identifier().toString();
 					for (var w : spawns.getMobs(net.minecraft.world.entity.MobCategory.CREATURE)) {
-						var r = dev.farmings.entity.WildSpawns.replacement(w);
-						if (r != null) {
-							add.add(r);
-						}
+						add.addAll(dev.farmings.entity.WildSpawns.replacements(w, biome));
 					}
-					add.addAll(dev.farmings.entity.WildSpawns.extra(sel.getBiomeKey().identifier().toString()));
+					add.addAll(dev.farmings.entity.WildSpawns.extra(biome));
 					if (add.isEmpty()) {
 						return;
 					}
