@@ -615,7 +615,7 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 			}
 			return stack;
 		}
-		BlockEntity be = level.getBlockEntity(at);
+		BlockEntity be = dev.wildcatter.multiblock.BigParts.entity(level, at);
 		if (be instanceof ItemSink sink) {
 			return sink.accept(stack);
 		}
@@ -736,6 +736,7 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 		out.putInt("Step", step);
 		out.putInt("Target", target);
 		out.putInt("Resume", resume);
+		out.putInt("Cooldown", cooldown);     // carried to the next cell with the rest, so a step keeps its tool's pace
 		out.putLong("Junction", junction == null ? Long.MIN_VALUE : junction.asLong());
 		out.putBoolean("ForcedPower", forcedPower);
 		var bins = out.childrenList("Bin");
@@ -768,6 +769,7 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 		step = in.getIntOr("Step", 0);
 		target = in.getIntOr("Target", 0);
 		resume = in.getIntOr("Resume", -1);
+		cooldown = in.getIntOr("Cooldown", 0);
 		long j = in.getLongOr("Junction", Long.MIN_VALUE);
 		junction = j == Long.MIN_VALUE ? null : BlockPos.of(j);
 		forcedPower = in.getBooleanOr("ForcedPower", false);

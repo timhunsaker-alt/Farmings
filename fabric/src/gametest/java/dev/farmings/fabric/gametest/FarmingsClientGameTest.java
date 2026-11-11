@@ -1649,6 +1649,272 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-poultryfarm-chick-readout");
 	}
 
+
+	/** The gantry's cab, wherever it stands on its rail at x 1 (it steps as blocks; docs/multiblocks/field-gantry.md). */
+	private static dev.farmings.gantry.GantryCabEntity cab(ServerLevel level, int y) {
+		for (int z = 0; z <= 16; z++) {
+			if (level.getBlockEntity(new BlockPos(1, y + 3, z)) instanceof dev.farmings.gantry.GantryCabEntity c) {
+				return c;
+			}
+		}
+		return null;
+	}
+
+	/** Starts the gantry with a tool and films it until it is parked at home again (at most {@code limit} seconds). */
+	private static void gantryPass(ClientGameTestContext context, TestServerContext server, int y, dev.farmings.farm.gantry.GantryTool tool,
+			String film, int limit, int after) {
+		server.runOnServer(srv -> {
+			var c = cab(srv.overworld(), y);
+			c.fitTool(tool);
+			c.toggle();
+		});
+		Filming f = context.computeOnClient(client -> Filming.start(client, film));
+		int s = 0;
+		while (s < limit) {
+			context.waitTicks(20);
+			s++;
+			String r = server.computeOnServer(srv -> {
+				var c = cab(srv.overworld(), y);
+				return c == null ? "gantry moving" : c.readout().replace("Field gantry: span 8, tool ", "");
+			});
+			actionbar(server, r);
+			boolean home = server.computeOnServer(srv -> {
+				var c = cab(srv.overworld(), y);
+				return c != null && c.phase() == dev.farmings.gantry.GantryCabEntity.Phase.PARKED && c.step() == 0;
+			});
+			if (home && s > 3) {
+				break;
+			}
+		}
+		for (int i = 0; i < after; i++) {
+			context.waitTicks(20);
+		}
+		f.stop();
+		System.out.println("[farmings] " + film + " took " + s + " s: " + server.computeOnServer(srv -> cab(srv.overworld(), y).readout()));
+	}
+
+	/** Every field cell (x 2-9, z 0-15) set to {@code state} on farmland. */
+	private static void sowField(ServerLevel level, int y, BlockState state) {
+		for (int x = 2; x <= 9; x++) {
+			for (int z = 0; z <= 15; z++) {
+				level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.FARMLAND.defaultBlockState());
+				level.setBlockAndUpdate(new BlockPos(x, y, z), state);
+			}
+		}
+	}
+
+	/**
+	 * Phase 3 (docs/crops.md, field-gantry.md, conveyors.md, silo.md, feed-mill.md, compost.md, digester.md): a field gantry spanning 8
+	 * blocks over a 16-row field sows corn, chops it onto a belt that blows it into a tower silo, then mows, rakes and bales alfalfa; a TMR
+	 * mixer feeds a barn feeder by belt; a compost windrow is turned; and a digester's biogas runs a Wildcatter gas set.
+	 */
+	private static void fields(ClientGameTestContext context, TestServerContext server, int y) {
+		// field x 2-9, z 0-15; rails x 1 and 10; the gantry at home row z 0; headland stop (1,y,16); belt west to a forage blower and silo
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 0, 8, y, 16, 14, 14);
+			for (int z = 0; z <= 15; z++) {
+				level.setBlockAndUpdate(new BlockPos(1, y, z), dev.farmings.gantry.GantryBlocks.FIELD_RAIL.defaultBlockState().setValue(dev.farmings.gantry.GantryPartBlock.AXIS, Direction.Axis.Z));
+				level.setBlockAndUpdate(new BlockPos(10, y, z), dev.farmings.gantry.GantryBlocks.FIELD_RAIL.defaultBlockState().setValue(dev.farmings.gantry.GantryPartBlock.AXIS, Direction.Axis.Z));
+			}
+			level.setBlockAndUpdate(new BlockPos(1, y + 1, 0), dev.farmings.gantry.GantryBlocks.GANTRY_TRUCK.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(10, y + 1, 0), dev.farmings.gantry.GantryBlocks.GANTRY_TRUCK.defaultBlockState());
+			for (int x = 1; x <= 10; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y + 2, 0), dev.farmings.gantry.GantryBlocks.GANTRY_BEAM.defaultBlockState().setValue(dev.farmings.gantry.GantryPartBlock.AXIS, Direction.Axis.X));
+			}
+			level.setBlockAndUpdate(new BlockPos(1, y + 3, 0), dev.farmings.gantry.GantryBlocks.GANTRY_CAB.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(1, y, 16), dev.farmings.gantry.GantryBlocks.HEADLAND_STOP.defaultBlockState());
+			for (int x = -5; x <= 0; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, 16), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorPieceBlock.FACING, Direction.WEST));
+			}
+			level.setBlockAndUpdate(new BlockPos(-6, y, 16), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT_DRIVE.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorDriveBlock.FACING, Direction.WEST));
+			level.setBlockAndUpdate(new BlockPos(-7, y, 16), dev.farmings.silo.SiloBlocks.FORAGE_BLOWER.defaultBlockState());
+			for (int k = 0; k < 10; k++) {
+				for (int x = -10; x <= -8; x++) {
+					for (int z = 15; z <= 17; z++) {
+						level.setBlockAndUpdate(new BlockPos(x, y + k, z), x == -9 && z == 16 ? net.minecraft.world.level.block.Blocks.AIR.defaultBlockState()
+								: dev.farmings.silo.SiloBlocks.SILO_STAVE.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(new BlockPos(-9, y + 10, 16), dev.farmings.silo.SiloBlocks.SILO_ROOF.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(-11, y, 16), dev.farmings.silo.SiloBlocks.SILO_UNLOADER.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(-12, y, 16), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState());
+			var drive = (dev.farmings.conveyor.ConveyorDriveEntity) level.getBlockEntity(new BlockPos(-6, y, 16));
+			drive.refresh();
+			drive.forceRunning(true);
+			((dev.farmings.silo.BlowerEntity) level.getBlockEntity(new BlockPos(-7, y, 16))).forceRunning(true);
+			((dev.farmings.silo.SiloEntity) level.getBlockEntity(new BlockPos(-11, y, 16))).forceRunning(true);
+			var c = cab(level, y);
+			c.forcePowerForTest(true);
+			c.addInput(new ItemStack(dev.farmings.crops.FieldCrops.seed(dev.farmings.farm.crops.FieldCrop.CORN), 64));
+			c.addInput(new ItemStack(dev.farmings.crops.FieldCrops.seed(dev.farmings.farm.crops.FieldCrop.CORN), 64));
+		});
+		server.runCommand("tp @p 15.5 " + (y + 7) + " -2.5 42 27");
+		context.waitTicks(60);
+		actionbar(server, server.computeOnServer(srv -> cab(srv.overworld(), y).readout()));
+		context.takeScreenshot("farmings-fields-gantry-parked");
+		// 1. the seed drill tills and sows corn in one pass
+		gantryPass(context, server, y, dev.farmings.farm.gantry.GantryTool.SEED_DRILL, "gantry-sows-corn", 60, 1);
+		context.takeScreenshot("farmings-fields-corn-sown");
+		// 2. grown corn (stage 7, before the 114-day grain stage) is chopped, unloaded at the stop onto the belt and blown into the silo
+		server.runOnServer(srv -> sowField(srv.overworld(), y, dev.farmings.crops.FieldCrops.block(dev.farmings.farm.crops.FieldCrop.CORN).defaultBlockState()
+				.setValue(net.minecraft.world.level.block.CropBlock.AGE, 7)));
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-fields-corn-grown");
+		// from the headland: the gantry comes toward the stop, unloads onto the belt, and the blower fills the silo
+		server.runCommand("tp @p 9.5 " + (y + 7) + " 27.5 145 18");
+		context.waitTicks(30);
+		gantryPass(context, server, y, dev.farmings.farm.gantry.GantryTool.HARVESTER, "gantry-chops-corn-to-silo", 90, 6);
+		String silo = server.computeOnServer(srv -> ((dev.farmings.silo.SiloEntity) srv.overworld().getBlockEntity(new BlockPos(-11, y, 16))).readout());
+		System.out.println("[farmings] " + silo);
+		actionbar(server, silo.replace("Tower silo: ", ""));
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-fields-silo-filled");
+		server.runOnServer(srv -> ((dev.farmings.silo.SiloEntity) srv.overworld().getBlockEntity(new BlockPos(-11, y, 16))).ageForTest(21));
+		context.waitTicks(100);
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.silo.SiloEntity) srv.overworld().getBlockEntity(new BlockPos(-11, y, 16))).readout().replace("Tower silo: ", "")));
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-fields-silage-unloads");
+		// 3. alfalfa: mown into swaths, raked after a day, baled after a day and a half
+		server.runOnServer(srv -> sowField(srv.overworld(), y, dev.farmings.crops.FieldCrops.block(dev.farmings.farm.crops.FieldCrop.ALFALFA).defaultBlockState()
+				.setValue(net.minecraft.world.level.block.CropBlock.AGE, 7)));
+		server.runCommand("tp @p 15.5 " + (y + 7) + " -2.5 42 27");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-fields-alfalfa");
+		gantryPass(context, server, y, dev.farmings.farm.gantry.GantryTool.MOWER, "gantry-mows-hay", 60, 1);
+		context.takeScreenshot("farmings-fields-swaths");
+		server.runOnServer(srv -> cab(srv.overworld(), y).dryForTest(1.0));
+		gantryPass(context, server, y, dev.farmings.farm.gantry.GantryTool.RAKE, "gantry-rakes-hay", 60, 1);
+		context.takeScreenshot("farmings-fields-windrows");
+		server.runOnServer(srv -> cab(srv.overworld(), y).dryForTest(0.5));
+		gantryPass(context, server, y, dev.farmings.farm.gantry.GantryTool.BALER, "gantry-bales-hay", 60, 1);
+		context.takeScreenshot("farmings-fields-baled");
+		// 4. a TMR mixer hands its rations onto a belt that feeds a barn hay feeder (x 20-26, z -6)
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 23, -6, y, 6, 4, 5);
+			level.setBlockAndUpdate(new BlockPos(20, y, -6), dev.farmings.feedmill.FeedMillBlocks.TMR_MIXER.defaultBlockState());
+			for (int x = 21; x <= 24; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, -6), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorPieceBlock.FACING, Direction.EAST));
+			}
+			level.setBlockAndUpdate(new BlockPos(25, y, -6), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT_DRIVE.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorDriveBlock.FACING, Direction.EAST));
+			barnPart(level, BarnParts.HAY_FEEDER, new BlockPos(26, y, -6));
+			var drive = (dev.farmings.conveyor.ConveyorDriveEntity) level.getBlockEntity(new BlockPos(25, y, -6));
+			drive.refresh();
+			drive.forceRunning(true);
+			var cow = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+			cow.setBreedForDisplay(CattleBreed.HOLSTEIN, Sex.FEMALE, CattleBreed.HOLSTEIN.matureWeightKg, false);
+			cow.setNoAi(true);
+			cow.snapTo(27.5, y, -4.5, 160, 0);
+			level.addFreshEntity(cow);
+		});
+		server.runCommand("tp @p 23.5 " + (y + 3) + " -1.5 180 30");
+		context.waitTicks(40);
+		Filming mix = context.computeOnClient(client -> Filming.start(client, "mixer-feeds-barn"));
+		server.runOnServer(srv -> {
+			var m = (dev.farmings.feedmill.FeedMachineEntity) srv.overworld().getBlockEntity(new BlockPos(20, y, -6));
+			m.forceRunning(true);
+			m.accept(new ItemStack(dev.farmings.crops.FieldCrops.CORN_SILAGE, 6));
+			m.accept(new ItemStack(dev.farmings.crops.FieldCrops.ALFALFA_HAY, 20));
+			m.accept(new ItemStack(dev.farmings.crops.FieldCrops.CORN_GRAIN, 64));
+			m.accept(new ItemStack(dev.farmings.feedmill.FeedItems.FISH_MEAL, 10));
+			m.accept(new ItemStack(dev.farmings.feedmill.FeedItems.MINERAL_PREMIX, 3));
+		});
+		for (int i = 0; i < 14; i++) {
+			context.waitTicks(20);
+			actionbar(server, server.computeOnServer(srv -> {
+				ServerLevel level = srv.overworld();
+				var m = (dev.farmings.feedmill.FeedMachineEntity) level.getBlockEntity(new BlockPos(20, y, -6));
+				var f = (FeederEntity) level.getBlockEntity(new BlockPos(26, y, -6));
+				var a = f.analysis();
+				return String.format(java.util.Locale.ROOT, "%s | feeder %.0f kg DM, CP %.1f%%, NDF %.1f%%, TDN %.1f%%",
+						m.readout().replaceAll(" \\(CP.*\\)", ""), f.dryMatterKg(), a.cp(), a.ndf(), a.tdn());
+			}));
+			if (i == 6) {
+				context.takeScreenshot("farmings-fields-mixer-running");
+			}
+		}
+		context.takeScreenshot("farmings-fields-feeder-filled");
+		mix.stop();
+		// 5. a compost windrow of manure, straw and litter, turned five times over eight weeks (x 20-26, z 6)
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 23, 6, y, 6, 3, 4);
+			level.setBlockAndUpdate(new BlockPos(20, y, 6), dev.farmings.compost.CompostBlocks.COMPOST_CONTROLLER.defaultBlockState());
+			for (int x = 21; x <= 24; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, 6), dev.farmings.compost.CompostBlocks.COMPOST_PAD.defaultBlockState());
+			}
+			level.setBlockAndUpdate(new BlockPos(25, y, 6), dev.farmings.compost.CompostBlocks.WINDROW_TURNER.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(20, y, 7), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState());
+			((dev.farmings.compost.TurnerEntity) level.getBlockEntity(new BlockPos(25, y, 6))).forceRunning(true);
+			var c = (dev.farmings.compost.CompostControllerEntity) level.getBlockEntity(new BlockPos(20, y, 6));
+			c.accept(new ItemStack(FarmingsItems.MANURE, 10));
+			c.accept(new ItemStack(dev.farmings.crops.FieldCrops.STRAW, 20));
+			c.accept(new ItemStack(FarmingsItems.POULTRY_LITTER, 10));
+			c.start();
+		});
+		server.runCommand("tp @p 22.5 " + (y + 3) + " 10.5 180 30");
+		context.waitTicks(40);
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.compost.CompostControllerEntity) srv.overworld().getBlockEntity(new BlockPos(20, y, 6))).readout()));
+		context.waitTicks(10);
+		context.takeScreenshot("farmings-fields-windrow");
+		Filming turn = context.computeOnClient(client -> Filming.start(client, "compost-turned"));
+		for (int i = 0; i < 6; i++) {
+			server.runOnServer(srv -> ((dev.farmings.compost.CompostControllerEntity) srv.overworld().getBlockEntity(new BlockPos(20, y, 6)))
+					.step(srv.overworld(), dev.farmings.farm.compost.Windrow.TURN_EVERY_DAYS));
+			for (int k = 0; k < 2; k++) {
+				context.waitTicks(20);
+				actionbar(server, server.computeOnServer(srv -> ((dev.farmings.compost.CompostControllerEntity) srv.overworld().getBlockEntity(new BlockPos(20, y, 6))).readout()));
+			}
+		}
+		context.takeScreenshot("farmings-fields-compost-done");
+		turn.stop();
+		// 6. a digester full of a dairy's manure, its gas holder piped to a Wildcatter gas set that runs on it (x -20.., z -20..)
+		int gx = -24;
+		int gz = -20;
+		BlockPos panelAt = new BlockPos(gx + 8, y, gz);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, gx + 5, gz - 1, y, 9, 7, 8);
+			level.setBlockAndUpdate(new BlockPos(gx + 3, y, gz - 3), dev.farmings.digester.DigesterBlocks.DIGESTER_TANK.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 3, y + 1, gz - 3), dev.farmings.digester.DigesterBlocks.GAS_HOLDER.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 2, y, gz - 3), dev.farmings.digester.DigesterBlocks.FEED_PIT.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 4, y, gz - 3), dev.farmings.digester.DigesterBlocks.DIGESTATE_TANK.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 5, y, gz - 3), dev.farmings.digester.DigesterBlocks.SCREW_PRESS.defaultBlockState());
+			var d = (dev.farmings.digester.DigesterEntity) level.getBlockEntity(new BlockPos(gx + 3, y, gz - 3));
+			d.forceRunning(true);
+			d.digester().feed(20_000);
+			d.step(20);
+			var gasLine = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(dev.wildcatter.Wildcatter.id("gas_line"));
+			level.setBlockAndUpdate(new BlockPos(gx + 3, y + 1, gz - 2), gasLine.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 3, y, gz - 2), gasLine.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 3, y, gz - 1), gasLine.defaultBlockState());
+			dev.wildcatter.block.GensetSkid.build(level, panelAt, Direction.NORTH, true);
+		});
+		server.runCommand("tp @p " + (gx + 5.5) + " " + (y + 5) + " " + (gz + 7.5) + " 170 28");
+		context.waitTicks(40);
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.digester.DigesterEntity) srv.overworld().getBlockEntity(new BlockPos(gx + 3, y, gz - 3))).readout()));
+		context.waitTicks(10);
+		context.takeScreenshot("farmings-fields-digester");
+		Filming gen = context.computeOnClient(client -> Filming.start(client, "digester-runs-genset"));
+		server.runOnServer(srv -> ((dev.wildcatter.block.GensetControlPanelBlockEntity) srv.overworld().getBlockEntity(panelAt)).setWantRun(true));
+		for (int i = 0; i < 20; i++) {
+			context.waitTicks(20);
+			actionbar(server, server.computeOnServer(srv -> {
+				ServerLevel level = srv.overworld();
+				var p = (dev.wildcatter.block.GensetControlPanelBlockEntity) level.getBlockEntity(panelAt);
+				var d = (dev.farmings.digester.DigesterEntity) level.getBlockEntity(new BlockPos(gx + 3, y, gz - 3));
+				return String.format(java.util.Locale.ROOT, "Gas set burned %.2f m3 of farm biogas; holder %.1f m3", p.biogasBurned(), d.digester().gasM3());
+			}));
+			if (i == 14) {
+				context.takeScreenshot("farmings-fields-genset-running");
+			}
+		}
+		gen.stop();
+		System.out.println("[farmings] genset: " + server.computeOnServer(srv -> ((dev.wildcatter.block.GensetControlPanelBlockEntity) srv.overworld().getBlockEntity(panelAt)).inspect().getString()));
+	}
+
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		// the taming scene needs a generated world (biomes and their animals); every other scene uses the flat test world
@@ -1664,6 +1930,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("showroom".equals(only)) {
 				context.waitTicks(200);
 				showroom(context, server, y);
+				return;
+			}
+			if ("fields".equals(only)) {
+				context.waitTicks(200);
+				fields(context, server, y);
 				return;
 			}
 			if ("poultryfarm".equals(only)) {

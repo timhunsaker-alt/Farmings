@@ -72,4 +72,6 @@ The animal's daily intake carries that analysis. A ration score of 0 to 1 sets t
     when the feeder is empty.
   - The coop's grain feeder takes grain, seed, meal and rations by their mass as fed.
 - **The mill and mixer are single blocks** in this pass, not the spec's 2 x 2 x 2 mixer.
-- **Game tests:** mill_grinds, mixer_makes_ration, feeder_ration_feeds_cow.
+- **Into the barn:** a barn hay feeder takes rations (and any feed) from a belt or auger at its side, or straight from a mixer beside it,
+  one item at a time while there is room.
+- **Game tests:** mill_grinds, mixer_makes_ration, feeder_ration_feeds_cow, belt_feeds_barn_feeder.

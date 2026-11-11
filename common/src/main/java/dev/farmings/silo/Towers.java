@@ -87,7 +87,7 @@ public final class Towers {
 				}
 				continue;
 			}
-			BlockEntity be = level.getBlockEntity(at);
+			BlockEntity be = dev.wildcatter.multiblock.BigParts.entity(level, at);
 			if (be instanceof ItemSink sink) {
 				rest = sink.accept(rest);
 			} else if (be instanceof Container c) {

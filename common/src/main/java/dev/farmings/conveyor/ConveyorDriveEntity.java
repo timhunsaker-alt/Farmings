@@ -188,7 +188,7 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 	/** Hands a stack to whatever the head faces; returns what it could not take. */
 	private ItemStack deliver(ServerLevel level, ItemStack stack) {
 		BlockPos out = worldPosition.relative(facing());
-		BlockEntity be = level.getBlockEntity(out);
+		BlockEntity be = dev.wildcatter.multiblock.BigParts.entity(level, out);
 		if (level.getBlockState(out).getBlock() instanceof ConveyorPieceBlock) {
 			ConveyorDriveEntity next = driveOf(level, out);
 			if (next != null && next.kind().carries(stack) && next.hasRoom()) {

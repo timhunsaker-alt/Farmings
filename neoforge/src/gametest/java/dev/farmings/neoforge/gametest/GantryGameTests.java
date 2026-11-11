@@ -132,7 +132,7 @@ final class GantryGameTests {
 		helper.succeed();
 	}
 
-	/** On its own clock (a block every 0.45 s with the drill), the gantry sows the field and parks at home again. */
+	/** On its own clock (a block every 0.45 s with the drill, not faster), the gantry sows the field and parks at home again. */
 	static void gantryRunsOnItsClock(GameTestHelper helper) {
 		build(helper);
 		GantryCabEntity c = cab(helper);
@@ -146,6 +146,8 @@ final class GantryGameTests {
 	private static void poll(GameTestHelper helper, int waited) {
 		GantryCabEntity home = cab(helper);
 		if (home != null && home.phase() == GantryCabEntity.Phase.PARKED && helper.getBlockState(new BlockPos(6, 1, 8)).getBlock() == FieldCrops.block(FieldCrop.OATS)) {
+			// 8 moves out and 8 back at 9 ticks a block (0.45 s at 8 km/h): it cannot be home in under 144 ticks
+			helper.assertTrue(waited >= 140, Component.literal("the gantry keeps its tool's pace: home after only " + waited + " ticks"));
 			helper.succeed();
 			return;
 		}

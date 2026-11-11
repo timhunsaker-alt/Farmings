@@ -1,6 +1,6 @@
 # Farmings — Roadmap
 
-Exactly one phase is marked **CURRENT**. A phase is done when `./gradlew build` and the game tests pass with new coverage for
+Exactly one phase is marked **CURRENT** while one is under way (none is, after Phase 3 and 4: the loose ends and new animals are next, each planned on its own). A phase is done when `./gradlew build` and the game tests pass with new coverage for
 the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a page for each new system.
 
 ## Phase 0 — Set up — done
@@ -26,7 +26,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Mating, pregnancy, calving. Sire and dam choice. Breed composition and labels. Visual recipe for coat and markings.
 - Records: a herd book showing parents, breed composition and traits.
 
-## Phase 3 — Fields and processing — CURRENT (spec 2026-11-11; the creamery is done)
+## Phase 3 — Fields and processing — done 2026-11-11 (PROGRESS.md Step 15; simplifications under Known gaps)
 - **Specs:**
   - `docs/crops.md`;
   - `docs/conveyors.md`;

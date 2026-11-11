@@ -77,7 +77,8 @@ the span as the working width.
   - `farm/gantry/GantryTool` holds speeds and power and is plain Java with a unit test.
   - The cab, parts, junction and swath are in `gantry/`.
 - **It steps as blocks.** The gantry moves its own blocks one cell at a time and carries the cab's saved state with it, instead of lifting
-  into one entity the way the TBM does. The motion is a step every 0.45-0.72 s. It can be tested without a client.
+  into one entity the way the TBM does. The motion is a step every 0.45-0.72 s; the step timer moves with the cab, so the pace holds
+  (fixed 2026-11-11). It can be tested without a client.
 - **The tool head is an item fitted to the cab.** It shows as a head hanging under every beam cell.
 - **The swath:**
   - Mown perennials keep their swath on the regrowing plant, as a `swath` property drawn over the crop.

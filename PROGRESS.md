@@ -208,7 +208,28 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     - the egg grading table, which packs cartons of 12.
   - **Products:** turkey, duck and quail meat, fried eggs, rotten eggs, down, a down jacket, and litter that goes in the composter.
   - **Tests:** 140 game tests and the unit tests pass. Art: 17 Ludo icons (`art/source/PROMPTS.md`).
-- Next: not set. Ideas: geese, guinea fowl, predators.
+- Step 15 (2026-11-11): Phase 3, fields, feed and waste. Approved by Tim in plan mode, with his popup answers:
+  - alfalfa, silage corn, timothy and orchardgrass hay, oats and barley, on the 15:1 clock, with yields x10 and seeds from grass;
+  - a gantry on rails that tills and plants in one pass, harvests, mows, rakes, bales and spreads;
+  - Farmings' own belts and augers, a tower silo and a grain bin;
+  - a hammer mill and a TMR mixer, with rations that change milk, growth and eggs;
+  - a compost windrow and turner, a digester, a screw-press separator, and biogas into a Wildcatter gas set (Wildcatter v0.6.0 tagged and
+    published; Farmings moves to it).
+  - **Spec:** `docs/crops.md`, `docs/conveyors.md`, and `docs/multiblocks/` `field-gantry.md`, `silo.md`, `feed-mill.md`, `compost.md` and
+    `digester.md`, each with a "Built" section.
+  - **Rules (plain Java, unit-tested):** `farm/crops`, `farm/conveyor`, `farm/gantry`, `farm/silo`, `farm/compost`, `farm/digester`, and
+    `feed/Feedstuff`, `Ration` and `FeedMix`. `verifyPlainJava` covers `farm`.
+  - **Built:** crop blocks and seeds, belts and augers with drives, the gantry (rails, trucks, beam, cab, six tool heads, junction, headland
+    stop, swaths), the silo and grain bin, the mill and mixer, ration effects on cattle, sheep and birds, the windrow and turner, the
+    digester, gas holder, digestate tank and screw press.
+  - **Belt into the barn:** a barn hay feeder takes feed from a belt or straight from the mixer. Belts, the silo and the gantry hand items to
+    any piece of a big part (its owner).
+  - **Fixed:** the gantry kept its step timer in the cab, which is re-made at every row it moves to, so it ran a row a tick. The timer now
+    moves with the cab, and `gantry_runs_on_its_clock` checks that a pass is no faster than its tool's speed.
+  - **Tests:** 162 game tests and the unit tests pass. Art: 36 Ludo icons (`art/source/PROMPTS.md`).
+  - **Evidence:** the Fabric client scene `fields` (15 screenshots; recordings gantry-sows-corn, gantry-chops-corn-to-silo,
+    gantry-mows-hay, gantry-rakes-hay, gantry-bales-hay, mixer-feeds-barn, compost-turned, digester-runs-genset).
+- Next: the loose ends, then new animals (each its own plan).
 
 ## Known gaps
 - **Poultry, not built:**
@@ -226,8 +247,17 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - power for the incubator and the brooder;
   - grade age thresholds;
   - the plumage dominance orders.
-- **Flaky game tests:** two sheep walking scenes (ewe_moves_to_lambing_pen, flock_goes_to_pasture_and_back) each failed once in about 10
-  full runs (2026-11-11) and passed on rerun.
+- **Phase 3, not built or simplified:**
+  - the digester tank and the TMR mixer are single blocks, not the spec's 3 x 3 x 3 ring and 2 x 2 x 2 mixer;
+  - belts are level only, and items riding a belt are not drawn;
+  - the gantry steps as blocks instead of lifting into one entity, and hand raking is not built;
+  - the silo takes its whole 10.5% dry-matter loss at filling;
+  - the scene's gas set runs with no electrical load on it, so it idles (61 m³/h).
+- **Phase 3 proposals with no source:** see the *(proposed)*, NOT FOUND and TO VERIFY marks in `docs/crops.md`, `docs/conveyors.md` and
+  the five Phase 3 multiblock docs (among them the gantry span, bin and rake/spreader power, the gas holder and digestate tank sizes,
+  the press motor and split, ration score shapes and floors, and fish meal and limestone analyses).
+- **Flaky game tests:** two sheep walking scenes (ewe_moves_to_lambing_pen, flock_goes_to_pasture_and_back) and fowl_follows_seeds each failed now and
+  then in full runs (2026-11-11) and passed on rerun.
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.

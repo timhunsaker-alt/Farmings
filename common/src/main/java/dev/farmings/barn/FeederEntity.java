@@ -14,7 +14,7 @@ import net.minecraft.world.level.storage.ValueOutput;
  * blocks of 85 kg each, or the same weight of any feed. A round bale (372 kg DM) goes in only when the feeder is empty, as into a ring
  * feeder (proposed).
  */
-public class FeederEntity extends BlockEntity implements BigPartEntity {
+public class FeederEntity extends BlockEntity implements BigPartEntity, dev.farmings.conveyor.ItemSink {
 	public static final int MAX_BLOCKS = 4;
 	public static final double CAPACITY_KG = MAX_BLOCKS * Hay.BLOCK_FRESH_KG * Hay.DRY_MATTER_FRACTION;
 
@@ -46,6 +46,16 @@ public class FeederEntity extends BlockEntity implements BigPartEntity {
 		mix.add(f.kgDm(), f.analysis());
 		setChanged();
 		return true;
+	}
+
+	/** From a belt, an auger or the mixer: one item at a time while there is room (docs/multiblocks/feed-mill.md). */
+	@Override
+	public net.minecraft.world.item.ItemStack accept(net.minecraft.world.item.ItemStack stack) {
+		net.minecraft.world.item.ItemStack rest = stack.copy();
+		while (!rest.isEmpty() && addFeed(rest.copyWithCount(1))) {
+			rest.shrink(1);
+		}
+		return rest;
 	}
 
 	/** Hay blocks' worth, rounded down, for the readout. */

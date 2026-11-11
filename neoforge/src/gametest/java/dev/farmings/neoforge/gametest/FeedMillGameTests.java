@@ -81,4 +81,34 @@ final class FeedMillGameTests {
 		helper.assertTrue(before == 1.0 && Ration.milkFactor(cow.ration()) < 0.85, Component.literal("on grass hay alone her milk falls: " + Ration.milkFactor(cow.ration())));
 		helper.succeed();
 	}
+
+	/** The mixer hands its rations onto a belt, and the belt delivers them into a barn hay feeder at its head. */
+	static void beltFeedsBarnFeeder(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		var level = helper.getLevel();
+		helper.setBlock(new BlockPos(1, 1, 3), FeedMillBlocks.TMR_MIXER);
+		for (int x = 2; x <= 4; x++) {
+			helper.setBlock(new BlockPos(x, 1, 3), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT.defaultBlockState()
+					.setValue(dev.farmings.conveyor.ConveyorPieceBlock.FACING, net.minecraft.core.Direction.EAST));
+		}
+		helper.setBlock(new BlockPos(5, 1, 3), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT_DRIVE.defaultBlockState()
+				.setValue(dev.farmings.conveyor.ConveyorDriveBlock.FACING, net.minecraft.core.Direction.EAST));
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.HAY_FEEDER, helper.absolutePos(new BlockPos(6, 1, 3)), net.minecraft.core.Direction.NORTH);
+		var drive = (dev.farmings.conveyor.ConveyorDriveEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 3)));
+		drive.refresh();
+		drive.forceRunning(true);
+		FeedMachineEntity m = (FeedMachineEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(1, 1, 3)));
+		m.forceRunning(true);
+		m.accept(new ItemStack(FieldCrops.CORN_SILAGE, 6));
+		m.accept(new ItemStack(FieldCrops.ALFALFA_HAY, 20));
+		m.accept(new ItemStack(FieldCrops.CORN_GRAIN, 64));
+		m.accept(new ItemStack(FeedItems.FISH_MEAL, 10));
+		m.accept(new ItemStack(FeedItems.MINERAL_PREMIX, 3));
+		var feeder = (dev.farmings.barn.FeederEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(6, 1, 3)));
+		TamingGameTests.waitFor(helper, 0, 400, () -> drive.delivered() >= 16, "16 or more rations ride the belt into the feeder", () -> {
+			helper.assertTrue(feeder.dryMatterKg() > 200 && feeder.analysis().cp() >= 15,
+					Component.literal("the feeder holds the TMR: " + feeder.dryMatterKg() + " kg DM, " + feeder.analysis()));
+			helper.succeed();
+		});
+	}
 }
