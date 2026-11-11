@@ -195,7 +195,7 @@ public class CorralPostEntity extends BlockEntity {
 			}
 		}
 		if (eaten >= wantKg * 0.999 && drunk >= wantL * 0.999) {
-			a.setSettledDays(a.settledDays() + TimeScale.ticksToRealDays(ticks));
+			a.setSettledDays(a.settledDays() + a.timeScale().ticksToRealDays(ticks));
 			if (a.settledDays() >= WildBreeds.SETTLE_DAYS) {
 				a.tame(owner);
 				tamed++;

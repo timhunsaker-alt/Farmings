@@ -48,6 +48,11 @@ public final class Wild {
 
 		void setLure(net.minecraft.core.@Nullable BlockPos to);
 
+		/** The time scale this species lives on (docs/animals/poultry.md: birds run at 3:1). */
+		default dev.farmings.husbandry.TimeScale.Scale timeScale() {
+			return dev.farmings.husbandry.TimeScale.LIVESTOCK;
+		}
+
 		default void tame(@Nullable UUID owner) {
 			setWild(false);
 			setOwner(owner);
