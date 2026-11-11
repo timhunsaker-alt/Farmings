@@ -348,6 +348,7 @@ def main():
     silo_assets(lang)
     feedmill_assets(lang)
     compost_assets(lang)
+    digester_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -454,6 +455,12 @@ SHAPED = {
     "compost_pad": (["KKK"], 3),
     "compost_controller": (["WRW", "WTW"], 1),
     "windrow_turner": (["SSS", "NCN", "S S"], 1),
+    # the digester (docs/multiblocks/digester.md)
+    "digester_tank": (["SGS", "BRB", "SCS"], 1),
+    "digester_feed_pit": (["K K", "KBK", "KKK"], 1),
+    "gas_holder": (["LLL", "L L", "SSS"], 1),
+    "digestate_tank": (["S S", "SBS", "SSS"], 1),
+    "screw_press": (["SNS", "ICI", "SRS"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -1309,6 +1316,33 @@ def compost_assets(lang):
         tex = "farmings:item/" + name + ("" if real else "_placeholder")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+
+
+def digester_assets(lang):
+    """A green glass-lined tank, a concrete feed pit, a grey membrane gas holder, a digestate tank and a steel screw press."""
+    tex = os.path.join(ASSETS, "textures", "block")
+    blocks = {"digester_tank": ("Digester Tank", (70, 110, 70)), "digester_feed_pit": ("Digester Feed Pit", (140, 138, 130)),
+              "gas_holder": ("Gas Holder (biogas)", (200, 202, 196)), "digestate_tank": ("Digestate Tank", (90, 120, 80)),
+              "screw_press": ("Screw-Press Separator", (150, 154, 158))}
+    for name, (title, col) in blocks.items():
+        img = Image.new("RGBA", (16, 16), col + (255,))
+        d = ImageDraw.Draw(img)
+        for y in (3, 8, 13):
+            d.line([(0, y), (15, y)], fill=tuple(max(0, c - 25) for c in col) + (255,))
+        img.save(os.path.join(tex, name + ".png"))
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    name = "liquid_digestate"
+    lang["item.farmings." + name] = "Liquid Digestate (100 L)"
+    real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
+    if not real:
+        item_texture(name, (90, 80, 50), False)
+    tex = "farmings:item/" + name + ("" if real else "_placeholder")
+    write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
+    write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
 
 
 def loot(name):

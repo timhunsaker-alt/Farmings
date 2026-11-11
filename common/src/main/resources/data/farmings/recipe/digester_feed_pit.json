@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "K K",
+  "KBK",
+  "KKK"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:digester_feed_pit",
+  "count": 1
+ }
+}

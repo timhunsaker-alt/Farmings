@@ -1,0 +1,20 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SNS",
+  "ICI",
+  "SRS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "I": "minecraft:iron_ingot",
+  "N": "minecraft:iron_bars",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:screw_press",
+  "count": 1
+ }
+}

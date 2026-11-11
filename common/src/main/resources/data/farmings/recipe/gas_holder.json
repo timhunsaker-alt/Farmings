@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "LLL",
+  "L L",
+  "SSS"
+ ],
+ "key": {
+  "L": "#minecraft:wool",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:gas_holder",
+  "count": 1
+ }
+}

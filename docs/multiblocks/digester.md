@@ -56,3 +56,18 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
 - Plug-flow tanks.
 - Feeding food waste.
 - Combined heat and power: the engine's heat warming the tank.
+
+## Built, 2026-11-11
+- **Code:**
+  - `farm/digester/Digester` is plain Java and unit-tested.
+  - The parts are in `digester/`.
+- **Single blocks in this pass:** the tank is one block, not the spec's 3 x 3 x 3 ring.
+  - The gas holder sits on top of the tank.
+  - The feed pit and the digestate tank sit beside it, and the screw press beside the digestate tank.
+- **The gas holder** is a Wildcatter `FluidNode` offering `Product.BIOGAS` on its top and sides.
+- **Feeding:**
+  - The feed pit takes manure and poultry litter by hand, belt or hopper.
+  - It also pulls up to 4 manure items a second from a barn collection pit it touches.
+- **Liquid digestate:** it works as bone meal by hand, and the gantry's spreader uses it.
+- **Game tests:** digester_fills_holder, separator_splits, and genset_burns_farm_biogas. That last one is a real Wildcatter 0.6.0 gas set
+  started on the digester's gas line, which runs on the farm's biogas.
