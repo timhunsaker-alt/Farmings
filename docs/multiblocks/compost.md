@@ -41,6 +41,9 @@
   ([NCDA&CS](https://www.ncagr.gov/divisions/agronomic-services/waste-analysis/nutrient-concentrations-compost)). This is shown on the
   item; it doesn't change the bone-meal effect.
 - **The vanilla composter** still takes poultry litter (eggs.md).
+- **A working mix** (worked out from the figures above): manure as excreted is too wet, and enough straw to dry it brings too much carbon
+  (500 kg of manure with 200 kg of straw is C:N 44). Poultry litter or separated digestate solids bring both into range. For example,
+  500 kg of manure, 200 kg of straw and 100 kg of litter is C:N 26 at 61% moisture.
 
 ## Not in this spec
 - Temperature as a simulated quantity.
@@ -48,3 +51,13 @@
 - Runoff.
 - Pathogen kill.
 - Curing piles.
+
+## Built, 2026-11-11
+- **Code:**
+  - `farm/compost/Windrow` is plain Java and unit-tested.
+  - The pad, controller and turner are in `compost/`.
+- **Blending:** inputs are blended assuming every input's dry matter holds the same share of carbon *(proposed)*.
+- **Starting:** a pile starts when the player sneak-right-clicks the controller. Inputs are refused once it has started.
+- **Turning:** the pile ages only up to its next due turn, and waits there until the turner has power.
+- **Compost:** it works as bone meal by hand, and the gantry's spreader uses it.
+- **Game tests:** compost_matures, compost_waits_for_turns.

@@ -139,9 +139,26 @@ final class GantryGameTests {
 		c.addInput(new ItemStack(FieldCrops.seed(FieldCrop.OATS), 64));
 		c.fitTool(GantryTool.SEED_DRILL);
 		c.toggle();
-		TamingGameTests.waitFor(helper, 0, 600, () -> {
-			GantryCabEntity home = cab(helper);
-			return home != null && home.phase() == GantryCabEntity.Phase.PARKED && helper.getBlockState(new BlockPos(6, 1, 8)).getBlock() == FieldCrops.block(FieldCrop.OATS);
-		}, "the gantry sows to the far end and comes home", helper::succeed);
+		helper.runAfterDelay(1, () -> poll(helper, 0));
+	}
+
+	/** Waits for the gantry to be home and parked with the far row sown; on failure says where the cab is and what it reads. */
+	private static void poll(GameTestHelper helper, int waited) {
+		GantryCabEntity home = cab(helper);
+		if (home != null && home.phase() == GantryCabEntity.Phase.PARKED && helper.getBlockState(new BlockPos(6, 1, 8)).getBlock() == FieldCrops.block(FieldCrop.OATS)) {
+			helper.succeed();
+			return;
+		}
+		if (waited >= 600) {
+			String where = "no cab found";
+			for (int z = 0; z <= 9; z++) {
+				if (helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(1, 4, z))) instanceof GantryCabEntity c) {
+					where = "cab at row " + z + ": " + c.readout();
+				}
+			}
+			helper.fail(Component.literal("the gantry did not sow the field and come home in 600 ticks; " + where));
+			return;
+		}
+		helper.runAfterDelay(10, () -> poll(helper, waited + 10));
 	}
 }

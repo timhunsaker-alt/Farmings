@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SSS",
+  "NCN",
+  "S S"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "N": "minecraft:iron_bars",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:windrow_turner",
+  "count": 1
+ }
+}

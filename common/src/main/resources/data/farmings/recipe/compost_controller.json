@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WRW",
+  "WTW"
+ ],
+ "key": {
+  "R": "minecraft:redstone",
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:compost_controller",
+  "count": 1
+ }
+}

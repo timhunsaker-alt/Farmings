@@ -186,6 +186,11 @@ public final class FarmingsBlocks {
 			output.accept(b);
 		}
 		dev.farmings.feedmill.FeedItems.ALL.values().forEach(output::accept);
+		for (Block b : dev.farmings.compost.CompostBlocks.ALL) {
+			output.accept(b);
+		}
+		output.accept(dev.farmings.compost.CompostBlocks.COMPOST);
+		output.accept(dev.farmings.compost.CompostBlocks.SEPARATED_SOLIDS);
 		dev.farmings.crops.FieldCrops.SEEDS.values().forEach(output::accept);
 		dev.farmings.crops.FieldCrops.PRODUCTS.values().forEach(output::accept);
 		for (Block b : dev.farmings.shearing.ShearingBlocks.ALL) {
@@ -233,6 +238,7 @@ public final class FarmingsBlocks {
 		dev.farmings.gantry.GantryBlocks.register();
 		dev.farmings.silo.SiloBlocks.register();
 		dev.farmings.feedmill.FeedMillBlocks.register();
+		dev.farmings.compost.CompostBlocks.register();
 		dev.farmings.shearing.ShearingBlocks.register();
 		dev.farmings.woolmill.WoolMillBlocks.register();
 		FarmingsItems.register();

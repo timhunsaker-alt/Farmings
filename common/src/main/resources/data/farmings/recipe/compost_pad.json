@@ -1,0 +1,14 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "KKK"
+ ],
+ "key": {
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:compost_pad",
+  "count": 3
+ }
+}

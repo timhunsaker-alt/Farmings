@@ -347,6 +347,7 @@ def main():
     gantry_assets(lang)
     silo_assets(lang)
     feedmill_assets(lang)
+    compost_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -449,6 +450,10 @@ SHAPED = {
     # the feed mill (docs/multiblocks/feed-mill.md)
     "hammer_mill": (["SNS", "SRS", "SCS"], 1),
     "tmr_mixer": (["S S", "SRS", "SCS"], 1),
+    # compost (docs/multiblocks/compost.md)
+    "compost_pad": (["KKK"], 3),
+    "compost_controller": (["WRW", "WTW"], 1),
+    "windrow_turner": (["SSS", "NCN", "S S"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -1271,6 +1276,32 @@ def feedmill_assets(lang):
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     for name, (title, colour) in FEED_ITEMS.items():
+        lang["item.farmings." + name] = title
+        real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
+        if not real:
+            item_texture(name, colour, False)
+        tex = "farmings:item/" + name + ("" if real else "_placeholder")
+        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+
+
+def compost_assets(lang):
+    """A concrete pad, a plank controller board, an orange straddle turner; compost and solids placeholders until the Ludo icons."""
+    tex = os.path.join(ASSETS, "textures", "block")
+    blocks = {"compost_pad": ("Compost Pad", (150, 148, 140)), "compost_controller": ("Compost Windrow Controller", (140, 100, 60)),
+              "windrow_turner": ("Windrow Turner", (220, 120, 30))}
+    for name, (title, col) in blocks.items():
+        img = Image.new("RGBA", (16, 16), col + (255,))
+        d = ImageDraw.Draw(img)
+        for x in range(0, 16, 5):
+            d.line([(x, 0), (x, 15)], fill=tuple(max(0, c - 25) for c in col) + (255,))
+        img.save(os.path.join(tex, name + ".png"))
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    for name, title, colour in (("compost", "Compost (10 kg)", (70, 50, 30)), ("separated_solids", "Separated Digestate Solids (10 kg)", (110, 90, 60))):
         lang["item.farmings." + name] = title
         real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
         if not real:
