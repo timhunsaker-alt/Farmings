@@ -1,6 +1,6 @@
 {
  "parent": "minecraft:item/generated",
  "textures": {
-  "layer0": "farmings:item/chopped_corn_placeholder"
+  "layer0": "farmings:item/chopped_corn"
  }
 }

@@ -1055,8 +1055,10 @@ def crop_assets(lang):
             variants = {"age=%d" % i: {"model": "farmings:block/%s_stage%d" % (name, i)} for i in range(8)}
             write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
         seed = name + "_seeds"
-        item_texture(seed, CROPS[name][2], False)
-        write(os.path.join(ASSETS, "models", "item", seed + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/%s_placeholder" % seed}})
+        real = os.path.exists(os.path.join(ASSETS, "textures", "item", seed + ".png"))
+        if not real:
+            item_texture(seed, CROPS[name][2], False)
+        write(os.path.join(ASSETS, "models", "item", seed + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/" + seed + ("" if real else "_placeholder")}})
         write(os.path.join(ASSETS, "items", seed + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + seed}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), crop_loot(name))
     for name, (title, colour) in CROP_PRODUCTS.items():
@@ -1228,8 +1230,10 @@ def gantry_assets(lang):
     for t, (title, colour) in GANTRY_TOOLS.items():
         n = "tool_" + t
         lang["item.farmings." + n] = title
-        item_texture(n, colour, False)
-        write(os.path.join(ASSETS, "models", "item", n + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/%s_placeholder" % n}})
+        real = os.path.exists(os.path.join(ASSETS, "textures", "item", n + ".png"))
+        if not real:
+            item_texture(n, colour, False)
+        write(os.path.join(ASSETS, "models", "item", n + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "farmings:item/" + n + ("" if real else "_placeholder")}})
         write(os.path.join(ASSETS, "items", n + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + n}})
 
 

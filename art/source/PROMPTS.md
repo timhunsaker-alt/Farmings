@@ -103,3 +103,33 @@ Every prompt ends "game item icon, plain white background, no text" (the down ja
 
 Bird plumages are drawn by `tools/poultry_textures.py`. The coop, hatchery and grader faces are drawn by `tools/make_assets.py`, as for the
 sheep shed.
+
+## 2026-11-11: Phase 3, fields, feed and waste (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+Every prompt ends "game item icon, plain white background, no text".
+
+| File | Prompt |
+|---|---|
+| alfalfa_seeds | A small pile of tiny kidney-shaped yellow-olive alfalfa seeds |
+| timothy_seeds | A small pile of tiny round silvery-tan timothy grass seeds |
+| orchardgrass_seeds | A small pile of slender pale straw-coloured orchardgrass seeds with tiny husks |
+| corn_seeds | A loose handful of treated seed corn kernels, coated pink |
+| oats_seeds / barley_seeds | A small pile of pale husked seed oats / a small pile of golden seed barley with short awns |
+| alfalfa_hay / grass_hay / straw | A loose armful of green leafy alfalfa hay with a few purple flowers / of pale green-gold timothy grass hay / of bright golden dry cereal straw |
+| alfalfa_bale / grass_bale / straw_bale | A single large round bale of green alfalfa hay / of pale green grass hay / of golden straw, net-wrapped, three-quarter view |
+| corn_grain / oat_grain / barley_grain | A small pile of shelled yellow dent corn kernels / of harvested oat grain / of harvested golden barley grain |
+| chopped_corn / chopped_alfalfa | A small heap of freshly chopped whole-plant corn forage with kernel bits / of chopped wilted green alfalfa |
+| corn_silage / haylage | A small heap of fermented corn silage, moist olive-tan with yellow kernel pieces / of fermented alfalfa haylage, moist olive green |
+| corn_meal / oat_meal / barley_meal | A small mound of coarsely ground yellow corn meal / pale oat meal feed / tan barley meal feed |
+| alfalfa_meal / fish_meal / ground_limestone | A small mound of ground green alfalfa meal powder / of brown fish meal feed powder / of fine white ground limestone powder |
+| mineral_premix | A small paper sack of livestock mineral and vitamin premix with a scoop of speckled pale powder |
+| ration | A heap of total mixed ration cattle feed: chopped silage, hay pieces and ground grain blended together |
+| compost / separated_solids | A small heap of dark crumbly finished farm compost / of separated digestate solids, damp fibrous brown manure fibre from a screw press |
+| liquid_digestate | A small plastic jerrycan of dark brown liquid digestate fertilizer |
+| tool_seed_drill | A green steel grain seed drill implement head with a seed hopper and a row of disc openers, isolated machine part |
+| tool_harvester | A red combine harvester header with a reel and cutterbar, isolated machine part |
+| tool_mower | A yellow disc mower-conditioner cutter bar with spinning discs, isolated machine part |
+| tool_rake | A blue hay rake wheel head with spring tines, isolated machine part |
+| tool_baler | A teal round baler body with a pickup and a rear tailgate, isolated machine part |
+| tool_spreader | A brown farm manure and fertilizer spreader box with rear beaters, isolated machine part |
+
+Crop stages, swaths, belts, the gantry, silo, mill, compost and digester faces are drawn by `tools/make_assets.py`.
