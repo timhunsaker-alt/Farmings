@@ -57,9 +57,9 @@ public class BarnPartBlock extends BigPartBlock {
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand,
 			BlockHitResult hit) {
 		BlockEntity be = level.getBlockEntity(BigParts.main(pos, state));
-		if (be instanceof FeederEntity feeder && stack.is(net.minecraft.world.item.Items.HAY_BLOCK)) {
+		if (be instanceof FeederEntity feeder && dev.farmings.feedmill.FeedItems.feed(stack) != null) {
 			if (!level.isClientSide()) {
-				if (feeder.addBlock()) {
+				if (feeder.addFeed(stack)) {
 					if (!player.hasInfiniteMaterials()) {
 						stack.shrink(1);
 					}

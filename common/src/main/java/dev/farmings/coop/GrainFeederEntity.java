@@ -18,29 +18,39 @@ public class GrainFeederEntity extends BlockEntity implements WorldlyContainer {
 	public static final int MAX_ITEMS = 256;
 	public static final double CAPACITY_KG = MAX_ITEMS * Fowl.GRAIN_ITEM_KG;
 	private static final int[] SLOTS = {0};
-	private double kg;
+	private final dev.farmings.feed.FeedMix mix = new dev.farmings.feed.FeedMix();
 
 	public GrainFeederEntity(BlockPos pos, BlockState state) {
 		super(CoopBlocks.GRAIN_FEEDER_ENTITY, pos, state);
 	}
 
 	public double kg() {
-		return kg;
+		return mix.kg();
 	}
 
+	public dev.farmings.feed.Ration.Analysis analysis() {
+		return mix.analysis();
+	}
+
+	/** One seed item of mixed grain (100 g). */
 	public boolean addItem() {
-		if (kg + Fowl.GRAIN_ITEM_KG > CAPACITY_KG + 1e-9) {
+		return addItem(new ItemStack(net.minecraft.world.item.Items.WHEAT_SEEDS));
+	}
+
+	/** One item of bird feed (grain, seed, meal or a ration), by its mass as fed; false if it is not bird feed or there is no room. */
+	public boolean addItem(ItemStack stack) {
+		dev.farmings.feedmill.FeedItems.Feed f = dev.farmings.feedmill.FeedItems.feed(stack);
+		if (f == null || !dev.farmings.feedmill.FeedItems.birdFeed(stack) || mix.kg() + f.kgAsFed() > CAPACITY_KG + 1e-9) {
 			return false;
 		}
-		kg += Fowl.GRAIN_ITEM_KG;
+		mix.add(f.kgAsFed(), f.analysis());
 		setChanged();
 		return true;
 	}
 
 	public double take(double want) {
-		double t = Math.max(0, Math.min(want, kg));
+		double t = mix.take(want);
 		if (t > 0) {
-			kg -= t;
 			setChanged();
 		}
 		return t;
@@ -53,7 +63,8 @@ public class GrainFeederEntity extends BlockEntity implements WorldlyContainer {
 
 	@Override
 	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) {
-		return Wild.grain(stack) && kg + Fowl.GRAIN_ITEM_KG <= CAPACITY_KG + 1e-9;
+		dev.farmings.feedmill.FeedItems.Feed f = dev.farmings.feedmill.FeedItems.feed(stack);
+		return f != null && dev.farmings.feedmill.FeedItems.birdFeed(stack) && mix.kg() + f.kgAsFed() <= CAPACITY_KG + 1e-9;
 	}
 
 	@Override
@@ -88,8 +99,8 @@ public class GrainFeederEntity extends BlockEntity implements WorldlyContainer {
 
 	@Override
 	public void setItem(int slot, ItemStack stack) {
-		for (int i = 0; i < stack.getCount() && Wild.grain(stack); i++) {
-			addItem();
+		for (int i = 0; i < stack.getCount(); i++) {
+			addItem(stack);
 		}
 	}
 
@@ -105,12 +116,22 @@ public class GrainFeederEntity extends BlockEntity implements WorldlyContainer {
 	@Override
 	protected void saveAdditional(ValueOutput out) {
 		super.saveAdditional(out);
-		out.putDouble("grain_kg", kg);
+		out.putDouble("grain_kg", mix.kg());
+		dev.farmings.feed.Ration.Analysis a = mix.analysis();
+		out.putDouble("cp", a.cp());
+		out.putDouble("ndf", a.ndf());
+		out.putDouble("tdn", a.tdn());
+		out.putDouble("forage", a.forage());
+		out.putDouble("ca", a.ca());
+		out.putDouble("premix", a.premix());
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput in) {
 		super.loadAdditional(in);
-		kg = Math.max(0, Math.min(CAPACITY_KG, in.getDoubleOr("grain_kg", 0)));
+		dev.farmings.feed.Ration.Analysis g = dev.farmings.feed.Feedstuff.MIXED_GRAIN.analysis();
+		mix.set(Math.max(0, Math.min(CAPACITY_KG, in.getDoubleOr("grain_kg", 0))), new dev.farmings.feed.Ration.Analysis(in.getDoubleOr("cp", g.cp()),
+				in.getDoubleOr("ndf", g.ndf()), in.getDoubleOr("tdn", g.tdn()), in.getDoubleOr("forage", g.forage()), in.getDoubleOr("ca", g.ca()),
+				in.getDoubleOr("premix", g.premix())));
 	}
 }

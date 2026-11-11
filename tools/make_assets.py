@@ -346,6 +346,7 @@ def main():
     conveyor_assets(lang)
     gantry_assets(lang)
     silo_assets(lang)
+    feedmill_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -445,6 +446,9 @@ SHAPED = {
     "grain_bin_wall": (["I I", "SIS", "I I"], 8),
     "grain_bin_roof": (["  I", " I ", "IBI"], 1),
     "grain_bin_hopper": (["I I", "IBI", " I "], 1),
+    # the feed mill (docs/multiblocks/feed-mill.md)
+    "hammer_mill": (["SNS", "SRS", "SCS"], 1),
+    "tmr_mixer": (["S S", "SRS", "SCS"], 1),
     # the shearing shed (docs/multiblocks/shearing-shed.md)
     "shearing_stand": (["SRS", "CIC", "WWW"], 1),
     "catching_pen": (["F F", "WWW"], 4),
@@ -472,6 +476,7 @@ SHAPELESS = {
     "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
     "cheddar": (["farmings:cheddar_wheel"], 8),
     "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
+    "mineral_premix": (["minecraft:bone_meal", "farmings:ground_limestone"], 4),
     "sheep_cheese": (["farmings:sheep_cheese_wheel"], 8),
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
@@ -1243,6 +1248,36 @@ def silo_assets(lang):
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+
+
+FEED_ITEMS = {"corn_meal": ("Corn Meal (1 kg)", (230, 196, 90)), "oat_meal": ("Oat Meal (1 kg)", (215, 200, 160)),
+              "barley_meal": ("Barley Meal (1 kg)", (215, 190, 130)), "alfalfa_meal": ("Alfalfa Meal (1 kg)", (110, 150, 70)),
+              "fish_meal": ("Fish Meal (1 kg)", (160, 130, 90)), "ground_limestone": ("Ground Limestone (1 kg)", (230, 230, 225)),
+              "mineral_premix": ("Mineral Premix (1 kg)", (200, 180, 200)), "ration": ("Mixed Ration (25 kg)", (170, 160, 90))}
+
+
+def feedmill_assets(lang):
+    """A green hammer mill and a red vertical mixer; meal and ration placeholders until the Ludo icons."""
+    tex = os.path.join(ASSETS, "textures", "block")
+    for name, col in (("hammer_mill", (60, 120, 70)), ("tmr_mixer", (180, 50, 40))):
+        img = Image.new("RGBA", (16, 16), col + (255,))
+        d = ImageDraw.Draw(img)
+        d.rectangle([2, 2, 13, 13], outline=(40, 40, 40, 255))
+        d.ellipse([5, 5, 10, 10], fill=(170, 172, 176, 255))
+        img.save(os.path.join(tex, name + ".png"))
+        lang["block.farmings." + name] = "Hammer Mill" if name == "hammer_mill" else "TMR Mixer"
+        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    for name, (title, colour) in FEED_ITEMS.items():
+        lang["item.farmings." + name] = title
+        real = os.path.exists(os.path.join(ASSETS, "textures", "item", name + ".png"))
+        if not real:
+            item_texture(name, colour, False)
+        tex = "farmings:item/" + name + ("" if real else "_placeholder")
+        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
 
 
 def loot(name):

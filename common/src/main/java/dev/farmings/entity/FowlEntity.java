@@ -384,6 +384,17 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		return level().getGameTime() < motherUntilTick;
 	}
 
+	/** What the bird has been eating, as a running average (feed-mill.md); balanced until a feeder feeds it. */
+	private dev.farmings.feed.Ration.Analysis ration = dev.farmings.feed.Ration.Analysis.BALANCED;
+
+	public dev.farmings.feed.Ration.Analysis ration() {
+		return ration;
+	}
+
+	public void recordRation(dev.farmings.feed.Ration.Analysis a) {
+		ration = ration.toward(a, dev.farmings.feed.Ration.SMOOTHING);
+	}
+
 	public void recordTending(double fed, double watered) {
 		this.lastFed = fed;
 		this.lastWatered = watered;
@@ -621,7 +632,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			return;
 		}
 		double rate = LayingCycle.eggsPerDay(species, composition(), ageRealDays(now), score(Trait.EGG_PRODUCTION));
-		eggCounter += rate * Math.min(lastFed, lastWatered) * days;
+		eggCounter += rate * Math.min(lastFed, lastWatered) * dev.farmings.feed.Ration.eggFactor(ration) * days;
 		while (eggCounter >= 1) {
 			eggCounter -= 1;
 			deliver(level, makeEgg(now));

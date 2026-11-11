@@ -695,6 +695,17 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		return stage().lamb() ? 0 : Flock.intakeKgDm(weightKg, lambsNursing());
 	}
 
+	/** What the sheep has been eating, as a running average (feed-mill.md); balanced until a shed feeds it. */
+	private dev.farmings.feed.Ration.Analysis ration = dev.farmings.feed.Ration.Analysis.BALANCED;
+
+	public dev.farmings.feed.Ration.Analysis ration() {
+		return ration;
+	}
+
+	public void recordRation(dev.farmings.feed.Ration.Analysis a) {
+		ration = ration.toward(a, dev.farmings.feed.Ration.SMOOTHING);
+	}
+
 	public void recordTending(double fed, double watered) {
 		this.lastFed = fed;
 		this.lastWatered = watered;
@@ -881,7 +892,7 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		double age = TimeScale.ticksToRealDays(now - birthTick);
 		double fed = shedController != null && !stageAt(now).lamb() ? lastFed : 1;
 		double mature = Flock.matureWeightKg(composition());
-		double gain = Flock.gainKg(composition(), age - span, span, fed);
+		double gain = Flock.gainKg(composition(), age - span, span, fed) * (stageAt(now).lamb() ? dev.farmings.feed.Ration.lambFactor(ration) : 1);
 		if (gain > 0 && weightKg < mature) {
 			weightKg = Math.min(mature, weightKg + gain);
 		}

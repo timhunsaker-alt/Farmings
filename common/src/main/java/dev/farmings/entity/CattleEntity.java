@@ -111,6 +111,8 @@ public class CattleEntity extends Animal implements Wild.Animal {
 	private double hayEatenKg;
 	private double waterDrunkL;
 	private double lastFed = 1;
+	/** What she has been eating, as a running average (feed-mill.md); balanced until a feeder feeds her. */
+	private dev.farmings.feed.Ration.Analysis ration = dev.farmings.feed.Ration.Analysis.BALANCED;
 	private double lastWatered = 1;
 	/** How many times she has calved; her first lactation gives 15% less (Lactation.parityFactor). */
 	private int lactations;
@@ -237,6 +239,20 @@ public class CattleEntity extends Animal implements Wild.Animal {
 
 	public double waterDrunkL() {
 		return waterDrunkL;
+	}
+
+	public dev.farmings.feed.Ration.Analysis ration() {
+		return ration;
+	}
+
+	/** One feeding step's ration: her running average moves toward it. */
+	public void recordRation(dev.farmings.feed.Ration.Analysis a) {
+		ration = ration.toward(a, dev.farmings.feed.Ration.SMOOTHING);
+	}
+
+	/** For game tests: what she has been eating. */
+	public void setRationForTest(dev.farmings.feed.Ration.Analysis a) {
+		ration = a;
 	}
 
 	public double lastFed() {
@@ -501,7 +517,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 			lastMilkDay = day;
 			double realDays = TimeScale.ticksToRealDays(nowTick - calvedTick);
 			milkKg = dev.farmings.husbandry.Lactation.producedKg(breed, dev.farmings.husbandry.Lactation.daysInMilk(realDays),
-					score(Trait.MILK_YIELD), lastFed, lastWatered, Math.max(1, lactations), dirty);
+					score(Trait.MILK_YIELD), lastFed, lastWatered, Math.max(1, lactations), dirty) * dev.farmings.feed.Ration.milkFactor(ration);
 		}
 	}
 
@@ -786,7 +802,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 		double age = ageRealDays();
 		boolean housed = stallController != null && stage() != Stage.CALF;
 		double fed = housed ? lastFed : 1;
-		double gain = dev.farmings.husbandry.Growth.gainKg(breed, age - span, span, fed);
+		double gain = dev.farmings.husbandry.Growth.gainKg(breed, age - span, span, fed) * (housed ? dev.farmings.feed.Ration.growthFactor(ration) : 1);
 		if (gain > 0 && weightKg < breed.matureWeightKg) {
 			weightKg = Math.min(breed.matureWeightKg, weightKg + gain);
 		}
@@ -1112,6 +1128,12 @@ public class CattleEntity extends Animal implements Wild.Animal {
 		output.putDouble("HayEatenKg", hayEatenKg);
 		output.putDouble("WaterDrunkL", waterDrunkL);
 		output.putDouble("LastFed", lastFed);
+		output.putDouble("RationCp", ration.cp());
+		output.putDouble("RationNdf", ration.ndf());
+		output.putDouble("RationTdn", ration.tdn());
+		output.putDouble("RationForage", ration.forage());
+		output.putDouble("RationCa", ration.ca());
+		output.putDouble("RationPremix", ration.premix());
 		output.putDouble("LastWatered", lastWatered);
 		output.putInt("Lactations", lactations);
 		output.putBoolean("Freemartin", freemartin);
@@ -1166,6 +1188,10 @@ public class CattleEntity extends Animal implements Wild.Animal {
 		hayEatenKg = input.getDoubleOr("HayEatenKg", 0);
 		waterDrunkL = input.getDoubleOr("WaterDrunkL", 0);
 		lastFed = input.getDoubleOr("LastFed", 1);
+		dev.farmings.feed.Ration.Analysis b = dev.farmings.feed.Ration.Analysis.BALANCED;
+		ration = new dev.farmings.feed.Ration.Analysis(input.getDoubleOr("RationCp", b.cp()), input.getDoubleOr("RationNdf", b.ndf()),
+				input.getDoubleOr("RationTdn", b.tdn()), input.getDoubleOr("RationForage", b.forage()), input.getDoubleOr("RationCa", b.ca()),
+				input.getDoubleOr("RationPremix", b.premix()));
 		lastWatered = input.getDoubleOr("LastWatered", 1);
 		lactations = input.getIntOr("Lactations", hasCalved ? 1 : 0);
 		freemartin = input.getBooleanOr("Freemartin", false);

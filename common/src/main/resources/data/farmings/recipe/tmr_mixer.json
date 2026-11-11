@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "S S",
+  "SRS",
+  "SCS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:tmr_mixer",
+  "count": 1
+ }
+}

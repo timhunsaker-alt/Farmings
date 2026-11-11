@@ -51,3 +51,25 @@ The animal's daily intake carries that analysis. A ration score of 0 to 1 sets t
 - Starch, sugar and fat as separate nutrients.
 - Bloat.
 - Feed bunk management.
+
+## Built, 2026-11-11
+- **Code:**
+  - `feed/Feedstuff`, `feed/Ration` and `feed/FeedMix` are plain Java with unit tests.
+  - The mill and mixer are one block entity, `feedmill/FeedMachineEntity`.
+  - The items are `feedmill/FeedItems`; the ration item is `feedmill/RationItem`, whose tooltip shows its analysis and its factors.
+- **Running average:** each animal keeps a running average of what it eats. It starts balanced, so animals that no feeder has fed are
+  unchanged.
+  - Cattle: from the barn's hay feeders.
+  - Sheep: from the racks, and pasture while grazing.
+  - Birds: from the coop's grain feeder.
+- **Effects:**
+  - milk x `milkFactor`;
+  - housed cattle's growth x `growthFactor`;
+  - lambs' growth x `lambFactor`;
+  - eggs x `eggFactor`.
+- **What the feeders take:**
+  - A barn hay feeder takes any feed: hay blocks, loose hay, silage, haylage, straw, grain, meal and rations. A round bale goes in only
+    when the feeder is empty.
+  - The coop's grain feeder takes grain, seed, meal and rations by their mass as fed.
+- **The mill and mixer are single blocks** in this pass, not the spec's 2 x 2 x 2 mixer.
+- **Game tests:** mill_grinds, mixer_makes_ration, feeder_ration_feeds_cow.

@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:bone_meal",
+  "farmings:ground_limestone"
+ ],
+ "result": {
+  "id": "farmings:mineral_premix",
+  "count": 4
+ }
+}

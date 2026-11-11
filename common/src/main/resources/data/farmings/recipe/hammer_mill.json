@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SNS",
+  "SRS",
+  "SCS"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "N": "minecraft:iron_bars",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:hammer_mill",
+  "count": 1
+ }
+}

@@ -354,7 +354,11 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 					break;
 				}
 				if (level.getBlockEntity(b) instanceof GrainFeederEntity g) {
-					got += g.take(need - got);
+					double took = g.take(need - got);
+					if (took > 0) {
+						f.recordRation(g.analysis());
+					}
+					got += took;
 				}
 			}
 			double water = Fowl.waterLPerDay(f.species(), f.weightKg()) * dayShare;

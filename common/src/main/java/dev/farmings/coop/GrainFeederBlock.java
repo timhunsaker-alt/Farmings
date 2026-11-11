@@ -39,12 +39,12 @@ public class GrainFeederBlock extends BaseEntityBlock {
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!Wild.grain(stack)) {
+		if (!dev.farmings.feedmill.FeedItems.birdFeed(stack)) {
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof GrainFeederEntity f) {
 			int n = 0;
-			while (n < stack.getCount() && f.addItem()) {
+			while (n < stack.getCount() && f.addItem(stack)) {
 				n++;
 			}
 			stack.consume(n, player);

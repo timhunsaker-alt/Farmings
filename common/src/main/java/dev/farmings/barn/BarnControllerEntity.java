@@ -371,6 +371,9 @@ public class BarnControllerEntity extends BlockEntity {
 		double water = trough == null ? 0 : trough.litres();
 		Intake.Result r = Intake.step(dmi, 0, ticks, hay, water);
 		if (feeder != null) {
+			if (r.eatenKg() > 0) {
+				cow.recordRation(feeder.analysis());
+			}
 			feeder.take(r.eatenKg());
 		}
 		if (trough != null) {

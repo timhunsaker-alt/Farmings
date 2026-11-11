@@ -316,6 +316,9 @@ public class ShedControllerEntity extends BlockEntity {
 			double got;
 			if (onPasture(s)) {
 				got = graze(level, s, need);
+				if (got > 0) {
+					s.recordRation(dev.farmings.feed.Feedstuff.PASTURE.analysis());
+				}
 			} else {
 				got = 0;
 				for (BlockPos r : racks) {
@@ -323,7 +326,11 @@ public class ShedControllerEntity extends BlockEntity {
 						break;
 					}
 					if (level.getBlockEntity(r) instanceof FeederEntity f) {
-						got += f.take(need - got);
+						double took = f.take(need - got);
+						if (took > 0) {
+							s.recordRation(f.analysis());
+						}
+						got += took;
 					}
 				}
 			}
