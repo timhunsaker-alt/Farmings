@@ -37,7 +37,8 @@ become fertilizer. This follows how real farms use a digester and a solids separ
 - Targets: carbon-to-nitrogen ratio 25:1 to 30:1; moisture 50-60% (40-65% acceptable); about **eight weeks** in a windrow turned at
   least five times; turn when the pile drops below 110 F. Raw dairy manure is about 3-4% nitrogen, so it needs a high-carbon
   bulking material (straw, in the game) to keep the nitrogen. Same source.
-- Game: a windrow or a bay with a turning machine, a compost product, and a fertilizer item made from it. **DECISION:** what the
+- Game: a windrow or a bay with a turning machine, a compost product, and a fertilizer item made from it (spec:
+  `docs/multiblocks/compost.md`, 2026-11-11). Settled 2026-11-07: fertilizer works as vanilla bone meal. The old open point read: what the
   fertilizer does in the game (faster crops, higher hay yield, anything else); no invented numbers until then.
 
 ## Route B: methane digester

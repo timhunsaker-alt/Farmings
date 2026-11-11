@@ -26,7 +26,18 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Mating, pregnancy, calving. Sire and dam choice. Breed composition and labels. Visual recipe for coat and markings.
 - Records: a herd book showing parents, breed composition and traits.
 
-## Phase 3 — Fields and processing — the creamery is done (2026-11-09); fields, feed mill and waste are not
+## Phase 3 — Fields and processing — CURRENT (spec 2026-11-11; the creamery is done)
+- **Specs:**
+  - `docs/crops.md`;
+  - `docs/conveyors.md`;
+  - `docs/multiblocks/field-gantry.md`, `silo.md`, `feed-mill.md`, `compost.md` and `digester.md`.
+- **Tim's choices, 2026-11-11:**
+  - forage crops at 15:1 with yields x10;
+  - a gantry on rails;
+  - belts;
+  - a tower silo and a grain bin;
+  - a mill and mixer, with rations that matter;
+  - compost, a digester, a separator, and biogas to a Wildcatter genset (Wildcatter 0.6.0).
 - Crops and hay: a field harvest contraption on rails (spec first), a baler, a conveyor line to a silo.
 - Feed mill and ration mixer: rations built from what the animal needs.
 - Processing: creamery and cheese room, built from distinct real parts on Wildcatter power.
