@@ -271,7 +271,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     - the cold room's temperature didn't reach the food's credit (caught by its own test);
     - the NeoForge client wouldn't start ("missing client-side handlers: [wildcatter:plc]"). Farmings now registers that handler
       itself, and the real fix belongs in Wildcatter.
-  - **Tests:** 189 game tests and 260 unit tests. Full runs passed three times in a row after the flaky-test fixes.
+  - **Tests:** 189 game tests and 244 unit tests. Full runs passed three times in a row after the flaky-test fixes.
   - **Client scenes:** `looseends` (dog, coats, plumage, rotten egg), `belts`, and `fields` (the gantry gliding, the full-size machines,
     the gas set under load).
   - **Art:** Ludo icons for raw and cooked chicken and the shepherd's whistle.
