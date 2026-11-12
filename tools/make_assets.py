@@ -141,6 +141,17 @@ ITEMS = [
 SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
     "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
+    "message.farmings.straw.not_a_sire": "Only a grown, tame bull, ram or turkey tom can fill a straw.",
+    "message.farmings.straw.wrong_species": "This straw holds %s semen.",
+    "message.farmings.straw.stale": "This turkey semen is stale: use it within 30 minutes of collecting.",
+    "tooltip.farmings.straw": "%s semen, sire %s",
+    "tooltip.farmings.straw.fresh": "Fresh: use within 30 real minutes",
+    "species.farmings.cattle": "Bull",
+    "species.farmings.sheep": "Ram",
+    "species.farmings.turkey": "Turkey",
+    "species.farmings.chicken": "Chicken",
+    "species.farmings.duck": "Duck",
+    "species.farmings.quail": "Quail",
     "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty.",
     "message.farmings.castrated": "Castrated: he will grow as a steer.",
     "message.farmings.wether": "Castrated: he will grow as a wether.",

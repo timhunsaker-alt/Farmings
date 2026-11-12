@@ -232,7 +232,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - Next: the loose ends, then new animals (each its own plan).
 
 ## Known gaps
-- **Poultry, not built:** artificial insemination for Broad Breasted White turkeys (next part). Built 2026-11-11 (loose ends): throwing
+- **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing
   rotten eggs, Farmings chicken that spoils, foraging on the run, Muscovy and quail colour mutants, hens per male, no quail cross.
 - **Poultry proposals with no source:**
   - breed baselines and the biome-to-fowl mapping;
@@ -260,7 +260,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - NeoForge has not been launched with a client; Fabric has.
 - ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
 - Not built: products by pipe, a plain-text genome code, a cold room temperature model, lane collision rails, spoiled food in compost.
-- Sheep, not built: bedding that gets dirty, sheep dogs, seasons (sheep breed all year, proposed), sheep straws, cloth filters, natural
+- Sheep, not built: bedding that gets dirty, sheep dogs, seasons (sheep breed all year, proposed), cloth filters, natural
   spawns (neither cattle nor sheep spawn on their own yet: they come from /summon), stillbirths for lambs.
 - Sheep proposals with no source: breed baselines, litter odds shape, fleece-trait swings, grass block 1.5 kg DM, pen and pasture caps,
   shearing time and motor, skirting share, bale size, mill motors, lanolin recovery, carding loss, spin bonus, yarn/cloth/felt sizes,

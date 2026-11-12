@@ -227,6 +227,17 @@
  "message.farmings.herd_book.full": "The herd book is full (64 animals).",
  "message.farmings.herd_book.recorded": "Recorded %s in the herd book.",
  "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
+ "message.farmings.straw.not_a_sire": "Only a grown, tame bull, ram or turkey tom can fill a straw.",
  "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty.",
- "message.farmings.wether": "Castrated: he will grow as a wether."
+ "message.farmings.straw.stale": "This turkey semen is stale: use it within 30 minutes of collecting.",
+ "message.farmings.straw.wrong_species": "This straw holds %s semen.",
+ "message.farmings.wether": "Castrated: he will grow as a wether.",
+ "species.farmings.cattle": "Bull",
+ "species.farmings.chicken": "Chicken",
+ "species.farmings.duck": "Duck",
+ "species.farmings.quail": "Quail",
+ "species.farmings.sheep": "Ram",
+ "species.farmings.turkey": "Turkey",
+ "tooltip.farmings.straw": "%s semen, sire %s",
+ "tooltip.farmings.straw.fresh": "Fresh: use within 30 real minutes"
 }

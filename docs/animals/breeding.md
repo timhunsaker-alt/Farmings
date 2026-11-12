@@ -89,3 +89,10 @@ Game test: herd_book_records.
   - Collection is by artificial vagina (Steyn, [SARE](https://projects.sare.org/wp-content/uploads/993336sheep-ai-steyn-fresh.pdf)).
     The game does it with a right-click on an adult ram.
 - **Turkey:** see poultry.md. A turkey straw is fresh and spoils after 30 real minutes.
+
+### Built, 2026-11-11 (loose ends)
+- **`StrawItem`:** fills from a tame grown bull, ram or turkey tom, and inseminates a female of the genome's species.
+- **Turkey straws:** they record their collection tick and go stale after 30 real minutes (167 ticks). A stale straw turns back into an
+  empty straw in the inventory.
+- **Tooltip:** shows the species and the sire's herd ID.
+- **Game tests:** ram_straw_inseminates_ewe, bbw_hen_fertile_by_straw, turkey_straw_goes_stale, straw_wrong_species_refused.
