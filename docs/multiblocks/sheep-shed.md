@@ -62,3 +62,23 @@ matter.
 - Sheep dogs.
 - Moving between several pastures.
 - Seasons.
+
+## Loose ends, 2026-11-11 (spec): bedding and manure
+- **Manure:**
+  - A ewe or ram makes **5 L a day** from 60 kg up, and **3.3 L** under 60 kg (UK planning figures, [SI 2021/77, Schedule 1](https://www.legislation.gov.uk/wsi/2021/77/schedule/1/made)).
+  - Lambs make **1.8 L** ("sheep from 6 months to first lambing" in the same table; used for all lambs, *proposed*).
+  - 1 L is taken as 1 kg *(proposed)*.
+  - The time is counted only while the sheep is housed: in her pen, or out at night or in rain.
+- **Bedding straw:** lowland ewes "require 7kg straw bedding each week", about **1 kg a ewe a day** ([Irish Farmers Journal](https://www.farmersjournal.ie/sheep-management-straw-requirements-feeding-space-and-catch-crops-849668)).
+- **The shed's bedding store:**
+  - The controller keeps a store of soiled bedding: manure plus the straw used.
+  - Straw goes in by hand or hopper as loose straw (10 kg) or a straw bale (454 kg), and up to 1,000 kg is held *(proposed)*.
+  - While there is straw, each housed sheep uses its 1 kg a day.
+- **Mucking out:** a hopper or belt under the controller pulls the store out as **manure items of 50 kg**, as the barn's are. They
+  feed the compost windrow and the digester's feed pit.
+- **Dirty bedding:** the store holds **64 manure items** *(proposed, as the coop's litter)*. It goes dirty when either is true:
+  - the store is full, or
+  - the shed has no clean straw.
+  Then "scald can become problematic in housed ewes, when straw bedding becomes wet and warm" ([NADIS](https://www.nadis.org.uk/disease-a-z/sheep/lameness-control-in-sheep/)).
+  The game uses the barn's dirty-stall rule (`Hygiene`): -1 health a day once half dirty, never below 2 *(proposed, as cattle)*.
+- **Readout:** "bedding: N kg straw, M of 64 manure items, CLEAN / DIRTY".

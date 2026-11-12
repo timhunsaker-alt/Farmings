@@ -142,3 +142,28 @@ seeded by its genome hash, so they are always the same. New straws carry the bul
   a hair sheep. 5% hidden non-agouti and brown *(proposed)*.
 - Natural wool colours for fleece and yarn: white, black, brown, and grey for a spotted coloured sheep or a black one past two
   years *(proposed age)*.
+
+## Coat genes, loose ends, 2026-11-11 (spec): roan, brindle, PMEL dilution
+Research for this pass changed two parts of the plan:
+- **Colour points:** no source describes a "colour points" trait in cattle (NOT FOUND), so the game doesn't add one.
+- **White spotting:** this was going to become a single recessive gene. But Holstein spotting is multifactorial: "Rather than being
+  determined by a single Mendelian-effect variant" ([Jivanji 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12617462/); OMIA 000214
+  lists it as "Multifactorial"). PATTERN keeps its layered rule.
+
+New and changed loci:
+
+| Locus | Alleles | Inheritance | Breeds | Source |
+|---|---|---|---|---|
+| ROAN (KITLG) | + / R | incomplete dominance: R/+ is roan (white hairs through the colour), R/R is white | Shorthorn, Belgian Blue | [OMIA 001216](https://omia.org/OMIA001216/9913/) "Autosomal incomplete dominant"; Belgian Blue "black spotted (rBlrBl), blue spotted (rBlrWh) or white (rWhrWh)" ([Durkin 2012](https://www.gigauag.uliege.be/upload/docs/application/pdf/2019-05/durkin_nature_2012.pdf)) |
+| AGOUTI (ASIP) | A+ / Abr | Abr is dominant, and shows only on wild-type E+. ED and e/e hide it | Highland | "A separate gene controls brindling (either A+ or Abr) in combination with wildtype red (E+)"; "dominant black (ED) will mask all evidence of brindling as will homozygous recessive red" ([AHCA](http://highlandcattleusa.org/wp-content/uploads/2025/11/Color-Coat-Genetics-7-24-1.pdf)) |
+| DILUTION (PMEL) | + / Dc / Dh | semi-dominant: one Dh is dun, two are silver dun; Dc is the stronger Charolais allele | Charolais, Highland, Galloway, Simmental, Hereford, Japanese Brown | "the alleles at the Dilute locus are actually co-dominant" (AHCA); "semi-dominant color dilution" ([OMIA 001545](https://omia.org/OMIA001545/9913/)); Dc/Dh names **TO VERIFY** (UC Davis snippet) |
+
+- **The old DILUTION locus:** it was a 0-3 "mean" scale. It becomes two PMEL alleles. Shown dilution is the sum of the two alleles'
+  strength (+ 0, Dh 1, Dc 2), capped at 3 (strong), which keeps the existing four tints.
+- **Brindle drawing:** brindle is drawn as dark vertical stripes over the coat, on E+ only. Roan is drawn as a white-hair speckle over
+  the whole coat.
+- **Founders:** none of the game's six breeds carries roan or brindle, so all six are +/+ and A+/A+.
+  - For dilution, Wagyu carries Dh at 10%, standing for the Japanese Brown's PMEL allele *(proposed; OMIA lists Japanese Brown, a
+    different Wagyu line)*.
+  - New breeds that carry these genes come with the new-animals pass.
+  - Until then, the genes are reachable by `/summon` with genes and in the game tests.

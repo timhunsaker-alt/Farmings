@@ -118,3 +118,19 @@ since laying *(proposed thresholds)*:
   - Vanilla chicken meat from Farmings chickens does not spoil; it's the vanilla item.
   - Eggs in a carton keep their own spoil clocks but aren't checked until the carton is opened.
 - **Game tests:** grading_packs_cartons, table_eggs_spoil_fertile_dont, poultry_meat_and_down.
+
+## Loose ends, 2026-11-11 (spec)
+- **Throwing a rotten egg:** a `rotten_egg` is thrown like a vanilla egg (use it in the air; it flies as a snowball does, 16 to a
+  stack). It hatches nothing. A mob or player it hits gets **Nausea for 5 seconds** *(proposed)*, and it breaks with an egg's
+  particles. It is still not food.
+- **Farmings chicken:** a chicken from a Farmings bird drops `farmings:chicken`, and cooking gives `farmings:cooked_chicken`, in place
+  of vanilla chicken. Both spoil as the other fowl meat does:
+  - raw: 1-2 days in the fridge, so 1.5 *(USDA FSIS: "Chicken or turkey, pieces 1 to 2 days";
+    [2004 fact sheet](https://webharvest.gov/peth04/20041015215325/http:/www.fsis.usda.gov/OA/pubs/facts_basics.pdf), the live page
+    refused the fetch)*;
+  - cooked: 3-4 days in the fridge, so 3.5 (same sheet: "Use cooked leftovers within 4 days");
+  - room temperature: 1 day *(proposed; the only sourced figure is the 2-hour safety rule, same sheet)*.
+  - Their food values are vanilla chicken's.
+  - Furnace, smoker and campfire recipes cook them, and they carry the `c:foods/raw_meat` and `c:foods/cooked_meat` tags, so other
+    mods' recipes take them.
+  - Vanilla chickens and their meat are untouched.

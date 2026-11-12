@@ -71,3 +71,9 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
 - **Liquid digestate:** it works as bone meal by hand, and the gantry's spreader uses it.
 - **Game tests:** digester_fills_holder, separator_splits, and genset_burns_farm_biogas. That last one is a real Wildcatter 0.6.0 gas set
   started on the digester's gas line, which runs on the farm's biogas.
+
+## Loose ends, 2026-11-11 (spec): the full-size tank
+- The digester tank becomes the spec's **3 x 3 x 3** big part (Wildcatter `BigParts`).
+  - It is placed from one `digester_tank` item, like the barn's big parts; the footprint must be clear.
+  - The gas holder sits on its roof centre, and the feed pit and digestate tank against its sides.
+- Its figures are unchanged. A tank placed as a single block before this change still works.

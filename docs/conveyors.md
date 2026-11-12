@@ -38,3 +38,10 @@
   - auger: iron, stick, iron, makes 4;
   - drives from iron, copper and redstone.
 - **Game tests:** belt_carries_to_chest, belt_blocked_head_holds, auger_lifts_grain.
+
+## Loose ends, 2026-11-11 (spec)
+- **Slopes:** a belt run can climb or fall one block for every 3 along, at most (the 1 in 3 above). A `farm_belt` placed one block up
+  from the cell behind it becomes a sloped belt facing up. A run's length is counted along the slope: each sloped cell is
+  √(1 + 1/9) = 1.054 m *(derived)*.
+- **Items drawn:** the drive's parcel list is sent to the client. Each parcel is drawn as its item, lying on the belt at its place
+  along the run. A sloped cell lifts it.

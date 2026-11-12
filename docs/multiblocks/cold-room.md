@@ -57,3 +57,35 @@ too big, door and unit, chests inside, the load table).
 ## Not built
 A temperature that rises and falls, door-opening losses, a freezer, heavy-use load, items lying loose on the floor inside (only
 containers are kept cold).
+
+## Loose ends, 2026-11-11 (spec): the room's temperature
+The cold room now holds a temperature, and food ages by it.
+- **Set point:** **2 °C** *(proposed)*. A fridge should be at most 40 °F, 4 °C (USDA, via
+  [Virginia Tech FST-518](https://accomack.ext.vt.edu/content/dam/pubs_ext_vt_edu/FST/fst-518/FST-518.pdf)).
+  - The room starts at **20 °C**, the room temperature *(proposed)*, and that is the outside air too.
+- **Heat in through the walls:**
+  - U = **0.23 W/m²K** over the room's inside surface area. That is R-25 (US units), the legal minimum for walk-in cooler panels
+    ([10 CFR 431.306](https://www.law.cornell.edu/cfr/text/10/431.306)), converted *(derived)*.
+  - The gain is U x area x (20 - T).
+- **Heat in through the door:**
+  - Each time a cold-room door is opened, one room's volume of air is swapped for outside air: 1.2 kJ/m³K x volume x (20 - T)
+    *(proposed: door infiltration was NOT FOUND as a figure)*.
+- **Thermal mass:** the room's thermal mass C is set so that, with no power and the door shut, it warms from 2 °C to 5 °C in
+  **4 hours**.
+  - FST-518 says a home fridge "lasts ~4 hours" with the power off. That stands in for a walk-in, *derived* from that figure.
+- **Cooling:** with power, the condensing unit removes up to the load table's cooling (as now) until the room is at the set point. COP
+  stays 2 *(proposed)*. The law's minimum annual efficiency for these units, AWEF 5.61-7.60 Btu/Wh, is about COP 1.6-2.2 *(derived)*,
+  so 2 sits inside it.
+- **Time:** temperature is stepped once a minute, as the cold credit is. A real hour is a game hour, because food runs at 1 real day
+  per game day.
+- **Spoilage by temperature (`Spoilage.lifeAt`):**
+  - Each food's life at 4 °C or colder is its fridge life, and at 20 °C its room life (both already in food.md).
+  - Between them, the life falls by the same factor for every degree, a log-linear Q10 model. That means each food has its own Q10,
+    from its two points: Q10 = (fridge / room)^(10/16) *(derived)*.
+    - Milk comes out at 3.4. NC State's rule, "For each 18oF increase in temperature, the spoilage rate of milk doubles"
+      ([NC State](https://units.cals.ncsu.edu/foodsafety/wp-content/uploads/sites/13/2019/06/dairy_milk_safety.pdf)), would give 2.
+      The game keeps the FoodKeeper points.
+  - Above 20 °C, room life applies.
+- **The credit:** the cold credit each minute becomes a minute x (1 - room life / life at T). It is zero at 20 °C and the full fridge
+  credit at 4 °C.
+- **Readout:** "... T °C (set 2 °C), COLD" while at or below 4 °C, else "WARMING" (no power) or "COOLING".

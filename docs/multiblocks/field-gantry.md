@@ -92,3 +92,10 @@ the span as the working width.
 - **The bin:** each product is kept in kg. It unloads as round bales of 454 kg, 1 kg grain items and 25 kg chopped forage. A remainder
   stays in the bin.
 - **Game tests:** gantry_plants_strip, gantry_harvests_to_stop, gantry_mows_rakes_bales, gantry_runs_on_its_clock.
+
+## Loose ends, 2026-11-11 (spec)
+- **The lift (the TBM pattern):** when the gantry starts a move it lifts into one `field_gantry` entity carrying its block states. It
+  glides along the rails at the tool's speed, working each row as its beam passes. When it stops (parked, done, unloading, out of
+  power, or a full bin), it sets its blocks down again. Its state is saved either way.
+- **Hand raking (now built):** a hoe used on a swath that has dried 1 real day makes a windrow. Breaking a windrow that has dried 1.5
+  real days drops its hay as loose hay items (10 kg each) *(proposed)*.

@@ -190,3 +190,71 @@ Everything above is in the game:
   - Spotting shows only on coloured sheep.
   - The grey of an old black fleece shows on the shorn fleece, not on the living sheep.
   - Horns follow the three-allele model.
+
+## Loose ends, 2026-11-11 (spec)
+### Stillborn lambs
+Each lamb at a lambing is rolled on its own; a stillborn lamb isn't spawned.
+
+| Ewe | Chance a lamb is stillborn | Source |
+|---|---|---|
+| First lambing | **9%** *(derived)* | Lambs of ewe hoggets: 22% died, and 41.1% of the deaths were stillbirths ([PMC8833723](https://pmc.ncbi.nlm.nih.gov/articles/PMC8833723)); 0.22 x 0.411 |
+| Later lambings | **1%** *(derived)* | Mature ewes in the same study: 273 of 1,979 lambs died, and "only 7% of deaths were attributed to stillborn"; 0.138 x 0.07 |
+
+- **By litter:** a lamb in a single birth has **0.8x** that chance, and a twin or triplet **1.2x**. This is *(proposed)*: its shape
+  follows the study's 19.2% mortality for singles against 28.7% for multiples, a ratio of 0.67.
+- **The ewe:** she still lactates for her live lambs. Her intake counts only live lambs. If every lamb is stillborn, she isn't milked as
+  a nursing ewe; the East Friesian is still milked in the parlour.
+- **Readout:** the lambing record lists each lamb, with stillborn ones marked.
+
+### Breeding season
+Sheep are short-day breeders. Ewes "will typically begin cycling when daylight hours become less than 14 after June 21"
+([Univ. of Kentucky ASC237](https://publications.mgcafe.uky.edu/sites/publications.ca.uky.edu/files/ASC237.pdf)).
+- **The game year:** sheep run at 15:1, so a real year is 365 / 15 = **24.3 game days**.
+  - Day 0 of a world is **1 October**, the middle of the season *(proposed)*, so a new flock can breed at once.
+  - The shed readout gives the date.
+- **Season by breed** (ASC237 Table 1; the Ontario factsheet agrees):
+
+| Breed | Season (ASC237 class) | Game rule |
+|---|---|---|
+| Suffolk | short (under 4 months) | cycles 1 Sep - 1 Jan ("usually begin cycling in September and continue until January 1") |
+| East Friesian | medium (4-6 months) | 15 Aug - 15 Jan (the expanded season ASC237 gives) |
+| Merino | long (6-8+ months) | 15 Jul - 15 Mar, 8 months *(proposed: the long class's upper end)* |
+| Dorper | not in ASC237 | long, as Merino *(proposed; Dorpers are known for breeding out of season, **TO VERIFY**)* |
+
+- **Crossbreds:** a crossbred ewe takes her top breed's season.
+- **Outside the season:** a ewe is ANOESTROUS. She doesn't cycle and can't take a straw. A ewe already in lamb carries on.
+- **After lambing:** "All ewes are in anestrus for at least 17 to 21 days after lambing" (ASC237). The existing wait after lambing
+  stays.
+
+### Sheep dog (Border Collie)
+- **The animal:** a working Border Collie, `farmings:sheep_dog`.
+  - Height 53 cm at the withers for males, females slightly less ([Kennel Club standard](https://www.kusa.co.za/images/HERDING%20GROUP%202025/Border%20Collie%20-%20KC%20%5B02-2017%5D.pdf)).
+  - Weight 14-25 kg for males and 12-19 kg for females (**TO VERIFY**: Wikipedia only). The model is drawn to that size.
+- **Wild and taming (taming.md):**
+  - Dogs spawn wild in pairs in plains, meadows and windswept hills, the sheep biomes, at weight 2 *(proposed)*.
+  - A wild dog keeps 6 blocks from a player with empty hands, and follows raw meat (beef, mutton, chicken, Farmings meats).
+  - It settles in a corral on **raw meat** in the bait trough: 0.5 kg a day *(proposed; NOT FOUND)*, one meat item a day.
+  - 7 real days settled tames it, as for the others.
+  - Dogs don't breed in this pass. They don't age past adult and don't die of age.
+- **The whistle:** a `shepherds_whistle` item, made from 2 iron nuggets and 1 string.
+  - Sneak-use on a block sets the **target**:
+    - a sheep shed controller sends the flock to its pen;
+    - a pasture gate sends it to the pasture;
+    - any other block sends it to that spot (a pen or a field).
+  - Use in the air blows the current command to your tamed dogs within 64 blocks. Commands are the trial commands
+    ([SARE handout](https://projects.sare.org/media/pdf/E/d/i/Edited-swswhandout-for-SARE-final-notes.pdf)); sneak-scroll cycles them:
+    - **Come bye** (gather): the dog runs out clockwise around every tame sheep within 32 blocks and brings them to you.
+    - **Walk up** (drive): it drives them to the target.
+    - **Lie down:** it stops where it is and the sheep stand.
+    - **That'll do:** it stops working and comes back to heel.
+- **How the dog herds:**
+  - The dog moves to the far side of the flock from the target, 6 blocks behind it *(proposed)*.
+  - Each sheep within 8 blocks of it walks away from it, toward the target. In code, the dog gives each sheep a `sendTo` step toward
+    the target.
+  - A sheep within 2 blocks of the target is released, and the drive ends when every sheep is in.
+  - A shed's members driven to its pen go back under the shed's day rules once there.
+- **Range:** trials set sheep out at 200-600 yards (**TO VERIFY**: snippet; [USBCHA](https://usbcha.com/resources/sheepdog-trials-explained/)
+  describes 500-yard outruns). The game uses 32 blocks for the gather and 64 for hearing the whistle *(proposed: shrunk to Minecraft's
+  scale)*.
+- **Speed:** a vanilla wolf's speed (NOT FOUND for a working collie).
+- **Not in this pass:** dogs breeding, guarding against wolves, and herding cattle or fowl.

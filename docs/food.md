@@ -62,3 +62,8 @@ Each figure is the middle of the source's range. Sources:
 | Lamb and mutton chops, cooked | 3.5 days (3-4) | 1 day | USDA FoodKeeper, cooked meat |
 
 Spoiled chops become **spoiled mutton** (Hunger and Nausea, as the other spoiled foods).
+
+## Loose ends, 2026-11-11
+- **Food ages by the room's temperature:** in a cold room, food ages by the room's temperature. It is log-linear between each food's
+  fridge and room lives (multiblocks/cold-room.md, "the room's temperature").
+- **Farmings chicken:** raw and cooked Farmings chicken join the perishables (eggs.md).

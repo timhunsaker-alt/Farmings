@@ -138,3 +138,9 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
   - a wild Holstein following hay through the gate (recording `wild-cow-follows-hay`);
   - a wild flock drawn in by the bait (recording `bait-draws-flock`);
   - the readouts after settling.
+
+## Loose ends, 2026-11-11 (spec): the sheep dog
+- **Spawns:** Border Collies (`farmings:sheep_dog`) spawn wild in plains, meadows and windswept hills, at weight 2, in pairs *(proposed)*.
+- **Wild behaviour:** a wild dog follows raw meat and keeps 6 blocks from empty hands, like the others.
+- **Corral:** it settles on raw meat in the bait trough: one meat item a day *(proposed)*, water as usual. 7 real days settled tames it.
+- **Details:** see animals/sheep.md, "Sheep dog".

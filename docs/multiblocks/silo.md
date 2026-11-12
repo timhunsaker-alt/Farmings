@@ -51,3 +51,14 @@
 - **What the bin takes:** vanilla wheat goes in at oats' density *(proposed)*.
 - **Hand-off:** the unloader and the bin hopper pass items to a belt, an auger, a Farmings machine or a container beside them.
 - **Game tests:** silo_ferments_and_unloads, grain_bin_fills_and_empties.
+
+## Loose ends, 2026-11-11 (spec): losses over time
+The 10.5% taken at filling is replaced by Muck's phases, each at its own time:
+- **Filling:** 1.5% (Muck, 1-2%), taken as forage goes in.
+- **Effluent:** 1% (Muck, 0-2%), taken at filling.
+- **Fermentation:** 2.5% (Muck, 1-4%), spread evenly over the 21 real days of fermenting. "primarily the CO2 produced by lactic acid
+  bacteria".
+- **Storage:** 0.18% a month from then on, *derived* from about 4.3% over 2 years in an oxygen-limiting tower (Muck, ARS; **TO
+  VERIFY**: snippet). Muck's range is 1-10% for all storage.
+- **Feed-out:** loss when unloading is not modelled.
+- **Readout:** "lost so far: X kg DM".

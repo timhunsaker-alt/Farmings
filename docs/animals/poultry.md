@@ -414,3 +414,68 @@ Nothing is sold (cattle rule, 2026-11-07).
   - Mating is with the nearest male within 8 blocks. The hens-per-male figures are not enforced yet.
   - Crossing the two quail species is allowed; in reality Coturnix and Bobwhite don't cross.
   - A hen's body weight grows in a straight line; no growth curve was found.
+
+## Loose ends, 2026-11-11 (spec)
+### Hens per male (now enforced)
+A male fertilises at most this many hens at once. A hen counts against him while her eggs are fertile from his service (`Clutch`); she
+frees his place when her fertile window ends.
+
+| Species | Hens per male | Source |
+|---|---|---|
+| Chicken | 10 | "a ratio of about 1:10, m:f, if breeding" ([UC ANR](https://ucanr.edu/site/small-acreage-landowners/poultry)) |
+| Quail | 3 | "one male to three females is sufficient" (NSW DPI, [The Poultry Site](https://www.thepoultrysite.com/articles/raising-japanese-quail-1)) |
+| Duck | 5 | 1 male to 5-8 females for meat-type ducks (**TO VERIFY**: snippet, [Narushin 2026](https://kar.kent.ac.uk/115666/)) |
+| Turkey | 10 *(proposed; NOT FOUND: UC ANR says most domestic breeds "can no longer breed naturally")* | |
+
+### The two quail don't cross
+Coturnix (Old World quail, Phasianidae) and Bobwhite (New World quail, Odontophoridae) are in different families. No record of a
+hybrid was found (NOT FOUND: searched Coturnix x Colinus hybrid). Even within *Colinus*, a crested x northern bobwhite cross was
+"nearly 70%" infertile (**TO VERIFY**: snippet, [Auk 92](https://sora.unm.edu/sites/default/files/journals/auk/v092n04/p0803-p0805.pdf)).
+- **Game rule:** a quail male serves only hens of his own genus, judged by the top breed of each bird. A mixed bird counts as the genus
+  of its larger share.
+
+### Artificial insemination for turkeys
+- **Collecting:** an empty straw used on any adult tom collects semen ("abdominal massage", [TNAU](https://agritech.tnau.ac.in/animal_husbandry/ani_chik_ai.html)).
+  A Broad Breasted White tom can't mate, but semen can be collected from him; that is how the breed is kept.
+- **Fresh only:** fresh turkey semen is used "within 30 minutes after collection" (TNAU; also Brillard 2003, cited in
+  [AAJBB](https://banglajol.info/index.php/AAJBB/article/download/59384/40978)).
+  - Game: a poultry straw spoils **30 real minutes** after collection, about **8 seconds** of play at 3:1. It turns back into an empty
+    straw.
+- **Inseminating:** a filled turkey straw used on a turkey hen inseminates her, as if a tom of that genome had served her. Her eggs are
+  fertile for the same window as after mating (`Fowl.fertileDays`).
+  - Turkey hens can store sperm for 10-15 weeks ([PMC3944358](https://pmc.ncbi.nlm.nih.gov/articles/PMC3944358/)), but farms
+    inseminate weekly to keep fertility up ([Frontiers 2023](https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2023.1275922/full)).
+    The game keeps the shorter fertile window for both.
+- **Who it works on:** the straw is for turkeys only. Chicken, duck and quail AI are not in this pass.
+
+### Foraging on the run
+- **Share:** a bird outdoors on a grass run gets **20%** of its daily feed from forage and insects.
+  - "pastured poultry eat 5-20% (of their diet) from pasture" (Mattocks 2002, in [NCAT/ATTRA IP453](https://www.ncat.org/wp-content/uploads/2025/12/IP453-pasturedpoultrynutrition.pdf)).
+  - Layers reach "20% of the diet", about "25g dry matter per hen and day" ([Agrarforschung Schweiz 2024](https://www.agrarforschungschweiz.ch/en/2024/05/roughage-components-in-nutrition-of-layers-does-it-make-sense-for-dual-purpose-poultry/)).
+  - Game: the upper end, 20%, for every species *(proposed: broilers get only about 3% of their energy from forage, ATTRA, and the
+    game has no broiler line)*.
+- **Ration:** that 20% counts toward the bird's ration average as pasture (`Feedstuff.PASTURE`). The grain feeder supplies the other
+  80%.
+- **Grass wears slowly:**
+  - Each grass block on the run holds 1.5 kg DM of forage, as for sheep.
+  - It regrows 0.31 g DM a day. That is what lets a run carry 50 hens an acre for good (Dryden 1916, **TO VERIFY**: snippet,
+    [Plamondon](https://www.plamondon.com/wp/how-many-chickens-per-acre/)): 50 x 25 g / 4,047 m² *(derived)*.
+  - Birds eat from the run's blocks evenly. A block drawn down to nothing turns to dirt, and vanilla grass can spread back onto it.
+  - Example: 10 hens on an 8 x 6 run draw 235 g a day more than it regrows, so the run starts to go bare after about 300 game days.
+
+### Colour mutants (Muscovy and Coturnix)
+The loci follow breeders' genetics guides and OMIA. The dominance orders are **TO VERIFY** except where a peer-reviewed or OMIA source
+is given.
+
+| Species | Locus | Alleles and what shows | Source |
+|---|---|---|---|
+| Muscovy | blue | + / Bl, incomplete: one Bl is blue, two are silver (splash) | **TO VERIFY**: breeder snippet ([waterfowl.org.uk](https://www.waterfowl.org.uk/domestic-waterfowl/muscovy-ducks/)) |
+| Muscovy | lavender | + / lav, autosomal recessive | [OMIA 002249](https://omia.org/OMIA002249/8855/) (Hollander & Walther 1962) |
+| Muscovy | chocolate | + / choc, sex-linked recessive | **TO VERIFY**: breeder snippet |
+| Coturnix | fawn (Y, ASIP) | + / Y, incomplete: one is Italian, two are Golden | [Southwest Gamebirds](https://southwestgamebirds.com/pages/genetics); order Y*F2 &gt; Y*Y &gt; Y*N (**TO VERIFY**, [PubMed 17313575](https://pubmed.ncbi.nlm.nih.gov/17313575/)) |
+| Coturnix | extended brown (E, MC1R) | + / E, incomplete: one is Rosetta, two are Tibetan | Southwest Gamebirds |
+| Coturnix | dotted white (S, EDNRB2) | + / s, recessive: s/s is English White; carriers can show Tuxedo *(not drawn)* | Southwest Gamebirds; EDNRB2 recessive (**TO VERIFY**, [PMC2248368](https://pmc.ncbi.nlm.nih.gov/articles/PMC2248368)) |
+
+- **Founders:** wild founders carry the wild type. Herd founders carry each mutant at **5%** *(proposed)*, so mutants turn up in
+  breeding.
+- **Drawing:** a bird with a mutant colour gets that colour's texture.

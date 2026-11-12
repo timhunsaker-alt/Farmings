@@ -75,3 +75,8 @@ The animal's daily intake carries that analysis. A ration score of 0 to 1 sets t
 - **Into the barn:** a barn hay feeder takes rations (and any feed) from a belt or auger at its side, or straight from a mixer beside it,
   one item at a time while there is room.
 - **Game tests:** mill_grinds, mixer_makes_ration, feeder_ration_feeds_cow, belt_feeds_barn_feeder.
+
+## Loose ends, 2026-11-11 (spec): the full-size mixer
+- The TMR mixer becomes the spec's **2 x 2 x 2** big part, placed from one item. It takes ingredients on any face and puts out rations
+  at its output face. Its figures are unchanged.
+- A mixer placed as a single block before this change still works.

@@ -75,3 +75,17 @@ A `herd_book` item. Right-click an animal to record it; use it in the air to rea
 (the first 8 characters of its genome hash): breed or cross, sex, birth day, dam and sire IDs (founders say "founder"), calves, freemartin,
 the eight trait scores, dressing % and marbling grade. Recording again replaces the page. It holds 64 animals *(proposed)*.
 Game test: herd_book_records.
+
+## Loose ends, 2026-11-11 (spec): one straw for every species
+- **Species:** the `empty_straw` and `semen_straw` now record the species they came from: cattle (a bull), sheep (a ram) or turkey (a
+  tom; see poultry.md). The tooltip shows the species and the sire's herd ID.
+- **Using it:** a semen straw works only on a female of its own species, in heat (a hen needs no heat). On any other animal it does
+  nothing, and the actionbar says "this straw is ram semen", or whichever species it holds.
+- **Sheep:** a ram's straw used on a ewe in heat inseminates her, as natural service does (`SheepEntity.conceive`). It keeps forever,
+  as a bull's does.
+  - Every insemination in heat conceives, as for cattle *(proposed, for parity with natural service)*.
+  - Real AI conceives less often: 60-80% with frozen semen placed by laparoscope ([Sathe 2018, Frontiers](https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2018.00266/full)),
+    and 20-40% with frozen semen through the cervix (**TO VERIFY**: snippet). This is a known difference.
+  - Collection is by artificial vagina (Steyn, [SARE](https://projects.sare.org/wp-content/uploads/993336sheep-ai-steyn-fresh.pdf)).
+    The game does it with a right-click on an adult ram.
+- **Turkey:** see poultry.md. A turkey straw is fresh and spoils after 30 real minutes.

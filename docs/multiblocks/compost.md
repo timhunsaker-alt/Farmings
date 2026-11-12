@@ -61,3 +61,16 @@
 - **Turning:** the pile ages only up to its next due turn, and waits there until the turner has power.
 - **Compost:** it works as bone meal by hand, and the gantry's spreader uses it.
 - **Game tests:** compost_matures, compost_waits_for_turns.
+
+## Loose ends, 2026-11-11 (spec): spoiled food into the windrow
+Spoiled Farmings food goes into the windrow as a nitrogen-rich input.
+
+| Input | Item mass | C:N | Moisture | Source |
+|---|---|---|---|---|
+| Spoiled steak, mutton or poultry | 0.25 kg *(proposed)* | 5 | 70% *(proposed)* | "Animal Carcass … 5:1" ([Cornell CWMI 2014](https://cwmi.css.cornell.edu/Composting_Animal_Mortalities.pdf), Table 6-2) |
+| Spoiled milk (a bottle) | 1 kg *(proposed)* | 15 *(proposed: food waste's; dairy NOT FOUND)* | 87% *(proposed)* | food waste 15:1 ([Cornell](https://www.compost.css.cornell.edu/Factsheets/FS2.html)) |
+| Rancid butter, mouldy cheese | 0.25 kg *(proposed)* | 15 *(as food waste)* | 40% *(proposed)* | as above |
+| Rotten egg | 0.06 kg *(the egg's)* | 15 *(as food waste)* | 75% *(proposed)* | eggshells "will break down in the compost pile" ([Nebraska](https://lancaster.unl.edu/6-common-composting-questions)) |
+
+- **Meat:** meat is fine in a managed farm pile. "butcher/slaughter house waste can be composted without any pre-treatment" (Cornell
+  CWMI), though home composting guides say not to.
