@@ -242,7 +242,7 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
     - a pasture gate sends it to the pasture;
     - any other block sends it to that spot (a pen or a field).
   - Use in the air blows the current command to your tamed dogs within 64 blocks. Commands are the trial commands
-    ([SARE handout](https://projects.sare.org/media/pdf/E/d/i/Edited-swswhandout-for-SARE-final-notes.pdf)); sneak-scroll cycles them:
+    ([SARE handout](https://projects.sare.org/media/pdf/E/d/i/Edited-swswhandout-for-SARE-final-notes.pdf)); sneak-use in the air cycles them:
     - **Come bye** (gather): the dog runs out clockwise around every tame sheep within 32 blocks and brings them to you.
     - **Walk up** (drive): it drives them to the target.
     - **Lie down:** it stops where it is and the sheep stand.
@@ -258,3 +258,16 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
   scale)*.
 - **Speed:** a vanilla wolf's speed (NOT FOUND for a working collie).
 - **Not in this pass:** dogs breeding, guarding against wolves, and herding cattle or fowl.
+
+### Built, 2026-11-11 (loose ends)
+- **Stillbirths:** each lamb is rolled on its own. A litter fixed by a test is born alive unless the test also forces stillbirths.
+- **Seasons:** `Flock.season`, `Flock.inSeason` and `Flock.dayOfYear`. A ewe out of season doesn't cycle and reads ANOESTROUS, and the
+  shed readout gives the date.
+- **The dog:**
+  - The dog is `SheepDogEntity`, on the vanilla wolf frame. Its own black-and-white coat is painted by `tools/dog_texture.py`.
+  - The `shepherds_whistle` is made from 2 iron nuggets and a string.
+  - The corral's bait trough now holds raw meat too (16 items of 0.5 kg).
+  - **Known difference:** only tame sheep are herded, and a herded sheep goes straight for the target by pathfinding. It doesn't flee
+    the dog the way a real flock does.
+- **Game tests:** lamb_stillborn_not_spawned, ewe_anoestrous_out_of_season, dog_gathers_flock, dog_drives_flock_to_shed,
+  dog_commands_and_owners, dog_tamed_in_corral.

@@ -190,6 +190,8 @@ public final class FarmingsItems {
 	public static final Item POULTRY_LITTER = item("poultry_litter",
 			p -> new Item(p.compostable(net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders.COMPOSTABLE_MEDIUM_HIGH)));
 	// Poultry meat (docs/eggs.md): chicken is vanilla's; the others copy vanilla chicken's food (raw with its hunger risk) (proposed).
+	/** The shepherd's whistle: sets a target and blows commands to your sheep dogs (docs/animals/sheep.md, "Sheep dog"). */
+	public static final Item SHEPHERDS_WHISTLE = item("shepherds_whistle", p -> new dev.farmings.item.WhistleItem(p.stacksTo(1)));
 	/** Chicken from a Farmings bird: vanilla chicken's food, and it spoils (docs/eggs.md, "Loose ends"). */
 	public static final Item CHICKEN = rawPoultry("chicken");
 	public static final Item COOKED_CHICKEN = cookedPoultry("cooked_chicken");
@@ -255,6 +257,7 @@ public final class FarmingsItems {
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
 		ALL.put("poultry_litter", POULTRY_LITTER);
+		ALL.put("shepherds_whistle", SHEPHERDS_WHISTLE);
 		ALL.put("chicken", CHICKEN);
 		ALL.put("cooked_chicken", COOKED_CHICKEN);
 		ALL.put("turkey", TURKEY_MEAT);

@@ -418,6 +418,23 @@ public class SheepEntity extends Animal implements Wild.Animal {
 
 	// ---- breeding and lambing ----
 
+	/** Game tests: fix the day of the year (0 = 1 January); -1 reads the world clock. Not saved. */
+	private int forcedDayOfYear = -1;
+
+	public void setDayOfYearForTest(int day) {
+		this.forcedDayOfYear = day;
+	}
+
+	/** The day of the year by the world clock at the sheep scale (sheep.md, "Breeding season"). */
+	public int dayOfYear(long now) {
+		return forcedDayOfYear >= 0 ? forcedDayOfYear : Flock.dayOfYear(TimeScale.ticksToRealDays(now));
+	}
+
+	/** Her top breed's breeding season covers today (short-day breeders; Univ. of Kentucky ASC237). */
+	public boolean inSeason(long now) {
+		return Flock.inSeason(breed.code, dayOfYear(now));
+	}
+
 	public boolean inHeat() {
 		return sex == Sex.FEMALE && nextHeatTick >= 0 && level().getGameTime() >= nextHeatTick
 				&& level().getGameTime() < nextHeatTick + TimeScale.realDaysToTicks(Flock.HEAT_DAYS);
@@ -517,12 +534,19 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		this.forcedLambs = n;
 	}
 
+	/** Game tests: every lamb of the next lambing is stillborn. */
+	private boolean forcedStillborn;
+
+	public void forceStillbornForTest() {
+		this.forcedStillborn = true;
+	}
+
 	public List<String> lastLambing() {
 		return lastLambing;
 	}
 
 	private boolean cycles(long now) {
-		if (sex != Sex.FEMALE || genome == null || retired || bredTick >= 0) {
+		if (sex != Sex.FEMALE || genome == null || retired || bredTick >= 0 || !inSeason(now)) {
 			return false;
 		}
 		double age = TimeScale.ticksToRealDays(now - birthTick);
@@ -584,12 +608,21 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		String world = Long.toString(level.getSeed());
 		String eventId = "lambing:" + getUUID() + ":" + now;
 		Rng rng = new Rng(BreedingSeed.seed(world, eventId + ":litter", genome.hash(), sire.hash(), Ruleset.defaults().version()));
-		int n = forcedLambs > 0 ? forcedLambs : Flock.litter(composition(), score(Trait.FERTILITY)).roll(rng.next());
+		boolean forced = forcedLambs > 0;     // a test fixing the litter wants live lambs unless it forces stillbirths too
+		int n = forced ? forcedLambs : Flock.litter(composition(), score(Trait.FERTILITY)).roll(rng.next());
 		forcedLambs = 0;
 		lastLambing.clear();
 		SheepGenes sireCoat = SheepGenes.load(sireGenes);
+		int live = 0;
 		for (int i = 0; i < n; i++) {
 			String id = eventId + (i == 0 ? "" : ":lamb" + i);
+			// each lamb's own roll (sheep.md, "Stillborn lambs"); a stillborn lamb isn't spawned
+			double roll = rng.next();
+			boolean dead = forcedStillborn || (!forced && roll < Flock.stillbirthRate(!hasLambed, n));
+			if (dead) {
+				lastLambing.add("stillborn");
+				continue;
+			}
 			Offspring.Result r = Offspring.create(genome, sire, id, world, Ruleset.defaults(), null);
 			SheepEntity lamb = dev.farmings.FarmingsEntities.SHEEP.create(level, EntitySpawnReason.BREEDING);
 			if (lamb == null) {
@@ -606,10 +639,12 @@ public class SheepEntity extends Animal implements Wild.Animal {
 			lamb.setPos(getX() + 0.6 * (i - (n - 1) / 2.0), getY(), getZ() + 0.6);
 			level.addFreshEntity(lamb);
 			lastLambing.add(r.sex().name().toLowerCase(Locale.ROOT));
+			live++;
 		}
+		forcedStillborn = false;
 		hasLambed = true;
 		lambings++;
-		lastLitter = n;
+		lastLitter = live;
 		lambedTick = now;
 		bredTick = -1;
 		dueTick = -1;
@@ -810,6 +845,12 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		@Override
 		public boolean canContinueToUse() {
 			return canUse();
+		}
+
+		/** Ticked every tick: the stuck check counts by the sheep's tick, which skipping ticks would miss. */
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
 		}
 
 		/** Two seconds with no headway toward (x, z): a small push that way, as a snagged animal slides off a post corner, and a fresh path. */
@@ -1034,6 +1075,9 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		}
 		if (inHeat()) {
 			b.append(", IN HEAT");
+		}
+		if (sex == Sex.FEMALE && !stage().lamb() && !pregnant() && !inSeason(level().getGameTime())) {
+			b.append(", ANOESTROUS (out of season)");
 		}
 		if (pregnant()) {
 			b.append(String.format(Locale.ROOT, ", in lamb, due in %.1f game days", daysToLambing() / TimeScale.REAL_DAYS_PER_GAME_DAY));

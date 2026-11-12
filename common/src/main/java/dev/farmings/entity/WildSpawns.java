@@ -52,6 +52,10 @@ public final class WildSpawns {
 		if (biome.equals("minecraft:cherry_grove")) {
 			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.CATTLE, UniformInt.of(2, 4)), 2));
 		}
+		// sheep dogs, in pairs in the sheep biomes (docs/taming.md, "the sheep dog"; proposed weight)
+		if (biome.equals("minecraft:plains") || biome.equals("minecraft:meadow") || biome.equals("minecraft:windswept_hills")) {
+			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.SHEEP_DOG, ConstantInt.of(2)), 2));
+		}
 		if (biome.equals("minecraft:river") || biome.equals("minecraft:mangrove_swamp")) {
 			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.DUCK, ConstantInt.of(4)), 10));
 		}

@@ -32,6 +32,23 @@ public class ShedControllerBlock extends BaseEntityBlock {
 		return (l, p, s, entity) -> ((ShedControllerEntity) entity).serverTick((net.minecraft.server.level.ServerLevel) l);
 	}
 
+	/** Straw in hand beds the shed (sheep-shed.md, "bedding and manure"). */
+	@Override
+	protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+			net.minecraft.world.InteractionHand hand, BlockHitResult hit) {
+		if (ShedControllerEntity.strawKg(stack) <= 0) {
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		}
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ShedControllerEntity shed) {
+			if (shed.addStraw(stack)) {
+				stack.consume(1, player);
+			} else {
+				player.sendOverlayMessage(Component.literal("The shed's straw store is full"));
+			}
+		}
+		return InteractionResult.SUCCESS;
+	}
+
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ShedControllerEntity shed) {

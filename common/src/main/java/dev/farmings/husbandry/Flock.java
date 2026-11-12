@@ -289,4 +289,57 @@ public final class Flock {
 	public static int meatItems(double liveWeightKg) {
 		return (int) Math.floor(liveWeightKg * DRESSING * RETAIL_SHARE / KG_PER_ITEM);
 	}
+
+	// ---- loose ends, 2026-11-11: stillbirths and the breeding season (docs/animals/sheep.md) ----
+
+	/**
+	 * Chance a lamb is stillborn. First lambing 0.22 x 0.411 (lambs of ewe hoggets: 22% died, 41.1% of deaths stillborn); later lambings
+	 * 273 / 1,979 x 0.07 (mature ewes, "only 7% of deaths were attributed to stillborn"). Both from PMC8833723, *derived*. A single lamb
+	 * 0.8x, a twin or triplet 1.2x *(proposed shape, after the study's 19.2% vs 28.7% mortality)*.
+	 */
+	public static double stillbirthRate(boolean firstLambing, int litter) {
+		double base = firstLambing ? 0.22 * 0.411 : 273.0 / 1979.0 * 0.07;
+		return base * (litter <= 1 ? 0.8 : 1.2);
+	}
+
+	/** Day of the year a new world starts on: 1 October, mid-season *(proposed)*, as days from 1 January (non-leap year). */
+	public static final int WORLD_START_DAY = 273;
+
+	/** The day of the year (0 = 1 January) after this many real days of world time. */
+	public static int dayOfYear(double realDays) {
+		return (int) Math.floorMod((long) Math.floor(WORLD_START_DAY + realDays), 365L);
+	}
+
+	/**
+	 * A breed's breeding season as {first day, last day} of the year, wrapping past New Year (Univ. of Kentucky ASC237, Table 1): short
+	 * (Suffolk) 1 Sep - 1 Jan; medium (East Friesian) 15 Aug - 15 Jan; long (Merino) 15 Jul - 15 Mar; Dorper as long *(proposed)*.
+	 */
+	public static int[] season(String breedCode) {
+		return switch (breedCode) {
+			case "SUF" -> new int[] {243, 0};
+			case "EFR" -> new int[] {226, 14};
+			default -> new int[] {195, 73};     // Merino, Dorper
+		};
+	}
+
+	/** Whether a ewe of this breed cycles on this day of the year. */
+	public static boolean inSeason(String breedCode, int dayOfYear) {
+		int[] s = season(breedCode);
+		return s[0] <= s[1] ? dayOfYear >= s[0] && dayOfYear <= s[1] : dayOfYear >= s[0] || dayOfYear <= s[1];
+	}
+
+	private static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+	private static final int[] MONTH_DAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+	/** "1 Oct" for a day of the year. */
+	public static String date(int dayOfYear) {
+		int d = Math.floorMod(dayOfYear, 365);
+		for (int m = 0; m < 12; m++) {
+			if (d < MONTH_DAYS[m]) {
+				return (d + 1) + " " + MONTHS[m];
+			}
+			d -= MONTH_DAYS[m];
+		}
+		return "?";
+	}
 }

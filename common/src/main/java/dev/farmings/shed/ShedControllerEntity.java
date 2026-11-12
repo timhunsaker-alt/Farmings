@@ -35,7 +35,7 @@ import org.jspecify.annotations.Nullable;
  * grass on pasture, hay from the racks in the shed, water from the troughs. The layout itself is plain Java ({@link ShedLayout},
  * {@link PastureLayout}).
  */
-public class ShedControllerEntity extends BlockEntity {
+public class ShedControllerEntity extends BlockEntity implements net.minecraft.world.WorldlyContainer {
 	/** How far the shed takes in sheep that have no shed *(proposed)*. */
 	public static final double TAKE_IN_RADIUS = 48;
 	/** A ewe due within this many real days goes to a lambing pen *(proposed)*. */
@@ -59,6 +59,10 @@ public class ShedControllerEntity extends BlockEntity {
 	private boolean out;
 	private int flock;
 	private double grazedBlocks;
+	/** Soiled bedding and the clean straw for it (sheep-shed.md, "bedding and manure"). */
+	private final dev.farmings.husbandry.shed.ShedBedding bedding = new dev.farmings.husbandry.shed.ShedBedding();
+	private boolean dirty;
+	private static final int[] SLOTS = {0, 1};
 
 	public ShedControllerEntity(BlockPos pos, BlockState state) {
 		super(ShedBlocks.SHED_CONTROLLER_ENTITY, pos, state);
@@ -308,6 +312,23 @@ public class ShedControllerEntity extends BlockEntity {
 	 * the troughs. The shares met move its fed and watered averages.
 	 */
 	public void tend(ServerLevel level, List<SheepEntity> members, double dayShare) {
+		List<SheepEntity> housed = new ArrayList<>();
+		for (SheepEntity s : members) {
+			if (!onPasture(s)) {
+				housed.add(s);
+				bedding.housed(s.weightKg(), s.stage().lamb(), dayShare);
+			}
+		}
+		dirty = bedding.dirty(!housed.isEmpty());
+		if (dirty) {
+			// wet, warm bedding (NADIS: scald): the barn's dirty-stall rule, -1 health a day, never below 2 (proposed, as cattle)
+			for (SheepEntity s : housed) {
+				if (s.getHealth() > dev.farmings.husbandry.Hygiene.HEALTH_FLOOR) {
+					s.setHealth((float) Math.max(dev.farmings.husbandry.Hygiene.HEALTH_FLOOR, s.getHealth() - dev.farmings.husbandry.Hygiene.HEALTH_LOSS_PER_GAME_DAY * dayShare));
+				}
+			}
+		}
+		setChanged();
 		for (SheepEntity s : members) {
 			double need = s.dryMatterIntakeKgPerDay() * dayShare;
 			if (need <= 0) {
@@ -423,7 +444,120 @@ public class ShedControllerEntity extends BlockEntity {
 		} else if (pasture != null) {
 			b.append(String.format(Locale.ROOT, ", pasture %d blocks (%d grass)", pasture.spots().size(), pasture.grass()));
 		}
+		b.append(String.format(Locale.ROOT, ", bedding: %.0f kg straw, %d of %d manure items, %s", bedding.strawKg(), bedding.manureItems(),
+				dev.farmings.husbandry.shed.ShedBedding.MAX_ITEMS, dirty ? "DIRTY" : "CLEAN"));
+		if (level != null) {
+			b.append(", ").append(Flock.date(Flock.dayOfYear(TimeScale.ticksToRealDays(level.getGameTime()))));
+		}
 		b.append(", flock ").append(flock).append(out ? ", out to pasture" : ", in");
 		return b.toString();
+	}
+
+	// ---- bedding: straw in by hand or hopper, manure out by a hopper below ----
+
+	public dev.farmings.husbandry.shed.ShedBedding bedding() {
+		return bedding;
+	}
+
+	public boolean beddingDirty() {
+		return dirty;
+	}
+
+	/** Straw kg of one item: loose straw 10, a straw bale 454; 0 for anything else. */
+	public static double strawKg(net.minecraft.world.item.ItemStack stack) {
+		return stack.is(dev.farmings.crops.FieldCrops.STRAW) ? dev.farmings.husbandry.shed.ShedBedding.LOOSE_STRAW_KG
+				: stack.is(dev.farmings.crops.FieldCrops.STRAW_BALE) ? dev.farmings.husbandry.shed.ShedBedding.STRAW_BALE_KG : 0;
+	}
+
+	/** Beds the shed with one straw item if it fits; true if taken. */
+	public boolean addStraw(net.minecraft.world.item.ItemStack stack) {
+		double kg = strawKg(stack);
+		if (kg <= 0 || !bedding.hasRoomFor(kg)) {
+			return false;
+		}
+		bedding.addStraw(kg);
+		setChanged();
+		return true;
+	}
+
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return SLOTS;
+	}
+
+	@Override
+	public boolean canPlaceItemThroughFace(int slot, net.minecraft.world.item.ItemStack stack, @Nullable Direction side) {
+		return slot == 1 && side != Direction.DOWN && strawKg(stack) > 0 && bedding.hasRoomFor(strawKg(stack));
+	}
+
+	@Override
+	public boolean canTakeItemThroughFace(int slot, net.minecraft.world.item.ItemStack stack, Direction side) {
+		return slot == 0 && side == Direction.DOWN;
+	}
+
+	@Override
+	public int getContainerSize() {
+		return 2;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return bedding.manureItems() == 0;
+	}
+
+	@Override
+	public net.minecraft.world.item.ItemStack getItem(int slot) {
+		int n = bedding.manureItems();
+		return slot == 0 && n > 0 ? new net.minecraft.world.item.ItemStack(dev.farmings.FarmingsItems.MANURE, n) : net.minecraft.world.item.ItemStack.EMPTY;
+	}
+
+	@Override
+	public net.minecraft.world.item.ItemStack removeItem(int slot, int count) {
+		if (slot != 0) {
+			return net.minecraft.world.item.ItemStack.EMPTY;
+		}
+		int n = bedding.takeManure(count);
+		setChanged();
+		return n == 0 ? net.minecraft.world.item.ItemStack.EMPTY : new net.minecraft.world.item.ItemStack(dev.farmings.FarmingsItems.MANURE, n);
+	}
+
+	@Override
+	public net.minecraft.world.item.ItemStack removeItemNoUpdate(int slot) {
+		return removeItem(slot, dev.farmings.husbandry.shed.ShedBedding.MAX_ITEMS);
+	}
+
+	@Override
+	public void setItem(int slot, net.minecraft.world.item.ItemStack stack) {
+		if (slot == 0) {
+			// the hopper hands back what it took less what it moved: keep the store in step
+			bedding.setManureItems(stack.getCount());
+		} else {
+			for (int i = 0; i < stack.getCount(); i++) {
+				addStraw(stack);
+			}
+		}
+		setChanged();
+	}
+
+	@Override
+	public boolean stillValid(net.minecraft.world.entity.player.Player player) {
+		return true;
+	}
+
+	@Override
+	public void clearContent() {
+	}
+
+	@Override
+	protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput out) {
+		super.saveAdditional(out);
+		out.putDouble("bedding_straw_kg", bedding.strawKg());
+		out.putDouble("bedding_soiled_kg", bedding.soiledKg());
+	}
+
+	@Override
+	protected void loadAdditional(net.minecraft.world.level.storage.ValueInput in) {
+		super.loadAdditional(in);
+		bedding.load(in.getDoubleOr("bedding_straw_kg", 0), in.getDoubleOr("bedding_soiled_kg", 0));
 	}
 }

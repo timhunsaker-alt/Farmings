@@ -63,6 +63,13 @@ public final class FarmingsEntities {
 		return Species.CHICKEN;
 	}
 
+	/** A Border Collie (docs/animals/sheep.md, "Sheep dog"): 53 cm at the withers (KC standard), drawn on the wolf's frame. */
+	public static final EntityType<dev.farmings.entity.SheepDogEntity> SHEEP_DOG = EntityType.Builder.<dev.farmings.entity.SheepDogEntity>of(dev.farmings.entity.SheepDogEntity::new, MobCategory.CREATURE)
+			.sized(0.6F, 0.85F)
+			.eyeHeight(0.68F)
+			.clientTrackingRange(10)
+			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("sheep_dog")));
+
 	/** A thrown rotten egg (docs/eggs.md): a snowball's size and tracking. */
 	public static final EntityType<dev.farmings.entity.ThrownRottenEgg> ROTTEN_EGG = EntityType.Builder.<dev.farmings.entity.ThrownRottenEgg>of(dev.farmings.entity.ThrownRottenEgg::new, MobCategory.MISC)
 			.noLootTable()
@@ -84,5 +91,6 @@ public final class FarmingsEntities {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("quail"), QUAIL);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("duck"), DUCK);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("rotten_egg"), ROTTEN_EGG);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("sheep_dog"), SHEEP_DOG);
 	}
 }

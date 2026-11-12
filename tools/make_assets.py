@@ -119,6 +119,7 @@ ITEMS = [
     ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
     # eggs (docs/eggs.md); placeholders until the Ludo icons
     ("poultry_litter", "Poultry Litter", (120, 100, 70), "blob"),
+    ("shepherds_whistle", "Shepherd's Whistle", (200, 200, 190), "blob"),
     ("chicken", "Raw Chicken", (236, 170, 150), "steak"),
     ("cooked_chicken", "Cooked Chicken", (190, 130, 70), "steak"),
     ("turkey", "Raw Turkey", (226, 150, 140), "steak"),
@@ -356,6 +357,7 @@ def main():
         "farmings:cooked_chicken", "farmings:cooked_turkey", "farmings:cooked_duck", "farmings:cooked_quail", "farmings:cooked_lamb_chop",
         "farmings:cooked_mutton_chop", "farmings:cooked_select_steak", "farmings:cooked_choice_steak", "farmings:cooked_prime_steak"]})
     lang["entity.farmings.rotten_egg"] = "Rotten Egg"
+    lang["entity.farmings.sheep_dog"] = "Border Collie"
     # Farmings crops keep the farmland under them, as vanilla crops do; without this, dry farmland turns back to dirt on a random tick
     # and the crop pops off (found 2026-11-11 by an intermittent gantry test)
     write(os.path.join(ROOT_DATA, "minecraft", "tags", "block", "maintains_farmland.json"), {"replace": False, "values": [
@@ -515,6 +517,7 @@ SHAPELESS = {
     "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
     "mineral_premix": (["minecraft:bone_meal", "farmings:ground_limestone"], 4),
     "sheep_cheese": (["farmings:sheep_cheese_wheel"], 8),
+    "shepherds_whistle": (["minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:string"], 1),
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop",

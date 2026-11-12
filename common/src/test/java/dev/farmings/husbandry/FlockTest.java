@@ -79,4 +79,33 @@ class FlockTest {
 		assertEquals(12, Flock.meatItems(90));
 		assertEquals(1.25, Flock.intakeKgDm(50, 0), 1e-9);
 	}
+
+	@org.junit.jupiter.api.Test
+	void stillbirthRatesBySourceAndLitter() {
+		org.junit.jupiter.api.Assertions.assertEquals(0.0904, Flock.stillbirthRate(true, 2) / 1.2, 0.0005);
+		org.junit.jupiter.api.Assertions.assertEquals(0.00966, Flock.stillbirthRate(false, 1) / 0.8, 0.0001);
+		org.junit.jupiter.api.Assertions.assertTrue(Flock.stillbirthRate(false, 3) > Flock.stillbirthRate(false, 1));
+	}
+
+	@org.junit.jupiter.api.Test
+	void breedingSeasonsByBreed() {
+		// a world starts on 1 October: every breed is in season
+		org.junit.jupiter.api.Assertions.assertEquals("1 Oct", Flock.date(Flock.dayOfYear(0)));
+		for (String b : new String[] {"SUF", "EFR", "MER", "DOR"}) {
+			org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason(b, Flock.dayOfYear(0)), b);
+		}
+		int may = 135;     // 16 May: everyone out of season
+		int feb = 40;      // 10 Feb: only the long-season breeds
+		int sep5 = 247;
+		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("SUF", may));
+		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("MER", may));
+		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("SUF", feb));
+		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("EFR", feb));
+		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("MER", feb));
+		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("DOR", feb));
+		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("SUF", sep5));
+		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("SUF", 0), "the short season runs to 1 January");
+		// a year is 365 real days
+		org.junit.jupiter.api.Assertions.assertEquals(Flock.dayOfYear(10), Flock.dayOfYear(375));
+	}
 }

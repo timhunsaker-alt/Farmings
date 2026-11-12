@@ -152,16 +152,18 @@ public class CorralPostEntity extends BlockEntity {
 		if (now % TEND_TICKS != 0 || check == null || !check.formed()) {
 			return;
 		}
-		boolean hay = baitKg(level, false) > 0;
-		boolean grain = baitKg(level, true) > 0;
+		java.util.EnumMap<Wild.Bait, Boolean> has = new java.util.EnumMap<>(Wild.Bait.class);
+		for (Wild.Bait b : Wild.Bait.values()) {
+			has.put(b, baitKg(level, b) > 0);
+		}
 		for (Mob m : level.getEntitiesOfClass(Mob.class, new AABB(worldPosition).inflate(LURE_RADIUS), e -> e instanceof Wild.Animal a && a.isWild())) {
 			Wild.Animal a = (Wild.Animal) m;
 			if (inside(m)) {
 				a.setLure(null);
 				tend(level, m, a, TEND_TICKS);
 			} else {
-				// the bait draws only the animals it can feed: hay for cattle and sheep, grain for birds
-				a.setLure((a.eatsGrain() ? grain : hay) ? baitSpot : null);
+				// the bait draws only the animals it can feed: hay for cattle and sheep, grain for birds, meat for dogs
+				a.setLure(has.get(a.bait()) ? baitSpot : null);
 			}
 		}
 	}
@@ -171,10 +173,14 @@ public class CorralPostEntity extends BlockEntity {
 	}
 
 	private double baitKg(ServerLevel level, boolean grain) {
+		return baitKg(level, grain ? Wild.Bait.GRAIN : Wild.Bait.HAY);
+	}
+
+	private double baitKg(ServerLevel level, Wild.Bait bait) {
 		double kg = 0;
 		for (BlockPos b : baits) {
 			if (level.getBlockEntity(b) instanceof BaitTroughEntity t) {
-				kg += t.feedKg(grain);
+				kg += t.feedKg(bait);
 			}
 		}
 		return kg;
@@ -191,7 +197,7 @@ public class CorralPostEntity extends BlockEntity {
 		double eaten = 0;
 		for (BlockPos b : baits) {
 			if (eaten < wantKg && level.getBlockEntity(b) instanceof BaitTroughEntity t) {
-				eaten += t.take(a.eatsGrain(), wantKg - eaten);
+				eaten += t.take(a.bait(), wantKg - eaten);
 			}
 		}
 		double drunk = 0;
@@ -231,8 +237,8 @@ public class CorralPostEntity extends BlockEntity {
 				water += t.litres();
 			}
 		}
-		return String.format(java.util.Locale.ROOT, "Corral: FORMED, %d cells, %d gate(s); %d wild inside (most settled %.1f of %.0f days); bait %.0f kg hay and %.1f kg grain, water %.0f L; %d tamed",
-				check.floor().size(), check.gates().size(), wild, most, WildBreeds.SETTLE_DAYS, baitKg(level), baitKg(level, true), water, tamed);
+		return String.format(java.util.Locale.ROOT, "Corral: FORMED, %d cells, %d gate(s); %d wild inside (most settled %.1f of %.0f days); bait %.0f kg hay, %.1f kg grain and %.1f kg meat, water %.0f L; %d tamed",
+				check.floor().size(), check.gates().size(), wild, most, WildBreeds.SETTLE_DAYS, baitKg(level), baitKg(level, true), baitKg(level, Wild.Bait.MEAT), water, tamed);
 	}
 
 	@Override

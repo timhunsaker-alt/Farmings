@@ -23,6 +23,7 @@ public final class FarmingsFabric implements ModInitializer {
 				.build());
 		FabricDefaultAttributeRegistry.register(FarmingsEntities.CATTLE, CattleEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(FarmingsEntities.SHEEP, dev.farmings.entity.SheepEntity.createAttributes());
+		FabricDefaultAttributeRegistry.register(FarmingsEntities.SHEEP_DOG, dev.farmings.entity.SheepDogEntity.createAttributes());
 		for (var type : FarmingsEntities.FOWL) {
 			FabricDefaultAttributeRegistry.register(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)));
 		}

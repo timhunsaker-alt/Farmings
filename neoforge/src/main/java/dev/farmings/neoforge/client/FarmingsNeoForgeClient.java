@@ -28,6 +28,7 @@ public final class FarmingsNeoForgeClient {
 					event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.SHEEP, dev.farmings.client.SheepRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.ROTTEN_EGG, net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
+					event.registerEntityRenderer(FarmingsEntities.SHEEP_DOG, dev.farmings.client.SheepDogRenderer::new);
 					for (var type : FarmingsEntities.FOWL) {
 						event.registerEntityRenderer(type, dev.farmings.client.FowlRenderer::new);
 					}

@@ -541,4 +541,67 @@ final class SheepGameTests {
 		}
 		helper.succeed();
 	}
+
+	// ---- loose ends, 2026-11-11 ----
+
+	/** Housed sheep soil the bedding; with no straw it is dirty and costs health; straw re-beds it; a hopper below mucks it out. */
+	static void shedBeddingFillsAndEmpties(GameTestHelper helper) {
+		BlockPos c = buildShed(helper);
+		ServerLevel level = helper.getLevel();
+		fill(helper);
+		dev.farmings.shed.ShedControllerEntity shed = shed(helper, c);
+		shed.refresh(level);
+		shed.forceDayForTest(false);
+		SheepEntity ewe = adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 131L, new BlockPos(3, 1, 2));
+		ewe.setNoAi(true);
+		ewe.assignShed(c, null);
+		float full = ewe.getHealth();
+		shed.tend(level, List.of(ewe), 3.0);
+		helper.assertTrue(shed.beddingDirty() && ewe.getHealth() < full, Component.literal("no straw: dirty, and she loses health: " + shed.readout()));
+		helper.assertTrue(shed.addStraw(new ItemStack(dev.farmings.crops.FieldCrops.STRAW_BALE)), Component.literal("a straw bale beds the shed"));
+		shed.tend(level, List.of(ewe), 30.0);
+		helper.assertTrue(!shed.beddingDirty() && shed.bedding().manureItems() >= 3, Component.literal("bedded, and soiling: " + shed.readout()));
+		helper.setBlock(new BlockPos(1, 0, 2), net.minecraft.world.level.block.Blocks.HOPPER);
+		TamingGameTests.waitFor(helper, 0, 200, () -> level.getBlockEntity(helper.absolutePos(new BlockPos(1, 0, 2))) instanceof net.minecraft.world.level.block.entity.HopperBlockEntity h
+				&& h.getItem(0).is(dev.farmings.FarmingsItems.MANURE), () -> "a hopper below pulls manure out: " + shed.readout(), helper::succeed);
+	}
+
+	/** A stillborn lamb isn't spawned; the lambing record says so (sheep.md, "Stillborn lambs"). */
+	static void lambStillbornNotSpawned(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		SheepEntity ewe = adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 132L, new BlockPos(3, 1, 3));
+		SheepEntity ram = adult(helper, SheepBreed.SUFFOLK, Sex.MALE, 133L, new BlockPos(5, 1, 5));
+		ewe.startHeatForDisplay();
+		helper.assertTrue(ewe.conceive(ram.genome(), ram.genes(), level.getGameTime()), Component.literal("she conceives"));
+		ram.discard();
+		ewe.forceLambsForTest(2);
+		ewe.forceStillbornForTest();
+		ewe.makeDueNow();
+		TamingGameTests.waitFor(helper, 0, 100, () -> !ewe.pregnant(), "she lambs", () -> {
+			helper.assertTrue(ewe.lastLambing().equals(List.of("stillborn", "stillborn")), Component.literal("both stillborn: " + ewe.lastLambing()));
+			long lambs = level.getEntitiesOfClass(SheepEntity.class, new AABB(helper.absolutePos(BlockPos.ZERO)).inflate(12), s -> s.stage().lamb()).size();
+			helper.assertTrue(lambs == 0 && ewe.lambsNursing() == 0, Component.literal("no lamb spawned, none nursing: " + lambs));
+			helper.succeed();
+		});
+	}
+
+	/** Out of her breed's season a ewe is anoestrous and doesn't cycle; a Merino on the same day still does (sheep.md, "Breeding season"). */
+	static void eweAnoestrousOutOfSeason(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		SheepEntity suffolk = adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 134L, new BlockPos(2, 1, 2));
+		SheepEntity merino = adult(helper, SheepBreed.MERINO, Sex.FEMALE, 135L, new BlockPos(5, 1, 2));
+		long now = level.getGameTime();
+		helper.assertTrue(suffolk.inSeason(now) && merino.inSeason(now), Component.literal("a new world starts on 1 October, in season for both"));
+		suffolk.setDayOfYearForTest(40);     // 10 February
+		merino.setDayOfYearForTest(40);
+		helper.assertTrue(!suffolk.inSeason(now), Component.literal("a Suffolk is out of season in February"));
+		helper.assertTrue(merino.inSeason(now), Component.literal("a Merino, a long-season breed, is still in season"));
+		helper.assertTrue(suffolk.readout().contains("ANOESTROUS") && !merino.readout().contains("ANOESTROUS"), Component.literal(suffolk.readout()));
+		suffolk.setDayOfYearForTest(135);     // 16 May
+		merino.setDayOfYearForTest(135);
+		helper.assertTrue(!merino.inSeason(now), Component.literal("in May even the Merino is out"));
+		helper.succeed();
+	}
 }

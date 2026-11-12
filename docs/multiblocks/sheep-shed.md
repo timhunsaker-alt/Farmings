@@ -82,3 +82,9 @@ matter.
   Then "scald can become problematic in housed ewes, when straw bedding becomes wet and warm" ([NADIS](https://www.nadis.org.uk/disease-a-z/sheep/lameness-control-in-sheep/)).
   The game uses the barn's dirty-stall rule (`Hygiene`): -1 health a day once half dirty, never below 2 *(proposed, as cattle)*.
 - **Readout:** "bedding: N kg straw, M of 64 manure items, CLEAN / DIRTY".
+
+### Built, 2026-11-11 (loose ends)
+- **Code:** `husbandry/shed/ShedBedding` is plain Java and unit-tested. The shed controller is a container: straw goes in from the
+  sides or top (or by hand), and manure comes out of the bottom.
+- **Saved:** the shed now saves its bedding store.
+- **Game test:** shed_bedding_fills_and_empties.

@@ -28,6 +28,10 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 
 	private double dryMatterKg;
 	private double grainKg;
+	/** Raw meat for a wild dog: one item is its day's 0.5 kg (sheep.md, "Sheep dog"; proposed), and the trough holds 16. */
+	public static final double MEAT_ITEM_KG = 0.5;
+	public static final double MEAT_CAPACITY_KG = 16 * MEAT_ITEM_KG;
+	private double meatKg;
 
 	public BaitTroughEntity(BlockPos pos, BlockState state) {
 		super(CorralBlocks.BAIT_TROUGH_ENTITY, pos, state);
@@ -68,6 +72,40 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 		return taken;
 	}
 
+	public double meatKg() {
+		return meatKg;
+	}
+
+	public boolean addMeat() {
+		if (meatKg + MEAT_ITEM_KG > MEAT_CAPACITY_KG + 1e-9) {
+			return false;
+		}
+		meatKg += MEAT_ITEM_KG;
+		setChanged();
+		return true;
+	}
+
+	/** Feed of one kind: hay (kg DM), grain or meat (kg as fed). */
+	public double feedKg(dev.farmings.entity.Wild.Bait bait) {
+		return switch (bait) {
+			case HAY -> dryMatterKg;
+			case GRAIN -> grainKg;
+			case MEAT -> meatKg;
+		};
+	}
+
+	public double take(dev.farmings.entity.Wild.Bait bait, double kg) {
+		if (bait != dev.farmings.entity.Wild.Bait.MEAT) {
+			return take(bait == dev.farmings.entity.Wild.Bait.GRAIN, kg);
+		}
+		double taken = Math.max(0, Math.min(kg, meatKg));
+		if (taken > 0) {
+			meatKg -= taken;
+			setChanged();
+		}
+		return taken;
+	}
+
 	/** Feed for this animal: grain for birds, hay for the rest. */
 	public double feedKg(boolean grain) {
 		return grain ? grainKg : dryMatterKg;
@@ -95,6 +133,9 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 
 	@Override
 	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) {
+		if (dev.farmings.entity.Wild.meat(stack)) {
+			return meatKg + MEAT_ITEM_KG <= MEAT_CAPACITY_KG + 1e-9;
+		}
 		if (dev.farmings.entity.Wild.grain(stack)) {
 			return grainKg + dev.farmings.husbandry.poultry.Fowl.GRAIN_ITEM_KG <= GRAIN_CAPACITY_KG + 1e-9;
 		}
@@ -139,6 +180,9 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 		for (int i = 0; i < stack.getCount() && dev.farmings.entity.Wild.grain(stack); i++) {
 			addGrain();
 		}
+		for (int i = 0; i < stack.getCount() && dev.farmings.entity.Wild.meat(stack); i++) {
+			addMeat();
+		}
 	}
 
 	@Override
@@ -155,6 +199,7 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 		super.saveAdditional(output);
 		output.putDouble("dry_matter_kg", dryMatterKg);
 		output.putDouble("grain_kg", grainKg);
+		output.putDouble("meat_kg", meatKg);
 	}
 
 	@Override
@@ -162,5 +207,6 @@ public class BaitTroughEntity extends BlockEntity implements WorldlyContainer {
 		super.loadAdditional(input);
 		dryMatterKg = Math.max(0, Math.min(CAPACITY_KG, input.getDoubleOr("dry_matter_kg", 0)));
 		grainKg = Math.max(0, Math.min(GRAIN_CAPACITY_KG, input.getDoubleOr("grain_kg", 0)));
+		meatKg = Math.max(0, Math.min(MEAT_CAPACITY_KG, input.getDoubleOr("meat_kg", 0)));
 	}
 }

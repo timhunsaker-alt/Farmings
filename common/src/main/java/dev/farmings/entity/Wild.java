@@ -63,6 +63,11 @@ public final class Wild {
 			return false;
 		}
 
+		/** What this animal eats from a bait trough: hay, grain (birds) or meat (the sheep dog). */
+		default Bait bait() {
+			return eatsGrain() ? Bait.GRAIN : Bait.HAY;
+		}
+
 		default void tame(@Nullable UUID owner) {
 			setWild(false);
 			setOwner(owner);
@@ -78,6 +83,17 @@ public final class Wild {
 	/** Cattle and sheep feed that lures them: wheat or a hay block. */
 	public static boolean feed(ItemStack stack) {
 		return stack.is(Items.WHEAT) || stack.is(Items.HAY_BLOCK);
+	}
+
+	/** What a bait trough holds for each kind of animal. */
+	public enum Bait { HAY, GRAIN, MEAT }
+
+	/** Dog food (docs/animals/sheep.md, "Sheep dog"): raw meat, vanilla's and Farmings'. */
+	public static boolean meat(ItemStack stack) {
+		return stack.is(Items.BEEF) || stack.is(Items.MUTTON) || stack.is(Items.CHICKEN) || stack.is(Items.PORKCHOP) || stack.is(Items.RABBIT)
+				|| stack.is(dev.farmings.FarmingsItems.CHICKEN) || stack.is(dev.farmings.FarmingsItems.TURKEY_MEAT) || stack.is(dev.farmings.FarmingsItems.DUCK_MEAT)
+				|| stack.is(dev.farmings.FarmingsItems.QUAIL_MEAT) || stack.is(dev.farmings.FarmingsItems.LAMB_CHOP) || stack.is(dev.farmings.FarmingsItems.MUTTON_CHOP)
+				|| stack.is(dev.farmings.FarmingsItems.SELECT_STEAK) || stack.is(dev.farmings.FarmingsItems.CHOICE_STEAK) || stack.is(dev.farmings.FarmingsItems.PRIME_STEAK);
 	}
 
 	/** Poultry feed (docs/animals/poultry.md, "Feed and water"): the vanilla chicken food seeds, and wheat. */
