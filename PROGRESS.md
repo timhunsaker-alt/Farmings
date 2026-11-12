@@ -231,6 +231,51 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     gantry-mows-hay, gantry-rakes-hay, gantry-bales-hay, mixer-feeds-barn, compost-turned, digester-runs-genset).
 - Next: the loose ends, then new animals (each its own plan).
 
+- Step 16 (2026-11-11 to 11-12): the loose ends. Approved by Tim in plan mode, with his popup answers. Commits:
+  - 4cd9075: the flaky walking tests;
+  - 671ce28: the spec;
+  - 1c1b445: poultry;
+  - e659b3a: straws;
+  - 371675b: sheep;
+  - 5693b66: coats;
+  - ee2c0b1: cold room and compost;
+  - 81aed81 / 61c57b0 / 3088df6 / 9e94bbc: Phase 3 done properly;
+  - fc23ad5: the sourcing sweep;
+  - then the NeoForge client and evidence.
+  - **Poultry:**
+    - rotten eggs thrown, giving Nausea;
+    - Farmings chicken that spoils;
+    - hens per male enforced;
+    - Coturnix and Bobwhite no longer cross;
+    - foraging on the run, with the grass wearing;
+    - Muscovy and Coturnix colour mutants.
+  - **One straw for every species.** BBW turkeys breed by fresh straw (30 real minutes).
+  - **Sheep:**
+    - shed bedding and manure, mucked out by hopper;
+    - stillborn lambs;
+    - breeding seasons by breed;
+    - the Border Collie, wild and tamed in the corral on meat, herding on whistle commands.
+  - **Cattle coats:** roan, brindle and PMEL dilution. Colour points and recessive spotting were dropped because sources don't support
+    them.
+  - **Food:** the cold room holds a temperature, food ages by it, and spoiled food goes into compost.
+  - **Phase 3 done properly:**
+    - hand raking, and silo losses over time;
+    - belts that climb, with the items riding them drawn;
+    - the full-size digester tank and TMR mixer;
+    - the gantry lifting into one entity and gliding;
+    - the gas set carrying a real load (the digester's agitator, 5 kW).
+  - **Bugs found on the way:**
+    - Farmings crops didn't keep dry farmland, so it turned to dirt under them;
+    - goals that count ticks missed steps when ticked every other tick;
+    - sheep snagged on gate posts;
+    - the cold room's temperature didn't reach the food's credit (caught by its own test);
+    - the NeoForge client wouldn't start ("missing client-side handlers: [wildcatter:plc]"). Farmings now registers that handler
+      itself, and the real fix belongs in Wildcatter.
+  - **Tests:** 189 game tests and 260 unit tests. Full runs passed three times in a row after the flaky-test fixes.
+  - **Client scenes:** `looseends` (dog, coats, plumage, rotten egg), `belts`, and `fields` (the gantry gliding, the full-size machines,
+    the gas set under load).
+  - **Art:** Ludo icons for raw and cooked chicken and the shepherd's whistle.
+
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing
   rotten eggs, Farmings chicken that spoils, foraging on the run, Muscovy and quail colour mutants, hens per male, no quail cross.
@@ -274,7 +319,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     3-3.5%).
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
-- NeoForge has not been launched with a client; Fabric has.
+- The NeoForge client launches to the title screen (2026-11-12). Its in-world scenes are all on Fabric's client game test. It needs
+  Farmings' copy of Wildcatter's PLC client handler until Wildcatter registers its own.
 - ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
 - Not built: products by pipe, a plain-text genome code, lane collision rails. Built 2026-11-11 (loose ends): the cold room temperature model, spoiled food in compost.
 - Sheep, not built: cloth filters. Built 2026-11-11 (loose ends): bedding that gets dirty, sheep dogs, breeding seasons, sheep straws,

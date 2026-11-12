@@ -133,3 +133,9 @@ Every prompt ends "game item icon, plain white background, no text".
 | tool_spreader | A brown farm manure and fertilizer spreader box with rear beaters, isolated machine part |
 
 Crop stages, swaths, belts, the gantry, silo, mill, compost and digester faces are drawn by `tools/make_assets.py`.
+
+## 2026-11-12: Loose ends
+Ludo createImage, item-icon, Photorealistic 3D, n 1.
+- `chicken`: "A raw whole chicken leg and thigh piece, pale pink raw poultry meat with skin, game item icon, centered, plain transparent background"
+- `cooked_chicken`: "A roasted golden-brown cooked chicken leg and thigh, crispy skin, game item icon, centered, plain transparent background"
+- `shepherds_whistle`: "A shepherd's sheepdog whistle: a small curved crescent-shaped metal whistle on a short leather lanyard, brushed steel, game item icon, centered, plain transparent background"

@@ -1,6 +1,6 @@
 # Farmings — Roadmap
 
-Exactly one phase is marked **CURRENT** while one is under way (none is, after Phase 3 and 4: the loose ends and new animals are next, each planned on its own). A phase is done when `./gradlew build` and the game tests pass with new coverage for
+Exactly one phase is marked **CURRENT** while one is under way (none is: Phases 3 and 4 and the loose ends are done; new animals are next, planned on their own). A phase is done when `./gradlew build` and the game tests pass with new coverage for
 the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a page for each new system.
 
 ## Phase 0 — Set up — done
@@ -49,6 +49,10 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Poultry: chickens, turkeys, quail and ducks (eggs, coop and run, duck pond, broody hens, hatchery, brooder, egg grading, meat,
   feathers and down), with sexes, breeds and genes, at 3 real days per game day; wild, tamed in the corral. **Done 2026-11-11**
   (`docs/animals/poultry.md`, `docs/multiblocks/coop.md`, `docs/multiblocks/hatchery.md`, `docs/eggs.md`).
+
+## Loose ends — done 2026-11-12
+The Known gaps from Phases 2-4 (PROGRESS.md Step 16): poultry, straws, sheep, coats, the cold room, compost, Phase 3 built at full
+size, the NeoForge client and a sourcing sweep over every doc.
 
 ## Ideas (not scheduled, not in code)
 - More species (goats, pigs, horses, geese, guinea fowl).

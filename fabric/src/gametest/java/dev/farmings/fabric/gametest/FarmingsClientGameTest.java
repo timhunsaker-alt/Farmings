@@ -512,6 +512,13 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 
 	// ---- 2026-11-09: the cattle finish, the creamery and the art ----
 
+	/** A big part placed whole with its main cell at {@code main}, facing north. */
+	private static void bigPart(ServerLevel level, net.minecraft.world.level.block.Block b, BlockPos main) {
+		var state = b.defaultBlockState().setValue(dev.wildcatter.block.BigPartBlock.FACING, Direction.NORTH);
+		level.setBlockAndUpdate(main, state);
+		dev.wildcatter.multiblock.BigParts.grow(level, main, state);
+	}
+
 	private static void clear(ServerLevel level, int cx, int cz, int y, int rx, int rz, int h) {
 		for (int x = cx - rx; x <= cx + rx; x++) {
 			for (int z = cz - rz; z <= cz + rz; z++) {
@@ -1675,9 +1682,12 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			s++;
 			String r = server.computeOnServer(srv -> {
 				var c = cab(srv.overworld(), y);
-				return c == null ? "gantry moving" : c.readout().replace("Field gantry: span 8, tool ", "");
+				return c == null ? "Field gantry: lifted, gliding along the rails" : c.readout().replace("Field gantry: span 8, tool ", "");
 			});
 			actionbar(server, r);
+			if (s == 4) {
+				context.takeScreenshot("farmings-fields-" + film + "-gliding");     // mid-pass: lifted into one entity (field-gantry.md, "The lift")
+			}
 			boolean home = server.computeOnServer(srv -> {
 				var c = cab(srv.overworld(), y);
 				return c != null && c.phase() == dev.farmings.gantry.GantryCabEntity.Phase.PARKED && c.step() == 0;
@@ -1708,6 +1718,139 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	 * blocks over a 16-row field sows corn, chops it onto a belt that blows it into a tower silo, then mows, rakes and bales alfalfa; a TMR
 	 * mixer feeds a barn feeder by belt; a compost windrow is turned; and a digester's biogas runs a Wildcatter gas set.
 	 */
+	/** The loose-ends pass (2026-11-12): the sheep dog driving a flock, coat genes, plumage mutants and a thrown rotten egg. */
+	private static void looseEnds(ClientGameTestContext context, TestServerContext server, int y) {
+		// 1. a Border Collie drives five ewes from the far side of a field to a marked spot (Walk up)
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 8, 8, y, 16, 16, 6);
+			var player = srv.getPlayerList().getPlayers().get(0);
+			var dog = FarmingsEntities.SHEEP_DOG.create(level, EntitySpawnReason.COMMAND);
+			dog.setWild(false);
+			dog.setOwner(player.getUUID());
+			dog.snapTo(20.5, y, 18.5, 0, 0);
+			level.addFreshEntity(dog);
+			dev.farmings.husbandry.SheepBreed[] breeds = {dev.farmings.husbandry.SheepBreed.SUFFOLK, dev.farmings.husbandry.SheepBreed.MERINO, dev.farmings.husbandry.SheepBreed.DORPER, dev.farmings.husbandry.SheepBreed.EAST_FRIESIAN, dev.farmings.husbandry.SheepBreed.SUFFOLK};
+			for (int i = 0; i < 5; i++) {
+				var s = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.COMMAND);
+				s.initFounder(breeds[i], Sex.FEMALE, 500 + i, 800, 70, level.getGameTime());
+				s.snapTo(15.5 + i, y, 15.5 + (i % 2), 0, 0);
+				level.addFreshEntity(s);
+			}
+			level.setBlockAndUpdate(new BlockPos(0, y - 1, 0), net.minecraft.world.level.block.Blocks.HAY_BLOCK.defaultBlockState());
+		});
+		server.runCommand("tp @p 10.5 " + (y + 9) + " 27.5 200 38");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-loose-dog-before");
+		Filming herd = context.computeOnClient(client -> Filming.start(client, "dog-drives-flock"));
+		server.runOnServer(srv -> dev.farmings.item.WhistleItem.blow(srv.overworld(), srv.getPlayerList().getPlayers().get(0), dev.farmings.entity.SheepDogEntity.Command.WALK_UP,
+				new BlockPos(0, y, 0)));
+		for (int i = 0; i < 40; i++) {
+			context.waitTicks(10);
+			if (i % 4 == 0) {
+				actionbar(server, server.computeOnServer(srv -> srv.overworld().getEntitiesOfClass(dev.farmings.entity.SheepDogEntity.class,
+						new net.minecraft.world.phys.AABB(0, y - 2, 0, 1, y + 2, 1).inflate(40)).stream().findFirst().map(dev.farmings.entity.SheepDogEntity::readout).orElse("no dog")));
+			}
+			if (i == 20) {
+				context.takeScreenshot("farmings-loose-dog-driving");
+			}
+		}
+		context.takeScreenshot("farmings-loose-dog-after");
+		herd.stop();
+		// 2. coat genes: a roan, a white (R/R), a brindle (Abr on E+) and a dun (PMEL Dh), with their plain founders
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 40, 0, y, 10, 6, 6);
+			String[] names = {"roan", "white", "brindle", "dun", "silver dun"};
+			for (int i = 0; i < 5; i++) {
+				CattleEntity cow = founder(level, CattleBreed.JERSEY, Sex.FEMALE, 700 + i, 1500, CattleBreed.JERSEY.matureWeightKg, 34.5 + i * 3, y, 0.5);
+				java.util.EnumMap<dev.farmings.genetics.VisualLocus, int[]> m = new java.util.EnumMap<>(dev.farmings.genetics.VisualGenome.founder("JER", 9L).alleles());
+				m.put(dev.farmings.genetics.VisualLocus.PATTERN, new int[] {0, 0});
+				m.put(dev.farmings.genetics.VisualLocus.EXTENSION, new int[] {2, 2});
+				m.put(dev.farmings.genetics.VisualLocus.DILUTION, new int[] {0, 0});
+				switch (i) {
+					case 0 -> m.put(dev.farmings.genetics.VisualLocus.ROAN, new int[] {1, 0});
+					case 1 -> m.put(dev.farmings.genetics.VisualLocus.ROAN, new int[] {1, 1});
+					case 2 -> m.put(dev.farmings.genetics.VisualLocus.AGOUTI, new int[] {1, 0});
+					case 3 -> m.put(dev.farmings.genetics.VisualLocus.PMEL, new int[] {1, 0});
+					default -> m.put(dev.farmings.genetics.VisualLocus.PMEL, new int[] {1, 1});
+				}
+				cow.setVisualGenome(new dev.farmings.genetics.VisualGenome(m));
+				cow.setNoAi(true);
+				cow.setCustomName(net.minecraft.network.chat.Component.literal(names[i]));
+				cow.setCustomNameVisible(true);
+				cow.snapTo(34.5 + i * 3, y, 0.5, 180, 0);
+			}
+		});
+		server.runCommand("tp @p 40.5 " + (y + 3) + " -8.5 0 15");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-loose-coats");
+		// 3. plumage mutants: Muscovy blue, silver, lavender, chocolate; Coturnix Italian, Golden, Rosetta, Tibetan, English White
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 70, 0, y, 10, 6, 6);
+			Object[][] birds = {{dev.farmings.husbandry.poultry.FowlBreed.MUSCOVY, dev.farmings.genetics.PoultryLocus.MUSCOVY_BLUE, 1, 0},
+					{dev.farmings.husbandry.poultry.FowlBreed.MUSCOVY, dev.farmings.genetics.PoultryLocus.MUSCOVY_BLUE, 1, 1},
+					{dev.farmings.husbandry.poultry.FowlBreed.MUSCOVY, dev.farmings.genetics.PoultryLocus.MUSCOVY_LAVENDER, 1, 1},
+					{dev.farmings.husbandry.poultry.FowlBreed.MUSCOVY, dev.farmings.genetics.PoultryLocus.MUSCOVY_CHOCOLATE, 1, 1},
+					{dev.farmings.husbandry.poultry.FowlBreed.COTURNIX, dev.farmings.genetics.PoultryLocus.QUAIL_FAWN, 1, 0},
+					{dev.farmings.husbandry.poultry.FowlBreed.COTURNIX, dev.farmings.genetics.PoultryLocus.QUAIL_FAWN, 1, 1},
+					{dev.farmings.husbandry.poultry.FowlBreed.COTURNIX, dev.farmings.genetics.PoultryLocus.QUAIL_BROWN, 1, 0},
+					{dev.farmings.husbandry.poultry.FowlBreed.COTURNIX, dev.farmings.genetics.PoultryLocus.QUAIL_BROWN, 1, 1},
+					{dev.farmings.husbandry.poultry.FowlBreed.COTURNIX, dev.farmings.genetics.PoultryLocus.QUAIL_WHITE, 1, 1}};
+			for (int i = 0; i < birds.length; i++) {
+				var b = (dev.farmings.husbandry.poultry.FowlBreed) birds[i][0];
+				var f = FarmingsEntities.fowl(b.species).create(level, EntitySpawnReason.COMMAND);
+				f.initFounder(b, Sex.MALE, 900 + i, b.firstEggDays + 30, level.getGameTime());
+				java.util.EnumMap<dev.farmings.genetics.PoultryLocus, int[]> m = new java.util.EnumMap<>(f.genes().alleles());
+				for (dev.farmings.genetics.PoultryLocus l : dev.farmings.genetics.PoultryLocus.values()) {
+					if (l.ordinal() > dev.farmings.genetics.PoultryLocus.SHELL.ordinal()) {
+						m.put(l, new int[] {0, 0});
+					}
+				}
+				m.put((dev.farmings.genetics.PoultryLocus) birds[i][1], new int[] {(int) birds[i][2], (int) birds[i][3]});
+				f.setGenes(new dev.farmings.genetics.PoultryGenes(m));
+				f.setNoAi(true);
+				f.setCustomName(net.minecraft.network.chat.Component.literal(f.look().plumage().name().toLowerCase(java.util.Locale.ROOT).replace('_', ' ')));
+				f.setCustomNameVisible(true);
+				f.snapTo(i < 4 ? 62.5 + i * 2.5 : 72.5 + (i - 4) * 1.5, y, 0.5, 180, 0);
+				level.addFreshEntity(f);
+			}
+		});
+		server.runCommand("tp @p 70.5 " + (y + 2) + " -5.5 0 15");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-loose-plumage");
+		// 4. a rotten egg thrown at a cow: it breaks and she gets Nausea
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 100, 0, y, 8, 6, 6);
+			var cow = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+			cow.setBreedForDisplay(CattleBreed.HOLSTEIN, Sex.FEMALE, CattleBreed.HOLSTEIN.matureWeightKg, false);
+			cow.setNoAi(true);
+			cow.snapTo(104.5, y, 0.5, 90, 0);
+			level.addFreshEntity(cow);
+		});
+		server.runCommand("tp @p 100.5 " + (y + 2) + " -6.5 0 15");
+		context.waitTicks(30);
+		Filming egg = context.computeOnClient(client -> Filming.start(client, "rotten-egg-thrown"));
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			var e = new dev.farmings.entity.ThrownRottenEgg(FarmingsEntities.ROTTEN_EGG, level);
+			e.setPos(96.5, y + 1.5, 0.5);
+			e.shoot(1, 0.12, 0, 1.0F, 0);
+			level.addFreshEntity(e);
+		});
+		context.waitTicks(6);
+		context.takeScreenshot("farmings-loose-egg-flying");
+		context.waitTicks(30);
+		actionbar(server, server.computeOnServer(srv -> srv.overworld().getEntitiesOfClass(dev.farmings.entity.CattleEntity.class,
+				new net.minecraft.world.phys.AABB(104, y, 0, 105, y + 2, 1).inflate(2)).stream().findFirst()
+				.map(c -> c.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA) ? "The cow has Nausea from the rotten egg" : "missed").orElse("no cow")));
+		context.waitTicks(10);
+		context.takeScreenshot("farmings-loose-egg-hit");
+		egg.stop();
+	}
+
 	/** A belt over a rise (docs/conveyors.md, "Slopes"), with grain and hay riding it (loose ends, 2026-11-11). */
 	private static void belts(ClientGameTestContext context, TestServerContext server, int y) {
 		server.runOnServer(srv -> {
@@ -1841,7 +1984,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		server.runOnServer(srv -> {
 			ServerLevel level = srv.overworld();
 			clear(level, 23, -6, y, 6, 4, 5);
-			level.setBlockAndUpdate(new BlockPos(20, y, -6), dev.farmings.feedmill.FeedMillBlocks.TMR_MIXER.defaultBlockState());
+			bigPart(level, dev.farmings.feedmill.FeedMillBlocks.TMR_MIXER, new BlockPos(19, y, -6));     // 2 x 2 x 2: x 19-20, z -6..-5
 			for (int x = 21; x <= 24; x++) {
 				level.setBlockAndUpdate(new BlockPos(x, y, -6), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorPieceBlock.FACING, Direction.EAST));
 			}
@@ -1860,7 +2003,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.waitTicks(40);
 		Filming mix = context.computeOnClient(client -> Filming.start(client, "mixer-feeds-barn"));
 		server.runOnServer(srv -> {
-			var m = (dev.farmings.feedmill.FeedMachineEntity) srv.overworld().getBlockEntity(new BlockPos(20, y, -6));
+			var m = (dev.farmings.feedmill.FeedMachineEntity) srv.overworld().getBlockEntity(new BlockPos(19, y, -6));
 			m.forceRunning(true);
 			m.accept(new ItemStack(dev.farmings.crops.FieldCrops.CORN_SILAGE, 6));
 			m.accept(new ItemStack(dev.farmings.crops.FieldCrops.ALFALFA_HAY, 20));
@@ -1872,7 +2015,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			context.waitTicks(20);
 			actionbar(server, server.computeOnServer(srv -> {
 				ServerLevel level = srv.overworld();
-				var m = (dev.farmings.feedmill.FeedMachineEntity) level.getBlockEntity(new BlockPos(20, y, -6));
+				var m = (dev.farmings.feedmill.FeedMachineEntity) level.getBlockEntity(new BlockPos(19, y, -6));
 				var f = (FeederEntity) level.getBlockEntity(new BlockPos(26, y, -6));
 				var a = f.analysis();
 				return String.format(java.util.Locale.ROOT, "%s | feeder %.0f kg DM, CP %.1f%%, NDF %.1f%%, TDN %.1f%%",
@@ -1924,19 +2067,30 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		server.runOnServer(srv -> {
 			ServerLevel level = srv.overworld();
 			clear(level, gx + 5, gz - 1, y, 9, 7, 8);
-			level.setBlockAndUpdate(new BlockPos(gx + 3, y, gz - 3), dev.farmings.digester.DigesterBlocks.DIGESTER_TANK.defaultBlockState());
-			level.setBlockAndUpdate(new BlockPos(gx + 3, y + 1, gz - 3), dev.farmings.digester.DigesterBlocks.GAS_HOLDER.defaultBlockState());
-			level.setBlockAndUpdate(new BlockPos(gx + 2, y, gz - 3), dev.farmings.digester.DigesterBlocks.FEED_PIT.defaultBlockState());
-			level.setBlockAndUpdate(new BlockPos(gx + 4, y, gz - 3), dev.farmings.digester.DigesterBlocks.DIGESTATE_TANK.defaultBlockState());
-			level.setBlockAndUpdate(new BlockPos(gx + 5, y, gz - 3), dev.farmings.digester.DigesterBlocks.SCREW_PRESS.defaultBlockState());
+			// the full-size tank: x gx+2..gx+4, y..y+2, z gz-4..gz-2 (main cell at the bottom centre)
+			bigPart(level, dev.farmings.digester.DigesterBlocks.DIGESTER_TANK, new BlockPos(gx + 3, y, gz - 3));
+			level.setBlockAndUpdate(new BlockPos(gx + 3, y + 3, gz - 3), dev.farmings.digester.DigesterBlocks.GAS_HOLDER.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 1, y, gz - 3), dev.farmings.digester.DigesterBlocks.FEED_PIT.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 5, y, gz - 3), dev.farmings.digester.DigesterBlocks.DIGESTATE_TANK.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(gx + 6, y, gz - 3), dev.farmings.digester.DigesterBlocks.SCREW_PRESS.defaultBlockState());
 			var d = (dev.farmings.digester.DigesterEntity) level.getBlockEntity(new BlockPos(gx + 3, y, gz - 3));
-			d.forceRunning(true);
 			d.digester().feed(20_000);
+			d.forceRunning(true);
 			d.step(20);
+			d.forceRunning(false);     // from here the agitator runs on the gas set's power: a real load on it
 			var gasLine = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(dev.wildcatter.Wildcatter.id("gas_line"));
-			level.setBlockAndUpdate(new BlockPos(gx + 3, y + 1, gz - 2), gasLine.defaultBlockState());
-			level.setBlockAndUpdate(new BlockPos(gx + 3, y, gz - 2), gasLine.defaultBlockState());
-			level.setBlockAndUpdate(new BlockPos(gx + 3, y, gz - 1), gasLine.defaultBlockState());
+			for (BlockPos p : new BlockPos[] {new BlockPos(gx + 3, y + 3, gz - 2), new BlockPos(gx + 3, y + 3, gz - 1), new BlockPos(gx + 3, y + 2, gz - 1),
+					new BlockPos(gx + 3, y + 1, gz - 1), new BlockPos(gx + 3, y, gz - 1)}) {
+				level.setBlockAndUpdate(p, gasLine.defaultBlockState());     // from the holder's side, down to the engine's north side
+			}
+			// 480 V cable from the gas set's panel to the tank's east side (Wildcatter's own wiring, as its cracker_pump scene)
+			var cable = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(dev.wildcatter.Wildcatter.id("cable_industrial"));
+			for (int z = gz; z >= gz - 4; z--) {
+				level.setBlockAndUpdate(new BlockPos(gx + 9, y, z), cable.defaultBlockState());
+			}
+			for (int x = gx + 8; x >= gx + 5; x--) {
+				level.setBlockAndUpdate(new BlockPos(x, y, gz - 4), cable.defaultBlockState());
+			}
 			dev.wildcatter.block.GensetSkid.build(level, panelAt, Direction.NORTH, true);
 		});
 		server.runCommand("tp @p " + (gx + 5.5) + " " + (y + 5) + " " + (gz + 7.5) + " 170 28");
@@ -1952,7 +2106,8 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 				ServerLevel level = srv.overworld();
 				var p = (dev.wildcatter.block.GensetControlPanelBlockEntity) level.getBlockEntity(panelAt);
 				var d = (dev.farmings.digester.DigesterEntity) level.getBlockEntity(new BlockPos(gx + 3, y, gz - 3));
-				return String.format(java.util.Locale.ROOT, "Gas set burned %.2f m3 of farm biogas; holder %.1f m3", p.biogasBurned(), d.digester().gasM3());
+				return String.format(java.util.Locale.ROOT, "Gas set burned %.2f m3 of farm biogas; holder %.1f m3; agitator %s", p.biogasBurned(), d.digester().gasM3(),
+						d.powered() ? "ON (on the set's power)" : "off");
 			}));
 			if (i == 14) {
 				context.takeScreenshot("farmings-fields-genset-running");
@@ -1987,6 +2142,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("belts".equals(only)) {
 				context.waitTicks(200);
 				belts(context, server, y);
+				return;
+			}
+			if ("looseends".equals(only)) {
+				context.waitTicks(200);
+				looseEnds(context, server, y);
 				return;
 			}
 			if ("poultryfarm".equals(only)) {
