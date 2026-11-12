@@ -835,8 +835,8 @@ public class SheepEntity extends Animal implements Wild.Animal {
 			double z = p.getZ() + 0.5;
 			double dx = sheep.getX() - x;
 			double dz = sheep.getZ() - z;
-			// a home or a pasture spot is an area, not a point: within two blocks she grazes and wanders a little (vanilla strolls)
-			double reach = sheep.target != null ? 0.36 : 4.0;
+			// within a block of her pen cell she is home (two blocks let a sheep stop in the gate, a block outside the pen)
+			double reach = sheep.target != null ? 0.36 : 1.0;
 			if (dx * dx + dz * dz > reach) {
 				sheep.getNavigation().moveTo(x, p.getY() + 0.1, z, 1.0);
 			} else if (sheep.target != null) {

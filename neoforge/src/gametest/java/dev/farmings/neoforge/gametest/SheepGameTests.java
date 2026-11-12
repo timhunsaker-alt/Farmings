@@ -299,19 +299,12 @@ final class SheepGameTests {
 		SheepEntity b = adult(helper, SheepBreed.MERINO, Sex.FEMALE, 62L, new BlockPos(2, 1, 1));
 		a.assignShed(c, null);       // scenes run side by side: tie these sheep to this scene's shed
 		b.assignShed(c, null);
-		helper.runAfterDelay(500, () -> {
-			for (SheepEntity s : List.of(a, b)) {
-				double x = s.getX() - helper.absolutePos(BlockPos.ZERO).getX();
-				helper.assertTrue(x > 5.5, Component.literal("by day she should be out on the pasture, at x " + x + "; " + shed.readout()));
-			}
+		java.util.function.ToDoubleFunction<SheepEntity> x = s -> s.getX() - helper.absolutePos(BlockPos.ZERO).getX();
+		TamingGameTests.waitFor(helper, 0, 600, () -> x.applyAsDouble(a) > 5.6 && x.applyAsDouble(b) > 5.6,
+				() -> "by day the flock should be out on the pasture, at x " + x.applyAsDouble(a) + " and " + x.applyAsDouble(b) + "; " + shed.readout(), () -> {
 			shed.forceDayForTest(false);
-			helper.runAfterDelay(500, () -> {
-				for (SheepEntity s : List.of(a, b)) {
-					double x = s.getX() - helper.absolutePos(BlockPos.ZERO).getX();
-					helper.assertTrue(x < 5.5, Component.literal("at night she should be back in the pen, at x " + x));
-				}
-				helper.succeed();
-			});
+			TamingGameTests.waitFor(helper, 0, 550, () -> x.applyAsDouble(a) < 5.0 && x.applyAsDouble(b) < 5.0,
+					() -> "at night the flock should be back in the pen, at x " + x.applyAsDouble(a) + " and " + x.applyAsDouble(b), helper::succeed);
 		});
 	}
 
@@ -327,15 +320,11 @@ final class SheepGameTests {
 		ewe.assignShed(c, null);
 		ram.assignShed(c, null);
 		ewe.startHeatForDisplay();
-		ewe.conceive(ram.genome(), ram.genes(), level.getGameTime());
+		helper.assertTrue(ewe.conceive(ram.genome(), ram.genes(), level.getGameTime()), Component.literal("she should conceive: in heat " + ewe.inHeat() + ", wild " + ewe.isWild()));
 		ewe.setDueInForTest(2);
-		helper.runAfterDelay(200, () -> {
-			BlockPos jug = helper.absolutePos(new BlockPos(5, 1, 1));
-			helper.assertTrue(jug.equals(ewe.home()), Component.literal("she should be given the lambing pen " + jug + ", home " + ewe.home() + ", shed " + ewe.shedController() + " (mine " + c + "), due in "
-					+ ewe.daysToLambing() + " days; " + shed.readout()));
-			helper.assertTrue(ewe.blockPosition().distManhattan(jug) <= 2, Component.literal("and walk to it, at " + ewe.blockPosition()));
-			helper.succeed();
-		});
+		BlockPos jug = helper.absolutePos(new BlockPos(5, 1, 1));
+		TamingGameTests.waitFor(helper, 0, 1000, () -> jug.equals(ewe.home()) && ewe.blockPosition().distManhattan(jug) <= 1,
+				() -> "she should be given the lambing pen " + jug + " and walk to it: home " + ewe.home() + ", at " + ewe.blockPosition() + ", pregnant " + ewe.pregnant() + ", due in " + ewe.daysToLambing() + "; " + shed.readout(), helper::succeed);
 	}
 
 	/** On pasture a sheep grazes: grass turns to dirt and she is fed with no hay in the racks. */

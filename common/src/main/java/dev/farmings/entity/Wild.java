@@ -157,6 +157,9 @@ public final class Wild {
 				return false;
 			}
 			Vec3 away = DefaultRandomPos.getPosAway(mob, 16, 7, from.position());
+			if (away == null) {
+				away = DefaultRandomPos.getPosAway(mob, 8, 4, from.position());     // hemmed in: a shorter run will do
+			}
 			return away != null && mob.getNavigation().moveTo(away.x, away.y, away.z, 1.3);
 		}
 

@@ -300,10 +300,15 @@ final class TamingGameTests {
 
 	/** Checks every 10 ticks until the condition holds, then runs next; fails after limit ticks. */
 	static void waitFor(GameTestHelper helper, int waited, int limit, java.util.function.BooleanSupplier cond, String what, Runnable next) {
+		waitFor(helper, waited, limit, cond, () -> what, next);
+	}
+
+	/** As above, with the failure message built when it fails, so it says where things stood at the end. */
+	static void waitFor(GameTestHelper helper, int waited, int limit, java.util.function.BooleanSupplier cond, java.util.function.Supplier<String> what, Runnable next) {
 		if (cond.getAsBoolean()) {
 			next.run();
 		} else if (waited >= limit) {
-			helper.fail(Component.literal(what + " (not after " + limit + " ticks)"));
+			helper.fail(Component.literal(what.get() + " (not after " + limit + " ticks)"));
 		} else {
 			helper.runAfterDelay(10, () -> waitFor(helper, waited + 10, limit, cond, what, next));
 		}

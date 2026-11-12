@@ -256,8 +256,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - **Phase 3 proposals with no source:** see the *(proposed)*, NOT FOUND and TO VERIFY marks in `docs/crops.md`, `docs/conveyors.md` and
   the five Phase 3 multiblock docs (among them the gantry span, bin and rake/spreader power, the gas holder and digestate tank sizes,
   the press motor and split, ration score shapes and floors, and fish meal and limestone analyses).
-- **Flaky game tests:** two sheep walking scenes (ewe_moves_to_lambing_pen, flock_goes_to_pasture_and_back) and fowl_follows_seeds each failed now and
-  then in full runs (2026-11-11) and passed on rerun.
+- ~~**Flaky game tests**~~ Fixed 2026-11-11: shed scenes stand 64 blocks apart (a shed takes in unhoused sheep within 48), the walking
+  scenes poll instead of checking once, a sheep is home only within a block of her pen cell (two let her stop in the gate), and the fowl
+  scene has room to flee (the flee goal also tries a shorter run when hemmed in). Three full runs in a row passed.
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.

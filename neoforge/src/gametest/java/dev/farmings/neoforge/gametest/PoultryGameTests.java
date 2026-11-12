@@ -180,12 +180,12 @@ final class PoultryGameTests {
 
 	/** A wild chicken follows wheat seeds and keeps away from empty hands. */
 	static void fowlFollowsSeeds(GameTestHelper helper) {
-		TamingGameTests.field(helper, 12);
-		FowlEntity hen = adult(helper, FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE, 11L, new BlockPos(2, 1, 6));
+		TamingGameTests.field(helper, 32);     // room to flee: the flee point is up to 16 blocks away, and must be on solid ground
+		FowlEntity hen = adult(helper, FowlBreed.RHODE_ISLAND_RED, Sex.FEMALE, 11L, new BlockPos(18, 1, 16));
 		hen.setWild(true);
 		net.minecraft.server.level.ServerPlayer p = helper.makeMockServerPlayerInLevel();
 		p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
-		BlockPos stand = helper.absolutePos(new BlockPos(8, 1, 6));
+		BlockPos stand = helper.absolutePos(new BlockPos(24, 1, 16));
 		p.snapTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, 90, 0);
 		p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.WHEAT_SEEDS));
 		double start = hen.distanceTo(p);

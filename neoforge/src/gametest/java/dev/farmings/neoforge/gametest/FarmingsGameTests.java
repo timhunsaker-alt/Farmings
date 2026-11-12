@@ -233,9 +233,18 @@ public class FarmingsGameTests {
 				}
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
 						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("flock_") || scene.startsWith("ewe_moves") || scene.startsWith("sheep_shorn") || scene.startsWith("fleece_to_yarn") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") || scene.startsWith("hopper") || scene.startsWith("wild_follows") || scene.startsWith("fowl_follows") || scene.startsWith("gantry_runs") || scene.startsWith("silo_") || scene.startsWith("genset_burns") || scene.startsWith("belt_feeds") || scene.startsWith("corral_bait") ? 1200 : 200, 1, true,
-								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, 40)));
+								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, padding(scene))));
 			}
 		});
+	}
+
+	/**
+	 * Space around a scene. A sheep shed takes in any tame, unhoused sheep within 48 blocks, so shed scenes stand 64 apart, or one scene's shed
+	 * claims the next scene's sheep (a cause of the flaky walking scenes, 2026-11-11).
+	 */
+	private static int padding(String scene) {
+		return scene.startsWith("flock_") || scene.startsWith("ewe_") || scene.startsWith("shed") || scene.startsWith("sheep") || scene.startsWith("lamb")
+				|| scene.startsWith("graz") || scene.startsWith("fleece") || scene.startsWith("shear") || scene.startsWith("ram") ? 64 : 40;
 	}
 
 	/** How many running scenes hold each forced chunk: a chunk is let go when the last scene using it ends. */
