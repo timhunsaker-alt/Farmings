@@ -45,4 +45,12 @@ public class SwathBlock extends Block {
 	protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
 		return net.minecraft.world.phys.shapes.Shapes.empty();
 	}
+
+	/** A hoe rakes the swath, then gathers the dry windrow (field-gantry.md, "Hand raking"). */
+	@Override
+	protected net.minecraft.world.InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, net.minecraft.world.level.Level level,
+			BlockPos pos, net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.BlockHitResult hit) {
+		net.minecraft.world.InteractionResult r = dev.farmings.gantry.HandRake.use(stack, state, level, pos, player, hand);
+		return r == net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND ? super.useItemOn(stack, state, level, pos, player, hand, hit) : r;
+	}
 }

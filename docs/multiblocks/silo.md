@@ -62,3 +62,7 @@ The 10.5% taken at filling is replaced by Muck's phases, each at its own time:
   VERIFY**: snippet). Muck's range is 1-10% for all storage.
 - **Feed-out:** loss when unloading is not modelled.
 - **Readout:** "lost so far: X kg DM".
+
+### Built, 2026-11-11 (loose ends): losses over time
+- **Losses:** 2.5% is taken at fill. Fermenting and storage losses are taken once a second, and the readout shows "lost so far".
+- **Game test:** silo_loss_over_storage.

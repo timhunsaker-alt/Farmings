@@ -35,6 +35,8 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 	private @Nullable Kind kind;
 	private double dmKg;
 	private long lastFill = Long.MIN_VALUE;
+	/** Dry matter lost so far: filling, fermenting and storage (silo.md, "losses over time"). */
+	private double lostKg;
 	private int cooldown;
 	private boolean forced;
 	private int unloaded;
@@ -71,9 +73,24 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 		return level != null && lastFill != Long.MIN_VALUE && level.getGameTime() - lastFill < Silage.fermentTicks();
 	}
 
-	/** For game tests: the last fill was this many more real days ago. */
+	/** For game tests: the last fill was this many more real days ago, with that time's losses taken. */
 	public void ageForTest(double days) {
+		if (lastFill != Long.MIN_VALUE && level != null) {
+			double age = dev.farmings.husbandry.TimeScale.ticksToRealDays(level.getGameTime() - lastFill);
+			lose(Silage.lossBetween(age, age + days));
+		}
 		lastFill -= dev.farmings.husbandry.TimeScale.realDaysToTicks(days);
+	}
+
+	public double lostKg() {
+		return lostKg;
+	}
+
+	private void lose(double share) {
+		double l = dmKg * share;
+		dmKg -= l;
+		lostKg += l;
+		setChanged();
 	}
 
 	/** Blown in: chopped corn or chopped alfalfa, one kind at a time, up to the silo's room. Returns the rest. */
@@ -91,6 +108,7 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 		}
 		kind = k;
 		dmKg += Silage.kept(n * each);
+		lostKg += n * each - Silage.kept(n * each);
 		lastFill = level.getGameTime();
 		setChanged();
 		return stack.copyWithCount(stack.getCount() - n);
@@ -105,6 +123,11 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 	}
 
 	public void serverTick(ServerLevel level) {
+		long now = level.getGameTime();
+		if (now % 20 == 0 && dmKg > 0 && lastFill != Long.MIN_VALUE) {
+			double age = dev.farmings.husbandry.TimeScale.ticksToRealDays(now - lastFill);
+			lose(Silage.lossBetween(age - dev.farmings.husbandry.TimeScale.ticksToRealDays(20), age));
+		}
 		if (--cooldown > 0 || kind == null || !powered() || fermenting() || dmKg < silageDm() - 1e-9) {
 			return;
 		}
@@ -141,6 +164,7 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 			double left = dev.farmings.husbandry.TimeScale.ticksToRealDays(Silage.fermentTicks() - (level.getGameTime() - lastFill));
 			b.append(String.format(Locale.ROOT, ", FERMENTING (%.1f days to go)", left));
 		}
+		b.append(String.format(Locale.ROOT, ", lost so far %.0f kg DM", lostKg));
 		b.append(powered() ? ", unloader on" : ", unloader NO POWER").append(", ").append(unloaded).append(" unloaded");
 		return b.toString();
 	}
@@ -170,6 +194,7 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 		super.saveAdditional(out);
 		out.putString("Kind", kind == null ? "" : kind.name());
 		out.putDouble("DmKg", dmKg);
+		out.putDouble("LostKg", lostKg);
 		out.putLong("LastFill", lastFill);
 		out.putInt("Unloaded", unloaded);
 	}
@@ -180,6 +205,7 @@ public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable 
 		String k = in.getStringOr("Kind", "");
 		kind = k.isEmpty() ? null : Kind.valueOf(k);
 		dmKg = in.getDoubleOr("DmKg", 0);
+		lostKg = in.getDoubleOr("LostKg", 0);
 		lastFill = in.getLongOr("LastFill", Long.MIN_VALUE);
 		unloaded = in.getIntOr("Unloaded", 0);
 	}

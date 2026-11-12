@@ -97,5 +97,15 @@ the span as the working width.
 - **The lift (the TBM pattern):** when the gantry starts a move it lifts into one `field_gantry` entity carrying its block states. It
   glides along the rails at the tool's speed, working each row as its beam passes. When it stops (parked, done, unloading, out of
   power, or a full bin), it sets its blocks down again. Its state is saved either way.
-- **Hand raking (now built):** a hoe used on a swath that has dried 1 real day makes a windrow. Breaking a windrow that has dried 1.5
-  real days drops its hay as loose hay items (10 kg each) *(proposed)*.
+- **Hand raking (now built):**
+  - A hoe used on a swath that has dried 1 real day makes a windrow.
+  - The hoe used again on a windrow that has dried 1.5 real days gathers its hay as loose hay items (10 kg each) *(proposed)*.
+  - The hoe gathers rather than breaking the block, because breaking it would break the regrowing plant under it.
+
+### Built, 2026-11-11 (loose ends): hand raking
+- **Code:** `gantry/HandRake`.
+- **The drying clock:** it is the gantry row's, and the hoe asks whichever loaded cab is timing that row. A swath no loaded cab times
+  counts as dry.
+- **Mass:** a block's cut that is lighter than an item drops one item by its share, so the mass holds on average.
+- **The hoe:** it wears once for each stroke that works.
+- **Game test:** hoe_rakes_swath.

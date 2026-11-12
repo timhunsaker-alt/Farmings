@@ -68,6 +68,7 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 
 	public GantryCabEntity(BlockPos pos, BlockState state) {
 		super(GantryBlocks.CAB_ENTITY, pos, state);
+		LOADED.add(this);     // a cab moved a cell is a new block entity: known at once, not at its first tick
 	}
 
 	// ---- the structure ----
@@ -275,7 +276,48 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 
 	// ---- the clock ----
 
+	/** Cabs in loaded chunks, so a hand rake can ask how long a row has dried (field-gantry.md, "Hand raking"). */
+	private static final java.util.Set<GantryCabEntity> LOADED = java.util.Collections.newSetFromMap(new java.util.WeakHashMap<>());
+
+	@Override
+	public void setRemoved() {
+		super.setRemoved();
+		LOADED.remove(this);
+	}
+
+	/** Real days the gantry row through {@code p} has dried, or -1 if no loaded cab is drying it. */
+	public double dryingAt(BlockPos p) {
+		Frame f = frame();
+		if (f == null || drying.isEmpty()) {
+			return -1;
+		}
+		List<BlockPos> row = f.row();
+		BlockPos first = row.get(0);
+		int k = (p.getX() - first.getX()) * forward.getStepX() + (p.getZ() - first.getZ()) * forward.getStepZ();
+		BlockPos shifted = p.relative(forward, -k);
+		for (BlockPos r : row) {
+			if (r.getX() == shifted.getX() && r.getZ() == shifted.getZ() && Math.abs(r.getY() - shifted.getY()) <= 1) {
+				return drying.getOrDefault(step + k, -1.0);
+			}
+		}
+		return -1;
+	}
+
+	/** The drying of the row through {@code p} by any loaded cab, or -1. */
+	public static double dryingNear(net.minecraft.world.level.Level level, BlockPos p) {
+		for (GantryCabEntity c : LOADED) {
+			if (c.level == level && !c.isRemoved()) {
+				double d = c.dryingAt(p);
+				if (d >= 0) {
+					return d;
+				}
+			}
+		}
+		return -1;
+	}
+
 	public void serverTick(ServerLevel level) {
+		LOADED.add(this);
 		if (!level.isRaining()) {
 			double day = TimeScale.ticksToRealDays(1);
 			drying.replaceAll((k, v) -> v + day);

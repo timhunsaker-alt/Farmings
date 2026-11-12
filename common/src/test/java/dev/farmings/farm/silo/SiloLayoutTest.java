@@ -36,7 +36,11 @@ class SiloLayoutTest {
 	void silageFigures() {
 		// a 3 x 3 x 20 silo: 20 m3 at 240 kg DM = 4.8 t DM (silo.md's example)
 		assertEquals(4800, Silage.capacityKgDm(20), 1e-9);
-		assertEquals(895, Silage.kept(1000), 1e-9);
+		assertEquals(975, Silage.kept(1000), 1e-9);     // filling and effluent at fill; fermenting and storage come later
+		assertEquals(0.025, Silage.lossBetween(0, Silage.FERMENT_DAYS), 1e-12);
+		assertEquals(0.0125, Silage.lossBetween(0, Silage.FERMENT_DAYS / 2), 1e-12);
+		assertEquals(0.043, Silage.lossBetween(Silage.FERMENT_DAYS, Silage.FERMENT_DAYS + 730), 0.001);
+		assertEquals(0, Silage.lossBetween(5, 5), 0);
 		assertEquals(1.4, TimeScale.realDaysToGameDays(Silage.FERMENT_DAYS), 1e-9);
 		assertEquals(721, Silage.CORN_DENSITY, 1);
 		assertEquals(412, Silage.OAT_DENSITY, 1);

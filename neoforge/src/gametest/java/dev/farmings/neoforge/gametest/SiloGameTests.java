@@ -33,7 +33,7 @@ final class SiloGameTests {
 		helper.setBlock(new BlockPos(3, h + 1, 3), roof);
 	}
 
-	/** Chopped corn blown in loses 10.5% of its dry matter, ferments 21 days, then comes out as 25 kg corn silage items. */
+	/** Chopped corn blown in loses 2.5% of its dry matter at filling, ferments 21 days, then comes out as 25 kg corn silage items. */
 	static void siloFermentsAndUnloads(GameTestHelper helper) {
 		ring(helper, SiloBlocks.SILO_STAVE, SiloBlocks.SILO_ROOF, 6);
 		helper.setBlock(new BlockPos(1, 1, 3), SiloBlocks.FORAGE_BLOWER);
@@ -78,5 +78,27 @@ final class SiloGameTests {
 		helper.setBlock(new BlockPos(0, 1, 3), Blocks.CHEST);
 		TamingGameTests.waitFor(helper, 0, 200, () -> ((ChestBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(0, 1, 3)))).countItem(FieldCrops.OAT_GRAIN) > 0,
 				"the hopper lets grain out: " + bin.readout(), helper::succeed);
+	}
+
+	/** Losses over time (silo.md, "losses over time"): 2.5% at fill, 2.5% over fermenting, then about 4.3% over two years in storage. */
+	static void siloLossOverStorage(GameTestHelper helper) {
+		ring(helper, SiloBlocks.SILO_STAVE, SiloBlocks.SILO_ROOF, 6);
+		helper.setBlock(new BlockPos(1, 1, 3), SiloBlocks.FORAGE_BLOWER);
+		helper.setBlock(new BlockPos(5, 1, 3), SiloBlocks.SILO_UNLOADER);
+		var level = helper.getLevel();
+		BlowerEntity blower = (BlowerEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(1, 1, 3)));
+		SiloEntity silo = (SiloEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 3)));
+		blower.forceRunning(true);
+		silo.forceRunning(false);
+		blower.accept(new ItemStack(FieldCrops.CHOPPED_CORN, 20));
+		double in = 20 * 25 * 0.35;
+		helper.assertTrue(Math.abs(silo.dmKg() - in * 0.975) < 1e-6, Component.literal("2.5% at filling: " + silo.readout()));
+		silo.ageForTest(21);
+		helper.assertTrue(Math.abs(silo.dmKg() - in * 0.975 * 0.975) < 0.05, Component.literal("2.5% more over fermenting: " + silo.readout()));
+		double fermented = silo.dmKg();
+		silo.ageForTest(730);
+		helper.assertTrue(Math.abs(silo.dmKg() / fermented - (1 - 0.043)) < 0.002, Component.literal("about 4.3% over two years stored: " + silo.readout()));
+		helper.assertTrue(Math.abs(silo.lostKg() + silo.dmKg() - in) < 1e-6 && silo.readout().contains("lost so far"), Component.literal("what's lost is counted: " + silo.readout()));
+		helper.succeed();
 	}
 }

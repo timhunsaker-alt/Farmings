@@ -163,4 +163,29 @@ final class GantryGameTests {
 		}
 		helper.runAfterDelay(10, () -> poll(helper, waited + 10));
 	}
+
+	/** A hoe rakes a swath that has dried a day and gathers a windrow dried a day and a half, on the gantry row's own clock. */
+	static void hoeRakesSwath(GameTestHelper helper) {
+		build(helper);
+		cells(helper, (crop, ground) -> {
+			helper.setBlock(ground, Blocks.FARMLAND);
+			helper.setBlock(crop, FieldCrops.block(FieldCrop.ALFALFA).defaultBlockState().setValue(CropBlock.AGE, 7));
+		});
+		run(helper, GantryTool.MOWER);
+		var level = helper.getLevel();
+		BlockPos p = helper.absolutePos(new BlockPos(4, 1, 3));
+		net.minecraft.world.entity.player.Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+		ItemStack hoe = new ItemStack(net.minecraft.world.item.Items.IRON_HOE);
+		java.util.function.Supplier<net.minecraft.world.InteractionResult> rake = () -> dev.farmings.gantry.HandRake.use(hoe, level.getBlockState(p), level, p, player,
+				net.minecraft.world.InteractionHand.MAIN_HAND);
+		helper.assertTrue(rake.get() == net.minecraft.world.InteractionResult.FAIL && level.getBlockState(p).getValue(PerennialCropBlock.SWATH) == 1,
+				Component.literal("too wet to rake on the day it was cut"));
+		cab(helper).dryForTest(1.0);
+		helper.assertTrue(rake.get().consumesAction() && level.getBlockState(p).getValue(PerennialCropBlock.SWATH) == 2, Component.literal("raked by hand after a day"));
+		helper.assertTrue(rake.get() == net.minecraft.world.InteractionResult.FAIL, Component.literal("not dry enough to gather yet"));
+		cab(helper).dryForTest(0.5);
+		helper.assertTrue(rake.get().consumesAction() && level.getBlockState(p).getValue(PerennialCropBlock.SWATH) == 0, Component.literal("gathered as loose hay"));
+		helper.assertTrue(hoe.getDamageValue() == 2, Component.literal("the hoe wears once a stroke that works: " + hoe.getDamageValue()));
+		helper.succeed();
+	}
 }
