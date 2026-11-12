@@ -8,7 +8,7 @@
 | Silo stave | `silo_stave` | Concrete stave wall, laid as a ring of 3 x 3 or 5 x 5 with a hollow middle, up to **24 blocks** high *(proposed)* |
 | Silo roof | `silo_roof` | Caps the ring |
 | Forage blower | `forage_blower` | At the foot. Takes chopped forage from a belt or hopper and blows it up the fill pipe. **1.3 kWh per tonne of corn silage, 1.7 for haycrop** (Purdue, [Buckmaster](https://engineering.purdue.edu/ABE/People/Papers/dennis.buckmaster.1/equipment_matching.pdf)); its motor is **15 kW** *(proposed, inside the paper's matching range)* |
-| Silo unloader | `silo_unloader` | At the foot. Unloads silage to a belt, hopper or chest. **18.6 kW (25 hp)**, up to **400 lb/min (181 kg/min)** of haylage (Harvestore XL bottom unloader, **TO VERIFY**: maker's sheet, [CST](https://www.cstindustries.com/wp-content/uploads/Harvestore-XL-Unloader.pdf)) |
+| Silo unloader | `silo_unloader` | At the foot. Unloads silage to a belt, hopper or chest. **22.4 kW (30 hp)** (was 18.6 kW, 25 hp: that is the smaller XL 200), up to **400 lb/min (181 kg/min)** of haylage. Harvestore XL 400 bottom unloader, maker's sheet ([CST](https://www.cstindustries.com/wp-content/uploads/Harvestore-XL-Unloader.pdf)): "capable of moving up to 400 pounds (181 kilograms) per minute of 55 percent moisture haylage"; its control "powers a 30 horsepower 3-phase motor" |
 
 - **Capacity:**
   - the hollow volume x **240 kg DM per m³**, the packing target of 15 lb DM/ft³ ([UW-Madison](https://fyi.extension.wisc.edu/forage/files/2014/01/BunkDens3.pdf));
@@ -66,3 +66,8 @@ The 10.5% taken at filling is replaced by Muck's phases, each at its own time:
 ### Built, 2026-11-11 (loose ends): losses over time
 - **Losses:** 2.5% is taken at fill. Fermenting and storage losses are taken once a second, and the readout shows "lost so far".
 - **Game test:** silo_loss_over_storage.
+
+### Sourcing pass, 2026-11-12
+- Resolved: the unloader, from CST's sheet. Its motor is 30 hp, not 25.
+- Still weak: storage loss of 4.3% over 2 years (the ARS report could not be fetched). The stave and bin heights, no spoilage,
+  the loss simplification and wheat's density are game choices.

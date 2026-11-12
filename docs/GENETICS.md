@@ -156,7 +156,7 @@ New and changed loci:
 |---|---|---|---|---|
 | ROAN (KITLG) | + / R | incomplete dominance: R/+ is roan (white hairs through the colour), R/R is white | Shorthorn, Belgian Blue | [OMIA 001216](https://omia.org/OMIA001216/9913/) "Autosomal incomplete dominant"; Belgian Blue "black spotted (rBlrBl), blue spotted (rBlrWh) or white (rWhrWh)" ([Durkin 2012](https://www.gigauag.uliege.be/upload/docs/application/pdf/2019-05/durkin_nature_2012.pdf)) |
 | AGOUTI (ASIP) | A+ / Abr | Abr is dominant, and shows only on wild-type E+. ED and e/e hide it | Highland | "A separate gene controls brindling (either A+ or Abr) in combination with wildtype red (E+)"; "dominant black (ED) will mask all evidence of brindling as will homozygous recessive red" ([AHCA](http://highlandcattleusa.org/wp-content/uploads/2025/11/Color-Coat-Genetics-7-24-1.pdf)) |
-| DILUTION (PMEL) | + / Dc / Dh | semi-dominant: one Dh is dun, two are silver dun; Dc is the stronger Charolais allele | Charolais, Highland, Galloway, Simmental, Hereford, Japanese Brown | "the alleles at the Dilute locus are actually co-dominant" (AHCA); "semi-dominant color dilution" ([OMIA 001545](https://omia.org/OMIA001545/9913/)); Dc/Dh names **TO VERIFY** (UC Davis snippet) |
+| DILUTION (PMEL) | + / Dc / Dh | semi-dominant: one Dh is dun, two are silver dun; Dc is the stronger Charolais allele | Charolais, Highland, Galloway, Simmental, Hereford, Japanese Brown | "the alleles at the Dilute locus are actually co-dominant" (AHCA); "semi-dominant color dilution" ([OMIA 001545](https://omia.org/OMIA001545/9913/)); Dc/Dh names **TO VERIFY**: snippet, "All Charolais cattle possess the Dc variant"; Dh "found in the Highland, Galloway, Simmental, and American Hereford"; "inherited as an incompletely dominant trait" ([UC Davis VGL](https://vgl.ucdavis.edu/test/cattle-dilution); page refused the fetch. OMIA names no alleles and lists "Autosomal recessive") |
 
 - **The old DILUTION locus:** it stays, as the breed-shade modifier that gives the Jersey's fawn and the Brown Swiss's grey-brown
   *(unverified, as before)*. PMEL is a separate locus. Shown dilution is the old locus's value plus PMEL's strength (+ 0, Dh 1, Dc 2),
@@ -176,3 +176,7 @@ New and changed loci:
 - **Renderer:** draws brindle stripes and roan masks under the white patterns. The masks are from `tools/cattle_textures.py`:
   `brindle.png`, `white/roan_1.png` and `white/roan_2.png`.
 - **Unit test:** CoatLooseEndsTest.
+
+### Sourcing pass, 2026-11-12
+Resolved 0 marks. The Dc/Dh names now carry the UC Davis snippet and URL (the page refused the fetch), still **TO VERIFY**. Colour points
+stays NOT FOUND. The other marks are game rules (allele weights, tints, heterosis, layering).

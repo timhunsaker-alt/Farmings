@@ -17,7 +17,7 @@ public enum SheepStage {
 	WETHER;
 
 	/** Weaning age *(proposed: lambs are commonly weaned at 60-120 days; no single source)*. */
-	public static final double WEANING_DAYS = 120;
+	public static final double WEANING_DAYS = 84;     // 12 weeks (NMSU CR703; sourcing pass 2026-11-12)
 
 	public static SheepStage female(double ageDays, boolean hasLambed, boolean retired) {
 		if (retired) {

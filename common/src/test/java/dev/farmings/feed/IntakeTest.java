@@ -59,8 +59,8 @@ class IntakeTest {
 		assertTrue(Hay.dryMatterIntakeOrStandIn(Stage.CALF, 100).isEmpty());
 		assertTrue(Hay.dryMatterIntakeOrStandIn(Stage.BULL_CALF, 100).isEmpty());
 		assertEquals(0.027 * 650, Hay.dryMatterIntakeOrStandIn(Stage.LACTATING_COW, 650).getAsDouble(), 1e-9);
-		assertEquals(0.022 * 650, Hay.dryMatterIntakeOrStandIn(Stage.DRY_COW, 650).getAsDouble(), 1e-9);
-		assertEquals(0.022 * 800, Hay.dryMatterIntakeOrStandIn(Stage.BULL, 800).getAsDouble(), 1e-9, "stand-in: the dry cow's rate");
-		assertEquals(0.022 * 400, Hay.dryMatterIntakeOrStandIn(Stage.HEIFER, 400).getAsDouble(), 1e-9);
+		assertEquals(Hay.DRY_INTAKE_FRACTION * 650, Hay.dryMatterIntakeOrStandIn(Stage.DRY_COW, 650).getAsDouble(), 1e-9);
+		assertEquals(Hay.DRY_INTAKE_FRACTION * 800, Hay.dryMatterIntakeOrStandIn(Stage.BULL, 800).getAsDouble(), 1e-9, "stand-in: the dry cow's rate");
+		assertEquals(Hay.DRY_INTAKE_FRACTION * 400, Hay.dryMatterIntakeOrStandIn(Stage.HEIFER, 400).getAsDouble(), 1e-9);
 	}
 }

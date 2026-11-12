@@ -8,19 +8,19 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
 | Part | Block | What it does |
 |---|---|---|
 | Feed pit | `digester_feed_pit` | Takes manure items by belt, hopper or hand, or straight from a barn collection pit it touches |
-| Digester tank | `digester_tank` (3 x 3 x 3 ring with a roof) | A sealed, heated, stirred complete-mix tank. Its mixer is a **6.5 kW** submersible agitator (**TO VERIFY**: [a trade example](https://processengineering.co.uk/article/2002256/biogas-in-the-mixbio)); it needs heat (below) |
+| Digester tank | `digester_tank` (3 x 3 x 3 ring with a roof) | A sealed, heated, stirred complete-mix tank. Its mixer is a **6.5 kW** submersible agitator (**TO VERIFY**: [a trade example](https://processengineering.co.uk/article/2002256/biogas-in-the-mixbio), "two low-speed submersible agitators", each "with a power rating of 6.5kW"; the tank size is not given); it needs heat (below) |
 | Gas holder | `gas_holder` | A membrane dome on the tank: **200 m³** *(proposed)*. It offers biogas on any face with a steel pipe |
 | Digestate tank | `digestate_tank` | Holds what leaves the digester: **50 t** *(proposed)* |
-| Screw-press separator | `screw_press` | Splits digestate into separated solids and liquid. **5.5 kW** *(proposed; NOT FOUND)* |
+| Screw-press separator | `screw_press` | Splits digestate into separated solids and liquid. **5.5 kW** (**TO VERIFY**: a dealer's page for a press screw separator (PSS 3.2-780): "5.5 kW geared motor", "Cattle manure throughput is 15–35 m³/h", [Zorg Biogas](https://zorg-biogas.com/equipment/separators-en/separator-pss-32-780)) |
 
 ## The process
 | Quantity | Value | Source |
 |---|---|---|
 | Temperature | mesophilic, 35-40.5 °C (95-105 °F) | [MSU E3080](https://archive.lib.msu.edu/DMC/extension_publications/e3080/E3080.pdf); NC State gives 30-38 °C |
 | Retention time | **20 days** | Clover Hill Dairy: "approximately 100 °F... HRT of 20 days" ([EPA AgSTAR](https://19january2025snapshot.epa.gov/agstar/project-profile-clover-hill-dairy)); complete-mix systems run 17-30 days |
-| Biogas | **23 m³ per wet tonne of dairy manure** | Ontario OMAFA (waste.md, and the Wildcatter genset's calibration). MSU E3080 gives 1.87 m³ a cow a day (about 34 m³/t, *derived*): the game keeps 23 so the genset's 48 kWh/t holds |
+| Biogas | **23 m³ per wet tonne of dairy manure** | Ontario OMAFA, Table 1: "Dairy manure 23 48 62" (m³/t, kWh/t electricity, kWh/t heat) (waste.md, and the Wildcatter genset's calibration). MSU E3080 gives 1.87 m³ a cow a day (about 34 m³/t, *derived*): the game keeps 23 so the genset's 48 kWh/t holds |
 | Methane | 60% | MSU E3080; EPA AgSTAR |
-| Heating | **half the biogas made** heats the tank, when there is no engine heat to use | MU Extension (**TO VERIFY**: snippet) |
+| Heating | **half the biogas made** heats the tank, when there is no engine heat to use | "At a conservative estimate, 50 percent of the produced biogas is used to meet heating requirements" (MU Extension [EM702](https://mospace.umsystem.edu/server/api/core/bitstreams/16c40052-69b5-4515-9597-348f80097b1a/content)) |
 
 **Game rules:**
 - **Gas from manure:**
@@ -85,3 +85,8 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
   - The tank looks for its holder above, and its digestate tank beside, any of its cells.
 - **Older worlds:** a single-block tank grows to full size where there is room.
 - **Game test:** digester_multiblock_forms. The digester tests use the full tank.
+
+### Sourcing pass, 2026-11-12
+- Resolved: heating takes half the biogas (MU EM702). The screw press's 5.5 kW now has a dealer figure, still weak. The mixer quote was checked.
+- Still unsourced: poultry litter's gas per tonne (OMAFA and MU tables have no poultry row), gas holder volume (no sizing rule found).
+  Digestate tank size, the 10/90 split, 100 L items and the no-power rule are game choices.

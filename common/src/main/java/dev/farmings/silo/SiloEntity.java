@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 public class SiloEntity extends BlockEntity implements CircuitPart, Inspectable {
 	public enum Kind { CORN, HAYLAGE }
 
-	public static final double WATTS = 18_650;
+	public static final double WATTS = 22_400;     // 30 hp, Harvestore XL 400 (CST; sourcing pass 2026-11-12)
 	private final Motor motor = new Motor(true, Voltage.INDUSTRIAL, WATTS);
 	private @Nullable Kind kind;
 	private double dmKg;

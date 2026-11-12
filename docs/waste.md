@@ -25,11 +25,14 @@ become fertilizer. This follows how real farms use a digester and a solids separ
   ([MWPS-18 manure characteristics](https://dcr.am.virginia.gov/soil-and-water/document/manure-characteristics-mwps-18-1.pdf)).
   Its own note says real values vary by 30% or more. Milk yield predicts manure output better than body weight does for lactating
   cows, and dry cows, heifers and bulls need their own values ([Nennich et al., ASAE 2003](https://core.ac.uk/download/188063935.pdf)).
-  Game design values should come from the ASAE D384 table. **TO VERIFY.**
+  Game design values should come from the ASAE D384 table. **TO VERIFY.** (D384.2 is sold by ASABE and was not found free. MWPS-18
+  Table 6 says some of its values are "calculated or interpreted using diet based formulas being considered for the ASAE Standards D384".)
 - Collection is by hand or by machine, not magic. A scraper (a real barn alley scraper) pushes it to a pit. Both are in Phase 1:
   hand-shoveling and a powered scraper on Wildcatter power (decided with Tim, 2026-11-07).
 - **If it is not collected**, the stall gets dirty. Dirty stalls lower the cow's health and milk quality, as on a real farm.
-  She never dies from it. The size of the effect is **TO VERIFY** (needs a source on hygiene and mastitis).
+  She never dies from it. The size of the effect: "Cows with udder hygiene scores of 3 and 4 were 1.5 times more likely to have major
+  pathogens isolated from milk samples compared with cows with hygiene scores of 1 and 2", and somatic cell scores rose with dirtier
+  udders ([Schreiner & Ruegg 2003, J. Dairy Sci. 86:3460](https://pubmed.ncbi.nlm.nih.gov/14672175/)).
 
 ## Route A: composting
 - Manure solids can be composted without extra material when they come from a mechanical separator; presses and centrifuges
@@ -44,10 +47,10 @@ become fertilizer. This follows how real farms use a digester and a solids separ
 ## Route B: methane digester
 - A digester is a sealed, heated, stirred tank where bacteria turn manure into **biogas** (mostly methane and carbon dioxide). What
   is left is **digestate**.
-- Figures found (all **TO VERIFY**; the first search could not find the operating temperature, methane share or typical retention
-  time from a good source):
-  - dairy manure is about **23 m3 biogas per wet tonne**, worth about **48 kWh of electricity per tonne** ([Ontario OMAFA energy yields table](https://www.ontario.ca/files/2025-09/omafa-energy-yields-farm-based-anaerobic-digestion-system-25-015-en-2025-06-04.pdf));
-  - methane yield 165-191 L per kg of volatile solids in a 21-day on-farm cycle ([Tropical Animal Science Journal 2020](https://doaj.org/article/5e6b6618f469415aa0b09149d1b5d9cd));
+- Figures found (operating temperature, methane share and retention time are now sourced in `docs/multiblocks/digester.md`):
+  - dairy manure is about **23 m3 biogas per wet tonne**, worth about **48 kWh of electricity per tonne**: "Dairy manure 23 48 62"
+    ([Ontario OMAFA energy yields table](https://www.ontario.ca/files/2025-09/omafa-energy-yields-farm-based-anaerobic-digestion-system-25-015-en-2025-06-04.pdf), Table 1);
+  - **TO VERIFY** (pages would not load): methane yield 165-191 L per kg of volatile solids in a 21-day on-farm cycle ([Tropical Animal Science Journal 2020](https://doaj.org/article/5e6b6618f469415aa0b09149d1b5d9cd));
   - retention time 5 to 28 days, depending on the system ([Newfoundland biodigestion fact sheet](https://www.gov.nl.ca/ffa/files/1-Biodigestion-Fact-sheet.pdf)).
 - **A check on the numbers:** 50 kg of manure a day at 48 kWh/tonne is about 2.4 kWh of electricity per cow per day. That is small
   next to what a real parlor needs, so one barn's digester feeds a few lights and fans, not a grid. Do not inflate it.
@@ -59,7 +62,8 @@ become fertilizer. This follows how real farms use a digester and a solids separ
 
 ## Separator
 A mechanical separator (a screw press or a centrifuge) splits digestate into solids and liquid. Solids go on to composting
-(route A); liquid is a liquid fertilizer. Digestate's own nitrogen content is **TO VERIFY**: the search found nothing specific.
+(route A); liquid is a liquid fertilizer. Liquid digestate from one Michigan dairy held "on average, 27 pounds of nitrogen, 9 pounds of phosphate and 27 pounds of potash per
+1,000 gallons" ([MSU E3080](https://archive.lib.msu.edu/DMC/extension_publications/e3080/E3080.pdf)).
 
 ## Time and quantity (decided with Tim, 2026-11-07)
 - **Output per game day is one real day's production.** A cow makes about 45-50 kg of manure and one real day's milk per game day.
@@ -83,3 +87,7 @@ A mechanical separator (a screw press or a centrifuge) splits digestate into sol
 ## Poultry litter (2026-11-11)
 The coop collects poultry litter (`docs/multiblocks/coop.md`): 10 kg items *(proposed)*. Until the compost line is built, litter goes
 into the vanilla composter (`docs/eggs.md`). It is an input to the compost line when that is built.
+
+### Sourcing pass, 2026-11-12
+- Resolved: the hygiene and mastitis effect (Schreiner & Ruegg 2003), the OMAFA yields, digestate nitrogen (MSU E3080).
+- Still unsourced: the ASAE D384 table (paywalled), the methane yield and retention range (pages would not load). The 10 kg litter item is a game choice.

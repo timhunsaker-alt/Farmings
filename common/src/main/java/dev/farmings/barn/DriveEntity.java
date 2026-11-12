@@ -22,7 +22,7 @@ import net.minecraft.world.level.storage.ValueOutput;
  * The scraper only moves while this motor is running.
  */
 public class DriveEntity extends BlockEntity implements CircuitPart, Inspectable, BigPartEntity {
-	public static final int WATTS = 2_200;
+	public static final int WATTS = 750;     // 0.75 kW (Prinzing scraper drive; sourcing pass 2026-11-12; Tim decided 2.2 kW on 2026-11-08 before a source)
 
 	private final Motor motor = new Motor(true, Voltage.INDUSTRIAL, WATTS);
 	private boolean demand;

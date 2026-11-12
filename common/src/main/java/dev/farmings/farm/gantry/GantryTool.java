@@ -11,12 +11,12 @@ public enum GantryTool {
 	HARVESTER("combine / forage chopper", 5.0),
 	/** Disk mower-conditioner, 11 km/h: 8.0 kW per metre. */
 	MOWER("mower", 11.0),
-	/** Rake, 8 km/h and 2 kW per metre (both proposed: not in D497). */
-	RAKE("rake", 8.0),
+	/** Rake, 10 km/h and 2.0 kW per metre (ASAE D497.5, rotary rake). */
+	RAKE("rake", 10.0),
 	/** Variable-chamber round baler, 8 km/h: 4.0 kW + 1.1 kWh per tonne. */
 	BALER("round baler", 8.0),
-	/** Spreader, 8 km/h and 2 kW per metre (proposed). */
-	SPREADER("spreader", 8.0);
+	/** Spreader, 11 km/h (D497.5, fertilizer spreader) and 0.2 kWh per tonne spread (manure spreader). */
+	SPREADER("spreader", 11.0);
 
 	public final String label;
 	public final double kmPerHour;
@@ -48,7 +48,8 @@ public enum GantryTool {
 			case SEED_DRILL -> 300.0 * (spanMetres / 0.19) * metresPerSecond();
 			case HARVESTER -> 6000 + 3300 * tonnesPerHour;
 			case MOWER -> 8000.0 * spanMetres;
-			case RAKE, SPREADER -> 2000.0 * spanMetres;
+			case RAKE -> 2000.0 * spanMetres;
+			case SPREADER -> 200 * tonnesPerHour;     // 0.2 kWh per tonne spread (ASAE D497.5, manure spreader; sourcing pass 2026-11-12)
 			case BALER -> 4000 + 1100 * tonnesPerHour;
 		};
 		return TRUCK_WATTS + tool;

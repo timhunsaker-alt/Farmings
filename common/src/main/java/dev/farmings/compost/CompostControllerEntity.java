@@ -86,10 +86,10 @@ public class CompostControllerEntity extends BlockEntity implements ItemSink, Wo
 	/** An input's wet kg, C:N and moisture (compost.md, "The pile"); null if it is not a compost input. */
 	public static double @Nullable [] input(ItemStack s) {
 		if (s.is(FarmingsItems.MANURE)) {
-			return new double[] {50, 20, 0.87};
+			return new double[] {50, 20, 0.88};
 		}
 		if (s.is(FarmingsItems.POULTRY_LITTER)) {
-			return new double[] {10, 10.5, 0.30};
+			return new double[] {10, 10.5, 0.27};
 		}
 		if (s.is(FieldCrops.STRAW)) {
 			return new double[] {10, 80, 0.10};

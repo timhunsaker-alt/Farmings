@@ -111,7 +111,9 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
   - Source: yard weaning, which settles cattle in yards on hay, takes 5 to 10 days ("Cattle weaned in the yards onto hay or silage
     for 5 to 10 days adapted quickly": [FutureBeef, Yard weaning and
     education](https://futurebeef.com.au/resources/yard-weaning-and-education/)). Farmings uses 7, inside that range. The same figure
-    is used for sheep *(proposed: no sheep figure found)*.
+    is used for sheep. Sheep moved into a feedlot settle onto trough feed in about the same time: "it took until day six in the
+    feedlot for more than 95% of animals to be spending adequate time at the feed trough" ([MLA W.LIV.0142, Murdoch
+    University](https://www.mla.com.au/contentassets/334cffb50d48465aa7ba1f8894c4749f/w.liv.0142_final_report.pdf)).
 - **A short day:** a day without enough feed or water doesn't count. Nothing is lost.
 - **Leaving early:** a wild animal let out of the corral before it is tamed keeps its settled days.
 
@@ -142,5 +144,10 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
 ## Loose ends, 2026-11-11 (spec): the sheep dog
 - **Spawns:** Border Collies (`farmings:sheep_dog`) spawn wild in plains, meadows and windswept hills, at weight 2, in pairs *(proposed)*.
 - **Wild behaviour:** a wild dog follows raw meat and keeps 6 blocks from empty hands, like the others.
-- **Corral:** it settles on raw meat in the bait trough: one meat item a day *(proposed)*, water as usual. 7 real days settled tames it.
+- **Corral:** it settles on raw meat in the bait trough: one meat item (0.5 kg) a day, from the Royal Kennel Club's 2-3% of body
+  weight (animals/sheep.md), water as usual. 7 real days settled tames it.
 - **Details:** see animals/sheep.md, "Sheep dog".
+
+### Sourcing pass, 2026-11-12
+- Resolved 2 marks. Sheep settling now has a sheep figure (day six in an MLA feedlot study; 7 is kept for both species). The dog's meat ration is sourced in animals/sheep.md (0.5 kg a day).
+- Still proposed: the bird settling time, and the spawn, flight-distance and corral sizes, which are game choices.

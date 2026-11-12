@@ -10,9 +10,9 @@ A figure marked *(proposed)* has no source and is a game value. Process times ar
 |---|---|---|---|
 | `creamery_controller` | 1 x 1 x 1 | the control panel | none |
 | `receiving_tank` | 2 x 2 x 2 | a raw-milk receiving tank, 1,000 L *(proposed, the bulk tank's size)* | none |
-| `batch_pasteurizer` | 1 x 2 x 1 | a batch (vat) pasteurizer, 200 L a batch *(proposed)* | heater 9 kW *(proposed)* |
-| `cream_separator` | 1 x 1 x 1 | a centrifugal cream separator | 2.2 kW *(proposed)* |
-| `butter_churn` | 1 x 1 x 1 | a butter churn | 1.5 kW *(proposed)* |
+| `batch_pasteurizer` | 1 x 2 x 1 | a batch (vat) pasteurizer, 200 L a batch ([Foodtechprocess CHV 200](https://foodtechprocess.com/en/pasteurizers/101-cheese-vat-batch-pasteurizer-chv-200-300-500.html): "Nominal volume, L: 200") | heater 12 kW (was 9; same sheet: "Heating electric, kW: 12") |
+| `cream_separator` | 1 x 1 x 1 | a centrifugal cream separator, 500 L/h | 1.5 kW (was 2.2; [NDPAC](https://www.ndpac.com/product/cream-centrifugal-separation-skimming-for-dairy-factories/): "Capacity 500 L/h", "Power (KW) 1.5 KW"; a sister 500 L/h model there has a "3KW motor") |
+| `butter_churn` | 1 x 1 x 1 | a butter churn, up to 50 L of cream | 1.5 kW ([Milky FJ 100](https://serowar.eu/en_GB/p/Electric-butter-churn-Milky-FJ-100/1437): "Power of motor: 1,5 kW", "Max. Capacity: 50 L", "Time of butter making: 20 - 35 min") |
 | `cheese_vat` | 2 x 1 x 1 | a cheese vat with agitator | 0.75 kW *(proposed)* |
 | `cheese_press` | 1 x 1 x 1 | a cheese press | none |
 | `aging_shelf` | 1 x 2 x 1 | a cheese aging rack | none |
@@ -79,7 +79,8 @@ Pipes for the products, other cheeses, yogurt, ice cream.
 
 ## Whey (built 2026-11-09)
 - **How much:** a cheese make leaves whey: the milk's mass less the cheese's. This is the mass balance used in cheddar yield work
-  ([SDSU](https://openprairie.sdstate.edu/etd/1291)), at the milk's 1.03 kg a litre *(proposed: whey is a little lighter)*. 200 L of
+  ([SDSU](https://openprairie.sdstate.edu/etd/1291)), at the milk's 1.03 kg a litre *(proposed: whey is a little lighter)*. **TO VERIFY**: a paneer-whey study gives about
+  1,015 kg/m³ at 20 °C ([AGRIS](https://agris.fao.org/search/en/records/65df41a163b8185d9cabc400), search snippet only; acid whey, not cheddar whey). 200 L of
   Holstein milk gives about 20.5 kg of cheddar and **about 180 L of whey**, about 9 kg of whey per kg of cheese at a 10% yield.
 - **Where it goes:** whey goes to the bottler's store like the other liquids (store 1,000 L; a full store stops the vat with BOTTLER FULL). It
   bottles after buttermilk, as `whey_bottle`: 1 hunger *(proposed)*. It is kept as a future pig feed.
@@ -106,3 +107,8 @@ Taking by hand still works. Game tests: hopper_takes_butter_and_wheels, hopper_b
   - cream, skim, buttermilk, whey and butter, which are the shared items.
 - **Yield:** the Van Slyke cheese yield and the butter yield read the milk's own fat and protein. East Friesian milk (5.68% fat,
   4.92% protein) gives more cheese per litre than Holstein milk.
+
+### Sourcing pass, 2026-11-12
+- Resolved: pasteurizer batch 200 L and heater (now 12 kW), separator (now 1.5 kW at 500 L/h), churn 1.5 kW. Whey density is a TO VERIFY.
+- Still unsourced: vat motor 0.75 kW (only 0.18-0.25 kW for 50-150 L vats found, in snippets), heat-up and cool-down 30 min (CFIA, Florida
+  FDACS give the 63 C / 30 min hold only), press 12 h (Guelph text not reachable). Tank size, wheel size, flow, fat clamp and hunger are game values.

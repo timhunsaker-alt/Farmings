@@ -57,7 +57,7 @@ final class FeedMillGameTests {
 		m.accept(new ItemStack(FeedItems.MINERAL_PREMIX, 3));     // 3 kg
 		helper.assertTrue(Math.abs(m.asFed() - 427) < 1e-6, Component.literal("427 kg in the batch: " + m.readout()));
 		helper.assertTrue(m.batchAnalysis().cp() >= 15, Component.literal("CP 15% or more: " + m.batchAnalysis()));
-		TamingGameTests.waitFor(helper, 0, 200, () -> chest(helper).countItem(FeedItems.RATION) == 16, "16 rations of 25 kg: " + m.readout(), () -> {
+		TamingGameTests.waitFor(helper, 0, 700, () -> chest(helper).countItem(FeedItems.RATION) == 16, "16 rations of 25 kg: " + m.readout(), () -> {
 			ItemStack r = null;
 			for (int i = 0; i < chest(helper).getContainerSize(); i++) {
 				if (chest(helper).getItem(i).is(FeedItems.RATION)) {

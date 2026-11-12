@@ -5,7 +5,7 @@
 ## Parts
 | Part | Block | What it does |
 |---|---|---|
-| Shearing stand | `shearing_stand` | The shearing machine (an overhead motor and handpiece) and the controller. Runs on Wildcatter low-voltage power, **0.5 kW** *(proposed; no rating found)*. Right-click reads it. |
+| Shearing stand | `shearing_stand` | The shearing machine (an overhead motor and handpiece) and the controller. Runs on Wildcatter low-voltage power, **0.5 kW** *(proposed)*. **TO VERIFY** against a maker's sheet: a retailer lists the Lister Nexus overhead motor at "Motor power 250 W (1/3 HP)" ([Fane Valley Stores](https://www.fanevalleystores.com/product/127006/lister-nexus-motor-flexi-drive)); search snippets give 300 W for the Heiniger ONE and 700 W for the Lister Nexus Elite. Right-click reads it. |
 | Catching pen | `catching_pen` | Slatted floor beside the stand that opens onto a sheep shed's pen. Sheep wait here to be caught. |
 | Wool table | `wool_table` | Beside the stand. Fleeces are skirted on it and kept (9 stacks). A hopper below takes them. |
 | Wool press | `wool_press` | Beside the table (optional). Bales every **8 fleeces** of one grade and colour *(proposed)*. A hopper below takes the bales. |
@@ -21,8 +21,9 @@ the catching pen is filled from the yards behind it. The fault messages name wha
 
 ## Shearing
 - **Choosing a sheep:** while powered, the stand calls in one sheep at a time from its shed. She must be one whose fleece is ready
-  (300 days or more of growth, `Flock.FLEECE_READY_DAYS`), and not in lamb or nursing *(proposed: shearing late-pregnant ewes is
-  avoided)*.
+  (300 days or more of growth, `Flock.FLEECE_READY_DAYS`), not nursing *(proposed)*, and not within **28 real days** of lambing
+  (was: not in lamb at all). "4-6 weeks before lambing is an ideal time to shear sheep" and "Shearing sheep later in pregnancy can
+  be more stressful on ewes, so don't delay too long" ([Perennia, Preparing for lambing](https://www.perennia.ca/wp-content/uploads/2018/03/Preparing-for-lambing-Factsheet-UPDATED.pdf)).
 - **Walking in:** she walks into the catching pen. Within two blocks of the stand the shearer catches her and pulls her onto the
   board, as shearers do.
 - **Time:** shearing takes **5 seconds** *(proposed game size; a professional takes 2-3 minutes:
@@ -41,3 +42,9 @@ Shears still work on any sheep with wool. They give one fleece, one grade lower 
 ## Bales
 Eight body fleeces of one grade and colour on the table are pressed into one **wool bale**. The bale holds their combined greasy
 weight, and its micron, staple and yield are averaged by weight. The wool mill takes fleeces, skirtings, bales and loose wool.
+
+### Sourcing pass, 2026-11-12
+- Shearing in pregnancy is now sourced (Perennia): blocked only in the last 28 real days. The motor power is a **TO VERIFY**: retail
+  listings give 250-700 W, and no maker's sheet was fetched.
+- Still proposed: the skirtings' 12% share (searched AWI, Woolwise and Texas AgriLife skirting reports; no share found) and the
+  game sizes. A real AWEX bale is 120-204 kg (search snippet only), about 25-40 Merino fleeces, against the game's 8.

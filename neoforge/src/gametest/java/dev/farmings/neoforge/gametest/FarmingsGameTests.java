@@ -259,7 +259,7 @@ public class FarmingsGameTests {
 					continue;
 				}
 				event.registerTest(id(scene), new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id(scene)),
-						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("flock_") || scene.startsWith("ewe_moves") || scene.startsWith("sheep_shorn") || scene.startsWith("fleece_to_yarn") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") || scene.startsWith("hopper") || scene.startsWith("wild_follows") || scene.startsWith("fowl_follows") || scene.startsWith("gantry_runs") || scene.startsWith("gantry_lifts") || scene.startsWith("silo_") || scene.startsWith("genset_burns") || scene.startsWith("belt_feeds") || scene.startsWith("corral_bait") || scene.startsWith("dog_gathers") || scene.startsWith("dog_drives") || scene.startsWith("shed_bedding") ? 1200 : 200, 1, true,
+						new TestData<>(plain, net.minecraft.world.level.Level.OVERWORLD, Identifier.withDefaultNamespace("empty"), scene.startsWith("barn_scraper") || scene.startsWith("flock_") || scene.startsWith("ewe_moves") || scene.startsWith("sheep_shorn") || scene.startsWith("fleece_to_yarn") || scene.startsWith("cow_walks") || scene.startsWith("parlor_cow_walks") || scene.startsWith("hopper") || scene.startsWith("wild_follows") || scene.startsWith("fowl_follows") || scene.startsWith("gantry_runs") || scene.startsWith("gantry_lifts") || scene.startsWith("silo_") || scene.startsWith("genset_burns") || scene.startsWith("belt_feeds") || scene.startsWith("mixer_makes") || scene.startsWith("corral_bait") || scene.startsWith("dog_gathers") || scene.startsWith("dog_drives") || scene.startsWith("shed_bedding") ? 1200 : 200, 1, true,
 								net.minecraft.world.level.block.Rotation.NONE, false, 1, 1, false, padding(scene))));
 			}
 		});
@@ -790,7 +790,7 @@ public class FarmingsGameTests {
 		double waterBefore = trough.litres();
 		cow.setWeightKg(700);
 		ctl.tend(level, 24_000);
-		double dmi = 0.022 * 700;
+		double dmi = dev.farmings.feed.Hay.DRY_INTAKE_FRACTION * 700;
 		helper.assertTrue(Math.abs((hayBefore - feeder.dryMatterKg()) - dmi) < 0.01, Component.literal("a day takes " + dmi + " kg, took " + (hayBefore - feeder.dryMatterKg())));
 		helper.assertTrue(Math.abs((waterBefore - trough.litres()) - 6 * dmi) < 0.01, Component.literal("a day drinks " + 6 * dmi + " L, drank " + (waterBefore - trough.litres())));
 		helper.assertTrue(cow.lastFed() == 1.0 && cow.lastWatered() == 1.0, Component.literal("fully fed and watered"));

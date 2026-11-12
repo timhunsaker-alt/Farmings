@@ -42,6 +42,9 @@ import org.jspecify.annotations.Nullable;
  * fleece and skirtings to the wool table, and lets her go home. A wool press beside the table bales eight fleeces of one grade and colour.
  */
 public class ShearingStandEntity extends BlockEntity implements CircuitPart, Inspectable {
+	/** No shearing within this many real days of lambing (Perennia, Preparing for lambing; sourcing pass 2026-11-12). */
+	public static final double SHEAR_BEFORE_LAMBING_DAYS = 28;
+
 	private final Motor motor = new Motor(false, Voltage.LOW, ShearingLayout.MOTOR_WATTS);
 	private ShearingLayout.@Nullable Check check;
 	private @Nullable BlockPos shed;
@@ -143,7 +146,7 @@ public class ShearingStandEntity extends BlockEntity implements CircuitPart, Ins
 			current = null;
 			progress = 0;
 			for (SheepEntity s : controller.members(level)) {
-				if (s.fleeceReady() && s.reservedBy() == null && !s.pregnant() && s.lambsNursing() == 0) {
+				if (s.fleeceReady() && s.reservedBy() == null && !(s.pregnant() && s.daysToLambing() < SHEAR_BEFORE_LAMBING_DAYS) && s.lambsNursing() == 0) {
 					current = s.getUUID();
 					s.reserve(worldPosition);
 					s.sendTo(point);

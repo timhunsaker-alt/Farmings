@@ -29,6 +29,12 @@ public final class Fowl {
 	public static final double COLD_HEALTH_LOSS = 10;
 	/** Litter, kg per kg of bird a day: the MWPS-18 layer, 0.068 kg / 1.36 kg. */
 	public static final double LITTER_KG_PER_KG_DAY = 0.068 / 1.36;
+	/** Ducks: 0.44 lb a day for a 4 lb duck (MWPS-18, Table 6, Duck row; sourcing pass 2026-11-12). */
+	public static final double DUCK_LITTER_KG_PER_KG_DAY = 0.44 / 4.0;
+
+	public static double litterKgPerKgDay(Species s) {
+		return s == Species.DUCK ? DUCK_LITTER_KG_PER_KG_DAY : LITTER_KG_PER_KG_DAY;
+	}
 	/** A fertile egg not started within this many real days no longer hatches (proposed). */
 	public static final double HATCHABLE_DAYS = 7;
 	/** One grain item is 100 g of feed (proposed). */
@@ -122,7 +128,12 @@ public final class Fowl {
 
 	/** Real days a mated hen keeps laying fertile eggs (MSU: up to 4 weeks for chickens; 3 for turkeys; others proposed). */
 	public static double fertileDays(Species s) {
-		return s == Species.CHICKEN ? 28 : 21;
+		// quail "can store sperm for up to 11 days" (PMC4519265; sourcing pass 2026-11-12)
+		return switch (s) {
+			case CHICKEN -> 28;
+			case QUAIL -> 11;
+			default -> 21;
+		};
 	}
 
 	/** Birds one coop floor block holds (docs/animals/poultry.md, "Housing"). */

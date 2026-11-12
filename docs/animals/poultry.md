@@ -51,7 +51,11 @@ Machines that only process eggs and meat (grading, cold room) keep their own tim
 
 - **Stages:** young (needs heat until feathered, below) → grower → adult (lays or breeds) → retired (no more eggs; the year-3 point
   below).
-- **Sex ratio:** hatchlings are 50/50 male and female *(proposed; no source gave a hatch sex ratio)*.
+- **Sex ratio:**
+  - Chickens, turkeys and quail hatch 50/50 male and female. In commercial Leghorns the "sex ratio was balanced"
+    ([Klein & Grossmann 2008](https://europepmc.org/article/MED/18030680)).
+  - Ducks hatch 51.5% male (was 50/50): "an average bias of 51%-52%" toward males
+    ([Narushin 2026](https://kar.kent.ac.uk/115666/), abstract).
 - **Eggs:** only females lay. A male does not lay.
 - **Capons:** not in this pass.
 
@@ -69,7 +73,7 @@ Machines that only process eggs and meat (grading, cold room) keep their own tim
 | Quail | Northern Bobwhite | BOB | North America | meat, game | 0.17 / 0.17 | 50-200 (125) | 9.5 | white | broody |
 | Duck | Pekin | PEK | China (Beijing) | meat | 4.3 / 3.9 | 100-180 (140) | 78 | white | rarely |
 | Duck | Khaki Campbell | KHC | England | eggs | 1.9 / 1.7 | 200-300 (250) | 78 | off-white | seldom |
-| Duck | Mallard | MAL | wild, temperate northern hemisphere | wild, game | 1.1 / 0.94 | 20-50 (35) | 55 | creamy white to greenish-buff | broody |
+| Duck | Mallard | MAL | wild, temperate northern hemisphere | wild, game | 1.1 / 0.94 | 20-50 (35) | 54 | creamy white to greenish-buff | broody |
 | Duck | Muscovy | MUS | Central and South America | meat | 5.0 / 2.95 | 60-120 (90) | 78 | white | broody |
 
 Values in brackets are what the game uses (the middle of the range, the sheep rule).
@@ -79,13 +83,15 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
   ([A2880](https://livestock.extension.wisc.edu/articles/chicken-breeds-varieties-a2880)): Leghorn "Cock—6 pounds, hen—4½",
   Rhode Island Red 8½ / 6½, Plymouth Rock 9½ / 7½. Silkie: the European standard 1.4-1.7 / 1.1-1.4 kg
   ([Wikipedia](https://en.wikipedia.org/wiki/Silkie_(chicken_breed)), **TO VERIFY**; the article also gives a smaller US
-  figure).
+  figure). Poultry Hub gives other figures, cock "1.8 Kg" and hen "1.4 Kg", with no standard named
+  ([Poultry Hub, Silkie](https://www.poultryhub.org/all-about-poultry/species/fancy-chicken-breeds/silkie)).
 - **Eggs a year:**
   - Leghorn, Rhode Island Red and Plymouth Rock from the Livestock Conservancy breed pages
     ([Leghorn](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/leghorn-chicken/),
     [Rhode Island Red](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/rhode-island-red-chicken/),
     [Plymouth Rock](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/plymouth-rock-chicken/)).
-  - Silkie: "A Silkie hen can produce 100 eggs in an ideal year" (Wikipedia, **TO VERIFY**).
+  - Silkie: "A Silkie hen can produce 100 eggs in an ideal year" (Wikipedia, **TO VERIFY**). Poultry Hub says "approximately
+    120 eggs per year" (same page as above, unsourced).
 - **Egg weight:**
   - Leghorn: 58.5 g at 32 weeks, from the Hy-Line W-36 standard
     ([PDF](https://www.hyline.com/filesimages/Hy-Line-Products/Hy-Line-Product-PDFs/W-36/36%20STD%20ENG.pdf); W-36 is a
@@ -139,15 +145,17 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
   - Mallard 2.25-2.50 / 1.88-2.25 lb, 20-50 eggs;
   - Muscovy 10-12 / 6-7 lb, 60-120 eggs.
 - **Egg weight:** duck eggs are "32-34 ounces per dozen" ([UW-Madison](https://livestock.extension.wisc.edu/?p=958)), about
-  75.6-80.3 g, so the game uses 78 g for the farmed ducks. Mallard: NOT FOUND, so 55 g *(proposed)*.
+  75.6-80.3 g, so the game uses 78 g for the farmed ducks. Mallard: 54 g (was 55), egg mass "54g"
+  ([BTO BirdFacts, Mallard](https://www.bto.org/understanding-birds/birdfacts/mallard)).
 - **Shells:**
   - Pekin white, Khaki Campbell "off-white" (ASC-198).
   - Mallard "creamy white to greenish-buff" ([Wikipedia](https://en.wikipedia.org/wiki/Mallard)).
   - Muscovy white ([Wikipedia](https://en.wikipedia.org/wiki/Muscovy_duck)).
 - **Broodiness:**
   - Khaki Campbells "seldom become broody" (ASC-198).
-  - Pekin "rarely" is *(proposed)*.
-  - Mallard and Muscovy broodiness: NOT FOUND from an extension source. The game calls them broody *(proposed)*.
+  - Pekins "are poor setters and seldom raise a brood"; Muscovies "make good setters" (Minnesota Extension, *Raising ducks*
+    WW-01189, [archived](https://webarchive.library.unt.edu/eot2008/20090115161252/http://www.extension.umn.edu/distribution/livestocksystems/DI1189.html)).
+  - Mallard broodiness: NOT FOUND from an extension source. The game calls it broody *(proposed)*.
 
 **Baselines:** trait scores (0-100) per breed are FarmChain-style game targets *(proposed)*, as for cattle and sheep. They are set
 in `Breeds`, pinned by a test.
@@ -171,6 +179,8 @@ in `Breeds`, pinned by a test.
   - turkeys: 31.5 weeks;
   - Coturnix: 7 weeks; Bobwhite: 22 weeks;
   - ducks: 26 weeks (6 months). Pekin, Mallard and Muscovy are NOT FOUND, so they take the Khaki Campbell figure *(proposed)*.
+    Pekin: **TO VERIFY**: snippet, "Pekins start laying eggs when they are about 26–28 weeks of age"
+    ([NSW DPI, egg production](https://www.dpi.nsw.gov.au/animals-and-livestock/poultry-and-birds/species/duck-raising/egg-production); the page refused the fetch).
 - **Curve shape:** the Hy-Line Leghorn curve, measured in weeks from the first egg, is the shape for every bird *(proposed)*. It is
   scaled so one laying year gives the breed's eggs a year.
 - **Turkeys:** they lay for **28 weeks**, then rest until a year from their first egg *(proposed: real turkeys lay in spring;
@@ -198,8 +208,12 @@ in `Breeds`, pinned by a test.
 **Game rule (`Clutch`):**
 - **Who a male serves:** an adult male serves up to **10** hens (chicken, turkey), **3** (quail) or **5** (duck) in his coop or
   pen, the middle of the sources.
-- **How long a mating lasts:** a hen mated within the last **28 real days** (chicken) or **21** (turkey, quail, duck; quail and duck
-  NOT FOUND, *proposed*) lays fertile eggs.
+- **How long a mating lasts:** a hen mated within the last **28 real days** (chicken), **21** (turkey, duck) or **11** (quail) lays
+  fertile eggs.
+  - Quail: 11 days (was 21). Japanese quail "can store sperm for up to 11 days"
+    ([Adkins-Regan 2015, PLoS ONE](https://pmc.ncbi.nlm.nih.gov/articles/PMC4519265/)).
+  - Duck: 21 days is *proposed*. **TO VERIFY**: snippet, isolated Mallard hens' "fertility persisted for 6 to 14 days" (Elder &
+    Weller 1954, [J. Wildl. Manage. 18:495](https://doi.org/10.2307/3797084); the abstract refused the fetch).
 - **What a fertile egg carries:** the parents' genome, so the chick's genes are set at laying, as a calf's are set at conception.
 - **Crosses:** they work only within a species. Muscovy × other ducks gives a sterile "mule" in reality; that cross is **not**
   allowed in this pass *(proposed)*.
@@ -219,8 +233,9 @@ The humidity is raised for the last 3 days (USU: wet bulb 90 °F). Incubators ar
 **Game:**
 - **The clock:** a fertile egg develops only while it is kept warm by an incubator or a broody hen. It hatches after its species'
   days.
-- **Chilling:** an egg that sits cold for over **7 real days** before it starts no longer hatches *(proposed; storage limits for
-  hatching eggs were not looked up)*.
+- **Chilling:** an egg that sits cold for over **7 real days** before it starts no longer hatches. Hatchability "remains high" for
+  eggs stored "fewer than 7–10 days", and "After 3 weeks of storage, the hatchability is near 0 percent"
+  ([MSU P1182](https://extension.msstate.edu/publications/hatching-quality-chicks)). The game uses the low end, 7.
 - **Pause, no loss:** once started, the clock pauses when the warmth stops and nothing is lost *(proposed simplification, as the
   corral's short day)*.
 
@@ -244,7 +259,7 @@ The humidity is raised for the last 3 days (USU: wet bulb 90 °F). Incubators ar
 | Laying hen | 100-150 g feed a day; Leghorn W-36 99.6 g | [Alabama ACES](https://www.aces.edu/blog/topics/farming/backyard-small-poultry-flock-management-series-feeding-the-laying-hen/); Hy-Line |
 | Coturnix | 14-18 g a day | NSW DPI |
 | Breeder duck | 48 lb per 100 ducks a day, about 218 g | [The Poultry Site, breeder ducks](https://www.thepoultrysite.com/articles/management-programme-for-raising-breeder-duck-flocks) |
-| Adult turkey | NOT FOUND (only totals to 26 weeks) | |
+| Adult turkey | NOT FOUND (only totals to 26 weeks). **TO VERIFY**: snippet, breeder hens ate "252 grams" a day (Broad Breasted Bronze) and "137 grams" (Beltsville Small White) | [MSU thesis, 1963](https://d.lib.msu.edu/etd/41098) (the repository refused the fetch) |
 | Water, chicken and turkey | about 2× the feed weight (UAF gives 2.5× for turkeys) | ACES; [The Poultry Site](https://www.thepoultrysite.com/articles/turkey-feeding-and-nutrition/p2); UAF |
 | Water, ducks | 3.3:1 summer, 2.7:1 winter | [The Poultry Site, Farrell review](https://thepoultrysite.com/articles/recent-advances-in-the-production-management-and-nutrition-of-intensivelyfarmed-domestic-ducks) |
 
@@ -259,6 +274,9 @@ The humidity is raised for the last 3 days (USU: wet bulb 90 °F). Incubators ar
 - **Young birds** eat by their weight on the same rule.
 - **Water:** 2× the feed weight (chicken, turkey, quail; the quail figure is NOT FOUND, so it is *proposed*), and 3× for ducks
   (the middle of 2.7-3.3).
+  - Quail: **TO VERIFY**: snippet, laying Japanese quail drank "73.67 g" to "129.45 g" a bird a day (Penkov 2010,
+    [Agricultural Sciences, Plovdiv](https://agrarninauki.au-plovdiv.bg/2010/8-investigation-on-the-water-consumption-by-laying-japanese-quails-coturnix-coturnix-japonica/)).
+    That is far above 2× 16 g.
 - **Grain:** one wheat or seed item is **100 g of feed** *(proposed)*. So a hen eats about one item each game day.
   - Wheat seeds, beetroot seeds, melon seeds, pumpkin seeds, torchflower seeds, pitcher pods and wheat all count. Wheat is the vanilla
     chicken lure, and the seeds are its food.
@@ -269,21 +287,22 @@ The humidity is raised for the last 3 days (USU: wet bulb 90 °F). Incubators ar
 | Quantity | Value | Source |
 |---|---|---|
 | Hen, indoors | 3 sq ft (0.28 m²); 1 nest opening per 4 hens; 1 ft of roost per bird | [UNH, producing your own eggs](https://extension.unh.edu/resource/producing-your-own-eggs) |
-| Hen, run | 8 sq ft (0.74 m²) laying hens, 10 large chickens | [Penn State, small-scale poultry housing](https://extension.psu.edu/small-scale-poultry-housing) (**TO VERIFY**: read from a search summary) |
+| Hen, run | 8 sq ft (0.74 m²) laying hens, 10 large chickens | [Penn State, small-scale poultry housing](https://extension.psu.edu/small-scale-poultry-housing), Table 1 "Sq ft/bird outside runs" |
 | Turkey | 6 sq ft indoors (0.56 m²), 20 sq ft yard (1.86 m²) after 2 months | [UNH, raising turkeys](https://extension.unh.edu/resource/raising-turkeys) |
 | Coturnix | 145 cm² floor per bird | NSW DPI |
 | Bobwhite | 1 sq ft floor (breeders), 2 sq ft flight pen | [Penn State, bobwhite](https://extension.psu.edu/bobwhite-quail-production) |
-| Duck | 5 sq ft indoors (0.46 m²); run: over 15 sq ft (1.4 m²) | [Extension, space allowances](https://poultry.extension.org/articles/getting-started-with-small-and-backyard-poultry/housing-for-small-and-backyard-poultry-flocks/space-allowances-in-housing-for-small-and-backyard-poultry-flocks/); [VT 2902-1092](https://pubs.ext.vt.edu/2902/2902-1092.html) (**TO VERIFY**) |
-| Duck water | "swimming water … is not essential"; water at least 10 cm deep matters to ducks | UW-Madison, care of ducks; RSPCA duck report (**TO VERIFY**: search summary) |
+| Duck | 5 sq ft indoors (0.46 m²); run: over 15 sq ft (1.4 m²) | [Extension, space allowances](https://poultry.extension.org/articles/getting-started-with-small-and-backyard-poultry/housing-for-small-and-backyard-poultry-flocks/space-allowances-in-housing-for-small-and-backyard-poultry-flocks/); [VT 2902-1092](https://pubs.ext.vt.edu/2902/2902-1092/2902-1092.html), Table 1: ducks "5" inside, "&gt;15" outside |
+| Duck water | "swimming water … is not essential"; water at least 10 cm deep matters to ducks | UW-Madison, care of ducks; RSPCA Australia: "shallow water (10-20 cm) where they can dabble and submerge their heads" ([RSPCA KB](https://kb.rspca.org.au/knowledge-base/how-should-i-care-for-my-pet-ducks/)) |
+| Nests | "at least one nest for every 4-5 females" | VT 2902-1092 |
 
 Game capacities, one block = 1 m², all rounded down so a full coop is never over the source:
 
 | Species | Coop floor blocks per bird | Run blocks per bird | Birds per nest box | Birds per perch block |
 |---|---|---|---|---|
 | Chicken | 1 block holds 3 | 1 | 4 | 3 |
-| Turkey | 1 holds 1 | 2 | 4 *(proposed)* | 1 *(proposed)* |
+| Turkey | 1 holds 1 | 2 | 4 (VT nests) | 1 *(proposed)* |
 | Quail | 1 holds 16 *(proposed cap; the source allows 68)* | 1 holds 8 | 8 *(proposed)* | none (ground birds) |
-| Duck | 1 holds 2 | 2 | 4 *(proposed)* | none (ducks don't perch) |
+| Duck | 1 holds 2 | 2 | 4 (VT nests) | none (ducks don't perch) |
 
 ## Wild fowl (docs/taming.md)
 **Vanilla:** every vanilla chicken spawn entry in the 26.3 biome data is weight 10, groups of 4, in 25 biomes. Each is replaced by
@@ -389,10 +408,14 @@ As excreted (MWPS-18, ±30%, [PDF](https://dcr.am.virginia.gov/soil-and-water/do
 | Broiler, 2 lb | 0.19 | 0.086 |
 | Turkey hen, 10 lb | 0.47 | 0.21 |
 | Turkey tom, 20 lb | 0.74 | 0.34 |
+| Duck, 4 lb | 0.44 | 0.20 |
 
 **Game:**
 - **How much:** each bird adds litter to its coop at the layer rate per kg of body weight (0.068 kg / 1.36 kg = 0.05 kg per kg a
-  day). Quail and ducks have no figure (NOT FOUND), so they use the same rate *(proposed)*.
+  day).
+  - Ducks use their own row: 0.20 kg / 1.81 kg = **0.11 kg per kg a day** (was the layer rate, 0.05). MWPS-18 Table 6 lists
+    "Duck 4 0.44" (lb, lb a day).
+  - Quail have no figure (NOT FOUND), so they use the layer rate *(proposed)*.
 - **What happens to it:** litter goes into the existing compost chain (`docs/waste.md`).
 
 ## Economy
@@ -400,7 +423,7 @@ Nothing is sold (cattle rule, 2026-11-07).
 
 ## Open points
 - Seasons, if ever added: turkeys and wild birds lay in spring.
-- Better sources for the TO VERIFY rows; the turkey's daily feed; egg weights for Silkie and Mallard.
+- Better sources for the TO VERIFY rows; the turkey's daily feed; the Silkie's egg weight.
 - Poultry artificial insemination, for Broad Breasted White.
 - Geese and guinea fowl.
 
@@ -425,7 +448,7 @@ frees his place when her fertile window ends.
 | Chicken | 10 | "a ratio of about 1:10, m:f, if breeding" ([UC ANR](https://ucanr.edu/site/small-acreage-landowners/poultry)) |
 | Quail | 3 | "one male to three females is sufficient" (NSW DPI, [The Poultry Site](https://www.thepoultrysite.com/articles/raising-japanese-quail-1)) |
 | Duck | 5 | 1 male to 5-8 females for meat-type ducks (**TO VERIFY**: snippet, [Narushin 2026](https://kar.kent.ac.uk/115666/)) |
-| Turkey | 10 *(proposed; NOT FOUND: UC ANR says most domestic breeds "can no longer breed naturally")* | |
+| Turkey | 10 | the middle of "varies from 8-12" ([Kentucky](https://afs.mgcafe.uky.edu/extension/poultry/breeding)); UC ANR adds that most domestic breeds "can no longer breed naturally" |
 
 ### The two quail don't cross
 Coturnix (Old World quail, Phasianidae) and Bobwhite (New World quail, Odontophoridae) are in different families. No record of a
@@ -489,3 +512,10 @@ is given.
 - **Game tests:** male_serves_limited_hens, quail_species_dont_cross, hens_forage_on_run, muscovy_colour_mutant_inherits.
 - **Unit tests:** PoultryMutantTest, and the run sums in FowlTest.
 - **Turkey straws:** come with the straws part.
+
+### Sourcing pass, 2026-11-12
+- Resolved 13 marks: hatch sex ratio, Mallard egg, Pekin and Muscovy broodiness, quail fertile days, hatching-egg storage, Penn State
+  and VT housing, duck water depth, turkey and duck nest boxes, duck manure, hens per tom. Four now carry a TO VERIFY snippet: Pekin
+  first egg, duck fertile days, turkey feed, quail water.
+- Still unsourced: Silkie egg weight and weights (Poultry Hub differs from Wikipedia), Bourbon Red and Mallard broodiness, Bobwhite
+  weight, quail manure, Muscovy first egg. Searched extension, BTO, Livestock Conservancy and Cornell pages; several refused the fetch.

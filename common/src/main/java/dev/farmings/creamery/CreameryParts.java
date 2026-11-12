@@ -10,8 +10,8 @@ import java.util.List;
  */
 public enum CreameryParts {
 	RECEIVING_TANK("receiving_tank", CreameryPart.RECEIVING_TANK, Footprint.box(2, 2, 2, 0, 0), List.of(box(0, 0, 0, 16, 16, 16)), 0),
-	BATCH_PASTEURIZER("batch_pasteurizer", CreameryPart.BATCH_PASTEURIZER, Footprint.box(1, 2, 1, 0, 0), List.of(box(1, 0, 1, 15, 16, 15)), 9_000),
-	CREAM_SEPARATOR("cream_separator", CreameryPart.CREAM_SEPARATOR, Footprint.box(1, 1, 1, 0, 0), List.of(box(3, 0, 3, 13, 15, 13)), 2_200),
+	BATCH_PASTEURIZER("batch_pasteurizer", CreameryPart.BATCH_PASTEURIZER, Footprint.box(1, 2, 1, 0, 0), List.of(box(1, 0, 1, 15, 16, 15)), 12_000),
+	CREAM_SEPARATOR("cream_separator", CreameryPart.CREAM_SEPARATOR, Footprint.box(1, 1, 1, 0, 0), List.of(box(3, 0, 3, 13, 15, 13)), 1_500),
 	BUTTER_CHURN("butter_churn", CreameryPart.BUTTER_CHURN, Footprint.box(1, 1, 1, 0, 0), List.of(box(2, 0, 2, 14, 14, 14)), 1_500),
 	CHEESE_VAT("cheese_vat", CreameryPart.CHEESE_VAT, Footprint.box(2, 1, 1, 0, 0), List.of(box(0, 0, 1, 16, 12, 15)), 750),
 	CHEESE_PRESS("cheese_press", CreameryPart.CHEESE_PRESS, Footprint.box(1, 1, 1, 0, 0), List.of(box(2, 0, 2, 14, 16, 14)), 0),

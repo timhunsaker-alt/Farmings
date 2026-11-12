@@ -85,6 +85,6 @@ public final class Travel<T> {
 
 	/** Auger drives: one 3.7 kW (5 hp) drive for each 21 m of run (the retailer's 8 in x 21 ft auger, TO VERIFY). */
 	public static double augerWatts(int metres) {
-		return 3700.0 * Math.max(1, (metres + 20) / 21);
+		return 3700.0 * Math.max(1, (metres + 8) / 9);     // one 3.7 kW drive per 9 m (AGI Westfield; sourcing pass 2026-11-12)
 	}
 }

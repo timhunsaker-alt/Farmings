@@ -7,10 +7,12 @@
 | Part | Block | What it does | Figures |
 |---|---|---|---|
 | Hammer mill | `hammer_mill` | Grinds what goes in its top into meal at its output face. Inputs and outputs: corn, oat and barley grain to `corn_meal`, `oat_meal` and `barley_meal`; alfalfa hay or bales to `alfalfa_meal`; vanilla calcite to `ground_limestone`; vanilla cod or salmon to `fish_meal`. 1 kg in, 1 kg out | **4.8 kWh/t at 1.9 t/h** for corn to 900 µm ([Mississippi State](https://extension.msstate.edu/agriculture/livestock/swine/particle-size-important-for-swine-diets)), so a **9.1 kW** motor and 0.53 kg/s *(derived)* |
-| TMR mixer | `tmr_mixer` (2 x 2 x 2) | A vertical mixer. Ingredients come in by belt, auger or hopper. One minute after the last ingredient, the batch is mixed into ration items at its output face | **7.1 m³ needs 75 hp (56 kW)**; fill it only to 70-80% (**TO VERIFY**: [Alltech](https://www.alltech.com/taxonomy/term/986?page=0), a trade source). Mix "one minute after the last ingredient has been loaded" (**TO VERIFY**: [American Cattlemen](https://americancattlemen.com/tmr-mixers/)), which is 4 s of game time at 15:1 (waste.md: machine times scale 15:1) |
+| TMR mixer | `tmr_mixer` (2 x 2 x 2) | A vertical mixer. Ingredients come in by belt, auger or hopper. Four minutes after the last ingredient, the batch is mixed into ration items at its output face | **7.1 m³ needs 75 hp (56 kW)**; fill it only to 70-80% (**TO VERIFY**: [Alltech](https://www.alltech.com/taxonomy/term/986?page=0), a trade source). Mix **4 minutes** after the last ingredient (was 1): "Typically, three to five minutes is sufficient time starting from when the last ingredient is added" ([Saskatchewan Agriculture](https://publications.saskatchewan.ca/api/v1/products/129055/formats/154881/download)), which is 16 s of game time at 15:1 (waste.md: machine times scale 15:1) |
 
-- **Mixer capacity:** 7.1 m³ x 80% at an as-fed density of **350 kg/m³** *(proposed; NOT FOUND)*, about **2 t a batch**. Sizing
-  check: a cow eats 5-7 ft³ of TMR a day (**TO VERIFY**: [Ag Proud](https://www.agproud.com/articles/24953-doug-williams-the-nuts-and-bolts-of-tmr-mixers)),
+- **Mixer capacity:** 7.1 m³ x 80% at an as-fed density of **400 kg/m³** (was 350): 25 lb/ft³, the low end of "ration density
+  assumptions ranged from 25 to 32 pounds per cubic foot" (**TO VERIFY**: a trade article,
+  [Ag Proud 2023](https://www.agproud.com/articles/57757-considerations-for-sizing-a-tmr-mixer)), about **2.3 t a batch** (was 2). Sizing
+  check: "A typical dairy cow will consume 5 to 7 cubic feet of a TMR ration per day" (**TO VERIFY**: trade, [Ag Proud](https://www.agproud.com/articles/24953-doug-williams-the-nuts-and-bolts-of-tmr-mixers)),
   so one batch feeds about 40 cows for a day *(derived)*.
 - **Power:** both machines are Wildcatter 480 V loads, like the creamery's.
 
@@ -22,9 +24,9 @@
 | Ingredient | DM % | CP % | NDF % | TDN % | Other | Source |
 |---|---|---|---|---|---|---|
 | `alfalfa_meal` | 89 | 17 | 47 | 58 | | alfalfa hay (Auburn table) |
-| `fish_meal` | 92 | 62 | 0 | 75 | | **TO VERIFY**: no source looked up; textbook-typical |
-| `ground_limestone` | 100 | 0 | 0 | 0 | Ca 38% | **TO VERIFY** |
-| `mineral_premix` | 100 | 0 | 0 | 0 | fed at **0.3 kg a cow a day** | **TO VERIFY**: a product label ([Masterfeeds](https://www.masterfeeds.com/nutrition/total-balance-2-dairy-premix-15156/)) |
+| `fish_meal` | 90 | 66 | 12 | 74 | | "Fish meal" ([Auburn table](https://ssl.acesag.auburn.edu/agriculture/livestock-poultry/beef/documents/2014FeedcompositionTables.pdf)) (was 92, 62, 0, 75) |
+| `ground_limestone` | 98 | 0 | 0 | 0 | Ca 34% | "Limestone ground", Ca 34.00 (Auburn table) (was DM 100, Ca 38%: that is calcium carbonate's 38.5) |
+| `mineral_premix` | 100 | 0 | 0 | 0 | fed at **0.265 kg a cow a day** (was 0.3) | **TO VERIFY**: a product label, "typically at 265 grams/head/day when fed as the sole source of supplemental minerals and vitamins" ([Masterfeeds](https://www.masterfeeds.com/nutrition/total-balance-2-dairy-premix-15156/)) |
 
 - **Premix recipe:** bone meal + ground limestone, shapeless, makes 4 *(proposed)*.
 
@@ -35,7 +37,7 @@ The animal's daily intake carries that analysis. A ration score of 0 to 1 sets t
 
 | Animal | Targets for score 1 | Effect | Source |
 |---|---|---|---|
-| Dairy cow, in milk | CP 15-18%, NDF 25-30%, forage at least 40% of DM, premix fed | milk **x (0.67 + 0.33 x score)**: a balanced TMR is the breed's own milk record; poor forage alone gives 67% of it | CP: UNL G1358 (**TO VERIFY**: snippet). NDF 25-30%: Manitoba (**TO VERIFY**: snippet). Forage 40%: OMAFRA (**TO VERIFY**: snippet). Kolver & Muller 1998: a TMR gave about 49% more milk than unsupplemented pasture, so 1 / 1.49 = 0.67 (**TO VERIFY**: [trade summary](https://allaboutfeed.net/animal-feed/feed-additives/optimising-dairy-diets-impact-on-milk-production-and-rumen-function); pasture stands in for poor hay) |
+| Dairy cow, in milk | CP 15-18%, NDF 25-30%, forage at least 40% of DM, premix fed | milk **x (0.67 + 0.33 x score)**: a balanced TMR is the breed's own milk record; poor forage alone gives 67% of it | CP: "crude protein requirements range from 15 percent for 50 pounds of milk to 18 percent for cows producing 110 pounds of milk" ([UNL G1358](https://extensionpubs.unl.edu/publication/g1358/na/html/view)). NDF 25-30%: Manitoba (**TO VERIFY**: snippet; UNL says NDF "should not fall below 26–28 percent"). Forage 40%: "Generally, 40–50 percent forage dry matter is the minimum amount to avoid low milk fat test" (UNL G1358). Kolver & Muller 1998, J. Dairy Sci. 81:1403: "milk production (29.6 vs. 44.1 kg/d)" on pasture and TMR, so 29.6 / 44.1 = 0.67 ([AGRIS](https://agris.fao.org/search/en/records/65df57e77c7033e84bed7e99); pasture stands in for poor hay) |
 | Growing cattle | CP 12% or more and TDN 65% or more *(proposed targets)* | growth **x (0.6 + 0.4 x score)** | Penn State backgrounding: 0.5 lb/d on grass hay up to 1.75 lb/d with hay plus 3-4 lb corn (**TO VERIFY**: [table](https://extension.psu.edu/beef-background-production) read garbled). The 0.6 floor is *(proposed)* |
 | Lambs | TDN 66% or more, CP 15% or more | growth **x (0.8 + 0.2 x score)** | grain-fed or creep-fed lambs gain 20-30% more ([UMN](https://conservancy.umn.edu/server/api/core/bitstreams/8c42e89a-437a-43c1-a82b-f9c63e85b151/content)), so 1 / 1.25 = 0.8 |
 | Ewes | CP 11.6-15.5% in early lactation (NRC 2007) | none on milk *(the ewe milk response was NOT FOUND)*; the score only shows in the readout | [Penn State](https://extension.psu.edu/nutrition-throughout-pregnancy-for-sheep-flocks) |
@@ -85,3 +87,9 @@ The animal's daily intake carries that analysis. A ration score of 0 to 1 sets t
 - **Code:** `FeedMixerBlock`, a 2 x 2 x 2 big part. A click on any cell loads the batch.
 - **Output:** rations are handed on from every outside face (`Towers.handOn` now works from all of a big part's cells).
 - **Game test:** mixer_multiblock_forms.
+
+### Sourcing pass, 2026-11-12
+- Resolved: mixing time (4 min, was 1), fish meal and limestone (Auburn table), the dairy CP and forage targets (UNL G1358),
+  Kolver & Muller's milk figures. Changed but still weak: TMR density (400 kg/m³) and the premix rate (265 g).
+- Still unsourced: Alltech's mixer power (page would not load), Manitoba's NDF (page gone), Penn State's backgrounding table (garbled),
+  the ewe milk response (not searched further). Score shapes and floors are game choices.

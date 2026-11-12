@@ -66,9 +66,9 @@ class FlockTest {
 		Map<String, Integer> suf = pure(SheepBreed.SUFFOLK);
 		assertFalse(Flock.canFirstBreed(suf, 150, 80));
 		assertFalse(Flock.canFirstBreed(suf, 240, 50));
-		assertTrue(Flock.canFirstBreed(suf, 240, 60));
-		assertEquals(90 * 0.65, Flock.targetKg(suf, Flock.FIRST_BREEDING_AGE_DAYS), 1e-9);
-		assertEquals(90, Flock.targetKg(suf, 800), 1e-9);
+		assertTrue(Flock.canFirstBreed(suf, 240, 68));     // 65% of a 104 kg Suffolk ewe (OMAFRA, sourcing pass 2026-11-12)
+		assertEquals(104 * 0.65, Flock.targetKg(suf, Flock.FIRST_BREEDING_AGE_DAYS), 1e-9);
+		assertEquals(104, Flock.targetKg(suf, 800), 1e-9);
 		assertEquals(50 * 0.70, Flock.targetKg(pure(SheepBreed.MERINO), Flock.FIRST_BREEDING_AGE_DAYS), 1e-9);
 	}
 
@@ -102,7 +102,7 @@ class FlockTest {
 		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("SUF", feb));
 		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("EFR", feb));
 		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("MER", feb));
-		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("DOR", feb));
+		org.junit.jupiter.api.Assertions.assertFalse(Flock.inSeason("DOR", feb), "Dorper: intermediate, as the medium class");
 		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("SUF", sep5));
 		org.junit.jupiter.api.Assertions.assertTrue(Flock.inSeason("SUF", 0), "the short season runs to 1 January");
 		// a year is 365 real days

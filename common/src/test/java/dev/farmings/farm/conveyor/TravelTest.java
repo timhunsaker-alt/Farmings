@@ -37,7 +37,7 @@ class TravelTest {
 		assertEquals(10.0, Travel.transitSeconds(20, 2.0), 1e-9);     // a 20 m belt at 2 m/s
 		assertEquals(7500, Travel.beltWatts(30), 1e-9);
 		assertEquals(15000, Travel.beltWatts(31), 1e-9);
-		assertEquals(3700, Travel.augerWatts(21), 1e-9);
-		assertEquals(7400, Travel.augerWatts(22), 1e-9);
+		assertEquals(3700, Travel.augerWatts(9), 1e-9);     // one 3.7 kW drive per 9 m (AGI Westfield)
+		assertEquals(7400, Travel.augerWatts(10), 1e-9);
 	}
 }

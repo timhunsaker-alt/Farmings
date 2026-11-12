@@ -80,7 +80,9 @@ since laying *(proposed thresholds)*:
   - Plymouth Rock hen, 3.4 kg × 68%: 4 chicken items.
   - Bronze tom, 16.6 kg × 80.5%: 26 turkey items.
 - **Keeping meat:** raw poultry keeps **1.5 days** in the cold room. Cooked poultry keeps **3.5 days**.
-  - These are USDA FSIS figures: 1-2 days raw and 3-4 days cooked, as listed on FoodSafety.gov's cold storage chart (**TO VERIFY**).
+  - These are USDA FSIS figures: "Chicken or turkey, pieces 1 to 2 days" raw, and cooked poultry "Pieces, plain 3 to 4 days"
+    ([FSIS 2004 fact sheet](https://webharvest.gov/peth04/20041015215325/http:/www.fsis.usda.gov/OA/pubs/facts_basics.pdf);
+    FoodSafety.gov's chart refused the fetch).
   - Out of the cold, the steak rule applies: **1 day** *(proposed)*.
   - Spoiled poultry becomes **spoiled poultry** (Hunger and Nausea).
 
@@ -140,3 +142,7 @@ since laying *(proposed thresholds)*:
 - **Chicken:** Farmings birds drop `farmings:chicken`, which cooks to `farmings:cooked_chicken`. Both spoil, and both carry the
   `c:foods` meat tags.
 - **Game tests:** rotten_egg_thrown_nauseates, farm_chicken_spoils.
+
+### Sourcing pass, 2026-11-12
+- Resolved 1 mark: the FSIS raw and cooked poultry fridge times.
+- Still unsourced: shell eggs out of the cold (the FSIS egg page refused the fetch) and the duck down yield (Farrell review only).

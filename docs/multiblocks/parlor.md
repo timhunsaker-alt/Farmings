@@ -30,8 +30,9 @@ Milk is food and an ingredient; it is never sold (VISION).
 
 ## More size research, 2026-11-08 (secondary, all *(unverified)*)
 - **Parlor stall spacing:** manufacturers use 80 to 115 cm between cows, centre to centre: [DeLaval HB30](https://delaval.com/globalassets/inriverresources/pdfs/h/hb30-hb50-new-4page-can.pdf) 45 in (115 cm) and HB50 31.5 in (80 cm), [BouMatic HD2](https://boumatic.com/products/hd2/) 115 cm, [GEA EuroClass 1200](https://www.gea.com/en/products/milking-farming-barn/dairyparlor-milking-parlor/herringbone-parlors/herringbone-parlor-euroclass-1200re.jsp) 120 cm. At 1 cell = 1 m that is **1 cell per cow** *(proposed, same rounding as the barn's stalls)*.
-- **Vacuum pump motors:** a milking-equipment dealer lists pump sets at [3 kW and 4 kW](https://res.cloudinary.com/milking-equipment-solutions/image/upload/v1692797180/Milking%20Equipment%20Solutions%20Images/Exploded%20diagrams/Technical_Information_-_Vaccum_Pump_Sets_n74i0p.pdf) (flow columns not readable). That agrees with our own arithmetic of about 5 hp (3.7 kW) for 6 units, so a **4 kW three-phase pump motor** is a reasonable *(proposed)* figure.
-- **Bulk tank refrigeration:** no hp-per-size table found. One data point: a small [Paul Mueller open tank](https://genemco.com/cdn/shop/files/SPPP260paulmuellerprocessor.pdf) needs a condensing unit of about 1.97 hp (66,000 BTU/h). The [R-1000](https://www.paulmueller.com/milk-cooling-and-storage/milk-cooling-tanks/mueller-model-r-open-tank) uses a three-phase 400 V reciprocating compressor. A real figure needs a manufacturer datasheet for a stated tank size; until then pick one *(proposed)*, e.g. a 2.2 kW chiller for the 2 x 2 x 2 tank.
+- **Vacuum pump motors:** a milking-equipment dealer lists pump sets at [3 kW and 4 kW](https://res.cloudinary.com/milking-equipment-solutions/image/upload/v1692797180/Milking%20Equipment%20Solutions%20Images/Exploded%20diagrams/Technical_Information_-_Vaccum_Pump_Sets_n74i0p.pdf) Its table reads "3 kw (4 hp) 1,500" n.l/min and "4 Kw (5.5 hp) 2,070" at 50 kPa. By the UW rule, 12 units need 35 + 36 = 71 cfm (about 2,010 l/min), so a **4 kW three-phase pump motor** covers the largest parlor (12 stalls).
+- **Bulk tank refrigeration:** no hp-per-size table found. One data point: a small [Paul Mueller open tank](https://genemco.com/cdn/shop/files/SPPP260paulmuellerprocessor.pdf) needs a condensing unit of about 1.97 hp (66,000 BTU/h). The [R-1000](https://www.paulmueller.com/milk-cooling-and-storage/milk-cooling-tanks/mueller-model-r-open-tank) uses a three-phase 400 V reciprocating compressor. For a 1,000 L tank, Mueller's R-1000 lists a condensing unit of **2.6 kW** maximum connected load and 6.15 kW minimum cooling capacity
+([Mueller Model R](https://en.paulmueller.com/milk-cooling-and-storage/milk-cooling-tanks/mueller-model-r-open-tank)). The game's 1,000 L tank uses **2.6 kW** (was 2.2 kW).
 
 ## Layout *(proposed; the approved spec listed parts but no geometry)*
 Drawn with the controller at the origin and the tank to the east; it may lie any of the barn's eight ways (the controller finds the one that forms).
@@ -43,8 +44,8 @@ Drawn with the controller at the origin and the tank to the east; it may lie any
 ## Built (2026-11-08)
 Plain Java `husbandry/parlor` (layout check, `BulkTank`, tests); blocks and entities in `dev.farmings.parlor`. Once a second the controller
 calls each lactating cow with milk (within 24 blocks *(proposed)*) to a free stall, she walks there (`CattleEntity.MilkingGoal`), is milked
-into the tank (1.03 kg per litre, 35 C), and goes home. Pump 4 kW, chiller 2.2 kW, tank 1,000 L (all Tim's, 2026-11-08). The tank cools
-35 C to 4 C in 14,400 ticks (the manufacturer's 3 h, scaled 15:1); above 10 C the tank is WARM *(proposed)*; warm only blocks a **new milking session** (Tim chose this 2026-11-09 after the first client screenshots showed one cow's 35 C milk stopping the rest of the herd): milk keeps going in while the last of it went in under 6,000 ticks ago *(proposed)*. Faults: NO POWER,
+into the tank (1.03 kg per litre, 35 C), and goes home. Pump 4 kW, chiller 2.2 kW, tank 1,000 L (all Tim's, 2026-11-08; the sourcing pass changed the chiller to 2.6 kW, see above). The tank cools
+35 C to 4 C in 14,400 ticks (the manufacturer's 3 h, scaled 15:1); above 10 C the tank is WARM (the Grade "A" limit: "blend temperature after the first milking and subsequent milkings does not exceed 10ºC (50ºF)", [PMO 2013, Section 7](https://www.extension.purdue.edu/4-H/_docs/2013-pmo-final-section-7-grade-a-standards.pdf)); warm only blocks a **new milking session** (Tim chose this 2026-11-09 after the first client screenshots showed one cow's 35 C milk stopping the rest of the herd): milk keeps going in while the last of it went in under 6,000 ticks ago *(proposed)*. Faults: NO POWER,
 TANK FULL, TANK WARM. An empty bucket on the tank takes 10 L as a milk bucket *(proposed)*. Not built: spoilage, processing, models.
 
 ## DECISIONS for Tim
@@ -106,3 +107,7 @@ separate from the entry lane.
   line.
 - **Milk:** East Friesian milk is 5.68% fat and 4.92% protein (sheep.md). The yield follows `Flock.milkKg`, scaled by the ewe's East
   Friesian share and her milk_yield trait.
+
+### Sourcing pass, 2026-11-12
+Resolved 3 marks: vacuum pump 4 kW (dealer table), chiller now 2.6 kW (Mueller R-1000), WARM above 10 C (PMO). The rest are game
+choices (stall rounding, call range, the 6,000-tick grace, the 10 L bucket, layout).

@@ -10,7 +10,11 @@ puberty at 40% of mature weight, first breeding at 15 months and 55%). This adds
 - **Weight at about 15 months** (Duplessis and colleagues, as quoted by [Dairy Producer](https://www.dairyproducer.com/tracking-heifer-growth-building-a-strong-foundation-for-productive-cows/)):
   Holstein 425 kg, Brown Swiss 379 kg, Jersey 297 kg. Against our mature weights that is 59.9%, 62.5% and 63.2% of mature weight.
 - **Birth weight:** older compilations give Holstein about 89 lb (40 kg), Jersey about 55 lb (25 kg), Brown Swiss 80-100 lb (36-45 kg); a
-  secondary source. Our 6% of mature weight (Holstein 43 kg, Jersey 28 kg, Brown Swiss 36 kg) sits inside those ranges *(proposed, unverified)*.
+  secondary source. Our 6% of mature weight (Holstein 43 kg, Jersey 28 kg, Brown Swiss 36 kg) is close to sourced figures:
+  Holstein "43.3. kg" ([Heins et al. 2010, J. Dairy Sci.](https://experts.umn.edu/en/publications/birth-traits-of-pure-holstein-calves-versus-montbeliarde-sired-cr/)),
+  Jersey "60 lbs" (27 kg) ([UMaine Extension Bulletin 1078](https://extension.umaine.edu/publications/1078e/)),
+  Brown Swiss "39.3 +/- 0.09 kg" in a Turkish herd ([Turkish Brown Swiss study](https://avesis.omu.edu.tr/yayin/b1428901-1d12-4f87-b20a-643a8483da2b/estimates-of-phenotypic-and-genetic-parameters-for-birth-weight-of-brown-swiss-calves-in-turkey-using-an-animal-model)).
+  That is 5.8-6.5% of mature weight; Brown Swiss at 6% is about 3 kg light.
 - **Daily gain targets:** 0.7-0.8 kg/day is the usual advice for calving at 24 months ([Wynnstay](https://www.wynnstay.co.uk/blog/heifers-must-be-the-correct-body-size-as-well-as-age-at-first-calving/)); Holsteins
   2.0-2.2 lb/day (about 0.9-1.0 kg) before puberty and Jerseys 1.4 lb/day (0.64 kg) (Washington State table, via search result, secondary). Gain above 2 lb/day (0.9 kg)
   before 12 months can harm udder development.
@@ -21,9 +25,9 @@ Target weight by age, straight lines between points (fractions of the breed's ma
 
 | Age | Fraction |
 |---|---|
-| birth | 0.06 *(proposed)* |
+| birth | 0.06 (sourced birth weights above are 5.8-6.5%) |
 | 15 months (456 real days) | Holstein 0.599, Brown Swiss 0.625, Jersey 0.632 (sourced, above); other breeds use Holstein's 0.60 *(stand-in)* |
-| 48 months (1,460 real days) | 1.00 *(proposed; no source, 24-month calving at about 85% is common knowledge but not yet looked up)* |
+| 48 months (1,460 real days) | 1.00: the third calving (24 months plus two 12-month intervals); "3rd calving, 100% mature weight" ([USDA APHIS BAMN, heifer growth](https://www.aphis.usda.gov/sites/default/files/bamn07_heifergrowth.pdf)). The same table gives "1st calving, 82% mature weight" |
 
 - This gives a Holstein about 0.84 kg a day to 15 months, Jersey 0.59, Brown Swiss 0.74: close to the 0.7-0.8 advice. After 15 months it slows.
 - **Actual gain per real day = target slope at her age x her fed fraction** (the less fed shortfall the better she grows; an underfed heifer is
@@ -50,3 +54,7 @@ GrowthMarked/GrowthTick; an older saved cow starts counting from the load. Game 
 
 ## Decisions
 All three settled 2026-11-08: curve points as proposed; option 1; slower growth is the only effect.
+
+### Sourcing pass, 2026-11-12
+Resolved 3 marks: birth weight (6% fits Holstein and Jersey; Brown Swiss is about 3 kg light) and maturity at 48 months (third calving).
+Note: the straight line gives about 71% of mature weight at 24 months, below the source's 82% at first calving. Pasture growth is a game rule.

@@ -13,14 +13,14 @@ public enum FieldCrop {
 	// UMaine 2265: 2 t hay/ac a year in 2 cuts at 88% DM. First cut, regrowth and stand life NOT FOUND (proposed).
 	TIMOTHY("timothy", Kind.PERENNIAL, 60, 42, 10, 1.97, 0.88),
 	// UMaine 2266: 3.5 t DM/ac (2-5, TO VERIFY) in 4 cuts, 35-day regrowth (4-6 weeks). First cut and stand life proposed.
-	ORCHARDGRASS("orchardgrass", Kind.PERENNIAL, 60, 35, 20, 1.96, 0.88),
+	ORCHARDGRASS("orchardgrass", Kind.PERENNIAL, 60, 35, 20, 1.48, 0.88),
 	// Kentucky ID-275: 22.5 t as-fed/ac at 35% DM = 17.6 t DM/ha. Silage at 100 days (proposed); grain at 114 (relative maturity);
 	// grain 179.3 bu/ac x 56 lb = 11.25 t/ha (USDA NASS 2024, TO VERIFY).
 	CORN("corn", Kind.CORN, 100, 0, 1, 17.6, 0.35),
 	// Wisconsin trials: 61 bu/ac x 32 lb = 2.19 t/ha; straw 2.03 t/ac (Iowa State) = 4.55 t/ha. 100 days TO VERIFY.
 	OATS("oats", Kind.GRAIN, 100, 0, 1, 2.19, 0.89),
 	// USDA NASS 2024: 76.7 bu/ac x 48 lb = 4.13 t/ha; straw 1.01 t/ac (Ohio State) = 2.26 t/ha; 85 days (Alaska, TO VERIFY).
-	BARLEY("barley", Kind.GRAIN, 85, 0, 1, 4.13, 0.89);
+	BARLEY("barley", Kind.GRAIN, 87, 0, 1, 4.13, 0.89);
 
 	public enum Kind {
 		/** Cut and regrows (alfalfa, grasses). */

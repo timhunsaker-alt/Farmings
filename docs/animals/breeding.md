@@ -13,17 +13,17 @@ and at 55% of mature weight; first two calves heifers, the third a bull, then 50
 | Heat cycle | 21 days (17-24) | 1.4 game days, 33,600 ticks |
 | Gestation | 283 days (Angus 280, Wagyu 284) | 18.9 game days |
 | Dry period | 60 days | 4 game days |
-| Heat length | sources disagree, about 7-9 h to 18-24 h *(unverified)* | **0.75 real day = 1,200 ticks** *(proposed; one real day of the cycle is the shortest the clock can show)* |
+| Heat length | 18 h when watched by eye, about 7 h with continuous monitoring ([NMSU B117](https://pubs.nmsu.edu/_b/B117/): "a mean of 18 hours"; "averaged 7 hours") | **0.75 real day (18 h) = 1,200 ticks**, the visual mean |
 
 ## Heat
 - A female that is a heifer past her first-breeding rules (15 months and breeding weight) or a lactating cow past the waiting period
   comes into heat every 21 real days for the heat length. Pregnant, dry-and-pregnant, calf and retired animals never come into heat.
-- **Waiting period after calving: 60 real days** *(proposed; the calving-interval arithmetic in cattle.md leaves about 82 days from calving to conception, so 60 fits inside it. No source found)*.
+- **Waiting period after calving: 60 real days.** "A VWP of 60 days ... is a standard throughout the dairy industry" ([Penn State Extension](https://extension.psu.edu/how-long-should-the-voluntary-waiting-period-be)).
 - A cow in heat is shown (the readout, and later a visual cue such as a particle) *(proposed)*.
 
 ## Natural service *(proposed)*
 - A **bull** (not a bull calf, not a steer) housed in the same barn serves any cow in heat in the barn. The cow walks to him or he to her; the first version teleports nothing: the cow stays in her stall and the bull is "in the barn" if he has a stall of his own in the same controller. Service is checked once a second with the barn tend.
-- Chance of conception per heat: **not sourced**. Proposal: a served cow in heat conceives, so there is no luck to lose; fertility (the genome trait) instead shifts the **waiting period** *(proposed, DECISION below)*.
+- Chance of conception per heat: in real herds about 40% at first service for lactating cows and 65% for heifers ([Virginia Cooperative Extension, Nebel 2002](https://sites.ext.vt.edu/newsletter-archive/dairy/2002-05/aiconception.html): "from 60 to 40%"; "approximately 65% first service conception"). Proposal: a served cow in heat conceives, so there is no luck to lose; fertility (the genome trait) instead shifts the **waiting period** *(proposed, DECISION below)*.
 - Sire = the bull that served her. One bull can serve all the cows in heat in his barn. Bull health or limits: none yet.
 
 ## Artificial insemination *(proposed)*
@@ -55,8 +55,8 @@ and at 55% of mature weight; first two calves heifers, the third a bull, then 50
 Heat (`husbandry/Breeding`), a housed bull serving housed cows in heat on the barn tend, conception (sire genome kept on the dam, due tick), calving (`Offspring.create`, calf beside the dam, her lactation starts), first-two-heifers rule per owner (`CalfCounts`, saved with the world), save/load. New proposals with no source: calf birth weight is 6% of the dam's mature weight (a Holstein calf about 43 kg, unverified). **Built later the same day:** calf growth ([growth.md](growth.md)) and straws (`empty_straw` used on a grown bull gives a `semen_straw` holding his genome; a semen straw used on a cow in heat inseminates her and is used up; game test `straw_inseminates`). **Not built:** twins, stillbirths, beef crosses, a heat cue you can see.
 
 ## Original decisions (kept for the record)
-1. Heat length of 0.75 real day *(proposed)*, and the 60-day waiting period *(proposed)*. Both lack a good source.
-2. Conception: every service in heat conceives *(proposed)*, or add a chance? A chance needs a sourced number.
+1. Heat length of 0.75 real day, and the 60-day waiting period. (Both sourced on 2026-11-12; see above.)
+2. Conception: every service in heat conceives *(proposed)*, or add a chance? A chance needs a sourced number (now found: about 40% for cows, 65% for heifers, see above).
 3. First-two-heifers counter: per world (proposed), per player, or per dam.
 4. How a bull is "in the barn": his own stall in the barn, or free to roam to the cow (needs pathing and may need pens).
 5. Whether the first version builds natural service **and** straws together, or natural service first (my recommendation: natural service first, straws right after, because the straw adds an item, a collection step and a right-click on cows).
@@ -85,7 +85,8 @@ Game test: herd_book_records.
   as a bull's does.
   - Every insemination in heat conceives, as for cattle *(proposed, for parity with natural service)*.
   - Real AI conceives less often: 60-80% with frozen semen placed by laparoscope ([Sathe 2018, Frontiers](https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2018.00266/full)),
-    and 20-40% with frozen semen through the cervix (**TO VERIFY**: snippet). This is a known difference.
+    and **40%** (was 20-40%) with thawed semen through the cervix: "The combined pregnancy rate for deep cervical and transcervical
+    insemination was 40%", against 85% by laparoscope in the same trial ([Gage 1994, Utah State thesis](https://digitalcommons.usu.edu/etd/3890)). This is a known difference.
   - Collection is by artificial vagina (Steyn, [SARE](https://projects.sare.org/wp-content/uploads/993336sheep-ai-steyn-fresh.pdf)).
     The game does it with a right-click on an adult ram.
 - **Turkey:** see poultry.md. A turkey straw is fresh and spoils after 30 real minutes.
@@ -96,3 +97,7 @@ Game test: herd_book_records.
   empty straw in the inventory.
 - **Tooltip:** shows the species and the sire's herd ID.
 - **Game tests:** ram_straw_inseminates_ewe, bbw_hen_fertile_by_straw, turkey_straw_goes_stale, straw_wrong_species_refused.
+
+### Sourcing pass, 2026-11-12
+Resolved 4 marks: heat length (18 h, matches the 0.75 day), the 60-day waiting period, sheep cervical AI (40%), and the conception rate the
+decision asked for (40% cows, 65% heifers; the "always conceives" rule stays a proposal). The other marks are game rules.

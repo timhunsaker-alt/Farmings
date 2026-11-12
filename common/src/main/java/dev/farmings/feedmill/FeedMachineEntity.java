@@ -45,8 +45,8 @@ public class FeedMachineEntity extends BlockEntity implements ItemSink, WorldlyC
 	public static final double MILL_WATTS = 9100;
 	public static final double MIXER_WATTS = 56_000;
 	public static final int MILL_TICKS_PER_KG = (int) Math.round(20 / 0.53);
-	public static final double MIXER_KG = 2000;
-	public static final int MIX_AFTER_TICKS = 80;
+	public static final double MIXER_KG = 2300;     // 7.1 m3 x 80% at 400 kg/m3 (TO VERIFY, Ag Proud; sourcing pass 2026-11-12)
+	public static final int MIX_AFTER_TICKS = 320;     // 4 min after the last ingredient (Saskatchewan Agriculture), 16 s at 15:1
 	private static final int[] SLOTS = {0};
 
 	private Motor motor;

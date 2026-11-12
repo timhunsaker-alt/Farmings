@@ -32,9 +32,9 @@ class RationTest {
 	void hensNeedProteinAndCalcium() {
 		assertEquals(0.75 + 0.25 * ((3.0 / 7) / 2), Ration.eggFactor(Feedstuff.MIXED_GRAIN.analysis()), 1e-9);
 		FeedMix layer = new FeedMix();
-		layer.add(72, Feedstuff.CORN_GRAIN.analysis());
+		layer.add(71, Feedstuff.CORN_GRAIN.analysis());
 		layer.add(20, Feedstuff.FISH_MEAL.analysis());
-		layer.add(8, Feedstuff.LIMESTONE.analysis());
+		layer.add(9, Feedstuff.LIMESTONE.analysis());     // limestone is 34% Ca (Auburn 2014): a little more of it
 		assertEquals(1.0, Ration.eggFactor(layer.analysis()), 1e-9);
 	}
 

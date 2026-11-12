@@ -26,11 +26,14 @@ the pen. It forms when:
 Fault messages name the first thing missing. Walls and fences are the player's: the shed does not check that the pen is closed in.
 
 **Capacity:** 1.5 m² per pregnant or lactating ewe (OMAFRA), so **3 sheep-pen cells hold 2 sheep** (`Flock.penCapacity`). A lambing
-pen holds one ewe and her lambs. Lambs under weaning age (120 days, proposed) do not count. The controller takes in sheep within
+pen holds one ewe and her lambs. Lambs under weaning age (84 days, was 120; "Normally, lambs should be weaned at approximately 12 weeks of age":
+[NMSU Circular 703](https://pubs.nmsu.edu/_circulars/CR703/index.html)) do not count. The controller takes in sheep within
 **48 blocks** *(proposed)* that have no shed and are not wild (docs/taming.md), until the shed is full.
 
 **Lambing pens:** about 10% of a 100-ewe flock (Penn State G5). The readout warns when there are fewer. A ewe due within **3 real
-days** *(proposed)* is sent to a free lambing pen and stays there for **14 real days** after lambing *(proposed)*. If no jug is free,
+days** *(proposed)* is sent to a free lambing pen and stays there for **2 real days** after lambing (was 14). NMSU Circular 703: a ewe with a single
+"can be let out of the jug after 24 to 36 hours", and with twins "it is recommended that they remain in the jug for 48 hours"
+([CR703](https://pubs.nmsu.edu/_circulars/CR703/index.html)). If no jug is free,
 she lambs in the pen.
 
 ## Pasture (`husbandry/shed/PastureLayout`)
@@ -88,3 +91,8 @@ matter.
   sides or top (or by hand), and manure comes out of the bottom.
 - **Saved:** the shed now saves its bedding store.
 - **Game test:** shed_bedding_fills_and_empties.
+
+### Sourcing pass, 2026-11-12
+- Resolved 2 marks from NMSU Circular 703: weaning age 120 to 84 days, and the stay in the lambing pen 14 to 2 real days.
+- Still proposed: moving a ewe in 3 days before lambing (CR703 brings ewes into the jug after lambing), the lamb manure figure and
+  1 L = 1 kg. The rest are game sizes.

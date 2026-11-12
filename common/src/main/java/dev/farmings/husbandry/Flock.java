@@ -171,13 +171,13 @@ public final class Flock {
 		if (micron <= 0) {
 			return Grade.HAIR;
 		}
-		if (micron < 22.0) {
+		if (micron < 22.05) {
 			return Grade.FINE;
 		}
-		if (micron < 25.0) {
+		if (micron < 24.95) {
 			return Grade.HALF_BLOOD;
 		}
-		if (micron < 28.0) {
+		if (micron < 27.85) {
 			return Grade.THREE_EIGHTHS;
 		}
 		if (micron < 31.0) {
@@ -318,7 +318,8 @@ public final class Flock {
 		return switch (breedCode) {
 			case "SUF" -> new int[] {243, 0};
 			case "EFR" -> new int[] {226, 14};
-			default -> new int[] {195, 73};     // Merino, Dorper
+			case "DOR" -> new int[] {226, 14};     // "intermediate" seasonality, as the medium class (flockandherd; sourcing pass 2026-11-12)
+			default -> new int[] {195, 73};     // Merino
 		};
 	}
 

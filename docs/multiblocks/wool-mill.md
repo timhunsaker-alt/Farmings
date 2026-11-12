@@ -26,7 +26,9 @@ A batch takes 5 seconds *(proposed)*. No motor ratings were found, so all five a
 - **Lanolin:**
   - Wool grease is about **15%** of greasy wool. One Australian scour reports 150 kg of lanolin per tonne of greasy wool
     ([P2 InfoHouse](https://p2infohouse.org/ref/10/09338.htm)); other sources give 6-20%.
-  - The bowl's centrifuge recovers **30%** of the grease *(proposed; no figure for water scouring was found)*.
+  - The bowl's centrifuge recovers **30%** of the grease. "Because the centrifugal separators recover only 25-30% of the
+    recoverable wool grease ..." ([US patent 4059516](https://patents.google.com/patent/US4059516)); conventional scouring
+    recovers "usually not more than 40%" ([US patent 4168143](https://patents.google.com/patent/US4168143A/en)).
   - One lanolin item is 0.1 kg *(proposed)*.
 - **Carding:** loses **5%** as short fibre *(proposed)*.
 - **Spinning:**
@@ -41,3 +43,8 @@ A batch takes 5 seconds *(proposed)*. No motor ratings were found, so all five a
 Yarn keeps the fleece's natural colour from the coat genes. White wool spins white yarn, black spins black, brown spins brown, and
 grey (a spotted coloured sheep, or a black one past two years) spins light grey. Dyeing is a crafting recipe: white yarn plus any
 vanilla dye gives yarn of that colour.
+
+### Sourcing pass, 2026-11-12
+- Resolved 1 mark: centrifuge grease recovery, 30%, matches US patent 4059516 ("25-30%").
+- Still proposed: carding loss (searched Woolmark and Woolwise; no typical noil share found), motor ratings, the spinning shares and
+  the item sizes.

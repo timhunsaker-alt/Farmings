@@ -46,9 +46,9 @@ for Tim if seasons are ever added)*.
 ## Breeds
 | Breed | Code | Use | Mature ewe kg | Lambs per ewe lambing | Greasy fleece kg | Micron | Staple cm/yr | Clean yield | Coat |
 |---|---|---|---|---|---|---|---|---|---|
-| Merino | MER | fine wool | 50 | 1.25 | 4-6 (5) | under 24 (21) | 6-10 (8) | 45-55% (50%) | white, rams horned |
-| Suffolk | SUF | meat | 90 | 1.8 | 2.2-2.7 (2.45) | 28-33 (30) | 8-10 (9) | 50-62% (56%) | white, black head and legs, polled |
-| Dorper | DOR | meat, hair | 85 | 1.5 | 0.5-1, shed | hair | short | n/a | white, black head and neck, polled |
+| Merino | MER | fine wool | 50 | 1.25 | 4-6 (5) | under 24 (21) | 6-10 (8) | 65-75% (70%) | white, rams horned |
+| Suffolk | SUF | meat | 104 | 1.8 | 2.2-2.7 (2.45) | 28-33 (30) | 8-10 (9) | 50-62% (56%) | white, black head and legs, polled |
+| Dorper | DOR | meat, hair | 77 | 1.5 | 0.5-1, shed | hair | short | n/a | white, black head and neck, horn base or small horns |
 | East Friesian | EFR | dairy | 77 | 2.2 | 4-5.5 (4.75) | 29-33 (31) | 10-15 (12.5) | 55-65% (60%) | white, polled, bare "rat tail" |
 
 Values in brackets are what the game uses (the middle of the range).
@@ -58,20 +58,26 @@ Values in brackets are what the game uses (the middle of the range).
   49.0 kg, [CSIRO EA9800288](https://publish.csiro.au/AN/EA9800288)). Fleece, micron, staple and lambing from the
   [Canadian Co-operative Wool Growers breed page](https://www.wool.ca/breeders-directory/sheep/merino) (**TO VERIFY**: its ewe
   weight, 90-115 kg, is far above the research figures and is not used). Micron 20-22 also from
-  [Wool measurement](https://en.wikipedia.org/wiki/Wool_measurement) listings. Yield from the Rambouillet range in
-  [SDSU Wool Evaluation 101](https://extension.sdstate.edu/sites/default/files/2022-12/P-00227-V2.pdf) (**TO VERIFY** for Merino).
+  [Wool measurement](https://en.wikipedia.org/wiki/Wool_measurement) listings. Yield 65-75% (was 45-55%, a Rambouillet range):
+  [NMSU Guide B-409](https://pubs.nmsu.edu/_b/B409/), Table 4, "Merino (Medium)", 21-22 µm, clean wool yield "65-75". The
+  same table gives 60-70% for finer Merino.
   Rams horned, ewes polled: [Duijvesteijn et al. 2018, Genet. Sel. Evol.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5964914/).
   Skin folds are drawn on the model only.
 - **Suffolk:** fleece, micron, staple, lambing 180% and colour from the
-  [Canadian Co-operative Wool Growers](https://www.wool.ca/breeders-directory/sheep/suffolk). Ewe weight 80-100 kg from
-  [Farmers Weekly](https://www.farmersweekly.co.za/farming-tips/how-to-livestock/the-basics-of-the-suffolk-breed/), midpoint 90
-  (**TO VERIFY**; the wool growers list 100-115). Yield 50-62% from
+  [Canadian Co-operative Wool Growers](https://www.wool.ca/breeders-directory/sheep/suffolk). Ewe weight 104 kg (was 90, from
+  Farmers Weekly's South African 80-100 kg): [OMAFRA, choosing breeds](https://www.ontario.ca/page/choosing-breeds-producing-profitable-market-lambs),
+  "104.4 kg (230 lb) — Suffolk", an estimate of average mature ewe weight for U.S. breeds. The wool growers list 100-115. Yield 50-62% from
   [Kentucky ASC-127](https://publications.mgcafe.uky.edu/sites/publications.ca.uky.edu/files/asc127.htm) and breed listings.
-- **Dorper:** weight 70-100 kg, lambing 150%, hair coat that sheds with 0.5-1 kg of wool, black head and neck, from the
-  [Canadian Co-operative Wool Growers](https://www.wool.ca/breeders-directory/sheep/dorper) (**TO VERIFY**: a South African
-  study reports about 51 kg mature ewes). The coat is partly hair and partly wool, grown in winter and shed in spring
-  ([Cornell Small Farms](https://smallfarms.cornell.edu/2011/01/dorper-sheep-truths-and-myths)). Polled *(proposed; the breed
-  standard was not opened)*.
+- **Dorper:** lambing 150%, hair coat that sheds with 0.5-1 kg of wool, black head and neck, from the
+  [Canadian Co-operative Wool Growers](https://www.wool.ca/breeders-directory/sheep/dorper). Ewe weight 77 kg (was 85, the
+  middle of the wool growers' 70-100): [OMAFRA](https://www.ontario.ca/page/choosing-breeds-producing-profitable-market-lambs),
+  "77.1 kg (170 lb) — Border Leicester, Corriedale, Dorper, East Friesian, ...". The breed society lists "95.0 kg" for ewes of
+  6 teeth and over in good condition ([Dorper Sheep Breeders' Society of SA](https://dorpersa.co.za/breed-standards/)).
+  The coat is partly hair and partly wool, grown in winter and shed in spring
+  ([Cornell Small Farms](https://smallfarms.cornell.edu/2011/01/dorper-sheep-truths-and-myths)). Horns: not polled (was polled).
+  The breed standard says "A developed horn base or small horns are the ideal" and "Heavy horns are undesirable but
+  permissible" ([Dorper SA breed standards](https://dorpersa.co.za/breed-standards/)). Which horn allele the founders carry is
+  an open point for Tim.
 - **East Friesian:** ewes 160-180 lb (73-82 kg), grease fleece 9-12 lb (4-5.5 kg), 29-33 micron, yield 55-65%, staple 4-6 in
   (10-15 cm), polled, open white face: American Sheep Industry Association material quoted at
   [apparelsearch.com](https://www.apparelsearch.com/education_research_sheep_east_friesian.htm). Litter size 2.2 lambs per
@@ -100,9 +106,11 @@ Crosses take the breed-weighted mean, and the fertility trait moves it by up to 
   once a year *(proposed timing)*. Crosses carry the hair/wool gene below.
 - **Clean yield** (scouring): greasy weight × the breed's yield; the wool mill uses this. Yield ranges 35-60% in general and rise
   with fibre diameter ([Kentucky ASC-127](https://publications.mgcafe.uky.edu/sites/publications.ca.uky.edu/files/asc127.htm)).
-- **Grade** by micron, in the US blood-grade style: fine under 22.0, half blood 22.0-24.9, three-eighths 25.0-27.9,
-  quarter 28.0-30.9, low quarter and coarser 31.0 and over. **TO VERIFY** the boundaries against the ASI
-  grade table (SDSU Wool Evaluation 101 lists the system). Skirtings are one grade lower.
+- **Grade** by micron, in the US blood-grade style: fine under 22.05, half blood 22.05-24.94, three-eighths 24.95-27.84,
+  quarter 27.85-30.99, low quarter and coarser 31.00 and over (was 22.0 / 25.0 / 28.0 / 31.0). Source:
+  [SDSU Wool Evaluation 101](https://extension.sdstate.edu/sites/default/files/2022-12/P-00227-V2.pdf), Table 1, "Requirements
+  for wool grades": 64's "20.60-22.04" (fine), ½ blood "22.05-23.49" to "23.50-24.94", ⅜ blood "24.95-26.39" to "26.40-27.84",
+  ¼ blood "27.85-29.29" to "29.30-30.99", low ¼ blood from "31.00". Skirtings are one grade lower.
 
 ## Milk (East Friesian)
 | Quantity | Value | Source |
@@ -166,7 +174,8 @@ One hay rack block serves 2 sheep (50 cm each, the top of the Penn State range r
 | Pattern seed | spot shapes only | as cattle |
 
 Black-based colours fade to grey in many sheep (Sponenberg); the renderer greys black wool a little with age *(proposed)*.
-Founders: all four breeds are white (A^Wt). Suffolk and Dorper carry the black head pattern, Merino carries sex-limited horns (H^L/H^L), the others are polled.
+Founders: all four breeds are white (A^Wt). Suffolk and Dorper carry the black head pattern, Merino carries sex-limited horns (H^L/H^L), the others are polled. The Dorper's standard calls for a horn base or small horns
+(see Breeds), so its polled founders are an open point.
 A small share of founders carry recessive non-agouti and brown *(proposed: 5% each)*, so coloured lambs appear now and then, as on
 real farms.
 
@@ -219,7 +228,7 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
 | Suffolk | short (under 4 months) | cycles 1 Sep - 1 Jan ("usually begin cycling in September and continue until January 1") |
 | East Friesian | medium (4-6 months) | 15 Aug - 15 Jan (the expanded season ASC237 gives) |
 | Merino | long (6-8+ months) | 15 Jul - 15 Mar, 8 months *(proposed: the long class's upper end)* |
-| Dorper | not in ASC237 | long, as Merino *(proposed; Dorpers are known for breeding out of season, **TO VERIFY**)* |
+| Dorper | not in ASC237 | medium, as East Friesian: 15 Aug - 15 Jan (was long, as Merino). "Dorpers are regarded as intermediate with regard to seasonal expression of oestrus activity (Cloete et al., 2000)" ([Flock & Herd, 2014](https://www.flockandherd.net.au/sheep/reader/reproductive-performance-dorper.html)) |
 
 - **Crossbreds:** a crossbred ewe takes her top breed's season.
 - **Outside the season:** a ewe is ANOESTROUS. She doesn't cycle and can't take a straw. A ewe already in lamb carries on.
@@ -233,7 +242,10 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
 - **Wild and taming (taming.md):**
   - Dogs spawn wild in pairs in plains, meadows and windswept hills, the sheep biomes, at weight 2 *(proposed)*.
   - A wild dog keeps 6 blocks from a player with empty hands, and follows raw meat (beef, mutton, chicken, Farmings meats).
-  - It settles in a corral on **raw meat** in the bait trough: 0.5 kg a day *(proposed; NOT FOUND)*, one meat item a day.
+  - It settles in a corral on **raw meat** in the bait trough: 0.5 kg a day, one meat item a day. "As a guide, dogs should
+    consume 2-3% of their body weight in raw food each day"
+    ([Royal Kennel Club](https://www.royalkennelclub.com/health-and-dog-care/health/health-and-care/a-z-of-health-and-care-issues/is-raw-food-good-for-dogs/));
+    2.5% of a 20 kg dog is 0.5 kg.
   - 7 real days settled tames it, as for the others.
   - Dogs don't breed in this pass. They don't age past adult and don't die of age.
 - **The whistle:** a `shepherds_whistle` item, made from 2 iron nuggets and 1 string.
@@ -253,8 +265,8 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
     the target.
   - A sheep within 2 blocks of the target is released, and the drive ends when every sheep is in.
   - A shed's members driven to its pen go back under the shed's day rules once there.
-- **Range:** trials set sheep out at 200-600 yards (**TO VERIFY**: snippet; [USBCHA](https://usbcha.com/resources/sheepdog-trials-explained/)
-  describes 500-yard outruns). The game uses 32 blocks for the gather and 64 for hearing the whistle *(proposed: shrunk to Minecraft's
+- **Range:** open trials work the dog 300-500 yards out (was 200-600, from a snippet). [USBCHA](https://usbcha.com/resources/sheepdog-trials-explained/):
+  "working 350 or 500 yards apart", and a dog that "lies down or flanks right when 300 yards away". The game uses 32 blocks for the gather and 64 for hearing the whistle *(proposed: shrunk to Minecraft's
   scale)*.
 - **Speed:** a vanilla wolf's speed (NOT FOUND for a working collie).
 - **Not in this pass:** dogs breeding, guarding against wolves, and herding cattle or fowl.
@@ -271,3 +283,11 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
     the dog the way a real flock does.
 - **Game tests:** lamb_stillborn_not_spawned, ewe_anoestrous_out_of_season, dog_gathers_flock, dog_drives_flock_to_shed,
   dog_commands_and_owners, dog_tamed_in_corral.
+
+### Sourcing pass, 2026-11-12
+- Resolved 8 marks: Merino clean yield, Suffolk and Dorper ewe weights, Dorper horns, grade boundaries, Dorper season, the dog's
+  daily meat, and the trial range. Values changed: Merino yield 50% to 70%, Suffolk 90 to 104 kg, Dorper 85 to 77 kg, grade
+  boundaries, Dorper season long to medium, Dorper not polled.
+- Still open: the wool.ca Merino weight note (not used), the dog's weight (AKC and Royal Kennel Club standards give no weight),
+  and a working collie's speed (searched kennel club standards and USBCHA). The coat-gene modes were not searched in this pass.
+  The other marks are game choices.

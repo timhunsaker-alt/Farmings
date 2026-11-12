@@ -13,7 +13,7 @@ public enum CattleBreed {
 	BROWN_SWISS("BSW", Use.DAIRY, 606, 283),
 	// Stand-in: 385 kg from the Oklahoma State breed profile (Indian figures; Brazilian dairy strain TO VERIFY). Gyr gestation
 	// was not found, so 283 is used as a stand-in.
-	GYR("GYR", Use.DAIRY, 385, 283),
+	GYR("GYR", Use.DAIRY, 385, 286),
 	// Stand-in: about 550 kg from breed lists (TO VERIFY). Gestation about 280 days (USDA ARS Lincoln, 10,000+ records).
 	ANGUS("ANG", Use.BEEF, 550, 280),
 	// Motoyama et al. 2014: about 487 kg. Gestation 283.8 days in a Brazilian herd (286 for Wagyu-sired calves); 284 rounded.

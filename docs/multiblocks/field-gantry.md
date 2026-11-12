@@ -34,9 +34,9 @@ the span as the working width.
 | Seed drill | `tool_seed_drill` | turns grass and dirt into farmland and sows one seed a block from its seed hopper | 8.0 km/h | draft 300 N a row *(2.4-3.7 m drills)*, rows at 0.19 m *(proposed: a 7.5 in drill)*, so about 3.5 kW per m of span at 8 km/h *(derived)* |
 | Combine / forage chopper | `tool_harvester` | grain crops: grain to the bin, straw left as a swath. Corn before 114 days and wilted alfalfa: chopped forage to the bin | 5.0 km/h | 6.0 kW + 3.3 kWh/t corn silage, 4.0 wilted alfalfa (forage harvester) |
 | Mower | `tool_mower` | cuts mature alfalfa or grass into a swath on the ground; the plant drops to its regrowth stage | 11 km/h | 8.0 kW per m (disk mower-conditioner) |
-| Rake | `tool_rake` | rakes a dried swath (1 real day after mowing) into a windrow | 8 km/h *(proposed; not in the table)* | 2 kW per m *(proposed)* |
+| Rake | `tool_rake` | rakes a dried swath (1 real day after mowing) into a windrow | 10 km/h (was 8): "Side delivery rake", typical 10.0 km/h | 2.0 kW per m: "Rake, rotary", 2.0 kW/m (a side delivery rake is 0.4) |
 | Round baler | `tool_baler` | takes a windrow that has dried (1.5 real days) into round bales of 454 kg | 8 km/h | 4.0 kW + 1.1 kWh/t (variable chamber) |
-| Spreader | `tool_spreader` | puts one fertilizer use (bone meal's effect) on each crop block it passes, from its hopper of compost or liquid digestate | 8 km/h *(proposed)* | 2 kW per m *(proposed)* |
+| Spreader | `tool_spreader` | puts one fertilizer use (bone meal's effect) on each crop block it passes, from its hopper of compost or liquid digestate | 11 km/h (was 8): "Fertilizer spreader", typical 11.0 km/h | 0.2 kWh per tonne spread (was 2 kW per m): "Manure spreader", 0.2 kWh/t |
 
 - **Motion:** the gantry moves one block along the rails at a time. At its tool's speed one block takes 1 m / speed: 0.45 s at
   8 km/h, 0.72 s at 5 km/h.
@@ -77,7 +77,7 @@ the span as the working width.
   - `farm/gantry/GantryTool` holds speeds and power and is plain Java with a unit test.
   - The cab, parts, junction and swath are in `gantry/`.
 - **It steps as blocks.** The gantry moves its own blocks one cell at a time and carries the cab's saved state with it, instead of lifting
-  into one entity the way the TBM does. The motion is a step every 0.45-0.72 s; the step timer moves with the cab, so the pace holds
+  into one entity the way the TBM does. The motion is a step every 0.33-0.72 s (the spreader at 11 km/h to the harvester at 5); the step timer moves with the cab, so the pace holds
   (fixed 2026-11-11). It can be tested without a client.
 - **The tool head is an item fitted to the cab.** It shows as a head hanging under every beam cell.
 - **The swath:**
@@ -121,3 +121,8 @@ the span as the working width.
 - **While lifted:** the rows keep drying. The cab catches up on the time when it sets down.
 - **Drawing:** the client draws the carried blocks as vanilla draws a falling block (`client/FieldGantryRenderer`).
 - **Game test:** gantry_lifts_and_sets_down. gantry_runs_on_its_clock passes with gliding on.
+
+### Sourcing pass, 2026-11-12
+- Resolved from ASAE D497.5 (the copy above, Tables 2 and 3): rake speed and power, spreader speed and power. Rake and spreader now
+  step faster (0.36 s and 0.33 s a block).
+- Still unsourced: the 0.19 m drill row spacing (not searched further). The rail length, span, bin, rain and loose hay items are game choices.

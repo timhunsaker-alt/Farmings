@@ -23,9 +23,9 @@ public enum Feedstuff {
 	MIXED_GRAIN(89, 12, 20, 84, 0, false),
 	ALFALFA_MEAL(89, 17, 47, 58, 0, true),
 	/** TO VERIFY: textbook-typical, no source looked up. */
-	FISH_MEAL(92, 62, 0, 75, 0, false),
+	FISH_MEAL(90, 66, 12, 74, 0, false),     // Auburn 2014 feed table (sourcing pass 2026-11-12)
 	/** TO VERIFY: Ca 38%. */
-	LIMESTONE(100, 0, 0, 0, 38, false),
+	LIMESTONE(98, 0, 0, 0, 34, false),     // Auburn 2014 feed table
 	/** Fed at 0.3 kg a cow a day (TO VERIFY, a product label). */
 	PREMIX(100, 0, 0, 0, 0, false);
 

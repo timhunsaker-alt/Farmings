@@ -24,25 +24,33 @@ Tim's choices:
 |---|---|---|---|---|---|---|
 | Alfalfa | perennial legume | 65 days (60-70 after emergence) | 32.5 days (30-35); up to 5 cuts a year (4 used for the yield split) | 5.5 years (3-8) | 3-5 t hay/ac a year (4: 8.96 t/ha, 89% DM, so 7.97 t DM/ha) | 2.0 kg DM (2.24 kg hay) |
 | Timothy | perennial grass | 60 days *(proposed; NOT FOUND)* | 42 days *(proposed; NOT FOUND; a secondary report says about 6 weeks)*; 1-2 cuts a year (2 used) | 5 years *(proposed; NOT FOUND)* | 2 t hay/ac a year (4.48 t/ha, 88% DM) | 1.97 kg DM |
-| Orchardgrass | perennial grass | 60 days *(proposed)* | 35 days (4-6 weeks); 4 cuts *(proposed)* | 5 years *(proposed)* | 2-5 t DM/ac (3.5: 7.84 t DM/ha) **TO VERIFY** (the source says "per harvest") | 1.96 kg DM |
+| Orchardgrass | perennial grass | 60 days *(proposed)* | 35 days (4-6 weeks); 4 cuts (3-4, WSU) | 5 years *(proposed)* | 2-4 t hay/ac a year (3: 6.72 t/ha, 88% DM, so 5.92 t DM/ha) (was 3.5 t DM/ac, 7.84 t DM/ha, from a "per harvest" figure) | 1.48 kg DM (was 1.96) |
 | Corn, silage | annual, 2 blocks tall | 100 days *(proposed: before black layer; planting to silking NOT FOUND)* | none | one harvest | 20-25 t as-fed/ac at 35% DM (22.5: 7.9 t DM/ac, 17.6 t DM/ha) | 17.6 kg DM (50.3 kg chopped as-fed) |
 | Corn, grain | annual, 2 blocks tall | 114 days (relative maturity at 2,700 GDD) | none | one harvest | 179.3 bu/ac, US 2024 (11.25 t/ha) | 11.25 kg grain |
-| Oats | annual | 100 days **TO VERIFY** (a seed catalogue gives 100-120; milk stage is 55-65 days) | none | one harvest | 61 bu/ac (2.19 t/ha); straw 2.03 t/ac (4.55 t/ha) | 2.19 kg grain + 4.55 kg straw |
-| Barley | annual | 85 days (80-100) **TO VERIFY** (Interior Alaska) | none | one harvest | 76.7 bu/ac, US 2024 (4.13 t/ha); straw 1.01 t/ac (2.26 t/ha) | 4.13 kg grain + 2.26 kg straw |
+| Oats | annual | 100 days **TO VERIFY** (a seed catalogue gives 100-120; milk stage is 55-65 days; snippet: South Dakota State, a midseason oat "requires about 90 days from planting until maturity", [core.ac.uk](https://core.ac.uk/download/215574937.pdf)) | none | one harvest | 61 bu/ac (2.19 t/ha); straw 2.03 t/ac (4.55 t/ha) | 2.19 kg grain + 4.55 kg straw |
+| Barley | annual | 87 days (was 85; Alaska gives 80-100) | none | one harvest | 76.7 bu/ac, US 2024 (4.13 t/ha); straw 1.01 t/ac (2.26 t/ha) | 4.13 kg grain + 2.26 kg straw |
 
 **Sources:**
 - **Alfalfa:**
   - first cut and intervals: Ohio State, [seeding-year harvest](https://agcrops.osu.edu/specialization-areas/forages/seeding-year-harvest-management);
   - cuts, stand life, yield and seeding rate: UMaine, [Bulletin 2245](https://extension.umaine.edu/publications/resource/bulletin-2245-maine-forage-facts-alfalfa).
 - **Timothy:** UMaine [2265](https://extension.umaine.edu/publications/2265e/).
-- **Orchardgrass:** UMaine [2266](https://extension.umaine.edu/publications/2266e/).
+- **Orchardgrass:**
+  - interval: UMaine [2266](https://extension.umaine.edu/publications/2266e/). Its yield, "2 to 5 tons of dry matter per acre per
+    harvest", is not used;
+  - yield: Arkansas [FSA3154](https://www.uaex.uada.edu/publications/pdf/FSA3154.pdf): "Hay yield: 2-4 tons/acre per year";
+  - cuts: WSU [EB2004](https://wpcdn.web.wsu.edu/wp-extension/uploads/sites/2071/2024/04/EB2004-Orchardgrass-Hay-Production-Guide-for-Col-Basin-WA-Copy.pdf):
+    "Columbia Basin growers take from 3 to 4 cuttings", "at 32 to 40 d intervals".
 - **Corn:**
   - silage yield: Kentucky [ID-275](https://publications.ca.uky.edu/files/ID275.pdf);
   - relative maturity: Kentucky, [planting dates](https://graincrops.ca.uky.edu/files/corn_planting_dates_blacklayer.pdf);
-  - grain yield: USDA NASS Crop Production 2024 (**TO VERIFY**: read from a search snippet).
+  - grain yield: USDA NASS Crop Production 2024, as quoted by [Iowa Agriculture](https://iowaagriculture.gov/news/strong-prod-strong-market-demand):
+    "The average yield in the United States was estimated at a record high 179.3 bushels per acre".
 - **Barley:**
   - yield: USDA NASS, [Crop Production 2024](https://esmis.nal.usda.gov/sites/default/release-files/tm70mv177/bz60fp33t/fj237w71q/crop0924.txt);
-  - days: Alaska [MP 2014-06](https://uaf.edu/afes/publications/database/miscellaneous-publications/files/pdfs/MP_2014-06.pdf);
+  - days: Montana State, [Havre 2020 spring barley trial](https://agresearch.montana.edu/narc/Programs_and_projects/varietytesting/varietytestingreports/reports/2020/2020OnStationBarley.html):
+    seeded "April 27, 2020", trial mean maturity 205.3 days from January 1 ("176 = June 24"), so 87 days *(derived)*. Alaska
+    [MP 2014-06](https://uaf.edu/afes/publications/database/miscellaneous-publications/files/pdfs/MP_2014-06.pdf) gives 80-100;
   - straw: [Ohio State](https://agcrops.osu.edu/newsletter/corn-newsletter/2018-30/northwest-ohio-field-scale-barley-yield-results).
 - **Oats:**
   - yield: [Wisconsin oat and barley trials 2023](https://alseed.com/wp-content/uploads/2024/02/2023-Oats-and-Barley-Wisconsin-Performance-Tests.pdf);
@@ -84,7 +92,9 @@ Tim's choices:
 - Cut forage is 20-25% DM (75-80% moisture) and is baled at 80-82% DM.
 - Raking is "12 to 24 hours after mowing" ([UW-Madison](https://dairy.extension.wisc.edu/articles/field-drying-forage-for-hay-and-haylage)).
 - Drying from 80% to 20% moisture took about 38 h in poor conditions ([Purdue](https://extension.entm.purdue.edu/newsletters/pestandcrop/article/environmental-conditions-affect-time-to-safe-hay-baling-3)).
-- A fixed number of days in the swath: NOT FOUND. Game rule: a mown swath is ready to rake after **1 real day** and ready to bale **1.5
+- Days in the swath: orchardgrass in the Columbia Basin, "Curing takes between 3 to 7 d during the growing season"
+  ([WSU EB2004](https://wpcdn.web.wsu.edu/wp-extension/uploads/sites/2071/2024/04/EB2004-Orchardgrass-Hay-Production-Guide-for-Col-Basin-WA-Copy.pdf)).
+  The game is faster, nearer the Purdue figure above. Game rule: a mown swath is ready to rake after **1 real day** and ready to bale **1.5
   real days** after mowing. That is about 0.1 game days, and rain pauses it *(proposed)*.
 - Haylage is chopped wilted, the same day, at 35-40% DM (Penn State).
 
@@ -135,3 +145,8 @@ Tim's choices:
   - A hay bale crafts into 4 vanilla hay blocks. The bale's other 54 kg is lost to rounding *(proposed)*.
   - A straw bale crafts into 45 loose straw.
 - **Game tests:** crop_grows_on_clock, alfalfa_regrows_and_dies, corn_ripens_for_grain, ripe_oats_by_hand.
+
+### Sourcing pass, 2026-11-12
+- Resolved: orchardgrass cuts and yield (yield per block changed), barley days (changed), the 2024 corn yield, days in the swath.
+- Still unsourced: timothy's first harvest, regrowth and stand life, and orchardgrass's (searched UMaine 2265/2266, MSU, WVU, Arkansas);
+  corn days to silage (searched GDD to silking); oat days (only a snippet). Game choices are left as marked.

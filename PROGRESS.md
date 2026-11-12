@@ -255,6 +255,23 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - ~~**Flaky game tests**~~ Fixed 2026-11-11: shed scenes stand 64 blocks apart (a shed takes in unhoused sheep within 48), the walking
   scenes poll instead of checking once, a sheep is home only within a block of her pen cell (two let her stop in the gate), and the fowl
   scene has room to flee (the flee goal also tries a shorter run when hemmed in). Three full runs in a row passed.
+- **Sourcing pass, 2026-11-12:**
+  - Marked lines (proposed, TO VERIFY, NOT FOUND) went from 387 to 337. About 50 marks were resolved with fetched sources, and the
+    rest have searches noted at the end of each doc.
+  - About 30 values changed in the code to match their sources, among them:
+    - quail fertile window 11 days; duck litter 0.11 kg per kg a day; Mallard egg 54 g;
+    - pasteurizer heater 12 kW; separator motor 1.5 kW;
+    - dry-cow intake 1.95% of body weight; Gyr gestation 286 days; scraper drive 0.75 kW; tank chiller 2.6 kW;
+    - Merino clean yield 70%; Suffolk ewe 104 kg; Dorper ewe 77 kg; micron grade boundaries; Dorper season medium;
+      weaning 84 days; 2 days in the lambing pen; no shearing within 28 days of lambing;
+    - orchardgrass 1.48 kg DM a block; barley 87 days;
+    - one auger drive per 9 m; rake 10 km/h; spreader 11 km/h at 0.2 kWh/t; silo unloader 22.4 kW;
+    - mixer 2.3 t and 4 minutes;
+    - fish meal and limestone analyses;
+    - compost moistures.
+  - Left for Tim: the duck hatch sex ratio (51.5% male, one study's abstract, not applied), Dorper horns (the standard says small
+    horns), Silkie figures (they differ by national standard), and the lactating cow's hay-only intake (whole-ration guidance is
+    3-3.5%).
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.

@@ -41,7 +41,7 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 	/** A ewe due within this many real days goes to a lambing pen *(proposed)*. */
 	public static final double JUG_BEFORE_DAYS = 3;
 	/** She stays in the jug this long after lambing *(proposed)*. */
-	public static final double JUG_AFTER_DAYS = 14;
+	public static final double JUG_AFTER_DAYS = 2;     // NMSU CR703 (sourcing pass 2026-11-12)
 	/** Lambs younger than this stay in with their dams *(proposed)*. */
 	public static final double LAMBS_STAY_IN_DAYS = 14;
 	/** A grazing sheep picks a new spot this often, in ticks *(proposed: 30 seconds)*. */

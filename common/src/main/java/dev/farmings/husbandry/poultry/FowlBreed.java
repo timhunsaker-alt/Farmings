@@ -29,7 +29,7 @@ public enum FowlBreed {
 	// dressing (Pekin 67.5%, Muscovy 72%, others 65%). Mallard egg weight NOT FOUND: 55 g proposed.
 	PEKIN("PEK", Species.DUCK, 4.31, 3.86, 140, 78, 182, 28, 25, 28, 0.675),
 	KHAKI_CAMPBELL("KHC", Species.DUCK, 1.93, 1.70, 250, 78, 182, 28, 25, 28, 0.65),
-	MALLARD("MAL", Species.DUCK, 1.08, 0.94, 35, 55, 182, 28, 25, 28, 0.65),
+	MALLARD("MAL", Species.DUCK, 1.08, 0.94, 35, 54, 182, 28, 25, 28, 0.65),
 	MUSCOVY("MUS", Species.DUCK, 4.99, 2.95, 90, 78, 182, 35, 31, 28, 0.72);
 
 	public final String code;

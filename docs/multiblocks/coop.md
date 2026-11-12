@@ -47,7 +47,8 @@ floor; nothing is lost *(proposed)*. Fault messages name the first thing missing
 ## The duck pond
 - **What counts:** water source blocks in the run, or touching it.
 - **How much:** ducks need **1 water block per 4 ducks** *(proposed)*. A water block is a metre deep, past the 10 cm ducks want for
-  dipping their heads (RSPCA, TO VERIFY).
+  dipping their heads: "shallow water (10-20 cm) where they can dabble and submerge their heads"
+  ([RSPCA Australia](https://kb.rspca.org.au/knowledge-base/how-should-i-care-for-my-pet-ducks/)).
 - **Swimming:** ducks swim in it.
 - **Without a run:** water blocks touching the coop floor count instead.
 - **Too little water:** each duck without its share loses **5 health points a game day** *(proposed)*. Swimming water is "not
@@ -82,7 +83,7 @@ floor; nothing is lost *(proposed)*. Fault messages name the first thing missing
   and drinks from the troughs.
 - **Shortfalls:** a shortfall lowers that day's eggs, growth and health (the cattle rule).
 - **Litter:**
-  - It builds up in the coop at the layer rate (0.05 kg per kg of bird a day).
+  - It builds up in the coop at the layer rate (0.05 kg per kg of bird a day); ducks at their own rate, 0.11 (poultry.md).
   - The controller holds it as **poultry litter** items of **10 kg** *(proposed)*, up to 64. A hopper below the controller pulls
     them out.
   - When the store is full, the birds' health drops **2 points a game day** *(proposed, after the barn's dirty-stall rule)*.
@@ -111,3 +112,7 @@ floor; nothing is lost *(proposed)*. Fault messages name the first thing missing
   - Grain goes into the feeder by hand or by hopper.
 - **Game tests:** coop_forms, coop_takes_tame_birds, hen_lays_in_nest, broody_hen_hatches, birds_out_by_day_in_at_night, duck_needs_pond,
   litter_builds_up, chick_cold_without_heat.
+
+### Sourcing pass, 2026-11-12
+- Resolved 1 mark: the 10 cm duck water depth (RSPCA Australia). The duck litter rate now follows poultry.md.
+- Still unsourced: eggs under a broody hen (only hobby sites give 10-12). The rest are game choices.

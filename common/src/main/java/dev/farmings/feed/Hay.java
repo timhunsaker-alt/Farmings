@@ -14,7 +14,7 @@ public final class Hay {
 	/** Forage-based planning figure: dry matter eaten per day as a share of body weight, lactating cow (TO VERIFY against NRC). */
 	public static final double LACTATING_INTAKE_FRACTION = 0.027;
 	/** Same, dry cow (TO VERIFY against NRC). */
-	public static final double DRY_INTAKE_FRACTION = 0.022;
+	public static final double DRY_INTAKE_FRACTION = 0.0195;     // 1.8-2.1% of body weight, the middle (UC Davis; sourcing pass 2026-11-12)
 
 	private Hay() {
 	}

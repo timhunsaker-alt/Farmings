@@ -38,8 +38,8 @@ final class CropGameTests {
 			b.stageForTest(level, p);
 		}
 		helper.assertTrue(b.isMaxAge(level.getBlockState(p)), Component.literal("ripe after 7 stages"));
-		helper.assertTrue(FieldCrop.BARLEY.stageTicks() * 7 == dev.farmings.husbandry.TimeScale.realDaysToTicks(85) / 7 * 7,
-				Component.literal("85 days to harvest on the 15:1 clock"));
+		helper.assertTrue(FieldCrop.BARLEY.stageTicks() * 7 == dev.farmings.husbandry.TimeScale.realDaysToTicks(FieldCrop.BARLEY.harvestDays) / 7 * 7,
+				Component.literal(FieldCrop.BARLEY.harvestDays + " days to harvest on the 15:1 clock"));
 		helper.succeed();
 	}
 

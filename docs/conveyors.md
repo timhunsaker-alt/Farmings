@@ -7,14 +7,14 @@
 |---|---|---|---|
 | Belt conveyor | `farm_belt` | A troughed belt at **2 m/s**, laid block by block along one axis, level or up a grade of at most **1 in 3** | Tailings' 600 mm belt at 2 m/s (*proposed* there); the 1 in 3 grade is Tailings' (real belts climb about 18°) |
 | Belt drive | `farm_belt_drive` | The head pulley and motor of one run: **7.5 kW at 480 V per 30 m of run**, rounded up. A run with no drive, or too little drive, does not move | Tailings *(proposed there; no farm figure found)* |
-| Grain auger | `grain_auger` | A tube auger for grain, meal and seed only. It climbs at any angle up to **45°** *(proposed)*, laid as a straight run like a belt | 8 in auger: 2,500-3,000 bu/h on a 5 hp motor (**TO VERIFY**: a retailer page, [Farmer Boy Ag](https://farmerboyag.com/utility-auger-8-inch-x-21-feet-5-hp-motor/)) |
-| Auger drive | `grain_auger_drive` | **3.7 kW (5 hp)** for a run of up to 21 blocks *(the retailer figure)*; longer runs take a second drive | same |
+| Grain auger | `grain_auger` | A tube auger for grain, meal and seed only. It climbs at any angle up to **45°** *(proposed)*, laid as a straight run like a belt | 8 in auger, dry shelled corn, level, 600 rpm: 2,700 bu/h at 1.6 hp per 10 ft; at 45°, 2,100 bu/h (Purdue Research Bulletin 740, Table 2 in [OSU BAE-1105](https://pods.okstate.edu/fact-sheets/BAE-1105pod2017.pdf)) |
+| Auger drive | `grain_auger_drive` | **3.7 kW (5 hp)** for a run of up to **9 blocks** (was 21: a 21 ft auger read as 21 blocks); longer runs take a second drive | Westfield 8 in utility auger: 3 hp at "16' – 21'", 5 hp at "26' – 31'" (maker's sheet, [AGI](https://www.aggrowth.com/globalassets/brands-section/westfield/product-images/2019_agi_westfield_utility_augers.pdf)) |
 
 ## How things move
 - **Parcels:** items ride a run as parcels at the belt's speed. A 20-block run takes 10 s. This is Tailings' `BeltTravel`, plain Java.
-- **Grain auger:** it moves grain at a set rate, **2,750 bu/h of corn**, about **19 kg/s** (the middle of the retailer range at
-  56 lb/bu, *derived*). It does not run faster for being longer; length doesn't change capacity (Oklahoma State on Purdue Bulletin 740,
-  **TO VERIFY**, from a snippet).
+- **Grain auger:** it moves grain at a set rate, **2,700 bu/h of corn** (was 2,750), about **19 kg/s** (Purdue's level 8 in figure at
+  56 lb/bu, *derived*). It does not run faster for being longer: "The length of the auger will affect the power requirement, but not
+  the capacity" ([OSU BAE-1105](https://pods.okstate.edu/fact-sheets/BAE-1105pod2017.pdf), on Purdue Bulletin 740).
 - **Picking up and dropping:** a run picks up from what drops on its tail cell: a hopper, a machine's output face, or the gantry's
   headland stop. It delivers into whatever its head touches: the silo's blower, the grain bin, the mill, the mixer, the next belt, a
   hopper or a chest.
@@ -56,3 +56,8 @@
 - **Drawn items:** the drive sends its load to clients twice a second. `client/BeltItemsRenderer` lays each parcel on the belt at its
   place along the run and moves it on smoothly between updates.
 - **Game test:** belt_climbs_slope. **Client scene:** `belts`.
+
+### Sourcing pass, 2026-11-12
+- Resolved: auger capacity and "length doesn't change capacity" (Purdue 740 via OSU), the auger drive's run (9 blocks, was 21).
+- Still unsourced: the belt drive's 7.5 kW per 30 m (searched Purdue, OSU, NDSU for belt power; found only calculators) and the 45°
+  limit. Real augers climb to 90°, losing capacity (Purdue 740); the game keeps the level rate.

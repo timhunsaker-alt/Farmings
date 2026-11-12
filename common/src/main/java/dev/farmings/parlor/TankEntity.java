@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 /** The bulk tank: its milk ({@link BulkTank}) and a 2.2 kW three-phase chiller (approved by Tim 2026-11-08; a suggestion, not a source). */
 public class TankEntity extends BlockEntity implements CircuitPart, Inspectable, BigPartEntity {
-	public static final int CHILLER_WATTS = 2_200;
+	public static final int CHILLER_WATTS = 2_600;     // Mueller Model R, 1,000 L (sourcing pass 2026-11-12)
 
 	private final BulkTank tank = new BulkTank();
 	private final Motor chiller = new Motor(true, Voltage.INDUSTRIAL, CHILLER_WATTS);

@@ -24,7 +24,7 @@ A figure marked *(proposed)* is a proposal or a scaled value. A figure marked *(
 |---|---|---|
 | Stall width (Holstein, 1,000 lb cow) | 107 cm centre to centre; 145 cm for a 2,000 lb cow | 1 cell (rounded) |
 | Stall length | 3.1 m, plus 0.9-1.2 m lunge space | 3 cells; the lunge space is the open side beyond the stall |
-| Feed bunk space | about 75 cm per head (heifer table, *unverified* for cows) | 1 cell per cow, in line with its stall |
+| Feed bunk space | about 75 cm per head; lactating cows need "24 to 36 linear inches per cow" (61-91 cm, [UK Extension](https://afs.ca.uky.edu/files/managingfeedbunkswatertroughs.pdf)) | 1 cell per cow, in line with its stall |
 | **Scrape alley** | **3 m** (Tim, 2026-11-07) | 3 cells wide |
 | **Alley length** | runs past the stalls into cross-alleys at both ends | **twice the stall row** (Tim, 2026-11-09): 2(2n+1) cells |
 
@@ -44,7 +44,7 @@ Small breeds (Jersey, 470 kg) still use a whole stall in this version. *(propose
 | `alley_floor` | 1 x 1 x 1 | Grooved concrete alley floor. It collects manure and is the surface the scraper rides over |
 | `scraper_rail` | 1 x 1 x 1 | The guide channel the scraper blade runs in, along the alley's centre |
 | `manure_scraper` | 3 x 1 x 1 | The blade and carriage: spans the 3 m alley, pushes manure toward the pit |
-| `scraper_drive` | 1 x 1 x 1 | The drive unit at the far end: a gearmotor and cable drum. **Motor: 2.2 kW (3 hp), 480 V three-phase** *(proposed, unverified; real alley scrapers use small motors of roughly 1 to 3 hp)* |
+| `scraper_drive` | 1 x 1 x 1 | The drive unit at the far end: a gearmotor and cable drum. **Motor: 0.75 kW (1 hp), 480 V three-phase** (was 2.2 kW). Prinzing's cable winches list "0,58 - 0,75 kW" for ropes up to 90-120 m and 1.5 kW only for long alleys ([Prinzing cattle barn brochure](https://prinzing.eu/wp-content/uploads/2025/07/Rinderlaufstall-1.pdf)). Our alleys are at most 50 m |
 | `collection_pit` | 3 x 2 x 2 | A reception pit. Holds manure items until the player or a later machine takes them |
 
 Power: only the `scraper_drive` (and a later trough heater) draws power. It takes Wildcatter's three-phase at 480 V (NA) or 400 V
@@ -87,7 +87,9 @@ Layer y 1 (one above the floor; dividers are 2 high and run into y 2):
  z 10  H   H   H   H   .   .
 ```
 Water: a `water_trough` (2 x 1 x 1) sits at the east end of each bed row, against the last stall (x 4-5, z 1 and z 9). Capacity:
-one trough serves the row *(proposed; real practice is one trough space per roughly 10 to 15 cows, unverified)*.
+one trough serves the row. Real guidance is "3.5 linear inches (9 cm) of accessible waterer perimeter per cow" and "at least two
+watering locations per group" ([Dairyland Initiative](https://thedairylandinitiative.vetmed.wisc.edu/adult-cow-housing/water-space/)): a 2 m
+trough serves about 22 cows, and the two rows give two locations.
 
 **Controller position:** the `barn_controller`, at (4, 1, 5) in the sketch, beside the pit and in line with the scraper rail.
 **Valid rotations:** the 4 horizontal rotations, and a mirror (the pit on either end). The scraper_drive must be at the end opposite
@@ -177,3 +179,7 @@ None. All eight were settled on 2026-11-07 (see the top of this file). The *(unv
 source, the trough ratio has no source, and the dirty-stall effect size has no source. Each is revisited when a source is found.
 
 **Wild cattle** (docs/taming.md) are not given stalls until they have been tamed in a corral.
+
+### Sourcing pass, 2026-11-12
+Resolved 2 marks (scraper motor, now 0.75 kW; trough space) and the feed bunk note. Still unsourced: how many times a day real scrapers
+run (Ontario OMAFRA says only "at timed intervals"). The rest are game sizes. The 2.2 kW in the decision line above is the old value.

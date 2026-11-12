@@ -60,7 +60,8 @@ containers are kept cold).
 
 ## Loose ends, 2026-11-11 (spec): the room's temperature
 The cold room now holds a temperature, and food ages by it.
-- **Set point:** **2 °C** *(proposed)*. A fridge should be at most 40 °F, 4 °C (USDA, via
+- **Set point:** **2 °C** *(proposed)*. **TO VERIFY**: a vendor guide puts walk-ins at "34°F and 38°F (1°C – 3°C)"
+  ([Operandio](https://operandio.com/walk-in-cooler-temperature/), snippet only). A fridge should be at most 40 °F, 4 °C (USDA, via
   [Virginia Tech FST-518](https://accomack.ext.vt.edu/content/dam/pubs_ext_vt_edu/FST/fst-518/FST-518.pdf)).
   - The room starts at **20 °C**, the room temperature *(proposed)*, and that is the outside air too.
 - **Heat in through the walls:**
@@ -96,3 +97,8 @@ The cold room now holds a temperature, and food ages by it.
 - **A new room:** starts at 20 °C and pulls down to 2 °C within a few minutes of play.
 - **Doors:** opening a door warms the room by about half a degree in a 3 x 2 x 3 room.
 - **Game tests:** cold_room_warms_without_power, warm_room_spoils_faster. The older tests start from a cold room.
+
+### Sourcing pass, 2026-11-12
+- One TO VERIFY added (set point). No value changed.
+- Still unsourced: COP 2 (DOE gives AWEF only, not COP), door air swap per opening (IIR and Kettering walk-in door studies give rates
+  and correction factors, not a volume per opening). Forming rules and the 20 °C room are game values.

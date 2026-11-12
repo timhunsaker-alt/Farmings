@@ -382,7 +382,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 			double fed = f.lastFed() + SMOOTHING * (Math.min(1, need <= 0 ? 1 : got / need) - f.lastFed());
 			double watered = f.lastWatered() + SMOOTHING * (Math.min(1, water <= 0 ? 1 : drunk / water) - f.lastWatered());
 			f.recordTending(fed, watered);
-			litterKg = Math.min(LITTER_ITEM_KG * LITTER_MAX_ITEMS, litterKg + f.weightKg() * Fowl.LITTER_KG_PER_KG_DAY * dayShare);
+			litterKg = Math.min(LITTER_ITEM_KG * LITTER_MAX_ITEMS, litterKg + f.weightKg() * Fowl.litterKgPerKgDay(f.species()) * dayShare);
 		}
 		wearRun(level, foraged, dayShare);
 		setChanged();

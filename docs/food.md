@@ -18,7 +18,7 @@ The walk-in fridge that keeps food cold is [multiblocks/cold-room.md](multiblock
 | buttermilk | 10.5 days (1-2 weeks) | 1 day *(proposed)* | spoiled bottle |
 | whey | 7 days *(proposed: no FoodKeeper entry; milk's)* | 1 day *(proposed)* | spoiled bottle |
 | butter | 45 days (1-2 months) | 1.5 days (1-2 days on the counter) | rancid butter |
-| cheddar wheel | 180 days (hard cheese, 6 months) | 14 days *(proposed)* | moldy cheese |
+| cheddar wheel | 180 days (hard cheese, 6 months) | 14 days *(proposed)*. **TO VERIFY**: FSIS mail-order table, hard cheese "safe at room temperature, but refrigeration prolongs quality" ([archived FSIS](https://webarchive.library.unt.edu/web/20090115174930/http:/www.fsis.usda.gov/PDF/Mail_Order_Food_Safety.pdf), snippet only; gives no days) | moldy cheese |
 | cheddar (cut) | 24.5 days (3-4 weeks after opening) | 1 day *(proposed)* | moldy cheese |
 | steak, raw (any grade) | 4 days (3-5) | 1 day *(proposed)* | spoiled steak |
 | steak, cooked | 3.5 days (cooked beef 3-4) | 1 day *(proposed)* | spoiled steak |
@@ -67,3 +67,8 @@ Spoiled chops become **spoiled mutton** (Hunger and Nausea, as the other spoiled
 - **Food ages by the room's temperature:** in a cold room, food ages by the room's temperature. It is log-linear between each food's
   fridge and room lives (multiblocks/cold-room.md, "the room's temperature").
 - **Farmings chicken:** raw and cooked Farmings chicken join the perishables (eggs.md).
+
+### Sourcing pass, 2026-11-12
+- One TO VERIFY added (hard cheese at room temperature). No value changed. The 1-day room lives are Tim's game choice over the 2-hour rule.
+- Still unsourced: whey and sheep-milk fridge lives (no FoodKeeper or extension entry found; only blogs), cheddar wheel room days.
+  Rounding and spoiled-food hunger are game values.
