@@ -244,7 +244,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - grade age thresholds;
   - the plumage dominance orders.
 - **Phase 3, not built or simplified:**
-  - the digester tank and the TMR mixer are single blocks, not the spec's 3 x 3 x 3 ring and 2 x 2 x 2 mixer;
+  - ~~the digester tank and the TMR mixer are single blocks~~ (full size, built 2026-11-12);
   - ~~belts are level only, and items riding a belt are not drawn~~ (built 2026-11-12);
   - the gantry steps as blocks instead of lifting into one entity, and hand raking is not built;
   - the silo takes its whole 10.5% dry-matter loss at filling;

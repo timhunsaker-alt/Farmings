@@ -30,7 +30,7 @@ public class FeedPitEntity extends BlockEntity implements ItemSink, WorldlyConta
 			return null;
 		}
 		for (Direction d : Direction.values()) {
-			if (level.getBlockEntity(worldPosition.relative(d)) instanceof DigesterEntity t) {
+			if (dev.wildcatter.multiblock.BigParts.entity(level, worldPosition.relative(d)) instanceof DigesterEntity t) {
 				return t;
 			}
 		}

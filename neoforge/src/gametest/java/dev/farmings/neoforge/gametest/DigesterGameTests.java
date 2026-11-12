@@ -22,15 +22,18 @@ final class DigesterGameTests {
 	private DigesterGameTests() {
 	}
 
-	/** Tank at (3,1,3), gas holder on it, feed pit west, digestate tank east, screw press beyond it, a chest beyond that. */
+	/**
+	 * The 3 x 3 x 3 tank with its main cell at (3,1,3) (cells x 2-4, y 1-3, z 2-4), the gas holder on its roof at (3,4,3), the feed pit west
+	 * at (1,1,3), the digestate tank east at (5,1,3), the screw press beyond it and a chest beyond that.
+	 */
 	static DigesterEntity build(GameTestHelper helper) {
 		FarmingsGameTests.floor(helper);
-		helper.setBlock(new BlockPos(3, 1, 3), DigesterBlocks.DIGESTER_TANK);
-		helper.setBlock(new BlockPos(3, 2, 3), DigesterBlocks.GAS_HOLDER);
-		helper.setBlock(new BlockPos(2, 1, 3), DigesterBlocks.FEED_PIT);
-		helper.setBlock(new BlockPos(4, 1, 3), DigesterBlocks.DIGESTATE_TANK);
-		helper.setBlock(new BlockPos(5, 1, 3), DigesterBlocks.SCREW_PRESS);
-		helper.setBlock(new BlockPos(6, 1, 3), Blocks.CHEST);
+		FarmingsGameTests.bigPart(helper.getLevel(), DigesterBlocks.DIGESTER_TANK, helper.absolutePos(new BlockPos(3, 1, 3)));
+		helper.setBlock(new BlockPos(3, 4, 3), DigesterBlocks.GAS_HOLDER);
+		helper.setBlock(new BlockPos(1, 1, 3), DigesterBlocks.FEED_PIT);
+		helper.setBlock(new BlockPos(5, 1, 3), DigesterBlocks.DIGESTATE_TANK);
+		helper.setBlock(new BlockPos(6, 1, 3), DigesterBlocks.SCREW_PRESS);
+		helper.setBlock(new BlockPos(7, 1, 3), Blocks.CHEST);
 		DigesterEntity d = (DigesterEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 3)));
 		d.forceRunning(true);
 		return d;
@@ -40,12 +43,12 @@ final class DigesterGameTests {
 	static void digesterFillsHolder(GameTestHelper helper) {
 		DigesterEntity d = build(helper);
 		var level = helper.getLevel();
-		FeedPitEntity pit = (FeedPitEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 3)));
+		FeedPitEntity pit = (FeedPitEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(1, 1, 3)));
 		helper.assertTrue(pit.accept(new ItemStack(FarmingsItems.MANURE, 20)).isEmpty(), Component.literal("the pit takes manure"));
 		d.step(20);
 		helper.assertTrue(Math.abs(d.digester().gasM3() - 11.5) < 1e-6, Component.literal("11.5 m3 in the holder: " + d.readout()));
-		GasHolderEntity holder = (GasHolderEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 2, 3)));
-		BlockPos cell = helper.absolutePos(new BlockPos(3, 2, 3));
+		GasHolderEntity holder = (GasHolderEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 4, 3)));
+		BlockPos cell = helper.absolutePos(new BlockPos(3, 4, 3));
 		helper.assertTrue(holder.offers(cell, Direction.UP) == Product.BIOGAS, Component.literal("it offers biogas on its pipe faces"));
 		double got = holder.take(cell, Direction.UP, Product.BIOGAS, 5, FluidNode.Pull.MACHINE);
 		helper.assertTrue(Math.abs(got - 5) < 1e-9 && Math.abs(holder.m3() - 6.5) < 1e-6, Component.literal("a gas set draws 5 m3: " + holder.m3()));
@@ -63,10 +66,10 @@ final class DigesterGameTests {
 		var level = helper.getLevel();
 		d.digester().feed(1000);
 		d.step(20);
-		PressEntity press = (PressEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 3)));
+		PressEntity press = (PressEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(6, 1, 3)));
 		press.forceRunning(true);
 		TamingGameTests.waitFor(helper, 0, 400, () -> d.digester().digestateKg() < 1e-6, "the press empties the digestate: " + d.readout(), () -> {
-			var chest = (ChestBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(6, 1, 3)));
+			var chest = (ChestBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(7, 1, 3)));
 			int solids = chest.countItem(CompostBlocks.SEPARATED_SOLIDS);
 			int liquid = chest.countItem(DigesterBlocks.LIQUID_DIGESTATE);
 			helper.assertTrue(solids == 9 && liquid == 8, Component.literal("972 kg: 9 solids, 8 liquid: " + solids + ", " + liquid));
@@ -90,18 +93,22 @@ final class DigesterGameTests {
 				}
 			}
 		}
-		helper.setBlock(new BlockPos(3, 2, -3), DigesterBlocks.DIGESTER_TANK);
-		helper.setBlock(new BlockPos(3, 3, -3), DigesterBlocks.GAS_HOLDER);
-		helper.setBlock(new BlockPos(4, 2, -3), DigesterBlocks.DIGESTATE_TANK);
+		FarmingsGameTests.bigPart(level, DigesterBlocks.DIGESTER_TANK, helper.absolutePos(new BlockPos(3, 2, -3)));     // cells x 2-4, y 2-4, z -4..-2
+		helper.setBlock(new BlockPos(3, 5, -3), DigesterBlocks.GAS_HOLDER);
+		helper.setBlock(new BlockPos(5, 2, -3), DigesterBlocks.DIGESTATE_TANK);
 		DigesterEntity d = (DigesterEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 2, -3)));
 		d.forceRunning(true);
 		d.digester().feed(20_000);     // 400 manure items: 230 m3 of biogas over 20 days, the holder's 200 m3 fills
 		d.step(20);
 		double full = d.digester().gasM3();
 		var gasLine = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(dev.wildcatter.Wildcatter.id("gas_line"));
-		helper.setBlock(new BlockPos(3, 3, -2), gasLine);
-		helper.setBlock(new BlockPos(3, 2, -2), gasLine);
-		helper.setBlock(new BlockPos(3, 2, -1), gasLine);           // to the engine's north side
+		helper.setBlock(new BlockPos(3, 6, -3), gasLine);           // up from the holder, over the tank's front and down to the engine's north side
+		helper.setBlock(new BlockPos(3, 6, -2), gasLine);
+		helper.setBlock(new BlockPos(3, 6, -1), gasLine);
+		helper.setBlock(new BlockPos(3, 5, -1), gasLine);
+		helper.setBlock(new BlockPos(3, 4, -1), gasLine);
+		helper.setBlock(new BlockPos(3, 3, -1), gasLine);
+		helper.setBlock(new BlockPos(3, 2, -1), gasLine);
 		dev.wildcatter.block.GensetSkid.build(level, helper.absolutePos(new BlockPos(8, 2, 0)), Direction.NORTH, true);
 		var panel = (dev.wildcatter.block.GensetControlPanelBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(8, 2, 0)));
 		helper.runAfterDelay(30, () -> panel.setWantRun(true));
@@ -109,6 +116,30 @@ final class DigesterGameTests {
 			String set = panel.inspect().getString();
 			helper.assertTrue(panel.biogasBurned() > 0 && d.digester().gasM3() < full,
 					Component.literal("the gas set burns the farm's biogas: burned " + panel.biogasBurned() + " m3, holder " + d.digester().gasM3() + " of " + full + "; " + set));
+			helper.succeed();
+		});
+	}
+
+	/** The tank fills 3 x 3 x 3 from one item; any cell reads it; breaking a cell takes the whole tank (digester.md, loose ends). */
+	static void digesterMultiblockForms(GameTestHelper helper) {
+		DigesterEntity d = build(helper);
+		var level = helper.getLevel();
+		int cells = 0;
+		for (int x = 2; x <= 4; x++) {
+			for (int y = 1; y <= 3; y++) {
+				for (int z = 2; z <= 4; z++) {
+					if (level.getBlockState(helper.absolutePos(new BlockPos(x, y, z))).getBlock() == DigesterBlocks.DIGESTER_TANK
+							&& dev.wildcatter.multiblock.BigParts.entity(level, helper.absolutePos(new BlockPos(x, y, z))) == d) {
+						cells++;
+					}
+				}
+			}
+		}
+		helper.assertTrue(cells == 27, Component.literal("27 cells, all one tank: " + cells));
+		helper.assertTrue(d.hasHolder() && d.hasDigestateTank(), Component.literal("the holder on its roof and the digestate tank at its side count: " + d.readout()));
+		level.destroyBlock(helper.absolutePos(new BlockPos(4, 3, 4)), false);
+		helper.runAfterDelay(5, () -> {
+			helper.assertTrue(level.getBlockState(helper.absolutePos(new BlockPos(3, 1, 3))).isAir(), Component.literal("breaking a corner takes the whole tank"));
 			helper.succeed();
 		});
 	}

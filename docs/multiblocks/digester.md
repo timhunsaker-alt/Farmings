@@ -77,3 +77,11 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
   - It is placed from one `digester_tank` item, like the barn's big parts; the footprint must be clear.
   - The gas holder sits on its roof centre, and the feed pit and digestate tank against its sides.
 - Its figures are unchanged. A tank placed as a single block before this change still works.
+
+### Built, 2026-11-12 (loose ends): the full-size tank
+- **Code:** `DigesterTankBlock`, a Wildcatter big part (3 x 3 x 3, main cell at the bottom centre).
+- **Neighbours:**
+  - The feed pit, gas holder and screw press find the tank through any of its cells.
+  - The tank looks for its holder above, and its digestate tank beside, any of its cells.
+- **Older worlds:** a single-block tank grows to full size where there is room.
+- **Game test:** digester_multiblock_forms. The digester tests use the full tank.

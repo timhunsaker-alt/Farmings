@@ -17,7 +17,7 @@ import net.minecraft.world.level.material.MapColor;
 
 /** The methane digester and separator (docs/multiblocks/digester.md). */
 public final class DigesterBlocks {
-	public static final Block DIGESTER_TANK = new DigesterBlock(DigesterBlock.Kind.TANK, props("digester_tank").mapColor(MapColor.COLOR_GREEN).strength(3.0F).sound(SoundType.METAL));
+	public static final Block DIGESTER_TANK = new DigesterTankBlock(props("digester_tank").mapColor(MapColor.COLOR_GREEN).strength(3.0F).sound(SoundType.METAL).noOcclusion());
 	public static final Block FEED_PIT = new DigesterBlock(DigesterBlock.Kind.FEED_PIT, props("digester_feed_pit").mapColor(MapColor.STONE).strength(3.0F).sound(SoundType.STONE));
 	public static final Block GAS_HOLDER = new DigesterBlock(DigesterBlock.Kind.HOLDER, props("gas_holder").mapColor(MapColor.COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOL));
 	public static final Block DIGESTATE_TANK = new Block(props("digestate_tank").mapColor(MapColor.COLOR_GREEN).strength(3.0F).sound(SoundType.METAL));

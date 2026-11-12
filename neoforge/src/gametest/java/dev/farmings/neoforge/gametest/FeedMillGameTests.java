@@ -18,17 +18,24 @@ final class FeedMillGameTests {
 	private FeedMillGameTests() {
 	}
 
+	/** The machine with its main cell at (3,1,3) and a chest beside it: at (4,1,3) for the mill, (5,1,3) for the 2 x 2 x 2 mixer (x 3-4, z 3-4). */
 	static FeedMachineEntity machine(GameTestHelper helper, net.minecraft.world.level.block.Block b) {
 		FarmingsGameTests.floor(helper);
-		helper.setBlock(new BlockPos(3, 1, 3), b);
-		helper.setBlock(new BlockPos(4, 1, 3), Blocks.CHEST);
+		if (b == FeedMillBlocks.TMR_MIXER) {
+			FarmingsGameTests.bigPart(helper.getLevel(), b, helper.absolutePos(new BlockPos(3, 1, 3)));
+			helper.setBlock(new BlockPos(5, 1, 3), Blocks.CHEST);
+		} else {
+			helper.setBlock(new BlockPos(3, 1, 3), b);
+			helper.setBlock(new BlockPos(4, 1, 3), Blocks.CHEST);
+		}
 		FeedMachineEntity m = (FeedMachineEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 3)));
 		m.forceRunning(true);
 		return m;
 	}
 
 	static ChestBlockEntity chest(GameTestHelper helper) {
-		return (ChestBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(4, 1, 3)));
+		var near = helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(4, 1, 3)));
+		return near instanceof ChestBlockEntity c ? c : (ChestBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 3)));
 	}
 
 	/** The hammer mill grinds 3 kg of corn into 3 kg of corn meal at 0.53 kg/s, and refuses what it cannot grind. */
@@ -86,7 +93,7 @@ final class FeedMillGameTests {
 	static void beltFeedsBarnFeeder(GameTestHelper helper) {
 		FarmingsGameTests.floor(helper);
 		var level = helper.getLevel();
-		helper.setBlock(new BlockPos(1, 1, 3), FeedMillBlocks.TMR_MIXER);
+		FarmingsGameTests.bigPart(level, FeedMillBlocks.TMR_MIXER, helper.absolutePos(new BlockPos(0, 1, 3)));     // cells x 0-1, z 3-4
 		for (int x = 2; x <= 4; x++) {
 			helper.setBlock(new BlockPos(x, 1, 3), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT.defaultBlockState()
 					.setValue(dev.farmings.conveyor.ConveyorPieceBlock.FACING, net.minecraft.core.Direction.EAST));
@@ -97,7 +104,7 @@ final class FeedMillGameTests {
 		var drive = (dev.farmings.conveyor.ConveyorDriveEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 1, 3)));
 		drive.refresh();
 		drive.forceRunning(true);
-		FeedMachineEntity m = (FeedMachineEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(1, 1, 3)));
+		FeedMachineEntity m = (FeedMachineEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(0, 1, 3)));
 		m.forceRunning(true);
 		m.accept(new ItemStack(FieldCrops.CORN_SILAGE, 6));
 		m.accept(new ItemStack(FieldCrops.ALFALFA_HAY, 20));
@@ -110,5 +117,30 @@ final class FeedMillGameTests {
 					Component.literal("the feeder holds the TMR: " + feeder.dryMatterKg() + " kg DM, " + feeder.analysis()));
 			helper.succeed();
 		});
+	}
+
+	/** The mixer fills 2 x 2 x 2 from one item; a click on any cell loads the batch; it hands rations on from any face. */
+	static void mixerMultiblockForms(GameTestHelper helper) {
+		FeedMachineEntity m = machine(helper, FeedMillBlocks.TMR_MIXER);
+		var level = helper.getLevel();
+		int cells = 0;
+		for (int x = 3; x <= 4; x++) {
+			for (int y = 1; y <= 2; y++) {
+				for (int z = 3; z <= 4; z++) {
+					if (dev.wildcatter.multiblock.BigParts.entity(level, helper.absolutePos(new BlockPos(x, y, z))) == m) {
+						cells++;
+					}
+				}
+			}
+		}
+		helper.assertTrue(cells == 8, Component.literal("8 cells, all one mixer: " + cells));
+		net.minecraft.world.entity.player.Player p = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+		ItemStack hay = new ItemStack(FieldCrops.ALFALFA_HAY, 5);
+		p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, hay);
+		BlockPos top = helper.absolutePos(new BlockPos(4, 2, 4));
+		level.getBlockState(top).useItemOn(hay, level, p, net.minecraft.world.InteractionHand.MAIN_HAND,
+				new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(top), net.minecraft.core.Direction.UP, top, false));
+		helper.assertTrue(hay.isEmpty() && Math.abs(m.asFed() - 50) < 1e-6, Component.literal("loaded from the far top cell: " + m.readout()));
+		helper.succeed();
 	}
 }

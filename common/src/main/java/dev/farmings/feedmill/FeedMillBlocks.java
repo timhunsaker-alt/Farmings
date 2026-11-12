@@ -18,7 +18,7 @@ import net.minecraft.world.level.material.MapColor;
 public final class FeedMillBlocks {
 	public static final Block HAMMER_MILL = new FeedMachineBlock(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Farmings.id("hammer_mill")))
 			.mapColor(MapColor.COLOR_GREEN).strength(3.0F).sound(SoundType.METAL));
-	public static final Block TMR_MIXER = new FeedMachineBlock(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Farmings.id("tmr_mixer")))
+	public static final Block TMR_MIXER = new FeedMixerBlock(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Farmings.id("tmr_mixer")))
 			.mapColor(MapColor.COLOR_RED).strength(3.0F).sound(SoundType.METAL));
 	public static final BlockEntityType<FeedMachineEntity> MACHINE_ENTITY = new BlockEntityType<>(FeedMachineEntity::new, Set.of(HAMMER_MILL, TMR_MIXER));
 	public static final Block[] ALL = {HAMMER_MILL, TMR_MIXER};

@@ -1,6 +1,99 @@
 {
  "variants": {
-  "": {
+  "facing=north,piece=0": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=1": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=2": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=3": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=4": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=5": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=6": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=north,piece=7": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=0": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=1": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=2": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=3": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=4": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=5": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=6": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=east,piece=7": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=0": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=1": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=2": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=3": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=4": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=5": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=6": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=south,piece=7": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=0": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=1": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=2": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=3": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=4": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=5": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=6": {
+   "model": "farmings:block/tmr_mixer"
+  },
+  "facing=west,piece=7": {
    "model": "farmings:block/tmr_mixer"
   }
  }

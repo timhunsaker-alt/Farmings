@@ -1330,7 +1330,10 @@ def feedmill_assets(lang):
         img.save(os.path.join(tex, name + ".png"))
         lang["block.farmings." + name] = "Hammer Mill" if name == "hammer_mill" else "TMR Mixer"
         write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
-        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        if name == "tmr_mixer":
+            big_cube_states(name, 8)     # a 2 x 2 x 2 big part (feed-mill.md, "the full-size mixer")
+        else:
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     for name, (title, colour) in FEED_ITEMS.items():
@@ -1369,6 +1372,15 @@ def compost_assets(lang):
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
 
 
+def big_cube_states(name, pieces):
+    """Every piece of a big part drawn as the same full cube, for each facing."""
+    v = {}
+    for facing in ("north", "east", "south", "west"):
+        for piece in range(pieces):
+            v["facing=%s,piece=%d" % (facing, piece)] = {"model": "farmings:block/" + name}
+    write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": v})
+
+
 def digester_assets(lang):
     """A green glass-lined tank, a concrete feed pit, a grey membrane gas holder, a digestate tank and a steel screw press."""
     tex = os.path.join(ASSETS, "textures", "block")
@@ -1383,7 +1395,10 @@ def digester_assets(lang):
         img.save(os.path.join(tex, name + ".png"))
         lang["block.farmings." + name] = title
         write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
-        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        if name == "digester_tank":
+            big_cube_states(name, 27)     # a 3 x 3 x 3 big part (digester.md, "the full-size tank")
+        else:
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     name = "liquid_digestate"

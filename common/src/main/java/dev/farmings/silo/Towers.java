@@ -71,27 +71,32 @@ public final class Towers {
 	/** Hands a stack to a belt, a Farmings machine or a container beside {@code from} (not the tower's own parts); returns the rest. */
 	public static ItemStack handOn(Level level, BlockPos from, ItemStack stack, java.util.function.Predicate<BlockPos> skip) {
 		ItemStack rest = stack;
-		for (Direction d : Direction.values()) {
-			if (rest.isEmpty()) {
-				break;
-			}
-			BlockPos at = from.relative(d);
-			if (skip.test(at)) {
-				continue;
-			}
-			if (level.getBlockState(at).getBlock() instanceof ConveyorPieceBlock) {
-				ConveyorDriveEntity drive = ConveyorDriveEntity.driveOf(level, at);
-				if (drive != null && drive.kind().carries(rest) && drive.hasRoom()) {
-					drive.putOn(rest.copy(), at);
-					rest = ItemStack.EMPTY;
+		// a big part (the 2 x 2 x 2 mixer, the 3 x 3 x 3 digester) hands on from every cell's outside face
+		java.util.List<BlockPos> own = dev.wildcatter.multiblock.BigParts.cellsAt(level, from);
+		java.util.Set<BlockPos> mine = new java.util.HashSet<>(own);
+		for (BlockPos cell : own) {
+			for (Direction d : Direction.values()) {
+				if (rest.isEmpty()) {
+					return rest;
 				}
-				continue;
-			}
-			BlockEntity be = dev.wildcatter.multiblock.BigParts.entity(level, at);
-			if (be instanceof ItemSink sink) {
-				rest = sink.accept(rest);
-			} else if (be instanceof Container c) {
-				rest = HopperBlockEntity.addItem(null, c, rest, d.getOpposite());
+				BlockPos at = cell.relative(d);
+				if (mine.contains(at) || skip.test(at)) {
+					continue;
+				}
+				if (level.getBlockState(at).getBlock() instanceof ConveyorPieceBlock) {
+					ConveyorDriveEntity drive = ConveyorDriveEntity.driveOf(level, at);
+					if (drive != null && drive.kind().carries(rest) && drive.hasRoom()) {
+						drive.putOn(rest.copy(), at);
+						rest = ItemStack.EMPTY;
+					}
+					continue;
+				}
+				BlockEntity be = dev.wildcatter.multiblock.BigParts.entity(level, at);
+				if (be instanceof ItemSink sink) {
+					rest = sink.accept(rest);
+				} else if (be instanceof Container c) {
+					rest = HopperBlockEntity.addItem(null, c, rest, d.getOpposite());
+				}
 			}
 		}
 		return rest;

@@ -80,3 +80,8 @@ The animal's daily intake carries that analysis. A ration score of 0 to 1 sets t
 - The TMR mixer becomes the spec's **2 x 2 x 2** big part, placed from one item. It takes ingredients on any face and puts out rations
   at its output face. Its figures are unchanged.
 - A mixer placed as a single block before this change still works.
+
+### Built, 2026-11-12 (loose ends): the full-size mixer
+- **Code:** `FeedMixerBlock`, a 2 x 2 x 2 big part. A click on any cell loads the batch.
+- **Output:** rations are handed on from every outside face (`Towers.handOn` now works from all of a big part's cells).
+- **Game test:** mixer_multiblock_forms.

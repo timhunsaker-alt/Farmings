@@ -68,7 +68,7 @@ public class DigesterBlock extends BaseEntityBlock {
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (!level.isClientSide()) {
 			BlockEntity be = level.getBlockEntity(pos);
-			DigesterEntity d = be instanceof DigesterEntity t ? t : level.getBlockEntity(pos.below()) instanceof DigesterEntity t2 ? t2 : null;
+			DigesterEntity d = be instanceof DigesterEntity t ? t : dev.wildcatter.multiblock.BigParts.entity(level, pos.below()) instanceof DigesterEntity t2 ? t2 : null;
 			if (be instanceof PressEntity p) {
 				player.sendSystemMessage(p.inspect());
 			} else if (d != null) {

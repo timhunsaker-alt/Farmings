@@ -63,7 +63,7 @@ public class PressEntity extends BlockEntity implements CircuitPart, Inspectable
 			BlockPos t = worldPosition.relative(d);
 			if (level.getBlockState(t).getBlock() == DigesterBlocks.DIGESTATE_TANK) {
 				for (Direction e : Direction.Plane.HORIZONTAL) {
-					if (level.getBlockEntity(t.relative(e)) instanceof DigesterEntity dg) {
+					if (dev.wildcatter.multiblock.BigParts.entity(level, t.relative(e)) instanceof DigesterEntity dg) {
 						return dg;
 					}
 				}

@@ -18,7 +18,7 @@ public class GasHolderEntity extends BlockEntity implements FluidNode {
 	}
 
 	private @Nullable DigesterEntity digesterBelow() {
-		return level != null && level.getBlockEntity(worldPosition.below()) instanceof DigesterEntity t ? t : null;
+		return level != null && dev.wildcatter.multiblock.BigParts.entity(level, worldPosition.below()) instanceof DigesterEntity t ? t : null;
 	}
 
 	public double m3() {

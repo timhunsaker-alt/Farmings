@@ -44,16 +44,29 @@ public class DigesterEntity extends BlockEntity implements CircuitPart, Inspecta
 		return forced || motor.output() > 0;
 	}
 
+	/** A gas holder on the tank's roof: above any of its cells. */
 	public boolean hasHolder() {
-		return level != null && level.getBlockState(worldPosition.above()).getBlock() == DigesterBlocks.GAS_HOLDER;
+		return touching(Direction.UP, DigesterBlocks.GAS_HOLDER);
 	}
 
+	/** A digestate tank against any of its sides. */
 	public boolean hasDigestateTank() {
+		for (Direction d : Direction.Plane.HORIZONTAL) {
+			if (touching(d, DigesterBlocks.DIGESTATE_TANK)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean touching(Direction d, net.minecraft.world.level.block.Block b) {
 		if (level == null) {
 			return false;
 		}
-		for (Direction d : Direction.Plane.HORIZONTAL) {
-			if (level.getBlockState(worldPosition.relative(d)).getBlock() == DigesterBlocks.DIGESTATE_TANK) {
+		java.util.List<BlockPos> cells = dev.wildcatter.multiblock.BigParts.cellsAt(level, worldPosition);
+		for (BlockPos c : cells) {
+			BlockPos n = c.relative(d);
+			if (!cells.contains(n) && level.getBlockState(n).getBlock() == b) {
 				return true;
 			}
 		}
