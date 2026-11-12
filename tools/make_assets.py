@@ -358,6 +358,7 @@ def main():
         "farmings:cooked_mutton_chop", "farmings:cooked_select_steak", "farmings:cooked_choice_steak", "farmings:cooked_prime_steak"]})
     lang["entity.farmings.rotten_egg"] = "Rotten Egg"
     lang["entity.farmings.sheep_dog"] = "Border Collie"
+    lang["entity.farmings.field_gantry"] = "Field Gantry"
     # Farmings crops keep the farmland under them, as vanilla crops do; without this, dry farmland turns back to dirt on a random tick
     # and the crop pops off (found 2026-11-11 by an intermittent gantry test)
     write(os.path.join(ROOT_DATA, "minecraft", "tags", "block", "maintains_farmland.json"), {"replace": False, "values": [

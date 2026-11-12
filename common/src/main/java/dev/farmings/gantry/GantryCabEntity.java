@@ -338,6 +338,12 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 		}
 		cooldown = tool == null ? 9 : tool.ticksPerBlock();
 		runStep(level, f);
+		// moving on: the gantry lifts into one entity and glides to its next cell (the TBM pattern)
+		GantryCabEntity now = movedTo != null && level.getBlockEntity(movedTo) instanceof GantryCabEntity next ? next : this;
+		Frame nf = now.frame();
+		if (glide && nf != null && now.nextMove(nf) != null) {
+			dev.farmings.entity.FieldGantryEntity.lift(level, now, nf);
+		}
 	}
 
 	/** One step of the program: for game tests, a whole step at once. */
@@ -406,17 +412,70 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 
 	// ---- moving ----
 
+	/** Every block of the gantry that moves: both trucks, the beam and the cab (the rails stay). */
+	public List<BlockPos> parts(Frame f) {
+		List<BlockPos> from = new ArrayList<>();
+		from.add(f.e0().below());
+		from.add(f.e1().below());
+		from.addAll(beamCells(f));
+		from.add(worldPosition);
+		return from;
+	}
+
+	/** The way the gantry moves at its next step, or null if it stays (unloading, parked, or at the end of the rails). */
+	public @Nullable Direction nextMove(Frame f) {
+		Direction d = switch (phase) {
+			case WORKING -> forward;
+			case TO_STOP -> forward;
+			case RETURNING -> step == target ? null : forward.getOpposite();
+			default -> null;
+		};
+		return d != null && railAt(f, d) ? d : null;
+	}
+
+	/** Ticks between steps at its tool's pace. */
+	public int ticksPerStep() {
+		return tool == null ? 9 : tool.ticksPerBlock();
+	}
+
+	/** Power for the next step, checked when a gliding gantry sets down (field-gantry.md: with no power it stops where it is). */
+	public boolean poweredNow() {
+		Frame f = frame();
+		return f != null && powered(f);
+	}
+
+	/** While the gantry glided as one entity its cab didn't tick: the rows' drying catches up. */
+	public void catchUp(long ticks, boolean raining) {
+		if (!raining) {
+			double days = TimeScale.ticksToRealDays(ticks);
+			drying.replaceAll((k, v) -> v + days);
+		}
+	}
+
+	/** The cab's state, for the gliding gantry to carry (FieldGantryEntity). */
+	public void saveCustomOnlyFor(net.minecraft.world.level.storage.ValueOutput out) {
+		saveCustomOnly(out);
+	}
+
+	public void loadState(net.minecraft.world.level.storage.ValueInput in) {
+		loadCustomOnly(in);
+	}
+
+	/** A full wait before the next step, as after a step taken on its own clock. */
+	public void resetCooldown() {
+		cooldown = ticksPerStep();
+		setChanged();
+	}
+
+	/** Gliding (the TBM pattern) can be turned off, so the block-stepping logic can be tested alone. */
+	public static boolean glide = true;
+
 	/** Moves the whole gantry one block along its rails, if the rails go on and the way is clear. */
 	private boolean move(ServerLevel level, Frame f, Direction d) {
 		if (!railAt(f, d)) {
 			return false;
 		}
-		List<BlockPos> beam = beamCells(f);
-		List<BlockPos> from = new ArrayList<>();
-		from.add(f.e0().below());
-		from.add(f.e1().below());
-		from.addAll(beam);
-		from.add(worldPosition);
+		List<BlockPos> from = parts(f);
 		for (BlockPos p : from) {
 			BlockState t = level.getBlockState(p.relative(d));
 			if (!t.isAir() && !t.canBeReplaced()) {

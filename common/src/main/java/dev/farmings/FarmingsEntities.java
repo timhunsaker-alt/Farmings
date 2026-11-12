@@ -70,6 +70,14 @@ public final class FarmingsEntities {
 			.clientTrackingRange(10)
 			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("sheep_dog")));
 
+	/** The field gantry while it glides along its rails (docs/multiblocks/field-gantry.md, "The lift"). */
+	public static final EntityType<dev.farmings.entity.FieldGantryEntity> FIELD_GANTRY = EntityType.Builder.<dev.farmings.entity.FieldGantryEntity>of(dev.farmings.entity.FieldGantryEntity::new, MobCategory.MISC)
+			.noLootTable()
+			.sized(1.0F, 1.0F)
+			.clientTrackingRange(16)
+			.updateInterval(1)
+			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("field_gantry")));
+
 	/** A thrown rotten egg (docs/eggs.md): a snowball's size and tracking. */
 	public static final EntityType<dev.farmings.entity.ThrownRottenEgg> ROTTEN_EGG = EntityType.Builder.<dev.farmings.entity.ThrownRottenEgg>of(dev.farmings.entity.ThrownRottenEgg::new, MobCategory.MISC)
 			.noLootTable()
@@ -92,5 +100,6 @@ public final class FarmingsEntities {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("duck"), DUCK);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("rotten_egg"), ROTTEN_EGG);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("sheep_dog"), SHEEP_DOG);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("field_gantry"), FIELD_GANTRY);
 	}
 }

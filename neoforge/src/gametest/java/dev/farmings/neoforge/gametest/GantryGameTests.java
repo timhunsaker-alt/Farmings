@@ -188,4 +188,27 @@ final class GantryGameTests {
 		helper.assertTrue(hoe.getDamageValue() == 2, Component.literal("the hoe wears once a stroke that works: " + hoe.getDamageValue()));
 		helper.succeed();
 	}
+
+	/** On its own clock the gantry lifts into one entity while it moves, glides the rails, and sets its blocks down when it parks. */
+	static void gantryLiftsAndSetsDown(GameTestHelper helper) {
+		build(helper);
+		GantryCabEntity c = cab(helper);
+		c.addInput(new ItemStack(FieldCrops.seed(FieldCrop.OATS), 64));
+		c.fitTool(GantryTool.SEED_DRILL);
+		c.toggle();
+		var level = helper.getLevel();
+		net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(helper.absolutePos(BlockPos.ZERO)).inflate(20);
+		TamingGameTests.waitFor(helper, 0, 60, () -> !level.getEntitiesOfClass(dev.farmings.entity.FieldGantryEntity.class, area).isEmpty(),
+				"it lifts into one entity as it moves off", () -> {
+					var e = level.getEntitiesOfClass(dev.farmings.entity.FieldGantryEntity.class, area).get(0);
+					helper.assertTrue(e.cells().size() == 2 + 7 + 1, Component.literal("it carries both trucks, the beam and the cab: " + e.cells().size()));
+					helper.assertTrue(level.getBlockState(e.cab()).isAir(), Component.literal("and its blocks are out of the world while it moves"));
+					TamingGameTests.waitFor(helper, 0, 500, () -> level.getEntitiesOfClass(dev.farmings.entity.FieldGantryEntity.class, area).isEmpty()
+							&& cab(helper) != null && cab(helper).phase() == GantryCabEntity.Phase.PARKED, () -> "it sets down when it parks", () -> {
+								helper.assertTrue(helper.getBlockState(new BlockPos(6, 1, 8)).getBlock() == FieldCrops.block(FieldCrop.OATS),
+										Component.literal("having sown the far row"));
+								helper.succeed();
+							});
+				});
+	}
 }

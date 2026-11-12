@@ -109,3 +109,15 @@ the span as the working width.
 - **Mass:** a block's cut that is lighter than an item drops one item by its share, so the mass holds on average.
 - **The hoe:** it wears once for each stroke that works.
 - **Game test:** hoe_rakes_swath.
+
+### Built, 2026-11-12 (loose ends): the lift
+- **The entity:** `entity/FieldGantryEntity` carries both trucks, the beam and the cab, along with the cab's saved state, and glides at
+  the tool's pace.
+- **At each cell:**
+  - It sets its blocks down, and the cab runs one step of its program: it works the row and moves a cell, carrying its state as it
+    always has.
+  - It lifts again if it moves on, all in one tick.
+  - It stays down when it parks, unloads, reaches the end of the rails, or has no power.
+- **While lifted:** the rows keep drying. The cab catches up on the time when it sets down.
+- **Drawing:** the client draws the carried blocks as vanilla draws a falling block (`client/FieldGantryRenderer`).
+- **Game test:** gantry_lifts_and_sets_down. gantry_runs_on_its_clock passes with gliding on.

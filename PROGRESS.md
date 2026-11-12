@@ -246,7 +246,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - **Phase 3, not built or simplified:**
   - ~~the digester tank and the TMR mixer are single blocks~~ (full size, built 2026-11-12);
   - ~~belts are level only, and items riding a belt are not drawn~~ (built 2026-11-12);
-  - the gantry steps as blocks instead of lifting into one entity, and hand raking is not built;
+  - ~~the gantry steps as blocks; hand raking~~ (the lift and hand raking built 2026-11-12);
   - the silo takes its whole 10.5% dry-matter loss at filling;
   - the scene's gas set runs with no electrical load on it, so it idles (61 m³/h).
 - **Phase 3 proposals with no source:** see the *(proposed)*, NOT FOUND and TO VERIFY marks in `docs/crops.md`, `docs/conveyors.md` and
