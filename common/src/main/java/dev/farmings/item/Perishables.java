@@ -43,12 +43,17 @@ public final class Perishables {
 
 	/** A fridge kept it cold for {@code ticks}: its spoil tick moves later (Spoilage.coldCredit). Starts the clock first if need be. */
 	public static void keepCold(ItemStack stack, long now, long ticks) {
+		keepCold(stack, now, ticks, dev.farmings.process.coldroom.ColdRoomTemp.FRIDGE_C);
+	}
+
+	/** Kept at {@code tempC} for {@code ticks}: the credit follows the temperature (Spoilage.coldCredit). */
+	public static void keepCold(ItemStack stack, long now, long ticks, double tempC) {
 		Spoilage.Food f = foodOf(stack);
 		if (f == null) {
 			return;
 		}
 		stamp(stack, now);
-		setSpoilsAt(stack, spoilsAt(stack) + Spoilage.coldCredit(f, ticks));
+		setSpoilsAt(stack, spoilsAt(stack) + Spoilage.coldCredit(f, ticks, tempC));
 	}
 
 	/** The spoiled stack this one has become by {@code now}, the same count, or null if it is still good. */

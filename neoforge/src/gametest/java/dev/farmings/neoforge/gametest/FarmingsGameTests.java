@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "ram_straw_inseminates_ewe", "bbw_hen_fertile_by_straw", "turkey_straw_goes_stale", "straw_wrong_species_refused", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age", "shed_forms", "shed_gap_named", "flock_goes_to_pasture_and_back", "ewe_moves_to_lambing_pen", "grazing_feeds", "shed_bedding_fills_and_empties", "lamb_stillborn_not_spawned", "ewe_anoestrous_out_of_season", "dog_gathers_flock", "dog_drives_flock_to_shed", "dog_commands_and_owners", "dog_tamed_in_corral", "shearing_shed_forms", "sheep_shorn_by_stand", "no_power_no_shearing", "press_makes_bale", "fleece_to_yarn", "scour_needs_water", "hopper_takes_cloth", "wool_clothing_stops_freezing", "yarn_to_wool_blocks", "ewe_milked_in_sheep_stall", "tank_refuses_mixed_milk", "sheep_cheese_from_creamery", "wild_spawn_is_wild", "wild_survives_save", "barn_skips_wild", "shed_skips_wild", "wild_follows_feed", "wild_biome_spawns_replaced", "wild_natural_spawn_needs_grass", "corral_forms", "corral_gate_is_one_way", "corral_bait_draws_wild", "corral_wild_settles_into_herd", "corral_unfed_wild_does_not_settle", "fowl_founders_per_breed", "fowl_save_survives", "hen_lays_floor_egg", "egg_carries_genes", "bbw_tom_cannot_mate", "fowl_spawn_is_wild", "fowl_biome_spawns_replaced", "fowl_follows_seeds", "fowl_settles_in_corral", "coop_forms", "coop_takes_tame_birds", "hen_lays_in_nest", "broody_hen_hatches", "birds_out_by_day_in_at_night", "duck_needs_pond", "litter_builds_up", "chick_cold_without_heat", "incubator_hatches", "incubator_no_power", "brooder_keeps_chicks", "grading_packs_cartons", "table_eggs_spoil_fertile_dont", "poultry_meat_and_down", "rotten_egg_thrown_nauseates", "farm_chicken_spoils", "male_serves_limited_hens", "quail_species_dont_cross", "hens_forage_on_run", "muscovy_colour_mutant_inherits", "crop_grows_on_clock", "crop_keeps_dry_farmland", "alfalfa_regrows_and_dies", "corn_ripens_for_grain", "ripe_oats_by_hand", "belt_carries_to_chest", "belt_blocked_head_holds", "auger_lifts_grain", "gantry_plants_strip", "gantry_harvests_to_stop", "gantry_mows_rakes_bales", "gantry_runs_on_its_clock", "silo_ferments_and_unloads", "grain_bin_fills_and_empties", "mill_grinds", "mixer_makes_ration", "feeder_ration_feeds_cow", "belt_feeds_barn_feeder", "compost_matures", "compost_waits_for_turns", "digester_fills_holder", "separator_splits", "genset_burns_farm_biogas"};
+	private static final String[] SCENES = {"registers", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "ram_straw_inseminates_ewe", "bbw_hen_fertile_by_straw", "turkey_straw_goes_stale", "straw_wrong_species_refused", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "cold_room_warms_without_power", "warm_room_spoils_faster", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age", "shed_forms", "shed_gap_named", "flock_goes_to_pasture_and_back", "ewe_moves_to_lambing_pen", "grazing_feeds", "shed_bedding_fills_and_empties", "lamb_stillborn_not_spawned", "ewe_anoestrous_out_of_season", "dog_gathers_flock", "dog_drives_flock_to_shed", "dog_commands_and_owners", "dog_tamed_in_corral", "shearing_shed_forms", "sheep_shorn_by_stand", "no_power_no_shearing", "press_makes_bale", "fleece_to_yarn", "scour_needs_water", "hopper_takes_cloth", "wool_clothing_stops_freezing", "yarn_to_wool_blocks", "ewe_milked_in_sheep_stall", "tank_refuses_mixed_milk", "sheep_cheese_from_creamery", "wild_spawn_is_wild", "wild_survives_save", "barn_skips_wild", "shed_skips_wild", "wild_follows_feed", "wild_biome_spawns_replaced", "wild_natural_spawn_needs_grass", "corral_forms", "corral_gate_is_one_way", "corral_bait_draws_wild", "corral_wild_settles_into_herd", "corral_unfed_wild_does_not_settle", "fowl_founders_per_breed", "fowl_save_survives", "hen_lays_floor_egg", "egg_carries_genes", "bbw_tom_cannot_mate", "fowl_spawn_is_wild", "fowl_biome_spawns_replaced", "fowl_follows_seeds", "fowl_settles_in_corral", "coop_forms", "coop_takes_tame_birds", "hen_lays_in_nest", "broody_hen_hatches", "birds_out_by_day_in_at_night", "duck_needs_pond", "litter_builds_up", "chick_cold_without_heat", "incubator_hatches", "incubator_no_power", "brooder_keeps_chicks", "grading_packs_cartons", "table_eggs_spoil_fertile_dont", "poultry_meat_and_down", "rotten_egg_thrown_nauseates", "farm_chicken_spoils", "male_serves_limited_hens", "quail_species_dont_cross", "hens_forage_on_run", "muscovy_colour_mutant_inherits", "crop_grows_on_clock", "crop_keeps_dry_farmland", "alfalfa_regrows_and_dies", "corn_ripens_for_grain", "ripe_oats_by_hand", "belt_carries_to_chest", "belt_blocked_head_holds", "auger_lifts_grain", "gantry_plants_strip", "gantry_harvests_to_stop", "gantry_mows_rakes_bales", "gantry_runs_on_its_clock", "silo_ferments_and_unloads", "grain_bin_fills_and_empties", "mill_grinds", "mixer_makes_ration", "feeder_ration_feeds_cow", "belt_feeds_barn_feeder", "compost_matures", "compost_waits_for_turns", "spoiled_food_composts", "digester_fills_holder", "separator_splits", "genset_burns_farm_biogas"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		modBus.addListener(RegisterEvent.class, event -> event.register(Registries.TEST_FUNCTION, helper -> {
@@ -142,6 +142,8 @@ public class FarmingsGameTests {
 			helper.register(id("cold_room_gap_named"), loaded(FarmingsGameTests::coldRoomGapNamed));
 			helper.register(id("fridge_slows_spoilage"), loaded(FarmingsGameTests::fridgeSlowsSpoilage));
 			helper.register(id("cold_room_no_power_warms"), loaded(FarmingsGameTests::coldRoomNoPowerWarms));
+			helper.register(id("cold_room_warms_without_power"), loaded(FarmingsGameTests::coldRoomWarmsWithoutPower));
+			helper.register(id("warm_room_spoils_faster"), loaded(FarmingsGameTests::warmRoomSpoilsFaster));
 			helper.register(id("sheep_spawns_and_survives_save"), loaded(SheepGameTests::sheepSpawnsAndSurvivesSave));
 			helper.register(id("sheep_lifecycle"), loaded(SheepGameTests::sheepLifecycle));
 			helper.register(id("ewe_lambs_twins"), loaded(SheepGameTests::eweLambsTwins));
@@ -227,6 +229,7 @@ public class FarmingsGameTests {
 			helper.register(id("belt_feeds_barn_feeder"), loaded(FeedMillGameTests::beltFeedsBarnFeeder));
 			helper.register(id("compost_matures"), loaded(CompostGameTests::compostMatures));
 			helper.register(id("compost_waits_for_turns"), loaded(CompostGameTests::compostWaitsForTurns));
+			helper.register(id("spoiled_food_composts"), loaded(CompostGameTests::spoiledFoodComposts));
 			helper.register(id("digester_fills_holder"), loaded(DigesterGameTests::digesterFillsHolder));
 			helper.register(id("separator_splits"), loaded(DigesterGameTests::separatorSplits));
 			helper.register(id("genset_burns_farm_biogas"), loaded(DigesterGameTests::gensetBurnsFarmBiogas));
@@ -2159,8 +2162,12 @@ public class FarmingsGameTests {
 		var r = room(level, evap);
 		helper.assertTrue(r.formed(), Component.literal("a sealed panel box forms: " + r.readout(level)));
 		helper.assertTrue(r.check().volumeM3() == 18, Component.literal("3 x 2 x 3 inside"));
+		helper.assertTrue(r.tempC() == 20.0, Component.literal("a new room is at the outside 20 C: " + r.tempC()));
 		r.condenser(level).forceRunning(true);
-		r.cool(level, level.getGameTime(), dev.farmings.process.food.Spoilage.STEP);
+		for (int i = 0; i < 6; i++) {
+			r.cool(level, level.getGameTime(), dev.farmings.process.food.Spoilage.STEP);
+		}
+		helper.assertTrue(r.tempC() == dev.farmings.process.coldroom.ColdRoomTemp.SET_POINT_C, Component.literal("it pulls down to 2 C: " + r.readout(level)));
 		double want = dev.farmings.process.coldroom.ColdRoomLoad.electricWatts(18);
 		helper.assertTrue(Math.abs(r.condenser(level).ratedWatts() - want) < 1, Component.literal("the compressor is sized for the room: " + r.condenser(level).ratedWatts() + " W vs " + want));
 		helper.assertTrue(r.readout(level).contains("COLD") && r.readout(level).contains("kW cooling"), Component.literal("readout: " + r.readout(level)));
@@ -2191,6 +2198,7 @@ public class FarmingsGameTests {
 		BlockPos evap = buildColdRoom(level, a);
 		var r = room(level, evap);
 		r.condenser(level).forceRunning(true);
+		r.setTempForTest(dev.farmings.process.coldroom.ColdRoomTemp.SET_POINT_C);     // already cold
 		long now = level.getGameTime();
 		var inside = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(a.offset(1, 0, 1));
 		inside.setItem(0, milkMadeAt(now));
@@ -2222,6 +2230,50 @@ public class FarmingsGameTests {
 		helper.assertTrue(r.fault().equals("NO POWER"), Component.literal("fault: " + r.fault()));
 		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(inside.getItem(0)) == before, Component.literal("no power, no cold: the clock runs as at room temperature"));
 		helper.assertTrue(r.readout(level).contains("NO POWER"), Component.literal("readout: " + r.readout(level)));
+		helper.succeed();
+	}
+
+	/** A cold room with no power warms through its walls: 2 to 5 C in four hours, and its food gets less and less credit. */
+	private static void coldRoomWarmsWithoutPower(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos a = helper.absolutePos(ROOM);
+		BlockPos evap = buildColdRoom(level, a);
+		var r = room(level, evap);
+		r.setTempForTest(2.0);
+		long now = level.getGameTime();
+		// four real hours at 1 real day a game day: 4,000 ticks, in steps of a minute (1,200 ticks)
+		long ticks = 0;
+		while (ticks + dev.farmings.process.food.Spoilage.STEP <= 4000) {
+			r.cool(level, now, dev.farmings.process.food.Spoilage.STEP);
+			ticks += dev.farmings.process.food.Spoilage.STEP;
+		}
+		r.cool(level, now, 4000 - ticks);
+		helper.assertTrue(Math.abs(r.tempC() - 5.0) < 0.01, Component.literal("2 to 5 C in four hours with no power: " + r.tempC()));
+		helper.assertTrue(r.readout(level).contains("WARMING"), Component.literal(r.readout(level)));
+		helper.succeed();
+	}
+
+	/** Food at 12 C gets some of the fridge's credit, at 2 C all of it; opening the door warms the room. */
+	private static void warmRoomSpoilsFaster(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos a = helper.absolutePos(ROOM);
+		BlockPos evap = buildColdRoom(level, a);
+		var r = room(level, evap);
+		long now = level.getGameTime();
+		var chest = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(a.offset(1, 0, 1));
+		var milk = dev.farmings.process.food.Spoilage.Food.MILK;
+		long full = dev.farmings.process.food.Spoilage.coldCredit(milk, dev.farmings.process.food.Spoilage.STEP);
+		chest.setItem(0, milkMadeAt(now));
+		long before = dev.farmings.item.Perishables.spoilsAt(chest.getItem(0));
+		r.setTempForTest(12.0);
+		r.cool(level, now, dev.farmings.process.food.Spoilage.STEP);     // no power: it warms a little over the step
+		long got = dev.farmings.item.Perishables.spoilsAt(chest.getItem(0)) - before;
+		long want = dev.farmings.process.food.Spoilage.coldCredit(milk, dev.farmings.process.food.Spoilage.STEP, 12.0);
+		helper.assertTrue(Math.abs(got - want) <= 15 && got < full - 200, Component.literal("at about 12 C the milk gets part of the credit: " + got + " of " + full + " (about " + want + ")"));
+		r.setTempForTest(2.0);
+		double t = r.tempC();
+		dev.farmings.coldroom.ColdRoomDoorBlock.opened(level, a.offset(1, 0, 3));
+		helper.assertTrue(r.tempC() > t + 0.2, Component.literal("opening the door lets warm air in: " + r.tempC()));
 		helper.succeed();
 	}
 

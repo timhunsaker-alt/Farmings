@@ -24,6 +24,10 @@ public class ColdRoomEntity extends BlockEntity {
 	private ColdRoomCheck check;
 	private long lastCold = Long.MIN_VALUE;
 	private String fault = "";
+	/** The room's air, °C (cold-room.md, "the room's temperature"); a new room starts at the outside 20 °C. */
+	private double tempC = dev.farmings.process.coldroom.ColdRoomTemp.OUTSIDE_C;
+	/** A game tick is 3.6 real seconds for food: 1 real day = 1 game day = 24,000 ticks. */
+	public static final double SECONDS_PER_TICK = 86_400.0 / 24_000.0;
 
 	public ColdRoomEntity(BlockPos pos, BlockState state) {
 		super(ColdRoomBlocks.COLD_ROOM_ENTITY, pos, state);
@@ -61,7 +65,29 @@ public class ColdRoomEntity extends BlockEntity {
 		}
 	}
 
-	/** One cooling step of {@code ticks}: powered, every food stack inside is kept cold for that long. Run once a minute; tests call it. */
+	public double tempC() {
+		return tempC;
+	}
+
+	/** Game tests: set the room's temperature. */
+	public void setTempForTest(double c) {
+		this.tempC = c;
+		setChanged();
+	}
+
+	/** A door of the room was opened: one room of outside air comes in. */
+	public void doorOpened() {
+		if (formed()) {
+			int[] s = check.size();
+			tempC = dev.farmings.process.coldroom.ColdRoomTemp.doorOpened(tempC, s[0], s[1], s[2]);
+			setChanged();
+		}
+	}
+
+	/**
+	 * One step of {@code ticks}: the room's temperature moves (warming through the walls, cooled while the unit has power), and every food
+	 * stack inside ages by that temperature. Run once a minute; tests call it.
+	 */
 	public void cool(Level level, long now, long ticks) {
 		CondenserEntity unit = condenser(level);
 		if (!formed() || unit == null) {
@@ -70,18 +96,24 @@ public class ColdRoomEntity extends BlockEntity {
 		}
 		unit.size(ColdRoomLoad.electricWatts(check.volumeM3()));
 		unit.setDemand(true);
-		if (!unit.powered()) {
-			fault = "NO POWER";
-			return;
+		boolean powered = unit.powered();
+		int[] s = check.size();
+		double before = tempC;
+		tempC = dev.farmings.process.coldroom.ColdRoomTemp.step(tempC, ticks * SECONDS_PER_TICK, powered,
+				ColdRoomLoad.coolingWatts(check.volumeM3()), s[0], s[1], s[2]);
+		double mean = (before + tempC) / 2;
+		fault = powered ? "" : "NO POWER";
+		setChanged();
+		if (mean >= dev.farmings.process.coldroom.ColdRoomTemp.OUTSIDE_C - 1e-6) {
+			return;     // no cooler than the outside: no credit
 		}
-		fault = "";
 		for (int[] c : check.inside()) {
 			if (level.getBlockEntity(new BlockPos(c[0], c[1], c[2])) instanceof Container box) {
 				boolean changed = false;
 				for (int i = 0; i < box.getContainerSize(); i++) {
 					var stack = box.getItem(i);
 					if (Perishables.foodOf(stack) != null) {
-						Perishables.keepCold(stack, now, ticks);
+						Perishables.keepCold(stack, now, ticks, mean);
 						changed = true;
 					}
 				}
@@ -107,20 +139,23 @@ public class ColdRoomEntity extends BlockEntity {
 		}
 		double kw = ColdRoomLoad.coolingWatts(check.volumeM3()) / 1000;
 		CondenserEntity unit = condenser(level);
-		String state = unit == null ? "no condensing unit" : unit.powered() ? "COLD" : "NO POWER";
-		return String.format(java.util.Locale.ROOT, "Cold room: %s, load %.1f kW cooling, condensing unit %.1f kW, %s", check.status(), kw,
-				ColdRoomLoad.electricWatts(check.volumeM3()) / 1000, state);
+		String state = unit == null ? "no condensing unit"
+				: tempC <= dev.farmings.process.coldroom.ColdRoomTemp.FRIDGE_C + 1e-6 && unit.powered() ? "COLD" : unit.powered() ? "COOLING" : "NO POWER, WARMING";
+		return String.format(java.util.Locale.ROOT, "Cold room: %s, load %.1f kW cooling, condensing unit %.1f kW, %.1f °C (set %.0f °C), %s", check.status(), kw,
+				ColdRoomLoad.electricWatts(check.volumeM3()) / 1000, tempC, dev.farmings.process.coldroom.ColdRoomTemp.SET_POINT_C, state);
 	}
 
 	@Override
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		output.putLong("LastCold", lastCold);
+		output.putDouble("TempC", tempC);
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
 		lastCold = input.getLongOr("LastCold", Long.MIN_VALUE);
+		tempC = input.getDoubleOr("TempC", dev.farmings.process.coldroom.ColdRoomTemp.OUTSIDE_C);
 	}
 }

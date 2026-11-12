@@ -66,4 +66,19 @@ final class CompostGameTests {
 				Component.literal(c.readout()));
 		helper.succeed();
 	}
+
+	/** Spoiled food goes on the pile as a nitrogen input: meat at C:N 5 brings a straw-heavy pile's C:N down (compost.md, loose ends). */
+	static void spoiledFoodComposts(GameTestHelper helper) {
+		CompostControllerEntity c = build(helper, true);
+		c.accept(new ItemStack(FieldCrops.STRAW, 10));
+		double before = c.pile().cn();
+		ItemStack meat = new ItemStack(FarmingsItems.SPOILED_STEAK, 64);
+		ItemStack rest = c.accept(meat);
+		helper.assertTrue(rest.isEmpty(), Component.literal("spoiled steak goes on the pile"));
+		helper.assertTrue(c.pile().cn() < before, Component.literal("and lowers the C:N: " + before + " -> " + c.pile().cn()));
+		helper.assertTrue(c.accept(new ItemStack(FarmingsItems.ROTTEN_EGG, 4)).isEmpty() && c.accept(new ItemStack(FarmingsItems.SPOILED_BOTTLE, 2)).isEmpty(),
+				Component.literal("rotten eggs and spoiled milk too"));
+		helper.assertTrue(!c.accept(new ItemStack(FarmingsItems.BOTTLED_MILK, 1)).isEmpty(), Component.literal("good milk is not compost"));
+		helper.succeed();
+	}
 }

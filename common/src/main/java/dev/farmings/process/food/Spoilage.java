@@ -80,6 +80,28 @@ public final class Spoilage {
 		return Math.max(0, Math.round(saved));
 	}
 
+	/**
+	 * A food's life at {@code tempC} in ticks (docs/multiblocks/cold-room.md, "Spoilage by temperature"): its fridge life at 4 °C or
+	 * colder, its room life at 20 °C or warmer, and log-linear between, so each food has its own Q10, (fridge / room)^(10/16) *(derived)*.
+	 */
+	public static double lifeAt(Food food, double tempC) {
+		if (tempC <= dev.farmings.process.coldroom.ColdRoomTemp.FRIDGE_C) {
+			return food.fridgeTicks();
+		}
+		if (tempC >= dev.farmings.process.coldroom.ColdRoomTemp.OUTSIDE_C) {
+			return food.roomTicks();
+		}
+		double f = (tempC - dev.farmings.process.coldroom.ColdRoomTemp.FRIDGE_C)
+				/ (dev.farmings.process.coldroom.ColdRoomTemp.OUTSIDE_C - dev.farmings.process.coldroom.ColdRoomTemp.FRIDGE_C);
+		return Math.exp(Math.log(food.fridgeTicks()) + f * (Math.log(food.roomTicks()) - Math.log(food.fridgeTicks())));
+	}
+
+	/** The cold credit for {@code ticks} kept at {@code tempC}: the share of the time the cold saved. 0 at 20 °C, full fridge credit at 4. */
+	public static long coldCredit(Food food, long ticks, double tempC) {
+		double saved = ticks * (1.0 - food.roomTicks() / lifeAt(food, tempC));
+		return Math.max(0, Math.round(saved));
+	}
+
 	public static boolean spoiled(long spoilsAt, long now) {
 		return now >= spoilsAt;
 	}

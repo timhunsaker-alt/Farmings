@@ -74,3 +74,8 @@ Spoiled Farmings food goes into the windrow as a nitrogen-rich input.
 
 - **Meat:** meat is fine in a managed farm pile. "butcher/slaughter house waste can be composted without any pre-treatment" (Cornell
   CWMI), though home composting guides say not to.
+
+### Built, 2026-11-11 (loose ends)
+- **Inputs:** spoiled steak, mutton and poultry, spoiled milk, rancid butter, mouldy cheese and rotten eggs go on the pile. Spoiled
+  milk poured in by hand gives the glass bottle back.
+- **Game test:** spoiled_food_composts.

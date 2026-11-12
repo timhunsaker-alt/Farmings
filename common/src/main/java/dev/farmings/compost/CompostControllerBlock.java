@@ -51,7 +51,16 @@ public class CompostControllerBlock extends BaseEntityBlock {
 					player.setItemInHand(hand, new ItemStack(Items.BUCKET));
 				}
 			} else {
+				int took = stack.getCount() - rest.getCount();
+				boolean bottles = stack.is(dev.farmings.FarmingsItems.SPOILED_BOTTLE);
 				stack.setCount(rest.getCount());
+				if (bottles && took > 0 && !player.hasInfiniteMaterials()) {
+					// the milk goes on the pile; the glass comes back
+					ItemStack glass = new ItemStack(Items.GLASS_BOTTLE, took);
+					if (!player.getInventory().add(glass)) {
+						level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), glass));
+					}
+				}
 			}
 		}
 		return InteractionResult.SUCCESS;

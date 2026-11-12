@@ -89,3 +89,10 @@ The cold room now holds a temperature, and food ages by it.
 - **The credit:** the cold credit each minute becomes a minute x (1 - room life / life at T). It is zero at 20 °C and the full fridge
   credit at 4 °C.
 - **Readout:** "... T °C (set 2 °C), COLD" while at or below 4 °C, else "WARMING" (no power) or "COOLING".
+
+### Built, 2026-11-11 (loose ends)
+- **Code:** `process/coldroom/ColdRoomTemp` and `Spoilage.lifeAt` are plain Java and unit-tested. The room saves its temperature.
+- **Steps:** the walls are stepped exactly, as an exponential, so a step of a minute or of hours gives the same answer.
+- **A new room:** starts at 20 °C and pulls down to 2 °C within a few minutes of play.
+- **Doors:** opening a door warms the room by about half a degree in a 3 x 2 x 3 room.
+- **Game tests:** cold_room_warms_without_power, warm_room_spoils_faster. The older tests start from a cold room.

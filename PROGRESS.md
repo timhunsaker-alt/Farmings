@@ -259,7 +259,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
 - NeoForge has not been launched with a client; Fabric has.
 - ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
-- Not built: products by pipe, a plain-text genome code, a cold room temperature model, lane collision rails, spoiled food in compost.
+- Not built: products by pipe, a plain-text genome code, lane collision rails. Built 2026-11-11 (loose ends): the cold room temperature model, spoiled food in compost.
 - Sheep, not built: cloth filters. Built 2026-11-11 (loose ends): bedding that gets dirty, sheep dogs, breeding seasons, sheep straws,
   stillbirths for lambs. (Natural spawns were built with taming on 2026-11-10; this line said otherwise until now.)
 - Sheep proposals with no source: breed baselines, litter odds shape, fleece-trait swings, grass block 1.5 kg DM, pen and pasture caps,
