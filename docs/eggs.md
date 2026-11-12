@@ -134,3 +134,9 @@ since laying *(proposed thresholds)*:
   - Furnace, smoker and campfire recipes cook them, and they carry the `c:foods/raw_meat` and `c:foods/cooked_meat` tags, so other
     mods' recipes take them.
   - Vanilla chickens and their meat are untouched.
+
+### Built, 2026-11-11 (loose ends)
+- **Rotten eggs:** `RottenEggItem` throws a `ThrownRottenEgg`, drawn as the item, which gives 5 s of Nausea.
+- **Chicken:** Farmings birds drop `farmings:chicken`, which cooks to `farmings:cooked_chicken`. Both spoil, and both carry the
+  `c:foods` meat tags.
+- **Game tests:** rotten_egg_thrown_nauseates, farm_chicken_spoils.

@@ -10,11 +10,17 @@ import java.util.Locale;
  *       junglefowl look. Rose and pea combs; both make a walnut comb. Silky feathering is h/h.</li>
  *   <li>Turkey: c/c white; black B; otherwise r/r is Bourbon red, else bronze.</li>
  *   <li>Duck: c/c white; restricted M^R; mallard M+; dusky m^d, khaki when also brown-diluted. The Muscovy has its own look.</li>
- *   <li>Quail: each species shows its wild type.</li>
+ *   <li>Duck, Muscovy: two blue is silver, one blue, lavender, chocolate, else the wild-type Muscovy.</li>
+ *   <li>Quail: Bobwhite shows its wild type. Coturnix: s/s English White, then Tibetan (E/E), Golden (Y/Y), Rosetta (E/+), Italian (Y/+),
+ *       else the wild type.</li>
  * </ul>
  */
 public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, int seed) {
-	public enum Plumage { WHITE, WILD, RED, BLACK, BARRED, BRONZE, BOURBON, MALLARD, RESTRICTED, DUSKY, KHAKI, MUSCOVY, COTURNIX, BOBWHITE }
+	public enum Plumage {
+		WHITE, WILD, RED, BLACK, BARRED, BRONZE, BOURBON, MALLARD, RESTRICTED, DUSKY, KHAKI, MUSCOVY, COTURNIX, BOBWHITE,
+		// colour mutants (2026-11-11)
+		MUSCOVY_BLUE, MUSCOVY_SILVER, MUSCOVY_LAVENDER, MUSCOVY_CHOCOLATE, ITALIAN, GOLDEN, ROSETTA, TIBETAN, ENGLISH_WHITE
+	}
 
 	public enum Comb { SINGLE, ROSE, PEA, WALNUT }
 
@@ -36,7 +42,10 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 					: g.expressed(PoultryLocus.TURKEY_RED, sex) == 1 ? Plumage.BOURBON : Plumage.BRONZE;
 			case DUCK -> {
 				if (breedCode.equals("MUS")) {
-					yield Plumage.MUSCOVY;
+					int blue = g.count(PoultryLocus.MUSCOVY_BLUE, sex);
+					yield blue == 2 ? Plumage.MUSCOVY_SILVER : blue == 1 ? Plumage.MUSCOVY_BLUE
+							: g.expressed(PoultryLocus.MUSCOVY_LAVENDER, sex) == 1 ? Plumage.MUSCOVY_LAVENDER
+							: g.expressed(PoultryLocus.MUSCOVY_CHOCOLATE, sex) == 1 ? Plumage.MUSCOVY_CHOCOLATE : Plumage.MUSCOVY;
 				}
 				if (white) {
 					yield Plumage.WHITE;
@@ -47,7 +56,16 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 					default -> g.expressed(PoultryLocus.DUCK_BROWN, sex) == 1 ? Plumage.KHAKI : Plumage.DUSKY;
 				};
 			}
-			case QUAIL -> breedCode.equals("BOB") ? Plumage.BOBWHITE : Plumage.COTURNIX;
+			case QUAIL -> {
+				if (breedCode.equals("BOB")) {
+					yield Plumage.BOBWHITE;
+				}
+				int brown = g.count(PoultryLocus.QUAIL_BROWN, sex);
+				int fawn = g.count(PoultryLocus.QUAIL_FAWN, sex);
+				yield g.expressed(PoultryLocus.QUAIL_WHITE, sex) == 1 ? Plumage.ENGLISH_WHITE
+						: brown == 2 ? Plumage.TIBETAN : fawn == 2 ? Plumage.GOLDEN : brown == 1 ? Plumage.ROSETTA : fawn == 1 ? Plumage.ITALIAN
+						: Plumage.COTURNIX;
+			}
 			default -> throw new IllegalArgumentException("not a bird: " + species);
 		};
 		Comb comb = Comb.SINGLE;
@@ -77,18 +95,18 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 		return shade < 100 ? "white" : shade < 350 ? "cream" : shade < 550 ? "tinted" : "brown";
 	}
 
-	/** Packs the look for syncing to clients: plumage 4 bits, comb 2, silky 1, shell 10, seed 32. */
+	/** Packs the look for syncing to clients: plumage 5 bits, comb 2, silky 1, shell 10, seed 32. */
 	public long pack() {
 		long v = plumage.ordinal();
-		v |= (long) comb.ordinal() << 4;
-		v |= (silky ? 1L : 0L) << 6;
-		v |= (long) (shell & 0x3FF) << 7;
-		v |= (seed & 0xFFFFFFFFL) << 17;
+		v |= (long) comb.ordinal() << 5;
+		v |= (silky ? 1L : 0L) << 7;
+		v |= (long) (shell & 0x3FF) << 8;
+		v |= (seed & 0xFFFFFFFFL) << 18;
 		return v;
 	}
 
 	public static PoultryLook unpack(long v) {
-		return new PoultryLook(Plumage.values()[(int) (v & 0xF)], Comb.values()[(int) (v >> 4 & 3)], (v >> 6 & 1) == 1, (int) (v >> 7 & 0x3FF),
-				(int) (v >> 17 & 0xFFFFFFFFL));
+		return new PoultryLook(Plumage.values()[(int) (v & 0x1F)], Comb.values()[(int) (v >> 5 & 3)], (v >> 7 & 1) == 1, (int) (v >> 8 & 0x3FF),
+				(int) (v >> 18 & 0xFFFFFFFFL));
 	}
 }

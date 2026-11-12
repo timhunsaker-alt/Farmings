@@ -792,6 +792,10 @@ public class SheepEntity extends Animal implements Wild.Animal {
 	/** Follows a route, then goes to her target, else to her home cell. Outranks strolling. */
 	private static final class PlaceGoal extends net.minecraft.world.entity.ai.goal.Goal {
 		private final SheepEntity sheep;
+		/** Where she was when last checked, and how long she has made no headway: snagged on a gate post, she gets a nudge. */
+		private double lastX = Double.NaN;
+		private double lastZ = Double.NaN;
+		private int still;
 
 		PlaceGoal(SheepEntity sheep) {
 			this.sheep = sheep;
@@ -806,6 +810,27 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		@Override
 		public boolean canContinueToUse() {
 			return canUse();
+		}
+
+		/** Two seconds with no headway toward (x, z): a small push that way, as a snagged animal slides off a post corner, and a fresh path. */
+		private void unstick(double x, double z) {
+			double moved = Double.isNaN(lastX) ? 1 : Math.abs(sheep.getX() - lastX) + Math.abs(sheep.getZ() - lastZ);
+			if (sheep.tickCount % 20 != 0) {
+				return;
+			}
+			lastX = sheep.getX();
+			lastZ = sheep.getZ();
+			still = moved < 0.15 ? still + 1 : 0;
+			if (still >= 2) {
+				double dx = x - sheep.getX();
+				double dz = z - sheep.getZ();
+				double d = Math.sqrt(dx * dx + dz * dz);
+				if (d > 0.01) {
+					sheep.push(dx / d * 0.25, 0.0, dz / d * 0.25);
+				}
+				sheep.getNavigation().stop();
+				still = 0;
+			}
 		}
 
 		@Override
@@ -838,9 +863,13 @@ public class SheepEntity extends Animal implements Wild.Animal {
 			// within a block of her pen cell she is home (two blocks let a sheep stop in the gate, a block outside the pen)
 			double reach = sheep.target != null ? 0.36 : 1.0;
 			if (dx * dx + dz * dz > reach) {
+				unstick(x, z);
 				sheep.getNavigation().moveTo(x, p.getY() + 0.1, z, 1.0);
-			} else if (sheep.target != null) {
-				sheep.getNavigation().stop();
+			} else {
+				still = 0;
+				if (sheep.target != null) {
+					sheep.getNavigation().stop();
+				}
 			}
 		}
 	}

@@ -75,6 +75,8 @@ public class FowlEntity extends Animal implements Wild.Animal {
 
 	/** A hen mates with an intact adult male of her species within this reach (the sheep's service range). */
 	public static final double SERVICE_RANGE = 8.0;
+	/** A male's hens are counted within this reach: his coop or pen and its run *(proposed)*. */
+	public static final double HENS_COUNT_RANGE = 32.0;
 	private static final TimeScale.Scale SCALE = TimeScale.FOWL;
 
 	private final Species species;
@@ -267,6 +269,12 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		return s == 0 ? 500 : s;
 	}
 
+	/** Sets the plumage genes (game tests, and /summon with genes later); the look follows. */
+	public void setGenes(PoultryGenes g) {
+		this.genes = g;
+		sync(level().getGameTime());
+	}
+
 	public PoultryGenes genes() {
 		if (genes == null) {
 			genes = PoultryGenes.founder(breed.code, sex, getUUID().getLeastSignificantBits());
@@ -320,13 +328,45 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	}
 
 	public void mate(FowlEntity male) {
-		if (male.genome == null || male.species != species || sex != Sex.FEMALE) {
+		if (male.genome == null || male.species != species || sex != Sex.FEMALE || !sameGenus(this, male)) {
 			return;
 		}
+		inseminate(male.genome, male.genes(), male.herdId());
+	}
+
+	/**
+	 * Her eggs are fertile from this sire for the species' fertile days: natural mating, or a turkey straw (docs/animals/poultry.md,
+	 * "Artificial insemination for turkeys"). Returns false if she can't take it.
+	 */
+	public boolean inseminate(Genome sire, PoultryGenes sireGenesIn, String sireHerdId) {
+		if (sex != Sex.FEMALE || wild || genome == null || sire.species() != species) {
+			return false;
+		}
 		matedTick = level().getGameTime();
-		sireGenome = male.genome.encode();
-		sireGenes = male.genes().save();
-		sireId = male.herdId();
+		sireGenome = sire.encode();
+		sireGenes = sireGenesIn.save();
+		sireId = sireHerdId;
+		return true;
+	}
+
+	/** The herd ID of the male her eggs are fertile from, or "" (none, or her window is over). */
+	public String fertileFrom() {
+		return fertile() ? sireId : "";
+	}
+
+	/**
+	 * The two quail don't cross: Coturnix and Bobwhite are in different families (poultry.md, "The two quail don't cross"). Each bird
+	 * counts as the genus of its top breed. Other species have one genus here.
+	 */
+	public static boolean sameGenus(FowlEntity a, FowlEntity b) {
+		return a.species != Species.QUAIL || a.breed == b.breed;
+	}
+
+	/** How many hens near him lay fertile eggs from this male now (poultry.md, "Hens per male"). */
+	public int hensServed(ServerLevel level) {
+		String id = herdId();
+		return level.getEntitiesOfClass(FowlEntity.class, getBoundingBox().inflate(HENS_COUNT_RANGE),
+				f -> f.sex == Sex.FEMALE && f.species == species && id.equals(f.fertileFrom())).size();
 	}
 
 	public int eggsLaid() {
@@ -603,7 +643,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		FowlEntity best = null;
 		double bestD = Double.MAX_VALUE;
 		for (FowlEntity f : level.getEntitiesOfClass(FowlEntity.class, getBoundingBox().inflate(SERVICE_RANGE))) {
-			if (f != this && f.species == species && f.canServe()) {
+			if (f != this && f.species == species && f.canServe() && sameGenus(this, f) && f.hensServed(level) < Fowl.hensPerMale(species)) {
 				double d = f.distanceToSqr(this);
 				if (d < bestD) {
 					bestD = d;

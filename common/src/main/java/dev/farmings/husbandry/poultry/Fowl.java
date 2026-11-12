@@ -94,6 +94,24 @@ public final class Fowl {
 	}
 
 	/** Females one adult male serves in a coop. */
+	/**
+	 * Share of the day's feed a bird on a grass run takes as forage and insects (poultry.md, "Foraging on the run"): "pastured poultry
+	 * eat 5-20% (of their diet) from pasture" (Mattocks 2002, NCAT/ATTRA IP453); layers reach 20% (Agrarforschung Schweiz 2024). The upper
+	 * end, for every species *(proposed)*.
+	 */
+	public static final double FORAGE_SHARE = 0.20;
+	/** Forage a run's grass block regrows a day, kg DM: 50 hens an acre for good x 25 g / 4,047 m² *(derived; the 50 is TO VERIFY)*. */
+	public static final double RUN_REGROWTH_KG_PER_BLOCK_DAY = 50 * 0.025 / 4047.0;
+
+	/**
+	 * How much forage is drawn down after one step: {@code drawn} kg DM before, plus what the birds ate, less what {@code grassBlocks}
+	 * regrew in {@code dayShare} of a day. Never below 0.
+	 */
+	public static double runDrawn(double drawn, double eatenKg, int grassBlocks, double dayShare) {
+		return Math.max(0, drawn + eatenKg - grassBlocks * RUN_REGROWTH_KG_PER_BLOCK_DAY * dayShare);
+	}
+
+	/** Males serve at most this many hens at once (poultry.md, "Hens per male"): chicken 10 (UC ANR), quail 3 (NSW DPI), duck 5 (TO VERIFY), turkey 10 (proposed). */
 	public static int hensPerMale(Species s) {
 		return switch (s) {
 			case QUAIL -> 3;

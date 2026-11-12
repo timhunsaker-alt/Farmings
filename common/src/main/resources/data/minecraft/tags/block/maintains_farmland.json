@@ -1,0 +1,11 @@
+{
+ "replace": false,
+ "values": [
+  "farmings:alfalfa",
+  "farmings:timothy",
+  "farmings:orchardgrass",
+  "farmings:corn",
+  "farmings:oats",
+  "farmings:barley"
+ ]
+}

@@ -577,4 +577,139 @@ final class PoultryGameTests {
 			helper.succeed();
 		});
 	}
+
+	// ---- loose ends, 2026-11-11 ----
+
+	/** A thrown rotten egg flies like a snowball and gives what it hits Nausea (docs/eggs.md, "Loose ends"). */
+	static void rottenEggThrownNauseates(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		net.minecraft.world.entity.animal.cow.Cow cow = helper.spawn(net.minecraft.world.entity.EntityTypes.COW, new BlockPos(5, 1, 2));
+		cow.setNoAi(true);
+		net.minecraft.server.level.ServerPlayer p = helper.makeMockServerPlayerInLevel();
+		p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+		BlockPos stand = helper.absolutePos(new BlockPos(1, 1, 2));
+		p.snapTo(stand.getX() + 0.5, stand.getY(), stand.getZ() + 0.5, -90, 10);
+		ItemStack eggs = new ItemStack(dev.farmings.FarmingsItems.ROTTEN_EGG, 2);
+		p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, eggs);
+		eggs.use(level, p, net.minecraft.world.InteractionHand.MAIN_HAND);
+		helper.assertTrue(p.getMainHandItem().getCount() == 1, Component.literal("one egg thrown, one left: " + p.getMainHandItem()));
+		TamingGameTests.waitFor(helper, 0, 60, () -> cow.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA),
+				() -> "the cow it hits gets Nausea; eggs flying " + level.getEntitiesOfClass(dev.farmings.entity.ThrownRottenEgg.class, cow.getBoundingBox().inflate(8)).size(), () -> {
+					p.discard();
+					helper.succeed();
+				});
+	}
+
+	/** A Farmings chicken drops Farmings chicken, which spoils into spoiled poultry (docs/eggs.md, "Loose ends"). */
+	static void farmChickenSpoils(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity hen = adult(helper, FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 91L, new BlockPos(3, 1, 3));
+		hen.kill(level);
+		helper.runAfterDelay(5, () -> {
+			var items = level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(helper.absolutePos(BlockPos.ZERO)).inflate(12));
+			ItemStack meat = items.stream().map(ItemEntity::getItem).filter(i -> i.is(dev.farmings.FarmingsItems.CHICKEN)).findFirst().orElse(ItemStack.EMPTY);
+			helper.assertTrue(!meat.isEmpty(), Component.literal("a Farmings chicken drops farmings:chicken"));
+			helper.assertTrue(items.stream().noneMatch(i -> i.getItem().is(net.minecraft.world.item.Items.CHICKEN)), Component.literal("and no vanilla chicken"));
+			long now = level.getGameTime();
+			ItemStack later = dev.farmings.item.Perishables.spoiledVersion(meat, now + 2 * 24_000L);
+			helper.assertTrue(later != null && later.is(dev.farmings.FarmingsItems.SPOILED_POULTRY), Component.literal("two days out of the cold it spoils: " + later));
+			helper.assertTrue(dev.farmings.item.Perishables.spoiledVersion(meat, now + 100) == null, Component.literal("fresh at first"));
+			helper.succeed();
+		});
+	}
+
+	/** A Coturnix male serves at most three hens at once (poultry.md, "Hens per male"). */
+	static void maleServesLimitedHens(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity male = adult(helper, FowlBreed.COTURNIX, Sex.MALE, 92L, new BlockPos(4, 1, 4));
+		java.util.List<FowlEntity> hens = new java.util.ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			FowlEntity h = adult(helper, FowlBreed.COTURNIX, Sex.FEMALE, 93L + i, new BlockPos(2 + i, 1, 3));
+			h.setNoAi(true);
+			hens.add(h);
+		}
+		male.setNoAi(true);
+		for (FowlEntity h : hens) {
+			h.settle(level);
+		}
+		long fertile = hens.stream().filter(FowlEntity::fertile).count();
+		helper.assertTrue(fertile == 3, Component.literal("three hens fertile from one quail male, got " + fertile));
+		helper.assertTrue(male.hensServed(level) == 3, Component.literal("he counts three: " + male.hensServed(level)));
+		helper.succeed();
+	}
+
+	/** Coturnix and Bobwhite don't cross (poultry.md, "The two quail don't cross"). */
+	static void quailSpeciesDontCross(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity bob = adult(helper, FowlBreed.BOBWHITE, Sex.MALE, 97L, new BlockPos(3, 1, 3));
+		FowlEntity hen = adult(helper, FowlBreed.COTURNIX, Sex.FEMALE, 98L, new BlockPos(4, 1, 3));
+		bob.setNoAi(true);
+		hen.setNoAi(true);
+		hen.settle(level);
+		helper.assertTrue(!hen.fertile(), Component.literal("a Bobwhite male doesn't serve a Coturnix hen"));
+		hen.mate(bob);
+		helper.assertTrue(!hen.fertile(), Component.literal("nor by mating directly"));
+		FowlEntity cot = adult(helper, FowlBreed.COTURNIX, Sex.MALE, 99L, new BlockPos(5, 1, 3));
+		cot.setNoAi(true);
+		hen.settle(level);
+		helper.assertTrue(hen.fertile(), Component.literal("a Coturnix male does"));
+		helper.succeed();
+	}
+
+	/** A hen on the grass run takes a fifth of her feed as forage; heavy use bares grass (poultry.md, "Foraging on the run"). */
+	static void hensForageOnRun(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		fillCoop(helper);
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		var feeder = (dev.farmings.coop.GrainFeederEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 4)));
+		FowlEntity inside = adult(helper, FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 101L, new BlockPos(3, 1, 2));
+		FowlEntity out = adult(helper, FowlBreed.PLYMOUTH_ROCK, Sex.FEMALE, 101L, new BlockPos(9, 1, 3));
+		inside.setNoAi(true);
+		out.setNoAi(true);
+		inside.assignCoop(c, null);
+		out.assignCoop(c, null);
+		double before = feeder.kg();
+		coop.tend(level, java.util.List.of(inside), 1.0);
+		double tookInside = before - feeder.kg();
+		before = feeder.kg();
+		coop.tend(level, java.util.List.of(out), 1.0);
+		double tookOut = before - feeder.kg();
+		helper.assertTrue(Math.abs(tookOut - 0.8 * tookInside) < 1e-6, Component.literal("on the run she takes 80% from the feeder: " + tookOut + " vs " + tookInside));
+		helper.assertTrue(coop.runDrawnKg() > 0, Component.literal("the run is drawn down a little: " + coop.runDrawnKg()));
+		int grassBefore = coop.run().grass();
+		coop.tend(level, java.util.List.of(out), 400.0);     // 400 days of one hen: about 2.5 kg past regrowth
+		int dirt = 0;
+		for (var s : coop.run().spots()) {
+			if (level.getBlockState(new BlockPos(s.x(), s.y() - 1, s.z())).is(net.minecraft.world.level.block.Blocks.DIRT)) {
+				dirt++;
+			}
+		}
+		helper.assertTrue(dirt >= 1, Component.literal("heavy use bares grass: " + dirt + " of " + grassBefore + ", drawn " + coop.runDrawnKg()));
+		helper.succeed();
+	}
+
+	/** A blue Muscovy drake reads blue, a double-blue one silver; their genes carry to the egg (poultry.md, "Colour mutants"). */
+	static void muscovyColourMutantInherits(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		FowlEntity drake = adult(helper, FowlBreed.MUSCOVY, Sex.MALE, 102L, new BlockPos(2, 1, 2));
+		FowlEntity duck = adult(helper, FowlBreed.MUSCOVY, Sex.FEMALE, 103L, new BlockPos(3, 1, 2));
+		java.util.EnumMap<dev.farmings.genetics.PoultryLocus, int[]> m = new java.util.EnumMap<>(drake.genes().alleles());
+		m.put(dev.farmings.genetics.PoultryLocus.MUSCOVY_BLUE, new int[] {1, 1});
+		drake.setGenes(new dev.farmings.genetics.PoultryGenes(m));
+		helper.assertTrue(drake.look().plumage() == dev.farmings.genetics.PoultryLook.Plumage.MUSCOVY_SILVER, Component.literal("Bl/Bl is silver: " + drake.look().describe()));
+		java.util.EnumMap<dev.farmings.genetics.PoultryLocus, int[]> d = new java.util.EnumMap<>(duck.genes().alleles());
+		d.put(dev.farmings.genetics.PoultryLocus.MUSCOVY_BLUE, new int[] {0, 0});
+		duck.setGenes(new dev.farmings.genetics.PoultryGenes(d));
+		// every chick of silver x black is Bl/+: blue
+		var chick = dev.farmings.genetics.PoultryGenes.inherit(duck.genes(), drake.genes(), Sex.FEMALE, 5L);
+		helper.assertTrue(dev.farmings.genetics.PoultryLook.of(dev.farmings.genetics.Species.DUCK, "MUS", chick, Sex.FEMALE).plumage() == dev.farmings.genetics.PoultryLook.Plumage.MUSCOVY_BLUE,
+				Component.literal("silver x black gives blue"));
+		helper.succeed();
+	}
 }

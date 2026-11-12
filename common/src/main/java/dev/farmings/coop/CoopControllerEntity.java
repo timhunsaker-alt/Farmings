@@ -74,6 +74,8 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 	private boolean out;
 	private int flock;
 	private double litterKg;
+	/** Forage the run's birds have eaten past its regrowth, kg DM; each 1.5 kg bares one grass block (poultry.md, "Foraging on the run"). */
+	private double runDrawnKg;
 	private long lastDay = -1;
 	private int hatched;
 	private @Nullable Boolean forcedDay;
@@ -346,9 +348,15 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 
 	/** One step of grain and water ({@code dayShare} of a game day: that share of one real day's need), and the litter it leaves. */
 	public void tend(ServerLevel level, List<FowlEntity> members, double dayShare) {
+		double foraged = 0;
 		for (FowlEntity f : members) {
 			double need = Fowl.feedKgPerDay(f.species(), f.weightKg()) * dayShare;
 			double got = 0;
+			if (onGrassRun(level, f)) {
+				got = need * Fowl.FORAGE_SHARE;
+				foraged += got;
+				f.recordRation(dev.farmings.feed.Feedstuff.PASTURE.analysis());
+			}
 			for (BlockPos b : feeders) {
 				if (got >= need) {
 					break;
@@ -376,7 +384,43 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 			f.recordTending(fed, watered);
 			litterKg = Math.min(LITTER_ITEM_KG * LITTER_MAX_ITEMS, litterKg + f.weightKg() * Fowl.LITTER_KG_PER_KG_DAY * dayShare);
 		}
+		wearRun(level, foraged, dayShare);
 		setChanged();
+	}
+
+	/** A bird out on the run, standing on grass. */
+	private boolean onGrassRun(ServerLevel level, FowlEntity f) {
+		BlockPos p = f.blockPosition();
+		for (BlockPos feet : new BlockPos[] {p, p.above(), p.below()}) {
+			if (runCells.contains(feet.asLong())) {
+				return level.getBlockState(feet.below()).is(net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
+			}
+		}
+		return false;
+	}
+
+	/** The run regrows a little and wears by what was eaten; each 1.5 kg DM drawn bares one grass block, picked at random. */
+	private void wearRun(ServerLevel level, double eatenKg, double dayShare) {
+		if (run == null) {
+			return;
+		}
+		List<BlockPos> grass = new java.util.ArrayList<>();
+		for (PastureLayout.Spot s : run.spots()) {
+			BlockPos below = new BlockPos(s.x(), s.y() - 1, s.z());
+			if (level.getBlockState(below).is(net.minecraft.world.level.block.Blocks.GRASS_BLOCK)) {
+				grass.add(below);
+			}
+		}
+		runDrawnKg = Fowl.runDrawn(runDrawnKg, eatenKg, grass.size(), dayShare);
+		while (runDrawnKg >= dev.farmings.husbandry.Flock.GRASS_BLOCK_KG_DM && !grass.isEmpty()) {
+			BlockPos b = grass.remove(level.getRandom().nextInt(grass.size()));
+			level.setBlockAndUpdate(b, net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState());
+			runDrawnKg -= dev.farmings.husbandry.Flock.GRASS_BLOCK_KG_DM;
+		}
+	}
+
+	public double runDrawnKg() {
+		return runDrawnKg;
 	}
 
 	/** The nest box a broody hen sits by: the nest box beside her nest cell. */
@@ -655,6 +699,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 	protected void saveAdditional(ValueOutput out) {
 		super.saveAdditional(out);
 		out.putDouble("litter_kg", litterKg);
+		out.putDouble("run_drawn_kg", runDrawnKg);
 		out.putInt("hatched", hatched);
 	}
 
@@ -662,6 +707,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 	protected void loadAdditional(ValueInput in) {
 		super.loadAdditional(in);
 		litterKg = in.getDoubleOr("litter_kg", 0);
+		runDrawnKg = in.getDoubleOr("run_drawn_kg", 0);
 		hatched = in.getIntOr("hatched", 0);
 	}
 }

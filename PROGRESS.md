@@ -232,12 +232,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
 - Next: the loose ends, then new animals (each its own plan).
 
 ## Known gaps
-- **Poultry, not built:**
-  - throwing rotten eggs;
-  - spoilage for vanilla chicken meat;
-  - foraging on the run;
-  - artificial insemination for Broad Breasted White turkeys;
-  - colour mutants for Muscovies and quail.
+- **Poultry, not built:** artificial insemination for Broad Breasted White turkeys (next part). Built 2026-11-11 (loose ends): throwing
+  rotten eggs, Farmings chicken that spoils, foraging on the run, Muscovy and quail colour mutants, hens per male, no quail cross.
 - **Poultry proposals with no source:**
   - breed baselines and the biome-to-fowl mapping;
   - the feed exponent and the turkey's daily feed;

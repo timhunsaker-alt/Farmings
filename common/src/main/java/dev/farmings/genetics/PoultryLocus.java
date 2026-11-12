@@ -31,7 +31,23 @@ public enum PoultryLocus {
 	/** Duck brown dilution: 0 D+, 1 d (recessive), sex-linked. Dusky with d is the Khaki Campbell's khaki. */
 	DUCK_BROWN("duck_brown", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, true, new String[] {"D+", "d"}),
 	/** Shell shade, 0 white to 1000 dark brown: polygenic, so a blend of the two values *(proposed)*. */
-	SHELL("shell_shade", VisualLocus.Mode.MEAN, 0, 1000, true, false, null);
+	SHELL("shell_shade", VisualLocus.Mode.MEAN, 0, 1000, true, false, null),
+	// Colour mutants (poultry.md, "Colour mutants", 2026-11-11). Added after SHELL so older birds' alleles and draws stay as they were.
+	/** Muscovy blue: 0 +, 1 Bl; incomplete: one is blue, two are silver (TO VERIFY: breeders). Read by count, see {@link PoultryGenes#count}. */
+	MUSCOVY_BLUE("muscovy_blue", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, false, new String[] {"+", "Bl"}),
+	/** Muscovy lavender: 0 +, 1 lav, autosomal recessive (OMIA 002249). */
+	MUSCOVY_LAVENDER("muscovy_lavender", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "lav"}),
+	/** Muscovy chocolate: 0 +, 1 choc, sex-linked recessive (TO VERIFY: breeders). */
+	MUSCOVY_CHOCOLATE("muscovy_chocolate", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, true, new String[] {"+", "choc"}),
+	/** Coturnix fawn (Y, ASIP): 0 +, 1 Y; incomplete: one is Italian, two are Golden. */
+	QUAIL_FAWN("quail_fawn", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, false, new String[] {"+", "Y"}),
+	/** Coturnix extended brown (E, MC1R): 0 +, 1 E; incomplete: one is Rosetta, two are Tibetan. */
+	QUAIL_BROWN("quail_brown", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, false, new String[] {"+", "E"}),
+	/** Coturnix dotted white (S, EDNRB2): 0 +, 1 s, recessive; s/s is English White. */
+	QUAIL_WHITE("quail_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "s"});
+
+	/** Herd founders of the breed carry each colour mutant at this share *(proposed)*; other breeds never. */
+	static final int MUTANT_PERCENT = 5;
 
 	public final String id;
 	final VisualLocus.Mode mode;
@@ -105,6 +121,8 @@ public enum PoultryLocus {
 				case "COT" -> new int[] {450, 650};
 				default -> new int[] {400, 650};   // turkeys
 			};
+			case MUSCOVY_BLUE, MUSCOVY_LAVENDER, MUSCOVY_CHOCOLATE -> breed.equals("MUS") ? new int[] {0, 100 - MUTANT_PERCENT, 1, MUTANT_PERCENT} : new int[] {0, 1};
+			case QUAIL_FAWN, QUAIL_BROWN, QUAIL_WHITE -> breed.equals("COT") ? new int[] {0, 100 - MUTANT_PERCENT, 1, MUTANT_PERCENT} : new int[] {0, 1};
 		};
 	}
 }

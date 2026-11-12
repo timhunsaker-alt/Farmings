@@ -1,0 +1,14 @@
+{
+ "replace": false,
+ "values": [
+  "farmings:cooked_chicken",
+  "farmings:cooked_turkey",
+  "farmings:cooked_duck",
+  "farmings:cooked_quail",
+  "farmings:cooked_lamb_chop",
+  "farmings:cooked_mutton_chop",
+  "farmings:cooked_select_steak",
+  "farmings:cooked_choice_steak",
+  "farmings:cooked_prime_steak"
+ ]
+}

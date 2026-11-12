@@ -26,6 +26,12 @@ public record PoultryGenes(Map<PoultryLocus, int[]> alleles) {
 		return l.express(alleles.get(l)[0], alleles.get(l)[1], sex);
 	}
 
+	/** How many copies of allele 1 a bird carries at a 0/1 locus (an incomplete-dominance locus is read this way); a hen's Z counts once. */
+	public int count(PoultryLocus l, Sex sex) {
+		int[] a = alleles.get(l);
+		return l.sexLinked && sex == Sex.FEMALE ? a[0] : a[0] + a[1];
+	}
+
 	public static PoultryGenes inherit(PoultryGenes dam, PoultryGenes sire, Sex child, long breedingSeed) {
 		Rng rng = new Rng(breedingSeed ^ VisualGenome.VISUAL_SALT);
 		EnumMap<PoultryLocus, int[]> out = new EnumMap<>(PoultryLocus.class);
@@ -82,12 +88,14 @@ public record PoultryGenes(Map<PoultryLocus, int[]> alleles) {
 	}
 
 	public static PoultryGenes load(int[] saved) {
-		if (saved == null || saved.length != PoultryLocus.values().length * 2) {
+		if (saved == null || saved.length < 2 || saved.length % 2 != 0 || saved.length > PoultryLocus.values().length * 2) {
 			return null;
 		}
 		EnumMap<PoultryLocus, int[]> out = new EnumMap<>(PoultryLocus.class);
 		for (PoultryLocus l : PoultryLocus.values()) {
-			out.put(l, new int[] {saved[l.ordinal() * 2], saved[l.ordinal() * 2 + 1]});
+			// a bird saved before later loci were added carries their wild type (0)
+			int i = l.ordinal() * 2;
+			out.put(l, i + 1 < saved.length ? new int[] {saved[i], saved[i + 1]} : new int[] {0, 0});
 		}
 		return new PoultryGenes(out);
 	}

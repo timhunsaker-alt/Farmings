@@ -63,6 +63,14 @@ public final class FarmingsEntities {
 		return Species.CHICKEN;
 	}
 
+	/** A thrown rotten egg (docs/eggs.md): a snowball's size and tracking. */
+	public static final EntityType<dev.farmings.entity.ThrownRottenEgg> ROTTEN_EGG = EntityType.Builder.<dev.farmings.entity.ThrownRottenEgg>of(dev.farmings.entity.ThrownRottenEgg::new, MobCategory.MISC)
+			.noLootTable()
+			.sized(0.25F, 0.25F)
+			.clientTrackingRange(4)
+			.updateInterval(10)
+			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("rotten_egg")));
+
 	public static final java.util.List<EntityType<FowlEntity>> FOWL = java.util.List.of(CHICKEN, TURKEY, QUAIL, DUCK);
 
 	private FarmingsEntities() {
@@ -75,5 +83,6 @@ public final class FarmingsEntities {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("turkey"), TURKEY);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("quail"), QUAIL);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("duck"), DUCK);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("rotten_egg"), ROTTEN_EGG);
 	}
 }

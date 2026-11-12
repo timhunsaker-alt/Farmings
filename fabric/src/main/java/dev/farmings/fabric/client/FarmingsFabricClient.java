@@ -20,6 +20,7 @@ public final class FarmingsFabricClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(dev.farmings.client.SheepModels.SHEEP, dev.farmings.client.SheepModels::createLayer);
 		ModelLayerRegistry.registerModelLayer(dev.farmings.client.SheepModels.FLEECE, dev.farmings.client.SheepModels::createFleeceLayer);
 		EntityRendererRegistry.register(FarmingsEntities.SHEEP, dev.farmings.client.SheepRenderer::new);
+		EntityRendererRegistry.register(FarmingsEntities.ROTTEN_EGG, net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
 		ModelLayerRegistry.registerModelLayer(dev.farmings.client.FowlModels.FOWL, dev.farmings.client.FowlModels::createLayer);
 		for (var type : FarmingsEntities.FOWL) {
 			EntityRendererRegistry.register(type, dev.farmings.client.FowlRenderer::new);

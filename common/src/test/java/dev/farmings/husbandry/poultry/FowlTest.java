@@ -58,4 +58,19 @@ class FowlTest {
 		assertEquals(26, Fowl.meatItems(pure("BRZ"), 16.56));
 		assertEquals(1, Fowl.meatItems(pure("COT"), 0.14));
 	}
+
+	@Test
+	void runRegrowsSlowlyAndWearsUnderLoad() {
+		// 50 hens an acre is sustainable: 25 g each over 4,047 m2 regrows exactly
+		org.junit.jupiter.api.Assertions.assertEquals(0.0, Fowl.runDrawn(0, 50 * 0.025, 4047, 1.0), 1e-9);
+		// 10 hens on an 8 x 6 run: about 235 g a day more than it regrows
+		double eaten = 10 * 0.025;
+		double drawn = Fowl.runDrawn(0, eaten, 48, 1.0);
+		org.junit.jupiter.api.Assertions.assertEquals(0.235, drawn, 0.001);
+		// regrowth never takes it below zero
+		org.junit.jupiter.api.Assertions.assertEquals(0.0, Fowl.runDrawn(0.001, 0, 48, 1.0), 1e-12);
+		org.junit.jupiter.api.Assertions.assertEquals(10, Fowl.hensPerMale(dev.farmings.genetics.Species.CHICKEN));
+		org.junit.jupiter.api.Assertions.assertEquals(3, Fowl.hensPerMale(dev.farmings.genetics.Species.QUAIL));
+		org.junit.jupiter.api.Assertions.assertEquals(5, Fowl.hensPerMale(dev.farmings.genetics.Species.DUCK));
+	}
 }

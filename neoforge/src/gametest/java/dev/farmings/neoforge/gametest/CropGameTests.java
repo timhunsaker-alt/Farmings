@@ -94,4 +94,24 @@ final class CropGameTests {
 			helper.succeed();
 		});
 	}
+
+	/** Dry farmland under a Farmings crop stays farmland, as under wheat (the maintains_farmland tag). */
+	static void cropKeepsDryFarmland(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos soil = helper.absolutePos(new BlockPos(2, 1, 2));
+		for (int x = 0; x <= 4; x++) {
+			for (int z = 0; z <= 4; z++) {
+				helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.STONE);
+				helper.setBlock(new BlockPos(x, 2, z), net.minecraft.world.level.block.Blocks.AIR);
+			}
+		}
+		level.setBlockAndUpdate(soil, net.minecraft.world.level.block.Blocks.FARMLAND.defaultBlockState());
+		level.setBlockAndUpdate(soil.above(), FieldCrops.block(FieldCrop.OATS).defaultBlockState());
+		for (int i = 0; i < 200; i++) {
+			level.getBlockState(soil).randomTick(level, soil, level.getRandom());
+		}
+		helper.assertTrue(level.getBlockState(soil).is(net.minecraft.world.level.block.Blocks.FARMLAND), Component.literal("dry farmland under oats stays farmland: " + level.getBlockState(soil)));
+		helper.assertTrue(level.getBlockState(soil.above()).getBlock() == FieldCrops.block(FieldCrop.OATS), Component.literal("and the oats stay"));
+		helper.succeed();
+	}
 }

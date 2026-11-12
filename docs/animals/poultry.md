@@ -479,3 +479,13 @@ is given.
 - **Founders:** wild founders carry the wild type. Herd founders carry each mutant at **5%** *(proposed)*, so mutants turn up in
   breeding.
 - **Drawing:** a bird with a mutant colour gets that colour's texture.
+
+### Built, 2026-11-11 (loose ends)
+- **Hens per male:** enforced. A male's hens are counted within 32 blocks *(proposed: his coop and run)*.
+- **Quail:** the genus check is in `mate` and in natural service.
+- **Foraging:** on the run, with the grass wearing down.
+- **Colour mutants:** six new loci, appended after the shell locus so older birds load with the wild type. There are nine new
+  textures.
+- **Game tests:** male_serves_limited_hens, quail_species_dont_cross, hens_forage_on_run, muscovy_colour_mutant_inherits.
+- **Unit tests:** PoultryMutantTest, and the run sums in FowlTest.
+- **Turkey straws:** come with the straws part.

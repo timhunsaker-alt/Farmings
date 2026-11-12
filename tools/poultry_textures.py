@@ -73,6 +73,16 @@ PLUMAGE = {
     "duck_khaki": dict(all=hexc(0xA08A60), speckle=hexc(0x8A7450)),
     "duck_khaki_male": dict(all=hexc(0x8E7A54), head=hexc(0x4A5A3A), tail=hexc(0x5A4A30)),
     "duck_muscovy": dict(all=BLACK, sheen=hexc(0x2A4A3A), wingpatch=WHITE),
+    # colour mutants (docs/animals/poultry.md, "Colour mutants")
+    "duck_muscovy_blue": dict(all=hexc(0x5A6878), sheen=hexc(0x4A5868), wingpatch=WHITE),
+    "duck_muscovy_silver": dict(all=hexc(0xB4B8BE), sheen=hexc(0x9EA4AC), wingpatch=WHITE),
+    "duck_muscovy_lavender": dict(all=hexc(0x9C94A2), sheen=hexc(0x8A8292), wingpatch=WHITE),
+    "duck_muscovy_chocolate": dict(all=hexc(0x5A3A24), sheen=hexc(0x6A4A30), wingpatch=WHITE),
+    "quail_italian": dict(all=hexc(0xC89A5A), speckle=hexc(0x8A6438), streak=hexc(0xE8D8B0), head=hexc(0xB08048), brow=hexc(0xE8D8B0)),
+    "quail_golden": dict(all=hexc(0xDCB474), speckle=hexc(0xB8905A), streak=hexc(0xF0E4C4), head=hexc(0xC89C60), brow=hexc(0xF0E4C4)),
+    "quail_rosetta": dict(all=hexc(0x7A4A32), speckle=hexc(0x3A2218), streak=hexc(0xC8A080), head=hexc(0x6A3A26), brow=hexc(0xC8A080)),
+    "quail_tibetan": dict(all=hexc(0x3A2A20), speckle=hexc(0x24180F), streak=hexc(0x6A5240), head=hexc(0x2E2018), brow=hexc(0x6A5240)),
+    "quail_english_white": dict(all=hexc(0xF0EEE6), speckle=hexc(0xD8D4C8), head=hexc(0xF0EEE6)),
     "chicken_young": dict(all=hexc(0xF0D860), down=True),
     "turkey_young": dict(all=hexc(0xC8A878), down=True, stripe=hexc(0x8A6A40)),
     "quail_young": dict(all=hexc(0xB08A50), down=True, stripe=hexc(0x4A3420)),
@@ -83,7 +93,8 @@ BEAK = {"chicken": hexc(0xE8C060), "turkey": hexc(0xC8B090), "quail": hexc(0x6B5
 LEGS = {"chicken": hexc(0xE0B040), "turkey": hexc(0xC89080), "quail": hexc(0xD8A090), "duck": hexc(0xE89030)}
 BILL = {"duck_mallard_male": hexc(0xC8C040), "duck_mallard": hexc(0xB07030), "duck_restricted": hexc(0xB07030),
         "duck_restricted_male": hexc(0xC8C040), "duck_khaki_male": hexc(0x5A6A30), "duck_khaki": hexc(0x4A4A30),
-        "duck_dusky": hexc(0x4A4A30), "duck_muscovy": hexc(0xD8A0A0)}
+        "duck_dusky": hexc(0x4A4A30), "duck_muscovy": hexc(0xD8A0A0), "duck_muscovy_blue": hexc(0xD8A0A0),
+        "duck_muscovy_silver": hexc(0xD8A0A0), "duck_muscovy_lavender": hexc(0xD8A0A0), "duck_muscovy_chocolate": hexc(0xD8A0A0)}
 
 
 def plumage_colour(p, part, face, i, j, fw, fh, salt):

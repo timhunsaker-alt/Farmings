@@ -176,13 +176,13 @@ public final class FarmingsItems {
 	public static final Item QUAIL_EGG = item("quail_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
 	public static final Item DUCK_EGG = item("duck_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
 
-	/** Poultry meat: chicken is the vanilla item (docs/eggs.md); the other species' meat comes with the products part. */
+	/** Poultry meat (docs/eggs.md): Farmings birds drop Farmings meat, chicken included, so all of it spoils. */
 	public static @org.jspecify.annotations.Nullable Item fowlMeat(dev.farmings.genetics.Species s, boolean cooked) {
 		return switch (s) {
 			case TURKEY -> cooked ? COOKED_TURKEY : TURKEY_MEAT;
 			case DUCK -> cooked ? COOKED_DUCK : DUCK_MEAT;
 			case QUAIL -> cooked ? COOKED_QUAIL : QUAIL_MEAT;
-			default -> cooked ? net.minecraft.world.item.Items.COOKED_CHICKEN : net.minecraft.world.item.Items.CHICKEN;
+			default -> cooked ? COOKED_CHICKEN : CHICKEN;
 		};
 	}
 
@@ -190,6 +190,9 @@ public final class FarmingsItems {
 	public static final Item POULTRY_LITTER = item("poultry_litter",
 			p -> new Item(p.compostable(net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders.COMPOSTABLE_MEDIUM_HIGH)));
 	// Poultry meat (docs/eggs.md): chicken is vanilla's; the others copy vanilla chicken's food (raw with its hunger risk) (proposed).
+	/** Chicken from a Farmings bird: vanilla chicken's food, and it spoils (docs/eggs.md, "Loose ends"). */
+	public static final Item CHICKEN = rawPoultry("chicken");
+	public static final Item COOKED_CHICKEN = cookedPoultry("cooked_chicken");
 	public static final Item TURKEY_MEAT = rawPoultry("turkey");
 	public static final Item COOKED_TURKEY = cookedPoultry("cooked_turkey");
 	public static final Item DUCK_MEAT = rawPoultry("duck");
@@ -200,7 +203,7 @@ public final class FarmingsItems {
 	/** A fried egg: 3 hunger, 3.6 saturation (proposed). */
 	public static final Item FRIED_EGG = item("fried_egg", p -> new Item(p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(3).saturationModifier(0.6F).build())));
 	/** A spoiled table egg; not food. */
-	public static final Item ROTTEN_EGG = item("rotten_egg", Item::new);
+	public static final Item ROTTEN_EGG = item("rotten_egg", p -> new dev.farmings.item.RottenEggItem(p.stacksTo(16)));
 	/** Duck down: about 30 g a duck (Farrell review, TO VERIFY). */
 	public static final Item DOWN = item("down", Item::new);
 	/** A down jacket: warm like the wool clothing, leather's protection (proposed). */
@@ -252,6 +255,8 @@ public final class FarmingsItems {
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
 		ALL.put("poultry_litter", POULTRY_LITTER);
+		ALL.put("chicken", CHICKEN);
+		ALL.put("cooked_chicken", COOKED_CHICKEN);
 		ALL.put("turkey", TURKEY_MEAT);
 		ALL.put("cooked_turkey", COOKED_TURKEY);
 		ALL.put("duck", DUCK_MEAT);

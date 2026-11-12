@@ -119,6 +119,8 @@ ITEMS = [
     ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
     # eggs (docs/eggs.md); placeholders until the Ludo icons
     ("poultry_litter", "Poultry Litter", (120, 100, 70), "blob"),
+    ("chicken", "Raw Chicken", (236, 170, 150), "steak"),
+    ("cooked_chicken", "Cooked Chicken", (190, 130, 70), "steak"),
     ("turkey", "Raw Turkey", (226, 150, 140), "steak"),
     ("cooked_turkey", "Roast Turkey", (184, 120, 64), "steak"),
     ("duck", "Raw Duck", (214, 120, 110), "steak"),
@@ -335,6 +337,18 @@ def main():
     # poultry products (docs/eggs.md): every Farmings egg counts where a recipe takes an egg
     write(os.path.join(DATA, "tags", "item", "eggs.json"), {"values": ["farmings:chicken_egg", "farmings:turkey_egg", "farmings:quail_egg",
                                                                        "farmings:duck_egg"]})
+    # Farmings meat in the common meat tags, so other mods' recipes take it (docs/eggs.md, "Loose ends")
+    write(os.path.join(ROOT_DATA, "c", "tags", "item", "foods", "raw_meat.json"), {"replace": False, "values": [
+        "farmings:chicken", "farmings:turkey", "farmings:duck", "farmings:quail", "farmings:lamb_chop", "farmings:mutton_chop",
+        "farmings:select_steak", "farmings:choice_steak", "farmings:prime_steak"]})
+    write(os.path.join(ROOT_DATA, "c", "tags", "item", "foods", "cooked_meat.json"), {"replace": False, "values": [
+        "farmings:cooked_chicken", "farmings:cooked_turkey", "farmings:cooked_duck", "farmings:cooked_quail", "farmings:cooked_lamb_chop",
+        "farmings:cooked_mutton_chop", "farmings:cooked_select_steak", "farmings:cooked_choice_steak", "farmings:cooked_prime_steak"]})
+    lang["entity.farmings.rotten_egg"] = "Rotten Egg"
+    # Farmings crops keep the farmland under them, as vanilla crops do; without this, dry farmland turns back to dirt on a random tick
+    # and the crop pops off (found 2026-11-11 by an intermittent gantry test)
+    write(os.path.join(ROOT_DATA, "minecraft", "tags", "block", "maintains_farmland.json"), {"replace": False, "values": [
+        "farmings:" + c for c in CROPS]})
     wool_mill_assets(lang)
     cold_room_assets(lang)
     shed_assets(lang)
@@ -493,7 +507,7 @@ SHAPELESS = {
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop",
-           "turkey": "cooked_turkey", "duck": "cooked_duck", "quail": "cooked_quail"}
+           "chicken": "cooked_chicken", "turkey": "cooked_turkey", "duck": "cooked_duck", "quail": "cooked_quail"}
 
 
 def ingredient(ref):
