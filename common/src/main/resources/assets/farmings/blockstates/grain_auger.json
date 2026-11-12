@@ -1,25 +1,71 @@
 {
  "variants": {
-  "facing=north": {
+  "facing=north,slope=flat": {
    "model": "farmings:block/grain_auger"
   },
-  "facing=east": {
+  "facing=north,slope=up": {
+   "model": "farmings:block/grain_auger"
+  },
+  "facing=north,slope=down": {
+   "model": "farmings:block/grain_auger"
+  },
+  "facing=east,slope=flat": {
    "model": "farmings:block/grain_auger",
    "y": 90
   },
-  "facing=south": {
+  "facing=east,slope=up": {
+   "model": "farmings:block/grain_auger",
+   "y": 90
+  },
+  "facing=east,slope=down": {
+   "model": "farmings:block/grain_auger",
+   "y": 90
+  },
+  "facing=south,slope=flat": {
    "model": "farmings:block/grain_auger",
    "y": 180
   },
-  "facing=west": {
+  "facing=south,slope=up": {
+   "model": "farmings:block/grain_auger",
+   "y": 180
+  },
+  "facing=south,slope=down": {
+   "model": "farmings:block/grain_auger",
+   "y": 180
+  },
+  "facing=west,slope=flat": {
    "model": "farmings:block/grain_auger",
    "y": 270
   },
-  "facing=up": {
+  "facing=west,slope=up": {
+   "model": "farmings:block/grain_auger",
+   "y": 270
+  },
+  "facing=west,slope=down": {
+   "model": "farmings:block/grain_auger",
+   "y": 270
+  },
+  "facing=up,slope=flat": {
    "model": "farmings:block/grain_auger",
    "x": 270
   },
-  "facing=down": {
+  "facing=up,slope=up": {
+   "model": "farmings:block/grain_auger",
+   "x": 270
+  },
+  "facing=up,slope=down": {
+   "model": "farmings:block/grain_auger",
+   "x": 270
+  },
+  "facing=down,slope=flat": {
+   "model": "farmings:block/grain_auger",
+   "x": 90
+  },
+  "facing=down,slope=up": {
+   "model": "farmings:block/grain_auger",
+   "x": 90
+  },
+  "facing=down,slope=down": {
    "model": "farmings:block/grain_auger",
    "x": 90
   }

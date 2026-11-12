@@ -1176,10 +1176,29 @@ def conveyor_assets(lang):
         write(os.path.join(m, drive + ".json"), {"textures": {"t": "farmings:block/conveyor_motor", "f": "farmings:block/farm_belt_frame",
                                                                "particle": "farmings:block/conveyor_motor"},
               "elements": [{"from": [0, 0, 0], "to": [16, 10, 16], "faces": faces("#f")}, {"from": [3, 10, 3], "to": [13, 16, 13], "faces": faces("#t")}]})
+    # a sloped belt cell: the belt as a ramp rising one block toward the way the load moves (north here); 45 degrees, a block up over one
+    write(os.path.join(m, "farm_belt_slope.json"), {"textures": {"belt": "farmings:block/farm_belt", "frame": "farmings:block/farm_belt_frame",
+                                                                  "particle": "farmings:block/farm_belt_frame"},
+          "elements": [{"from": [0, 7, -3.31], "to": [16, 10, 19.31], "rotation": {"origin": [8, 8, 8], "axis": "x", "angle": 45},
+                        "faces": {**faces("#frame"), "up": {"texture": "#belt", "uv": [1, 0, 15, 16]}}},
+                       {"from": [0, 0, 6], "to": [16, 8, 10], "faces": faces("#frame")}]})
     rot = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+    flip = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "up", "down": "down"}
     for name, title in CONVEYORS.items():
         lang["block.farmings." + name] = title
-        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"facing=" + f: {"model": "farmings:block/" + name, **r} for f, r in rot.items()}})
+        if name in ("farm_belt", "grain_auger"):
+            v = {}
+            for f, r in rot.items():
+                for slope in ("flat", "up", "down"):
+                    if name == "farm_belt" and slope == "up" and f not in ("up", "down"):
+                        v["facing=%s,slope=%s" % (f, slope)] = {"model": "farmings:block/farm_belt_slope", **r}
+                    elif name == "farm_belt" and slope == "down" and f not in ("up", "down"):
+                        v["facing=%s,slope=%s" % (f, slope)] = {"model": "farmings:block/farm_belt_slope", **rot[flip[f]]}
+                    else:
+                        v["facing=%s,slope=%s" % (f, slope)] = {"model": "farmings:block/" + name, **r}
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": v})
+        else:
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"facing=" + f: {"model": "farmings:block/" + name, **r} for f, r in rot.items()}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
 

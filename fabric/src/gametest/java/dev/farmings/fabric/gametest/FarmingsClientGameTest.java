@@ -1708,6 +1708,53 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	 * blocks over a 16-row field sows corn, chops it onto a belt that blows it into a tower silo, then mows, rakes and bales alfalfa; a TMR
 	 * mixer feeds a barn feeder by belt; a compost windrow is turned; and a digester's biogas runs a Wildcatter gas set.
 	 */
+	/** A belt over a rise (docs/conveyors.md, "Slopes"), with grain and hay riding it (loose ends, 2026-11-11). */
+	private static void belts(ClientGameTestContext context, TestServerContext server, int y) {
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 4, 2, y, 8, 6, 8);
+			var belt = dev.farmings.conveyor.ConveyorBlocks.FARM_BELT.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorPieceBlock.FACING, Direction.EAST);
+			level.setBlockAndUpdate(new BlockPos(0, y, 2), belt);
+			level.setBlockAndUpdate(new BlockPos(1, y, 2), belt.setValue(dev.farmings.conveyor.ConveyorPieceBlock.SLOPE, dev.farmings.conveyor.ConveyorPieceBlock.Slope.UP));
+			for (int x = 2; x <= 4; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y + 1, 2), belt);
+				level.setBlockAndUpdate(new BlockPos(x, y, 2), net.minecraft.world.level.block.Blocks.STONE_BRICKS.defaultBlockState());
+			}
+			level.setBlockAndUpdate(new BlockPos(5, y + 1, 2), belt);
+			level.setBlockAndUpdate(new BlockPos(5, y, 2), net.minecraft.world.level.block.Blocks.STONE_BRICKS.defaultBlockState());
+			level.setBlockAndUpdate(new BlockPos(6, y, 2), belt.setValue(dev.farmings.conveyor.ConveyorPieceBlock.SLOPE, dev.farmings.conveyor.ConveyorPieceBlock.Slope.DOWN));
+			level.setBlockAndUpdate(new BlockPos(7, y, 2), belt);
+			level.setBlockAndUpdate(new BlockPos(8, y, 2), dev.farmings.conveyor.ConveyorBlocks.FARM_BELT_DRIVE.defaultBlockState().setValue(dev.farmings.conveyor.ConveyorDriveBlock.FACING, Direction.EAST));
+			level.setBlockAndUpdate(new BlockPos(9, y, 2), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState());
+			var drive = (dev.farmings.conveyor.ConveyorDriveEntity) level.getBlockEntity(new BlockPos(8, y, 2));
+			drive.refresh();
+			drive.forceRunning(true);
+		});
+		server.runCommand("tp @p 4.5 " + (y + 4) + " 8.5 180 25");
+		context.waitTicks(40);
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.conveyor.ConveyorDriveEntity) srv.overworld().getBlockEntity(new BlockPos(8, y, 2))).readout()));
+		context.takeScreenshot("farmings-belts-over-a-rise");
+		Filming film = context.computeOnClient(client -> Filming.start(client, "belt-over-a-rise"));
+		for (int i = 0; i < 12; i++) {
+			int k = i;
+			server.runOnServer(srv -> {
+				var drive = (dev.farmings.conveyor.ConveyorDriveEntity) srv.overworld().getBlockEntity(new BlockPos(8, y, 2));
+				drive.offer(new ItemStack(k % 3 == 0 ? dev.farmings.crops.FieldCrops.ALFALFA_HAY : k % 3 == 1 ? dev.farmings.crops.FieldCrops.CORN_GRAIN : net.minecraft.world.item.Items.WHEAT, 1));
+			});
+			context.waitTicks(10);
+			if (i == 8) {
+				context.takeScreenshot("farmings-belts-items-riding");
+			}
+		}
+		context.waitTicks(60);
+		context.takeScreenshot("farmings-belts-items-riding-2");
+		server.runCommand("tp @p 10.5 " + (y + 2) + " 2.5 90 15");
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-belts-side");
+		context.waitTicks(40);
+		film.stop();
+	}
+
 	private static void fields(ClientGameTestContext context, TestServerContext server, int y) {
 		// field x 2-9, z 0-15; rails x 1 and 10; the gantry at home row z 0; headland stop (1,y,16); belt west to a forage blower and silo
 		server.runOnServer(srv -> {
@@ -1935,6 +1982,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("fields".equals(only)) {
 				context.waitTicks(200);
 				fields(context, server, y);
+				return;
+			}
+			if ("belts".equals(only)) {
+				context.waitTicks(200);
+				belts(context, server, y);
 				return;
 			}
 			if ("poultryfarm".equals(only)) {

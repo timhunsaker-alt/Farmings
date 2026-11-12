@@ -80,4 +80,42 @@ final class ConveyorGameTests {
 		var chest = (ChestBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 5, 3)));
 		TamingGameTests.waitFor(helper, 0, 120, () -> chest.countItem(FieldCrops.OAT_GRAIN) == 16, "the oats go up: " + d.readout(), helper::succeed);
 	}
+
+	/**
+	 * A belt climbs: flat, a rising cell, three flat cells a block up, then down again into a chest (docs/conveyors.md, "Slopes"). Two slopes
+	 * within three cells are too steep and the run doesn't move.
+	 */
+	static void beltClimbsSlope(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		net.minecraft.world.level.block.state.BlockState belt = ConveyorBlocks.FARM_BELT.defaultBlockState().setValue(ConveyorPieceBlock.FACING, Direction.EAST);
+		helper.setBlock(new BlockPos(1, 1, 3), belt);
+		helper.setBlock(new BlockPos(2, 1, 3), belt.setValue(ConveyorPieceBlock.SLOPE, ConveyorPieceBlock.Slope.UP));
+		for (int x = 3; x <= 5; x++) {
+			helper.setBlock(new BlockPos(x, 2, 3), belt);
+		}
+		helper.setBlock(new BlockPos(6, 1, 3), belt.setValue(ConveyorPieceBlock.SLOPE, ConveyorPieceBlock.Slope.DOWN));
+		helper.setBlock(new BlockPos(7, 1, 3), belt);
+		helper.setBlock(new BlockPos(8, 1, 3), ConveyorBlocks.FARM_BELT_DRIVE.defaultBlockState().setValue(ConveyorDriveBlock.FACING, Direction.EAST));
+		helper.setBlock(new BlockPos(9, 1, 3), Blocks.CHEST);
+		ConveyorDriveEntity d = (ConveyorDriveEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(8, 1, 3)));
+		d.refresh();
+		d.forceRunning(true);
+		helper.assertTrue(d.length() == 7 && !d.tooSteep(), Component.literal("a 7-cell run over a rise: " + d.readout()));
+		helper.assertTrue(d.readout().contains(String.format(java.util.Locale.ROOT, "%.1f m", 5 + 2 * Math.sqrt(2))), Component.literal("its sloped cells are longer: " + d.readout()));
+		helper.assertTrue(ConveyorDriveEntity.driveOf(level, helper.absolutePos(new BlockPos(1, 1, 3))) == d, Component.literal("the tail cell finds its drive up and down the slope"));
+		d.offer(new ItemStack(FieldCrops.CORN_GRAIN, 4));
+		var chest = (ChestBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(9, 1, 3)));
+		TamingGameTests.waitFor(helper, 0, 120, () -> chest.countItem(FieldCrops.CORN_GRAIN) == 4, () -> "the grain rides over the rise: " + d.readout(), () -> {
+			// two rises one after the other, on a second run: too steep
+			helper.setBlock(new BlockPos(1, 1, 6), belt.setValue(ConveyorPieceBlock.SLOPE, ConveyorPieceBlock.Slope.UP));
+			helper.setBlock(new BlockPos(2, 2, 6), belt.setValue(ConveyorPieceBlock.SLOPE, ConveyorPieceBlock.Slope.UP));
+			helper.setBlock(new BlockPos(3, 3, 6), belt);
+			helper.setBlock(new BlockPos(4, 3, 6), ConveyorBlocks.FARM_BELT_DRIVE.defaultBlockState().setValue(ConveyorDriveBlock.FACING, Direction.EAST));
+			ConveyorDriveEntity steep = (ConveyorDriveEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(4, 3, 6)));
+			steep.refresh();
+			helper.assertTrue(steep.length() == 3 && steep.tooSteep() && steep.readout().contains("TOO STEEP"), Component.literal("two slopes in three cells: " + steep.readout()));
+			helper.succeed();
+		});
+	}
 }

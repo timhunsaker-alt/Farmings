@@ -81,7 +81,15 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 		return travel.size() < Math.max(2, cells.size() + 1);
 	}
 
-	/** The drive of the run a cell belongs to: walk along the cell's facing to the drive. */
+	private static boolean cellOf(BlockState s, ConveyorKind kind, Direction d) {
+		return s.getBlock() instanceof ConveyorPieceBlock q && q.kind == kind && s.getValue(ConveyorPieceBlock.FACING) == d;
+	}
+
+	private static ConveyorPieceBlock.Slope slope(BlockState s) {
+		return s.getBlock() instanceof ConveyorPieceBlock ? s.getValue(ConveyorPieceBlock.SLOPE) : ConveyorPieceBlock.Slope.FLAT;
+	}
+
+	/** The drive of the run a cell belongs to: walk along the cell's facing (up and down its slopes) to the drive. */
 	public static @Nullable ConveyorDriveEntity driveOf(Level level, BlockPos cell) {
 		BlockState s = level.getBlockState(cell);
 		if (!(s.getBlock() instanceof ConveyorPieceBlock piece)) {
@@ -89,34 +97,90 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 		}
 		Direction d = s.getValue(ConveyorPieceBlock.FACING);
 		BlockPos p = cell;
+		BlockState at = s;
 		for (int i = 0; i < 256; i++) {
-			p = p.relative(d);
-			BlockState n = level.getBlockState(p);
+			BlockPos next = slope(at) == ConveyorPieceBlock.Slope.UP ? p.relative(d).above() : p.relative(d);
+			BlockState n = level.getBlockState(next);
 			if (n.getBlock() instanceof ConveyorDriveBlock drive && drive.kind == piece.kind && n.getValue(ConveyorDriveBlock.FACING) == d) {
-				return level.getBlockEntity(p) instanceof ConveyorDriveEntity e ? e : null;
+				return level.getBlockEntity(next) instanceof ConveyorDriveEntity e ? e : null;
 			}
-			if (!(n.getBlock() instanceof ConveyorPieceBlock q) || q.kind != piece.kind || n.getValue(ConveyorPieceBlock.FACING) != d) {
-				return null;
+			if (!cellOf(n, piece.kind, d) || slope(n) == ConveyorPieceBlock.Slope.DOWN) {
+				BlockState below = level.getBlockState(next.below());
+				if (slope(at) != ConveyorPieceBlock.Slope.UP && cellOf(below, piece.kind, d) && slope(below) == ConveyorPieceBlock.Slope.DOWN) {
+					next = next.below();
+					n = below;
+				} else {
+					return null;
+				}
 			}
+			p = next;
+			at = n;
 		}
 		return null;
 	}
 
-	/** Finds the run: the cells behind the drive with its kind and facing, nearest first. */
+	/** The cell before {@code p} on a run going {@code d}, or null: level, one up into a falling cell, or one down from a rising one. */
+	private @Nullable BlockPos previous(BlockPos p, BlockState atP, Direction d) {
+		if (slope(atP) == ConveyorPieceBlock.Slope.DOWN) {
+			BlockPos up = p.relative(d.getOpposite()).above();
+			return cellOf(level.getBlockState(up), kind(), d) ? up : null;
+		}
+		BlockPos level0 = p.relative(d.getOpposite());
+		BlockState s = level.getBlockState(level0);
+		if (cellOf(s, kind(), d) && slope(s) != ConveyorPieceBlock.Slope.UP) {
+			return level0;
+		}
+		BlockPos low = level0.below();
+		BlockState l = level.getBlockState(low);
+		return cellOf(l, kind(), d) && slope(l) == ConveyorPieceBlock.Slope.UP ? low : null;
+	}
+
+	/** Metres from the head end to the far edge of each cell, nearest first. */
+	private final List<Double> along = new ArrayList<>();
+	/** Two slopes closer than 3 cells: a run steeper than 1 in 3 doesn't move (docs/conveyors.md). */
+	private boolean tooSteep;
+
+	public boolean tooSteep() {
+		return tooSteep;
+	}
+
+	public List<BlockPos> cells() {
+		return List.copyOf(cells);
+	}
+
+	private double toGoAt(int i) {
+		return i < 0 || along.isEmpty() ? 0 : along.get(Math.min(i, along.size() - 1));
+	}
+
+	/** Finds the run: the cells behind the drive with its kind and facing, nearest first, following its slopes. */
 	public void refresh() {
 		cells.clear();
+		along.clear();
+		tooSteep = false;
 		if (level == null) {
 			return;
 		}
 		Direction d = facing();
 		BlockPos p = worldPosition;
+		BlockState at = level.getBlockState(p);
+		double metres = 0;
+		int lastSlope = -100;
 		for (int i = 0; i < 256; i++) {
-			p = p.relative(d.getOpposite());
-			BlockState s = level.getBlockState(p);
-			if (!(s.getBlock() instanceof ConveyorPieceBlock piece) || piece.kind != kind() || s.getValue(ConveyorPieceBlock.FACING) != d) {
+			BlockPos prev = previous(p, at, d);
+			if (prev == null) {
 				break;
 			}
+			p = prev;
+			at = level.getBlockState(p);
+			if (slope(at) != ConveyorPieceBlock.Slope.FLAT) {
+				if (cells.size() - lastSlope < 3) {
+					tooSteep = true;
+				}
+				lastSlope = cells.size();
+			}
 			cells.add(p.immutable());
+			metres += ConveyorPieceBlock.length(at);
+			along.add(metres);
 		}
 		double w = kind().watts(Math.max(1, cells.size()));
 		if (w != ratedWatts) {
@@ -131,7 +195,7 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 			return;
 		}
 		int i = cells.indexOf(at);
-		double toGo = i < 0 ? cells.size() : i + 1;
+		double toGo = toGoAt(i < 0 ? cells.size() - 1 : i);
 		travel.add(stack, toGo);
 		setChanged();
 	}
@@ -141,7 +205,7 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 		if (!kind().carries(stack) || !hasRoom()) {
 			return false;
 		}
-		travel.add(stack.copy(), cells.size());
+		travel.add(stack.copy(), toGoAt(cells.size() - 1));
 		setChanged();
 		return true;
 	}
@@ -151,7 +215,12 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 		if (now % 40 == 0 || cells.isEmpty()) {
 			refresh();
 		}
-		if (cells.isEmpty() || !powered()) {
+		if (now % 10 == 0 && (!travel.isEmpty() || sentLoad)) {
+			// the client draws the load (docs/conveyors.md, "Items drawn"): send it twice a second while there is any
+			sentLoad = !travel.isEmpty();
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+		}
+		if (cells.isEmpty() || tooSteep || !powered()) {
 			return;
 		}
 		if (kind() == ConveyorKind.BELT && now % 5 == 0) {
@@ -179,7 +248,7 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 				if (!hasRoom()) {
 					break;
 				}
-				travel.add(e.getItem().copy(), i + 1);
+				travel.add(e.getItem().copy(), toGoAt(i));
 				e.discard();
 			}
 		}
@@ -208,9 +277,9 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 
 	public String readout() {
 		String what = kind() == ConveyorKind.BELT ? "Belt drive" : "Auger drive";
-		return String.format(Locale.ROOT, "%s (%.1f kW): %s, run %d m at %.1f m/s, %d parcel%s on it, %d delivered%s", what, ratedWatts / 1000,
-				powered() ? "running" : "NO POWER", cells.size(), kind().metresPerSecond, travel.size(), travel.size() == 1 ? "" : "s", delivered,
-				blocked ? ", HEAD BLOCKED" : "");
+		return String.format(Locale.ROOT, "%s (%.1f kW): %s, run %d cells, %.1f m at %.1f m/s, %d parcel%s on it, %d delivered%s", what, ratedWatts / 1000,
+				tooSteep ? "TOO STEEP (at most one slope in 3 cells)" : powered() ? "running" : "NO POWER", cells.size(), toGoAt(cells.size() - 1),
+				kind().metresPerSecond, travel.size(), travel.size() == 1 ? "" : "s", delivered, blocked ? ", HEAD BLOCKED" : "");
 	}
 
 	// ---- Wildcatter ----
@@ -237,6 +306,29 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 
 	// ---- saving: the load on the run ----
 
+	private boolean sentLoad;
+	/** Client side: the game tick the load was last sent, to move it on smoothly between updates. */
+	private long syncTick;
+	private boolean syncPowered;
+
+	public long syncTick() {
+		return syncTick;
+	}
+
+	public boolean syncPowered() {
+		return syncPowered;
+	}
+
+	@Override
+	public net.minecraft.nbt.CompoundTag getUpdateTag(net.minecraft.core.HolderLookup.Provider registries) {
+		return saveCustomOnly(registries);
+	}
+
+	@Override
+	public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
+		return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+	}
+
 	@Override
 	protected void saveAdditional(ValueOutput out) {
 		super.saveAdditional(out);
@@ -247,6 +339,7 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 			o.putDouble("ToGo", p.toGo());
 		}
 		out.putInt("Delivered", delivered);
+		out.putBoolean("Powered", powered() && !tooSteep && !cells.isEmpty());
 	}
 
 	@Override
@@ -257,5 +350,7 @@ public class ConveyorDriveEntity extends BlockEntity implements CircuitPart, Ins
 			o.read("Item", ItemStack.CODEC).ifPresent(st -> travel.add(st, o.getDoubleOr("ToGo", 0)));
 		}
 		delivered = in.getIntOr("Delivered", 0);
+		syncPowered = in.getBooleanOr("Powered", false);
+		syncTick = level != null ? level.getGameTime() : 0;
 	}
 }

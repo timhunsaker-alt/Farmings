@@ -41,7 +41,18 @@
 
 ## Loose ends, 2026-11-11 (spec)
 - **Slopes:** a belt run can climb or fall one block for every 3 along, at most (the 1 in 3 above). A `farm_belt` placed one block up
-  from the cell behind it becomes a sloped belt facing up. A run's length is counted along the slope: each sloped cell is
-  √(1 + 1/9) = 1.054 m *(derived)*.
+  from the cell behind it becomes a sloped belt facing up. A run's length is counted along the slope: a sloped cell rises a block over one, so it is
+  √2 = 1.41 m of belt *(derived)*.
 - **Items drawn:** the drive's parcel list is sent to the client. Each parcel is drawn as its item, lying on the belt at its place
   along the run. A sloped cell lifts it.
+
+### Built, 2026-11-12 (loose ends)
+- **Slopes:**
+  - Belt cells have a `slope` state: flat, up or down. A belt placed a block above the cell behind it makes that cell rise, and one
+    placed a block below falls into it.
+  - The run is traced up and down its slopes.
+  - Two slopes closer than 3 cells read TOO STEEP and stop the run.
+  - Augers stay straight.
+- **Drawn items:** the drive sends its load to clients twice a second. `client/BeltItemsRenderer` lays each parcel on the belt at its
+  place along the run and moves it on smoothly between updates.
+- **Game test:** belt_climbs_slope. **Client scene:** `belts`.
