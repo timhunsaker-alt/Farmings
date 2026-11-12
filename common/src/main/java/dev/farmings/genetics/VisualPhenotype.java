@@ -10,7 +10,13 @@ import java.util.TreeMap;
  * phenotype (§7.4 step 5). Packed into one long so it can be sent to the client with the entity.
  */
 public record VisualPhenotype(Coat coat, int dilution, int patternMask, int white, int face, boolean horned, int hump, int dewlap, int ears,
-		BodyFamily body, BodyFamily secondary, int secondaryPct) {
+		BodyFamily body, BodyFamily secondary, int secondaryPct, int roan, boolean brindle) {
+
+	/** The look without roan or brindle (as before 2026-11-11). */
+	public VisualPhenotype(Coat coat, int dilution, int patternMask, int white, int face, boolean horned, int hump, int dewlap, int ears,
+			BodyFamily body, BodyFamily secondary, int secondaryPct) {
+		this(coat, dilution, patternMask, white, face, horned, hump, dewlap, ears, body, secondary, secondaryPct, 0, false);
+	}
 
 	public enum Coat { BLACK, RED, WILD }
 
@@ -49,9 +55,13 @@ public record VisualPhenotype(Coat coat, int dilution, int patternMask, int whit
 			second = null;
 			pct = 0;
 		}
-		return new VisualPhenotype(coat, g.expressed(VisualLocus.DILUTION), g.expressed(VisualLocus.PATTERN), g.expressed(VisualLocus.WHITE),
+		// shown dilution: the breed-shade modifier plus PMEL's strength, at most strong (docs/GENETICS.md, loose ends)
+		int dilution = Math.min(3, g.expressed(VisualLocus.DILUTION) + g.sum(VisualLocus.PMEL));
+		// brindle shows only on wild-type E+; ED and e/e hide it (AHCA)
+		boolean brindle = coat == Coat.WILD && g.expressed(VisualLocus.AGOUTI) == 1;
+		return new VisualPhenotype(coat, dilution, g.expressed(VisualLocus.PATTERN), g.expressed(VisualLocus.WHITE),
 				g.expressed(VisualLocus.FACE), g.expressed(VisualLocus.HORNS) == 1, g.expressed(VisualLocus.HUMP), g.expressed(VisualLocus.DEWLAP),
-				g.expressed(VisualLocus.EARS), first, second, pct);
+				g.expressed(VisualLocus.EARS), first, second, pct, g.sum(VisualLocus.ROAN), brindle);
 	}
 
 	public boolean shows(int pattern) {
@@ -82,6 +92,14 @@ public record VisualPhenotype(Coat coat, int dilution, int patternMask, int whit
 
 	public String describe() {
 		StringBuilder s = new StringBuilder();
+		if (roan == 2) {
+			s.append("white (roan R/R)");
+			s.append(horned ? ", horned" : ", polled");
+			return s.toString();
+		}
+		if (brindle) {
+			s.append("brindle ");
+		}
 		s.append(switch (coat) {
 			case BLACK -> dilution >= 2 ? "grey-brown" : "black";
 			case RED -> dilution >= 2 ? "light red" : "red";
@@ -96,6 +114,9 @@ public record VisualPhenotype(Coat coat, int dilution, int patternMask, int whit
 			}
 			s.append(" with white");
 		}
+		if (roan == 1) {
+			s.append(" roan");
+		}
 		s.append(horned ? ", horned" : ", polled");
 		if (hump > 0) {
 			s.append(", hump ").append(hump);
@@ -103,7 +124,7 @@ public record VisualPhenotype(Coat coat, int dilution, int patternMask, int whit
 		return s.toString();
 	}
 
-	// ---- packing: 38 bits ----
+	// ---- packing: 41 bits ----
 
 	public long pack() {
 		long v = 0;
@@ -119,6 +140,8 @@ public record VisualPhenotype(Coat coat, int dilution, int patternMask, int whit
 		v |= (long) body.ordinal() << 27;
 		v |= (long) (secondary == null ? 3 : secondary.ordinal()) << 29;
 		v |= (long) (secondaryPct & 0x7F) << 31;
+		v |= (long) (roan & 3) << 38;
+		v |= (brindle ? 1L : 0L) << 40;
 		return v;
 	}
 
@@ -126,7 +149,8 @@ public record VisualPhenotype(Coat coat, int dilution, int patternMask, int whit
 		int sec = (int) (v >> 29 & 3);
 		return new VisualPhenotype(Coat.values()[(int) (v & 3) % 3], (int) (v >> 2 & 3), (int) (v >> 4 & 0xF), (int) (v >> 8 & 0x3FF),
 				(int) (v >> 18 & 3), (v >> 20 & 1) == 1, (int) (v >> 21 & 3), (int) (v >> 23 & 3), (int) (v >> 25 & 3),
-				BodyFamily.values()[(int) (v >> 27 & 3) % 3], sec == 3 ? null : BodyFamily.values()[sec], (int) (v >> 31 & 0x7F));
+				BodyFamily.values()[(int) (v >> 27 & 3) % 3], sec == 3 ? null : BodyFamily.values()[sec], (int) (v >> 31 & 0x7F),
+				(int) (v >> 38 & 3), (v >> 40 & 1) == 1);
 	}
 
 	/** The seed that picks exact patch shapes: from the genome hash, so an animal's markings never change. */

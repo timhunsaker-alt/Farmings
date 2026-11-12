@@ -86,9 +86,15 @@ public class CattleRenderer extends MobRenderer<CattleEntity, CattleRenderState,
 		return look.secondary() == family ? second : 0.0F;
 	}
 
-	/** The white-marking textures for this look, in drawing order. */
+	/** The marking textures for this look, in drawing order: brindle stripes, roan, then the white patterns and the face. */
 	public static List<Identifier> markings(VisualPhenotype look, int seed) {
 		List<Identifier> out = new ArrayList<>();
+		if (look.brindle()) {
+			out.add(Farmings.id("textures/entity/cattle/brindle.png"));
+		}
+		if (look.roan() > 0) {
+			out.add(Farmings.id("textures/entity/cattle/white/roan_" + Math.min(2, look.roan()) + ".png"));
+		}
 		int level = Math.max(1, Math.min(4, Math.round(look.white() / 250.0F)));
 		int shape = Math.floorMod(seed, PATCH_SHAPES);
 		if (look.shows(1)) {

@@ -20,6 +20,18 @@ final class FounderAlleles {
 	}
 
 	static int[] of(String breed, VisualLocus l) {
+		// roan, brindle and PMEL (2026-11-11): none of the six breeds carries roan or brindle; Wagyu carries Dh at 10%, standing for the
+		// Japanese Brown's PMEL allele (OMIA 001545 lists Japanese Brown; proposed)
+		switch (l) {
+			case ROAN, AGOUTI -> {
+				return new int[] {0, 1};
+			}
+			case PMEL -> {
+				return breed.equals("WAG") ? new int[] {0, 90, 1, 10} : new int[] {0, 1};
+			}
+			default -> {
+			}
+		}
 		return switch (breed) {
 			case "HOL" -> switch (l) {
 				case EXTENSION -> new int[] {0, 90, 1, 3, 3, 7};
@@ -28,7 +40,7 @@ final class FounderAlleles {
 				case WHITE -> new int[] {450, 900};
 				case FACE -> new int[] {0, 4, 1, 3, 2, 3, 3, 1};
 				case HORNS -> new int[] {1, 95, 0, 5};
-				case HUMP, DEWLAP, EARS -> new int[] {0, 1};
+				case HUMP, DEWLAP, EARS, ROAN, AGOUTI, PMEL -> new int[] {0, 1};
 			};
 			case "JER" -> switch (l) {
 				case EXTENSION -> new int[] {2, 1};
@@ -37,7 +49,7 @@ final class FounderAlleles {
 				case WHITE -> new int[] {0, 120};
 				case FACE -> new int[] {0, 1};
 				case HORNS -> new int[] {1, 1};
-				case HUMP, DEWLAP, EARS -> new int[] {0, 1};
+				case HUMP, DEWLAP, EARS, ROAN, AGOUTI, PMEL -> new int[] {0, 1};
 			};
 			case "BSW" -> switch (l) {
 				case EXTENSION -> new int[] {0, 1};
@@ -46,7 +58,7 @@ final class FounderAlleles {
 				case WHITE -> new int[] {0, 40};
 				case FACE -> new int[] {0, 1};
 				case HORNS -> new int[] {1, 1};
-				case HUMP, DEWLAP, EARS -> new int[] {0, 1};
+				case HUMP, DEWLAP, EARS, ROAN, AGOUTI, PMEL -> new int[] {0, 1};
 			};
 			case "GYR" -> switch (l) {
 				case EXTENSION -> new int[] {3, 2, 2, 1};
@@ -55,7 +67,7 @@ final class FounderAlleles {
 				case WHITE -> new int[] {300, 800};
 				case FACE -> new int[] {0, 1};
 				case HORNS -> new int[] {1, 1};
-				case HUMP, DEWLAP, EARS -> new int[] {3, 1};
+				case HUMP, DEWLAP, EARS, ROAN, AGOUTI, PMEL -> new int[] {3, 1};
 			};
 			case "ANG" -> switch (l) {
 				case EXTENSION -> new int[] {0, 97, 3, 3};
@@ -64,7 +76,7 @@ final class FounderAlleles {
 				case WHITE -> new int[] {0, 30};
 				case FACE -> new int[] {0, 1};
 				case HORNS -> new int[] {0, 1};
-				case HUMP, DEWLAP, EARS -> new int[] {0, 1};
+				case HUMP, DEWLAP, EARS, ROAN, AGOUTI, PMEL -> new int[] {0, 1};
 			};
 			case "WAG" -> switch (l) {
 				case EXTENSION -> new int[] {0, 1};
@@ -73,7 +85,7 @@ final class FounderAlleles {
 				case WHITE -> new int[] {0, 20};
 				case FACE -> new int[] {0, 1};
 				case HORNS -> new int[] {1, 1};
-				case HUMP, DEWLAP, EARS -> new int[] {0, 1};
+				case HUMP, DEWLAP, EARS, ROAN, AGOUTI, PMEL -> new int[] {0, 1};
 			};
 			default -> of("HOL", l);
 		};

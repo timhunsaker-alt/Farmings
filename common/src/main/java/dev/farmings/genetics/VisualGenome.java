@@ -35,6 +35,11 @@ public record VisualGenome(Map<VisualLocus, int[]> alleles) {
 		return l.express(alleles.get(l)[0], alleles.get(l)[1]);
 	}
 
+	/** The two alleles added up: copies of R at the roan locus, or PMEL dilution strength (Dh 1, Dc 2). */
+	public int sum(VisualLocus l) {
+		return alleles.get(l)[0] + alleles.get(l)[1];
+	}
+
 	// ---- inheritance ----
 
 	/** A calf's coat genes: one allele from each parent at every locus, chosen by a generator seeded from {@code breedingSeed}. */
@@ -128,12 +133,14 @@ public record VisualGenome(Map<VisualLocus, int[]> alleles) {
 
 	/** Reads {@link #save}; null if the array is not one (an older save). */
 	public static VisualGenome load(int[] saved) {
-		if (saved == null || saved.length != VisualLocus.values().length * 2) {
+		if (saved == null || saved.length < 2 || saved.length % 2 != 0 || saved.length > VisualLocus.values().length * 2) {
 			return null;
 		}
 		EnumMap<VisualLocus, int[]> out = new EnumMap<>(VisualLocus.class);
 		for (VisualLocus l : VisualLocus.values()) {
-			out.put(l, new int[] {saved[l.ordinal() * 2], saved[l.ordinal() * 2 + 1]});
+			// an animal saved before later loci were added carries their wild type (0)
+			int i = l.ordinal() * 2;
+			out.put(l, i + 1 < saved.length ? new int[] {saved[i], saved[i + 1]} : new int[] {0, 0});
 		}
 		return new VisualGenome(out);
 	}

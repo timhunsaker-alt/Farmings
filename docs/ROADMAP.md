@@ -21,7 +21,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 - Manure collection in the barn (see `docs/waste.md`): a manure item, a dirty-stall rule, hand collection and a powered scraper on Wildcatter power.
 - Animal state survives save and chunk unload.
 
-## Phase 2 — Genetics and breeding — done for cattle 2026-11-09 (the visual coat recipe is not built)
+## Phase 2 — Genetics and breeding — done for cattle 2026-11-09 (coat genes and models built 2026-11-09; roan, brindle and PMEL added 2026-11-11)
 - Port the plain-Java `genetics` package from FarmChain (see GENETICS.md), with the determinism tests.
 - Mating, pregnancy, calving. Sire and dam choice. Breed composition and labels. Visual recipe for coat and markings.
 - Records: a herd book showing parents, breed composition and traits.

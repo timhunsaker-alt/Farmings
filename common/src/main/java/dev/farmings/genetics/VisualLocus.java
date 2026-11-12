@@ -25,7 +25,14 @@ public enum VisualLocus {
 	/** Dewlap and loose skin, 0-3 (incomplete dominance). */
 	DEWLAP("dewlap_loose_skin", Mode.MEAN, 0, 3, false, null),
 	/** Ear length, 0-3 (FarmChain §7.2: incomplete dominance). */
-	EARS("ear_length_shape", Mode.MEAN, 0, 3, false, null);
+	EARS("ear_length_shape", Mode.MEAN, 0, 3, false, null),
+	// Loose ends, 2026-11-11 (docs/GENETICS.md): appended so older animals' alleles and draws stay as they were.
+	/** Roan (KITLG): 0 +, 1 R; incomplete dominance (OMIA 001216): R/+ roan, R/R white. Read by count. */
+	ROAN("roan", Mode.DOMINANT_HIGH, 0, 1, false, new String[] {"+", "R"}),
+	/** Agouti (ASIP): 0 A+, 1 Abr; brindle shows only on E+ (AHCA). */
+	AGOUTI("agouti", Mode.DOMINANT_HIGH, 0, 1, false, new String[] {"A+", "Abr"}),
+	/** PMEL dilution: 0 +, 1 Dh (Highland), 2 Dc (Charolais); semi-dominant, strength added up (OMIA 001545; AHCA). */
+	PMEL("pmel_dilution", Mode.DOMINANT_HIGH, 0, 2, false, new String[] {"+", "Dh", "Dc"});
 
 	enum Mode { DOMINANT_LOW, DOMINANT_HIGH, MEAN, LAYERED }
 

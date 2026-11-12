@@ -158,8 +158,10 @@ New and changed loci:
 | AGOUTI (ASIP) | A+ / Abr | Abr is dominant, and shows only on wild-type E+. ED and e/e hide it | Highland | "A separate gene controls brindling (either A+ or Abr) in combination with wildtype red (E+)"; "dominant black (ED) will mask all evidence of brindling as will homozygous recessive red" ([AHCA](http://highlandcattleusa.org/wp-content/uploads/2025/11/Color-Coat-Genetics-7-24-1.pdf)) |
 | DILUTION (PMEL) | + / Dc / Dh | semi-dominant: one Dh is dun, two are silver dun; Dc is the stronger Charolais allele | Charolais, Highland, Galloway, Simmental, Hereford, Japanese Brown | "the alleles at the Dilute locus are actually co-dominant" (AHCA); "semi-dominant color dilution" ([OMIA 001545](https://omia.org/OMIA001545/9913/)); Dc/Dh names **TO VERIFY** (UC Davis snippet) |
 
-- **The old DILUTION locus:** it was a 0-3 "mean" scale. It becomes two PMEL alleles. Shown dilution is the sum of the two alleles'
-  strength (+ 0, Dh 1, Dc 2), capped at 3 (strong), which keeps the existing four tints.
+- **The old DILUTION locus:** it stays, as the breed-shade modifier that gives the Jersey's fawn and the Brown Swiss's grey-brown
+  *(unverified, as before)*. PMEL is a separate locus. Shown dilution is the old locus's value plus PMEL's strength (+ 0, Dh 1, Dc 2),
+  at most 3 (strong), so the four existing tints stay. (Changed from the first draft of this section, which would have turned DILUTION
+  into PMEL. That would have changed how the Jersey and Brown Swiss look.)
 - **Brindle drawing:** brindle is drawn as dark vertical stripes over the coat, on E+ only. Roan is drawn as a white-hair speckle over
   the whole coat.
 - **Founders:** none of the game's six breeds carries roan or brindle, so all six are +/+ and A+/A+.
@@ -167,3 +169,10 @@ New and changed loci:
     different Wagyu line)*.
   - New breeds that carry these genes come with the new-animals pass.
   - Until then, the genes are reachable by `/summon` with genes and in the game tests.
+
+### Built, 2026-11-11 (loose ends)
+- **Loci:** ROAN, AGOUTI and PMEL, appended after EARS. Older animals load with the wild type.
+- **Look:** `VisualPhenotype` carries roan (0-2) and brindle.
+- **Renderer:** draws brindle stripes and roan masks under the white patterns. The masks are from `tools/cattle_textures.py`:
+  `brindle.png`, `white/roan_1.png` and `white/roan_2.png`.
+- **Unit test:** CoatLooseEndsTest.

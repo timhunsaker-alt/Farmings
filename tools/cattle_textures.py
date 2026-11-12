@@ -175,6 +175,35 @@ def sided_field():
     return f
 
 
+def roan_field(seed):
+    rnd = random.Random(seed)
+    table = {}
+
+    def f(p):
+        # white hairs scattered evenly through the coloured coat: a per-hair coin, not a patch (roan, KITLG)
+        key = (round(p[0] * 4), round(p[1] * 4), round(p[2] * 4))
+        if key not in table:
+            table[key] = rnd.random()
+        return table[key]
+    return f
+
+
+def brindle_mask(tex, grain):
+    """Dark stripes across the coat, running up and down the flanks (brindle, ASIP Abr on E+)."""
+    n = Noise(321)
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    px = img.load()
+    for (x, y), (box, face, p, is_coat) in tex.items():
+        if not is_coat:
+            continue
+        px_, py, pz = p
+        wave = math.sin((pz + 2.2 * n.at(px_ / 3.0, py / 3.0, pz / 3.0)) * 1.6)
+        if wave > 0.35:
+            c = 0.55 + 0.25 * grain(x, y)
+            px[x, y] = (int(40 * c), int(28 * c), int(22 * c), 235)
+    return img
+
+
 def face_mask(tex, grain, kind):
     """Face white on the head's front (and the muzzle for a white face). kind 1 star, 2 blaze, 3 white face."""
     img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
@@ -237,6 +266,10 @@ def main():
         white_mask(tex, grain, sided_field(), cover * 0.6).save(os.path.join(OUT, "white", f"sided_{level}.png"))
     for kind in (1, 2, 3):
         face_mask(tex, grain, kind).save(os.path.join(OUT, "white", f"face_{kind}.png"))
+    # roan: R/+ about half the hairs white, R/R nearly all (docs/GENETICS.md, loose ends)
+    white_mask(tex, grain, roan_field(901), 0.45).save(os.path.join(OUT, "white", "roan_1.png"))
+    white_mask(tex, grain, roan_field(901), 0.92).save(os.path.join(OUT, "white", "roan_2.png"))
+    brindle_mask(tex, grain).save(os.path.join(OUT, "brindle.png"))
     print("wrote coat, detail and", len(os.listdir(os.path.join(OUT, "white"))), "white masks")
 
 
