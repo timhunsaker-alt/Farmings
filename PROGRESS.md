@@ -269,8 +269,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     - goals that count ticks missed steps when ticked every other tick;
     - sheep snagged on gate posts;
     - the cold room's temperature didn't reach the food's credit (caught by its own test);
-    - the NeoForge client wouldn't start ("missing client-side handlers: [wildcatter:plc]"). Farmings now registers that handler
-      itself, and the real fix belongs in Wildcatter.
+    - the NeoForge client wouldn't start ("missing client-side handlers: [wildcatter:plc]"). Fixed in Wildcatter 0.6.1
+      (released 2026-11-12), and Farmings is on it.
   - **Tests:** 189 game tests and 244 unit tests. Full runs passed three times in a row after the flaky-test fixes.
   - **Client scenes:** `looseends` (dog, coats, plumage, rotten egg), `belts`, and `fields` (the gantry gliding, the full-size machines,
     the gas set under load).
@@ -314,13 +314,12 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     - mixer 2.3 t and 4 minutes;
     - fish meal and limestone analyses;
     - compost moistures.
-  - Left for Tim: the duck hatch sex ratio (51.5% male, one study's abstract, not applied), Dorper horns (the standard says small
-    horns), Silkie figures (they differ by national standard), and the lactating cow's hay-only intake (whole-ration guidance is
-    3-3.5%).
+  - Tim's answers (2026-11-12): ducks hatch 50/50; Dorpers stay polled; the Silkie keeps the European standard's figures; the
+    lactating cow's intake stays 2.7%.
 - Proposed values with no source are marked in the docs (dirty-stall effect, beef baselines, Wagyu bonus, steak food values, creamery sizes and motor powers, press time, store sizes, the room-temperature shelf life of perishables, the cold room's COP and size limits, lane length, coat founder weights for Jersey, Brown Swiss and Gyr, body proportions).
 - The Fabric client game test takes screenshots and recordings; it asserts nothing.
-- The NeoForge client launches to the title screen (2026-11-12). Its in-world scenes are all on Fabric's client game test. It needs
-  Farmings' copy of Wildcatter's PLC client handler until Wildcatter registers its own.
+- The NeoForge client launches to the title screen (2026-11-12), on Wildcatter 0.6.1, which registers its PLC client handler itself
+  (the fix for "missing client-side handlers: [wildcatter:plc]"). Its in-world scenes are all on Fabric's client game test.
 - ~~Cattle are textures on the vanilla cow model~~ Fixed 2026-11-09: their own model, coats from the coat genes (cattle.md, "Models and coats").
 - Not built: products by pipe, a plain-text genome code, lane collision rails. Built 2026-11-11 (loose ends): the cold room temperature model, spoiled food in compost.
 - Sheep, not built: cloth filters. Built 2026-11-11 (loose ends): bedding that gets dirty, sheep dogs, breeding seasons, sheep straws,

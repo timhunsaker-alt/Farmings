@@ -48,7 +48,7 @@ for Tim if seasons are ever added)*.
 |---|---|---|---|---|---|---|---|---|---|
 | Merino | MER | fine wool | 50 | 1.25 | 4-6 (5) | under 24 (21) | 6-10 (8) | 65-75% (70%) | white, rams horned |
 | Suffolk | SUF | meat | 104 | 1.8 | 2.2-2.7 (2.45) | 28-33 (30) | 8-10 (9) | 50-62% (56%) | white, black head and legs, polled |
-| Dorper | DOR | meat, hair | 77 | 1.5 | 0.5-1, shed | hair | short | n/a | white, black head and neck, horn base or small horns |
+| Dorper | DOR | meat, hair | 77 | 1.5 | 0.5-1, shed | hair | short | n/a | white, black head and neck, polled (Tim, 2026-11-12) |
 | East Friesian | EFR | dairy | 77 | 2.2 | 4-5.5 (4.75) | 29-33 (31) | 10-15 (12.5) | 55-65% (60%) | white, polled, bare "rat tail" |
 
 Values in brackets are what the game uses (the middle of the range).
@@ -74,10 +74,9 @@ Values in brackets are what the game uses (the middle of the range).
   "77.1 kg (170 lb) — Border Leicester, Corriedale, Dorper, East Friesian, ...". The breed society lists "95.0 kg" for ewes of
   6 teeth and over in good condition ([Dorper Sheep Breeders' Society of SA](https://dorpersa.co.za/breed-standards/)).
   The coat is partly hair and partly wool, grown in winter and shed in spring
-  ([Cornell Small Farms](https://smallfarms.cornell.edu/2011/01/dorper-sheep-truths-and-myths)). Horns: not polled (was polled).
-  The breed standard says "A developed horn base or small horns are the ideal" and "Heavy horns are undesirable but
-  permissible" ([Dorper SA breed standards](https://dorpersa.co.za/breed-standards/)). Which horn allele the founders carry is
-  an open point for Tim.
+  ([Cornell Small Farms](https://smallfarms.cornell.edu/2011/01/dorper-sheep-truths-and-myths)). Horns: polled in the game (Tim,
+  2026-11-12: no horns). The breed standard allows them: "A developed horn base or small horns are the ideal" and "Heavy horns
+  are undesirable but permissible" ([Dorper SA breed standards](https://dorpersa.co.za/breed-standards/)).
 - **East Friesian:** ewes 160-180 lb (73-82 kg), grease fleece 9-12 lb (4-5.5 kg), 29-33 micron, yield 55-65%, staple 4-6 in
   (10-15 cm), polled, open white face: American Sheep Industry Association material quoted at
   [apparelsearch.com](https://www.apparelsearch.com/education_research_sheep_east_friesian.htm). Litter size 2.2 lambs per

@@ -23,12 +23,6 @@ public final class FarmingsNeoForgeClient {
 					event.registerLayerDefinition(dev.farmings.client.SheepModels.FLEECE, dev.farmings.client.SheepModels::createFleeceLayer);
 					event.registerLayerDefinition(dev.farmings.client.FowlModels.FOWL, dev.farmings.client.FowlModels::createLayer);
 				});
-		// Wildcatter 0.6.0 registers its PLC payload both ways with one handler; this NeoForge (26.3.0.101) also wants a client handler for a
-		// clientbound payload, or the client refuses to start ("missing client-side handlers: [wildcatter:plc]"). Found 2026-11-12 on the first
-		// NeoForge client launch. The fix belongs in Wildcatter; until then this registers the same client handler from here.
-		modBus.addListener(net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent.class,
-				event -> event.register(dev.wildcatter.control.PlcNet.Payload.TYPE,
-						(payload, context) -> context.enqueueWork(() -> dev.wildcatter.control.PlcNet.client.accept(payload.tag()))));
 		modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
 				event -> {
 					event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new);

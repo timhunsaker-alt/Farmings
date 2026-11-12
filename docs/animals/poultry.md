@@ -54,8 +54,8 @@ Machines that only process eggs and meat (grading, cold room) keep their own tim
 - **Sex ratio:**
   - Chickens, turkeys and quail hatch 50/50 male and female. In commercial Leghorns the "sex ratio was balanced"
     ([Klein & Grossmann 2008](https://europepmc.org/article/MED/18030680)).
-  - Ducks hatch 51.5% male (was 50/50): "an average bias of 51%-52%" toward males
-    ([Narushin 2026](https://kar.kent.ac.uk/115666/), abstract).
+  - Ducks hatch 50/50 too (Tim, 2026-11-12). One study finds "an average bias of 51%-52%" toward males
+    ([Narushin 2026](https://kar.kent.ac.uk/115666/), abstract), which the game does not use.
 - **Eggs:** only females lay. A male does not lay.
 - **Capons:** not in this pass.
 
@@ -84,7 +84,8 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
   Rhode Island Red 8½ / 6½, Plymouth Rock 9½ / 7½. Silkie: the European standard 1.4-1.7 / 1.1-1.4 kg
   ([Wikipedia](https://en.wikipedia.org/wiki/Silkie_(chicken_breed)), **TO VERIFY**; the article also gives a smaller US
   figure). Poultry Hub gives other figures, cock "1.8 Kg" and hen "1.4 Kg", with no standard named
-  ([Poultry Hub, Silkie](https://www.poultryhub.org/all-about-poultry/species/fancy-chicken-breeds/silkie)).
+  ([Poultry Hub, Silkie](https://www.poultryhub.org/all-about-poultry/species/fancy-chicken-breeds/silkie)). The game keeps the
+  European standard's middles, 1.55 / 1.25 kg and 100 eggs a year (Tim, 2026-11-12: pick one).
 - **Eggs a year:**
   - Leghorn, Rhode Island Red and Plymouth Rock from the Livestock Conservancy breed pages
     ([Leghorn](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/leghorn-chicken/),

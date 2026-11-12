@@ -79,7 +79,7 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
 
 ## Feed and water
 - **Hay:** a cow eats hay blocks (the vanilla hay block) from a feeder. Cattle eat nothing else in Phase 1.
-- **Intake:** a forage-based planning figure is about 2.7% of body weight per day as dry matter for a lactating cow (a regional
+- **Intake** (kept as it is, Tim 2026-11-12): a forage-based planning figure is about 2.7% of body weight per day as dry matter for a lactating cow (a regional
   extension source). **TO VERIFY**: whole-ration guidance is higher, "3 to 3.5% of their body weight in dry matter" ([FAS Scotland](https://fas.scot/?p=45035)),
   and a hay-only figure is still missing. Dry cow: **1.8-2.1%**, the game uses the middle, 1.95% (was 2.2%), [UC Davis, Robinson](https://animalscience.ucdavis.edu/sites/g/files/dgvnsk446/files/inline-files/dc1.pdf):
   "average between 1.8 and 2.1% of body weight (BW)". **One hay block = 100 kg** (decided with Tim, 2026-11-07; a real square bale is 15-25 kg and a
