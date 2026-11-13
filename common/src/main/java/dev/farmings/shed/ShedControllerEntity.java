@@ -5,6 +5,8 @@ import dev.farmings.barn.BarnParts;
 import dev.farmings.barn.FeederEntity;
 import dev.farmings.barn.TroughEntity;
 import dev.farmings.entity.SheepEntity;
+import dev.farmings.entity.SmallRuminant;
+import dev.farmings.genetics.Species;
 import dev.farmings.husbandry.Flock;
 import dev.farmings.husbandry.SheepStage;
 import dev.farmings.husbandry.TimeScale;
@@ -183,7 +185,13 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 
 	// ---- the flock ----
 
-	public List<SheepEntity> members(ServerLevel level) {
+	/** The sheep and goats this shed houses. */
+	public List<SmallRuminant> members(ServerLevel level) {
+		return SmallRuminant.in(level, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> worldPosition.equals(s.shedController()));
+	}
+
+	/** The sheep this shed houses (the shearing stand works only sheep). */
+	public List<SheepEntity> sheep(ServerLevel level) {
 		return level.getEntitiesOfClass(SheepEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> worldPosition.equals(s.shedController()));
 	}
 
@@ -196,7 +204,7 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 			return;
 		}
 		takeIn(level);
-		List<SheepEntity> members = members(level);
+		List<SmallRuminant> members = members(level);
 		flock = members.size();
 		homes(members);
 		long day = Math.floorMod(level.getOverworldClockTime(), TimeScale.TICKS_PER_GAME_DAY);
@@ -206,52 +214,120 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 		tend(level, members, 20.0 / TimeScale.TICKS_PER_GAME_DAY);
 	}
 
+	/**
+	 * Takes in tame, unhoused sheep and goats while there is floor for them: a sheep takes 1.5 pen blocks and a goat 2, against the pen's
+	 * room (lambing pens hold their dam on top), and a species needs a pen run that is free or already its own.
+	 */
 	private void takeIn(ServerLevel level) {
-		int room = check.capacity() + check.lambing().size();
-		int adults = 0;
-		for (SheepEntity s : members(level)) {
-			if (!s.stage().lamb()) {
-				adults++;
+		double room = (check.capacity() + check.lambing().size()) * Flock.PEN_M2_PER_SHEEP;
+		List<SmallRuminant> members = members(level);
+		double used = 0;
+		for (SmallRuminant s : members) {
+			if (!s.young()) {
+				used += s.penBlocks();
 			}
 		}
-		for (SheepEntity s : level.getEntitiesOfClass(SheepEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> s.shedController() == null && !s.isWild())) {
-			if (s.stage().lamb() || adults < room) {
+		Map<Integer, Species> claim = claims(members);
+		int runs = runCount();
+		for (SmallRuminant s : SmallRuminant.in(level, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> s.shedController() == null && !s.isWild())) {
+			boolean runFree = claim.size() < runs || claim.containsValue(s.species());
+			if (s.young() || (runFree && used + s.penBlocks() <= room + 1e-9)) {
 				s.assignShed(worldPosition, null);
-				if (!s.stage().lamb()) {
-					adults++;
+				if (!s.young()) {
+					used += s.penBlocks();
+					if (!claim.containsValue(s.species())) {
+						claim.put(firstFreeRun(claim), s.species());
+					}
 				}
 			}
 		}
 	}
 
-	private boolean needsJug(SheepEntity s) {
-		double due = s.daysToLambing();
+	private int[] runs() {
+		return dev.farmings.husbandry.shed.PenRuns.of(check.pen());
+	}
+
+	private int runCount() {
+		int max = -1;
+		for (int r : runs()) {
+			max = Math.max(max, r);
+		}
+		return max + 1;
+	}
+
+	private int firstFreeRun(Map<Integer, Species> claim) {
+		for (int r = 0; ; r++) {
+			if (!claim.containsKey(r)) {
+				return r;
+			}
+		}
+	}
+
+	/** Which species each pen run holds: the first grown member (in member order) homed in it sets it. */
+	private Map<Integer, Species> claims(List<SmallRuminant> members) {
+		int[] run = runs();
+		Map<BlockPos, Integer> runOf = new HashMap<>();
+		for (int k = 0; k < check.pen().size(); k++) {
+			runOf.put(pos(check.pen().get(k)), run[k]);
+		}
+		Map<Integer, Species> claim = new HashMap<>();
+		for (SmallRuminant s : members) {
+			Integer r = s.young() || s.home() == null ? null : runOf.get(s.home());
+			if (r != null) {
+				claim.putIfAbsent(r, s.species());
+			}
+		}
+		return claim;
+	}
+
+	/** The species a pen run holds, by a pen cell in it; null if the cell is not a pen cell or its run is empty. Readouts and tests. */
+	public @Nullable Species runSpecies(ServerLevel level, BlockPos cell) {
+		int[] run = runs();
+		for (int k = 0; k < check.pen().size(); k++) {
+			if (pos(check.pen().get(k)).equals(cell)) {
+				return claims(members(level)).get(run[k]);
+			}
+		}
+		return null;
+	}
+
+	private boolean needsJug(SmallRuminant s) {
+		double due = s.daysToBirth();
 		if (due >= 0 && due <= JUG_BEFORE_DAYS) {
 			return true;
 		}
-		return s.lambsNursing() > 0 && s.daysSinceLambing() < JUG_AFTER_DAYS;
+		return s.youngNursing() > 0 && s.daysSinceBirth() < JUG_AFTER_DAYS;
 	}
 
-	/** Gives every member a home cell: a lambing pen for a ewe about to lamb or just lambed, else a pen cell; lambs go with their dams. */
-	private void homes(List<SheepEntity> members) {
+	/**
+	 * Gives every member a home cell: a lambing (kidding) pen for a dam about to give birth or just after, else a pen cell in a run of its
+	 * own species; young go with their dams.
+	 */
+	private void homes(List<SmallRuminant> members) {
 		List<BlockPos> pen = new ArrayList<>();
 		for (ShedLayout.Pos p : check.pen()) {
 			pen.add(pos(p));
+		}
+		int[] run = runs();
+		Map<BlockPos, Integer> runOf = new HashMap<>();
+		for (int k = 0; k < pen.size(); k++) {
+			runOf.put(pen.get(k), run[k]);
 		}
 		Set<BlockPos> jugs = new HashSet<>();
 		for (ShedLayout.Pos p : check.lambing()) {
 			jugs.add(pos(p));
 		}
 		Set<BlockPos> jugTaken = new HashSet<>();
-		for (SheepEntity s : members) {
+		for (SmallRuminant s : members) {
 			if (s.home() != null && jugs.contains(s.home()) && needsJug(s)) {
 				jugTaken.add(s.home());
 			}
 		}
-		Map<String, SheepEntity> dams = new HashMap<>();
+		Map<Integer, Species> claim = claims(members);
+		Map<String, SmallRuminant> dams = new HashMap<>();
 		int i = 0;
-		for (SheepEntity s : members) {
-			if (s.stage().lamb()) {
+		for (SmallRuminant s : members) {
+			if (s.young()) {
 				continue;
 			}
 			dams.put(s.herdId(), s);
@@ -265,44 +341,57 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 						}
 					}
 				}
-			} else if (home == null || !pen.contains(home)) {
-				s.assignShed(worldPosition, pen.get(i % pen.size()));
+			} else if (home == null || !pen.contains(home) || claim.get(runOf.get(home)) != s.species()) {
+				List<BlockPos> allowed = new ArrayList<>();
+				for (BlockPos c : pen) {
+					Species owner = claim.get(runOf.get(c));
+					if (owner == null || owner == s.species()) {
+						allowed.add(c);
+					}
+				}
+				if (allowed.isEmpty()) {
+					s.assignShed(worldPosition, null);     // every run holds the other species: it waits unhomed
+				} else {
+					BlockPos c = allowed.get(i % allowed.size());
+					claim.putIfAbsent(runOf.get(c), s.species());
+					s.assignShed(worldPosition, c);
+				}
 			}
 			i++;
 		}
-		for (SheepEntity lamb : members) {
-			if (lamb.stage().lamb()) {
-				SheepEntity dam = dams.get(lamb.damId());
-				lamb.assignShed(worldPosition, dam != null && dam.home() != null ? dam.home() : pen.get(0));
+		for (SmallRuminant young : members) {
+			if (young.young()) {
+				SmallRuminant dam = dams.get(young.damId());
+				young.assignShed(worldPosition, dam != null && dam.home() != null ? dam.home() : pen.get(0));
 			}
 		}
 	}
 
 	/** Out by day: each sheep goes to a pasture spot and picks another every 30 seconds; home at dusk or in rain. */
-	private void pasture(ServerLevel level, List<SheepEntity> members, long now) {
+	private void pasture(ServerLevel level, List<SmallRuminant> members, long now) {
 		List<PastureLayout.Spot> spots = pasture != null && pasture.found() ? pasture.spots() : List.of();
-		for (SheepEntity s : members) {
+		for (SmallRuminant s : members) {
 			if (s.reservedBy() != null) {
 				continue;     // called in to be shorn
 			}
-			boolean stays = needsJug(s) || (s.stage().lamb() && s.ageRealDays() < LAMBS_STAY_IN_DAYS);
+			boolean stays = needsJug(s) || (s.young() && s.ageRealDays() < LAMBS_STAY_IN_DAYS);
 			if (!out || stays || spots.isEmpty()) {
 				if (s.sentTo() != null) {
 					s.sendTo(null);
 				}
 				continue;
 			}
-			Long last = lastPick.get(s.getUUID());
+			Long last = lastPick.get(s.self().getUUID());
 			if (s.sentTo() == null || last == null || now - last >= REPICK_TICKS) {
 				PastureLayout.Spot spot = spots.get(level.getRandom().nextInt(spots.size()));
 				s.sendTo(new BlockPos(spot.x(), spot.y(), spot.z()));
-				lastPick.put(s.getUUID(), now);
+				lastPick.put(s.self().getUUID(), now);
 			}
 		}
 	}
 
-	private boolean onPasture(SheepEntity s) {
-		BlockPos p = s.blockPosition();
+	private boolean onPasture(SmallRuminant s) {
+		BlockPos p = s.self().blockPosition();
 		return pastureCells.contains(p.asLong()) || pastureCells.contains(p.above().asLong()) || pastureCells.contains(p.below().asLong());
 	}
 
@@ -311,25 +400,26 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 	 * grazes (a grass block it stands by turns to dirt for 1.5 kg of dry matter), in the shed it eats from the racks; water comes from
 	 * the troughs. The shares met move its fed and watered averages.
 	 */
-	public void tend(ServerLevel level, List<SheepEntity> members, double dayShare) {
-		List<SheepEntity> housed = new ArrayList<>();
-		for (SheepEntity s : members) {
+	public void tend(ServerLevel level, List<SmallRuminant> members, double dayShare) {
+		List<SmallRuminant> housed = new ArrayList<>();
+		for (SmallRuminant s : members) {
 			if (!onPasture(s)) {
 				housed.add(s);
-				bedding.housed(s.weightKg(), s.stage().lamb(), dayShare);
+				bedding.housed(s.weightKg(), s.young(), dayShare);
 			}
 		}
 		dirty = bedding.dirty(!housed.isEmpty());
 		if (dirty) {
 			// wet, warm bedding (NADIS: scald): the barn's dirty-stall rule, -1 health a day, never below 2 (proposed, as cattle)
-			for (SheepEntity s : housed) {
+			for (SmallRuminant r : housed) {
+				net.minecraft.world.entity.animal.Animal s = r.self();
 				if (s.getHealth() > dev.farmings.husbandry.Hygiene.HEALTH_FLOOR) {
 					s.setHealth((float) Math.max(dev.farmings.husbandry.Hygiene.HEALTH_FLOOR, s.getHealth() - dev.farmings.husbandry.Hygiene.HEALTH_LOSS_PER_GAME_DAY * dayShare));
 				}
 			}
 		}
 		setChanged();
-		for (SheepEntity s : members) {
+		for (SmallRuminant s : members) {
 			double need = s.dryMatterIntakeKgPerDay() * dayShare;
 			if (need <= 0) {
 				continue;
@@ -355,7 +445,7 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 					}
 				}
 			}
-			double water = need * Flock.WATER_L_PER_KG_DM;
+			double water = need * s.waterLPerKgDm();
 			double drunk = 0;
 			for (BlockPos t : troughs) {
 				if (drunk >= water) {
@@ -371,10 +461,17 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 		}
 	}
 
-	private double graze(ServerLevel level, SheepEntity s, double need) {
-		double credit = grazeCredit.getOrDefault(s.getUUID(), 0.0);
+	/**
+	 * Grazes {@code need} kg DM. A goat beside leaves browses its browse share of it first, taking nothing from the world (goats.md); the
+	 * rest comes off grass blocks, each grazed bare for 1.5 kg DM.
+	 */
+	private double graze(ServerLevel level, SmallRuminant s, double need) {
+		double browsed = s.browseShare() > 0 && besideLeaves(level, s.self().blockPosition()) ? need * s.browseShare() : 0;
+		need -= browsed;
+		java.util.UUID id = s.self().getUUID();
+		double credit = grazeCredit.getOrDefault(id, 0.0);
 		while (credit < need) {
-			BlockPos grass = nearestGrass(level, s.blockPosition());
+			BlockPos grass = nearestGrass(level, s.self().blockPosition());
 			if (grass == null) {
 				break;
 			}
@@ -383,8 +480,18 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 			credit += Flock.GRASS_BLOCK_KG_DM;
 		}
 		double got = Math.min(credit, need);
-		grazeCredit.put(s.getUUID(), credit - got);
-		return got;
+		grazeCredit.put(id, credit - got);
+		return got + browsed;
+	}
+
+	/** Leaves within a block of the animal's feet or head. */
+	private static boolean besideLeaves(ServerLevel level, BlockPos at) {
+		for (BlockPos p : BlockPos.betweenClosed(at.offset(-1, 0, -1), at.offset(1, 2, 1))) {
+			if (level.getBlockState(p).is(net.minecraft.tags.BlockTags.LEAVES)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private @Nullable BlockPos nearestGrass(ServerLevel level, BlockPos at) {

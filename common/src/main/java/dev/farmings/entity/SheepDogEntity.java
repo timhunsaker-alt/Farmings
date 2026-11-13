@@ -139,14 +139,14 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 		return true;
 	}
 
-	/** The tame sheep it is moving now: within reach and not yet at the target. */
-	public List<SheepEntity> flock() {
+	/** The tame sheep and goats it is moving now: within reach and not yet at the target. */
+	public List<SmallRuminant> flock() {
 		if (target == null) {
 			return List.of();
 		}
-		List<SheepEntity> l = new ArrayList<>();
-		for (SheepEntity s : level().getEntitiesOfClass(SheepEntity.class, getBoundingBox().inflate(GATHER_RANGE), s -> !s.isWild() && s.isAlive())) {
-			if (s.blockPosition().distSqr(target) > ARRIVED * ARRIVED) {
+		List<SmallRuminant> l = new ArrayList<>();
+		for (SmallRuminant s : SmallRuminant.in(level(), getBoundingBox().inflate(GATHER_RANGE), s -> !s.isWild() && s.self().isAlive())) {
+			if (s.self().blockPosition().distSqr(target) > ARRIVED * ARRIVED) {
 				l.add(s);
 			}
 		}
@@ -154,25 +154,25 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 	}
 
 	private void holdSheep() {
-		for (SheepEntity s : drivenSheep()) {
-			s.sendTo(s.blockPosition());
+		for (SmallRuminant s : drivenSheep()) {
+			s.sendTo(s.self().blockPosition());
 		}
 	}
 
 	private void releaseSheep() {
-		for (SheepEntity s : drivenSheep()) {
+		for (SmallRuminant s : drivenSheep()) {
 			s.sendTo(null);
 		}
 		driven.clear();
 	}
 
-	private List<SheepEntity> drivenSheep() {
+	private List<SmallRuminant> drivenSheep() {
 		if (!(level() instanceof ServerLevel server)) {
 			return List.of();
 		}
-		List<SheepEntity> l = new ArrayList<>();
+		List<SmallRuminant> l = new ArrayList<>();
 		for (UUID id : driven) {
-			if (server.getEntity(id) instanceof SheepEntity s) {
+			if (server.getEntity(id) instanceof SmallRuminant s) {
 				l.add(s);
 			}
 		}
@@ -188,12 +188,12 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 			working = false;
 			return;
 		}
-		List<SheepEntity> flock = flock();
+		List<SmallRuminant> flock = flock();
 		// sheep already at the target are let go, under their shed's rules again
-		for (SheepEntity s : drivenSheep()) {
-			if (s.blockPosition().distSqr(target) <= ARRIVED * ARRIVED) {
+		for (SmallRuminant s : drivenSheep()) {
+			if (s.self().blockPosition().distSqr(target) <= ARRIVED * ARRIVED) {
 				s.sendTo(null);
-				driven.remove(s.getUUID());
+				driven.remove(s.self().getUUID());
 			}
 		}
 		if (flock.isEmpty()) {
@@ -204,9 +204,9 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 		}
 		double cx = 0;
 		double cz = 0;
-		for (SheepEntity s : flock) {
-			cx += s.getX();
-			cz += s.getZ();
+		for (SmallRuminant s : flock) {
+			cx += s.self().getX();
+			cz += s.self().getZ();
 		}
 		cx /= flock.size();
 		cz /= flock.size();
@@ -217,10 +217,10 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 		double px = cx + dx / d * BEHIND;
 		double pz = cz + dz / d * BEHIND;
 		getNavigation().moveTo(px, getY(), pz, 1.3);
-		for (SheepEntity s : flock) {
-			if (s.distanceTo(this) <= PRESSURE || driven.contains(s.getUUID())) {
+		for (SmallRuminant s : flock) {
+			if (s.self().distanceTo(this) <= PRESSURE || driven.contains(s.self().getUUID())) {
 				s.sendTo(target);
-				driven.add(s.getUUID());
+				driven.add(s.self().getUUID());
 			}
 		}
 	}

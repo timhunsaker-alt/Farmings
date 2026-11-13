@@ -145,7 +145,7 @@ public class ShearingStandEntity extends BlockEntity implements CircuitPart, Ins
 			}
 			current = null;
 			progress = 0;
-			for (SheepEntity s : controller.members(level)) {
+			for (SheepEntity s : controller.sheep(level)) {
 				if (s.fleeceReady() && s.reservedBy() == null && !(s.pregnant() && s.daysToLambing() < SHEAR_BEFORE_LAMBING_DAYS) && s.lambsNursing() == 0) {
 					current = s.getUUID();
 					s.reserve(worldPosition);
@@ -171,7 +171,7 @@ public class ShearingStandEntity extends BlockEntity implements CircuitPart, Ins
 	}
 
 	private static @Nullable SheepEntity find(ServerLevel level, ShedControllerEntity controller, UUID id) {
-		for (SheepEntity s : controller.members(level)) {
+		for (SheepEntity s : controller.sheep(level)) {
 			if (s.getUUID().equals(id)) {
 				return s;
 			}

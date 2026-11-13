@@ -182,8 +182,8 @@ public class ParlorControllerEntity extends BlockEntity {
 		}
 		pump.setDemand(work || ewesWorking);
 		fault = !pump.powered() ? (work ? "NO POWER" : "") : tank.room() <= 0 ? "TANK FULL" : tank.blocksMilking() ? "TANK WARM"
-				: !tank.accepts(false) ? "TANK HOLDS SHEEP MILK" : "";
-		boolean ready = pump.powered() && tank.room() > 0 && !tank.blocksMilking() && tank.accepts(false);
+				: !tank.accepts(dev.farmings.husbandry.parlor.MilkKind.COW) ? tank.kind().holdsFault() : "";
+		boolean ready = pump.powered() && tank.room() > 0 && !tank.blocksMilking() && tank.accepts(dev.farmings.husbandry.parlor.MilkKind.COW);
 		int n = check.stalls();
 		boolean[] taken = new boolean[n];
 		for (CattleEntity c : herd) {
@@ -206,7 +206,7 @@ public class ParlorControllerEntity extends BlockEntity {
 					double fat = c.milkFatPct();
 					double protein = c.milkProteinPct();
 					c.takeMilk();
-					tank.add(litres, BulkTank.MILK_IN_C, fat, protein, false);
+					tank.add(litres, BulkTank.MILK_IN_C, fat, protein, dev.farmings.husbandry.parlor.MilkKind.COW);
 					c.setMilkingStand(null);
 					c.walkRoute(route(true), null, true);
 					tankEntity.setChanged();
@@ -288,8 +288,9 @@ public class ParlorControllerEntity extends BlockEntity {
 	}
 
 	/**
-	 * Milks the dairy ewes of the linked sheep shed: each free sheep stall calls one ewe with milk in her udder; she walks up from the shed's
-	 * pen, is milked into the tank (sheep milk, never mixed with cow milk), and goes home.
+	 * Milks the dairy ewes and does of the linked sheep shed: each free small stall calls one with milk in her udder; she walks up from the
+	 * shed's pen, is milked into the tank, and goes home. The tank holds one milk kind (parlor.md): while it holds milk only that kind is
+	 * called, and an empty tank calls whichever kind has the most milk waiting.
 	 */
 	private void milkEwes(Level level, PumpEntity pump, TankEntity tankEntity, BlockPos shed) {
 		ewesWorking = false;
@@ -298,22 +299,46 @@ public class ParlorControllerEntity extends BlockEntity {
 			return;
 		}
 		BulkTank tank = tankEntity.tank();
-		List<dev.farmings.entity.SheepEntity> flock = sc.members(server);
-		boolean any = false;
-		for (dev.farmings.entity.SheepEntity s : flock) {
-			any |= s.dairyEwe() && s.milkKg() > 0;
+		List<dev.farmings.entity.SmallRuminant> flock = sc.members(server);
+		java.util.Map<dev.farmings.husbandry.parlor.MilkKind, Double> waiting = new java.util.EnumMap<>(dev.farmings.husbandry.parlor.MilkKind.class);
+		for (dev.farmings.entity.SmallRuminant s : flock) {
+			if (s.dairy() && s.milkKg() > 0) {
+				waiting.merge(s.milkKind(), s.milkKg(), Double::sum);
+			}
 		}
+		boolean any = !waiting.isEmpty();
 		ewesWorking = any;
 		pump.setDemand(any);
-		boolean ready = pump.powered() && tank.room() > 0 && !tank.blocksMilking() && tank.accepts(true);
-		fault = !pump.powered() ? (any ? "NO POWER" : "") : !tank.accepts(true) ? "TANK HOLDS COW MILK" : tank.room() <= 0 ? "TANK FULL" : tank.blocksMilking() ? "TANK WARM" : "";
+		dev.farmings.husbandry.parlor.MilkKind want = null;
+		if (tank.litres() > 1e-6) {
+			want = tank.kind();
+		} else {
+			for (var e : waiting.entrySet()) {
+				if (want == null || e.getValue() > waiting.get(want)) {
+					want = e.getKey();
+				}
+			}
+		}
+		// one already on her way or on the stall keeps her kind until she is done
+		for (dev.farmings.entity.SmallRuminant s : flock) {
+			if (worldPosition.equals(s.reservedBy())) {
+				want = s.milkKind();
+				break;
+			}
+		}
+		boolean blocked = want != null && !tank.accepts(want);
+		if (any && want != null && !waiting.containsKey(want) && tank.litres() > 1e-6) {
+			blocked = true;     // milk waits, but not of the kind the tank holds
+		}
+		boolean ready = pump.powered() && tank.room() > 0 && !tank.blocksMilking() && want != null && !blocked;
+		fault = !pump.powered() ? (any ? "NO POWER" : "") : blocked ? tank.kind().holdsFault() : tank.room() <= 0 ? "TANK FULL" : tank.blocksMilking() ? "TANK WARM" : "";
 		for (int i = 0; i < check.stalls(); i++) {
 			if (!check.sheepStall(i)) {
 				continue;
 			}
 			BlockPos p = standPos(i);
-			dev.farmings.entity.SheepEntity here = null;
-			for (dev.farmings.entity.SheepEntity s : flock) {
+			dev.farmings.entity.SmallRuminant here = null;
+			for (dev.farmings.entity.SmallRuminant s : flock) {
 				if (worldPosition.equals(s.reservedBy()) && p.equals(s.sentTo())) {
 					here = s;
 				}
@@ -322,8 +347,8 @@ public class ParlorControllerEntity extends BlockEntity {
 				if (!ready) {
 					continue;
 				}
-				for (dev.farmings.entity.SheepEntity s : flock) {
-					if (s.reservedBy() == null && s.dairyEwe() && s.milkKg() > 0) {
+				for (dev.farmings.entity.SmallRuminant s : flock) {
+					if (s.reservedBy() == null && s.dairy() && s.milkKg() > 0 && s.milkKind() == want) {
 						s.reserve(worldPosition);
 						s.sendTo(p);
 						break;
@@ -336,13 +361,14 @@ public class ParlorControllerEntity extends BlockEntity {
 				here.sendTo(null);
 				continue;
 			}
-			double d2 = here.distanceToSqr(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
+			net.minecraft.world.entity.animal.Animal a = here.self();
+			double d2 = a.distanceToSqr(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
 			if (d2 < 4.0) {
-				// within reach of the stall she is stepped up onto it, as dairy ewes are led into a raised parlor
-				here.snapTo(p.getX() + 0.5, p.getY() + 0.2, p.getZ() + 0.5, here.getYRot(), here.getXRot());
+				// within reach of the stall she is stepped up onto it, as dairy ewes and does are led into a raised parlor
+				a.snapTo(p.getX() + 0.5, p.getY() + 0.2, p.getZ() + 0.5, a.getYRot(), a.getXRot());
 				double litres = here.milkKg() / BulkTank.KG_PER_L;
 				if (tank.room() >= litres) {
-					tank.add(litres, BulkTank.MILK_IN_C, here.milkFatPct(), here.milkProteinPct(), true);
+					tank.add(litres, BulkTank.MILK_IN_C, here.milkFatPct(), here.milkProteinPct(), here.milkKind());
 					here.takeMilk();
 					tankEntity.setChanged();
 				}
@@ -387,8 +413,8 @@ public class ParlorControllerEntity extends BlockEntity {
 		if (shed != null) {
 			lane += ", sheep stalls fed from the shed at " + shed.toShortString();
 		}
-		if (tank != null && tank.tank().sheep()) {
-			milk += " (sheep milk)";
+		if (tank != null && tank.tank().kind() != dev.farmings.husbandry.parlor.MilkKind.COW) {
+			milk += " (" + tank.tank().kind().label() + " milk)";
 		}
 		return "Parlor: FORMED, " + check.stalls() + " stalls" + milk + lane + (fault.isEmpty() ? ", ready" : ", " + fault);
 	}

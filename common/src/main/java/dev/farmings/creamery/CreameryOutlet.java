@@ -84,13 +84,13 @@ public final class CreameryOutlet {
 		return switch (kind) {
 			case BOTTLER -> {
 				Creamery.Bottle b = c.nextBottle();
-				yield b == null || glass.isEmpty() ? ItemStack.EMPTY : new ItemStack(FarmingsItems.bottle(b, c.sheep()));
+				yield b == null || glass.isEmpty() ? ItemStack.EMPTY : new ItemStack(FarmingsItems.bottle(b, c.kind()));
 			}
 			case BUTTER_CHURN -> {
 				int n = (int) Math.min(64, Math.floor(c.butterKg() / Creamery.BUTTER_ITEM_KG + 1e-9));
 				yield n <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.BUTTER, n);
 			}
-			case AGING_SHELF -> c.agedWheels() <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.cheeseWheel(c.sheep()), Math.min(16, c.agedWheels()));
+			case AGING_SHELF -> c.agedWheels() <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.cheeseWheel(c.kind()), Math.min(16, c.agedWheels()));
 			default -> ItemStack.EMPTY;
 		};
 	}
@@ -118,7 +118,7 @@ public final class CreameryOutlet {
 					yield ItemStack.EMPTY;
 				}
 				glass.shrink(1);
-				yield new ItemStack(FarmingsItems.bottle(b, c.sheep()));
+				yield new ItemStack(FarmingsItems.bottle(b, c.kind()));
 			}
 			case BUTTER_CHURN -> {
 				int n = c.takeButter(count);
@@ -126,7 +126,7 @@ public final class CreameryOutlet {
 			}
 			case AGING_SHELF -> {
 				int n = c.takeWheels(count);
-				yield n <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.cheeseWheel(c.sheep()), n);
+				yield n <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.cheeseWheel(c.kind()), n);
 			}
 			default -> ItemStack.EMPTY;
 		};
@@ -151,7 +151,7 @@ public final class CreameryOutlet {
 			c.returnWheels(stack.getCount());
 		} else {
 			for (Creamery.Bottle b : Creamery.Bottle.values()) {
-				if (stack.is(FarmingsItems.bottle(b)) || stack.is(FarmingsItems.bottle(b, true))) {
+				if (stack.is(FarmingsItems.bottle(b, c.kind()))) {
 					for (int i = 0; i < stack.getCount(); i++) {
 						c.returnBottle(b);
 					}

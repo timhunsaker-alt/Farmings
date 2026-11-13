@@ -10,31 +10,33 @@ import java.util.List;
  * (Farmings' addition, decided with Tim 2026-11-10). Traits are always walked in {@link Trait} order, so random draws keep a fixed order.
  */
 public enum Species {
-	CATTLE("farmings.cattle.genome.v1", EnumSet.of(Trait.MILK_YIELD, Trait.BUTTERFAT, Trait.PROTEIN, Trait.FEED_EFFICIENCY, Trait.HEALTH,
+	CATTLE("farmings.cattle.genome.v1", false, EnumSet.of(Trait.MILK_YIELD, Trait.BUTTERFAT, Trait.PROTEIN, Trait.FEED_EFFICIENCY, Trait.HEALTH,
 			Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT)),
-	SHEEP("farmings.sheep.genome.v1", EnumSet.of(Trait.MILK_YIELD, Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY,
+	SHEEP("farmings.sheep.genome.v1", false, EnumSet.of(Trait.MILK_YIELD, Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY,
 			Trait.TEMPERAMENT, Trait.WOOL_YIELD, Trait.FLEECE_QUALITY, Trait.HARDINESS)),
 	// Poultry (docs/animals/poultry.md): the shared fitness traits plus egg production, egg weight and broodiness.
-	CHICKEN("farmings.chicken.genome.v1", fowlTraits()),
-	TURKEY("farmings.turkey.genome.v1", fowlTraits()),
-	QUAIL("farmings.quail.genome.v1", fowlTraits()),
-	DUCK("farmings.duck.genome.v1", fowlTraits());
+	CHICKEN("farmings.chicken.genome.v1", true, fowlTraits()),
+	TURKEY("farmings.turkey.genome.v1", true, fowlTraits()),
+	QUAIL("farmings.quail.genome.v1", true, fowlTraits()),
+	DUCK("farmings.duck.genome.v1", true, fowlTraits());
 
 	private static EnumSet<Trait> fowlTraits() {
 		return EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.EGG_PRODUCTION,
 				Trait.EGG_WEIGHT, Trait.BROODINESS);
 	}
 
-	/** True for the four poultry species. */
+	/** True for the poultry species. Set on each constant, so a new mammal is never taken for a bird. */
 	public boolean fowl() {
-		return this != CATTLE && this != SHEEP;
+		return fowl;
 	}
 
 	public final String schema;
+	private final boolean fowl;
 	private final List<Trait> traits;
 
-	Species(String schema, EnumSet<Trait> traits) {
+	Species(String schema, boolean fowl, EnumSet<Trait> traits) {
 		this.schema = schema;
+		this.fowl = fowl;
 		this.traits = List.copyOf(traits);
 	}
 

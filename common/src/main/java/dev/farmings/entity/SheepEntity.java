@@ -63,7 +63,7 @@ import org.jspecify.annotations.Nullable;
  * apart from {@link CattleEntity} rather than sharing a base class: the two share rules, not state, and the cattle entity is guarded by its
  * game tests as it is.
  */
-public class SheepEntity extends Animal implements Wild.Animal {
+public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.LONG);
@@ -114,14 +114,8 @@ public class SheepEntity extends Animal implements Wild.Animal {
 	private double lastWatered = 1;
 	private double dirty;
 	/** Where the shed controller (or the parlor, the shearing stand) wants her, and the controller of her shed. Not all saved. */
-	private @Nullable BlockPos home;
-	private @Nullable BlockPos shedController;
-	private @Nullable BlockPos target;
-	private java.util.@Nullable List<BlockPos> route;
-	private int routeIndex;
-	private boolean routeHome;
-	/** The shearing stand that has called her in, or null; while set, her shed leaves her be. Not saved: the stand calls again. */
-	private @Nullable BlockPos reservedBy;
+	/** Its shed, home cell, where it is sent, its route, and the stall that called it. Made on first use: goals register in the super constructor. */
+	private @Nullable Placement place;
 	/** Game tests: the next lambing gives this many lambs (0 = roll). */
 	private int forcedLambs;
 	private final List<String> lastLambing = new ArrayList<>();
@@ -634,8 +628,7 @@ public class SheepEntity extends Animal implements Wild.Animal {
 			lamb.ownerId = ownerId;
 			lamb.damId = herdId();
 			lamb.sireId = CattleEntity.herdId(sire);
-			lamb.home = home;
-			lamb.shedController = shedController;
+			lamb.place().copyHomeFrom(place());
 			lamb.setPos(getX() + 0.6 * (i - (n - 1) / 2.0), getY(), getZ() + 0.6);
 			level.addFreshEntity(lamb);
 			lastLambing.add(r.sex().name().toLowerCase(Locale.ROOT));
@@ -766,160 +759,88 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		}
 	}
 
-	public @Nullable BlockPos shedController() {
-		return shedController;
-	}
-
-	public @Nullable BlockPos home() {
-		return home;
-	}
-
-	/** Her shed and her place in it (a pen cell, or a lambing pen). */
-	public void assignShed(@Nullable BlockPos controller, @Nullable BlockPos home) {
-		this.shedController = controller;
-		this.home = home;
-	}
-
-	/** Somewhere she is sent for a while (pasture spot, shearing stand, parlor stall); null to let her go home. */
-	public void sendTo(@Nullable BlockPos target) {
-		this.target = target;
-		if (target != null) {
-			this.route = null;
+	@Override
+	public Placement place() {
+		if (place == null) {
+			place = new Placement();
 		}
-	}
-
-	public @Nullable BlockPos reservedBy() {
-		return reservedBy;
-	}
-
-	public void reserve(@Nullable BlockPos stand) {
-		this.reservedBy = stand;
-	}
-
-	public @Nullable BlockPos sentTo() {
-		return target;
+		return place;
 	}
 
 	/** Sends her along waypoints (a lane, the pasture gate); she starts from the waypoint nearest her. */
 	public void walkRoute(List<BlockPos> waypoints, boolean home) {
-		List<dev.farmings.husbandry.lane.LanePath.Pos> ps = new ArrayList<>();
-		for (BlockPos b : waypoints) {
-			ps.add(new dev.farmings.husbandry.lane.LanePath.Pos(b.getX(), b.getY(), b.getZ()));
-		}
-		this.route = waypoints.isEmpty() ? null : List.copyOf(waypoints);
-		this.routeIndex = waypoints.isEmpty() ? 0 : dev.farmings.husbandry.lane.LanePath.startIndex(ps, getX(), getZ());
-		this.routeHome = home;
+		place().walkRoute(waypoints, home, getX(), getZ());
 	}
 
 	public boolean onRoute() {
-		return route != null;
+		return place().onRoute();
 	}
 
 	public boolean walkingHome() {
-		return route != null && routeHome;
+		return place().walkingHome();
 	}
 
 	public void clearRoute() {
-		this.route = null;
-		this.routeHome = false;
+		place().clearRoute();
 	}
 
-	/** Follows a route, then goes to her target, else to her home cell. Outranks strolling. */
-	private static final class PlaceGoal extends net.minecraft.world.entity.ai.goal.Goal {
-		private final SheepEntity sheep;
-		/** Where she was when last checked, and how long she has made no headway: snagged on a gate post, she gets a nudge. */
-		private double lastX = Double.NaN;
-		private double lastZ = Double.NaN;
-		private int still;
+	// ---- the shared face (SmallRuminant) ----
 
-		PlaceGoal(SheepEntity sheep) {
-			this.sheep = sheep;
-			setFlags(java.util.EnumSet.of(Flag.MOVE));
-		}
+	@Override
+	public Animal self() {
+		return this;
+	}
 
-		@Override
-		public boolean canUse() {
-			return sheep.route != null || sheep.target != null || (sheep.home != null && !sheep.isBaby());
-		}
+	@Override
+	public Species species() {
+		return Species.SHEEP;
+	}
 
-		@Override
-		public boolean canContinueToUse() {
-			return canUse();
-		}
+	@Override
+	public boolean young() {
+		return stage().lamb();
+	}
 
-		/** Ticked every tick: the stuck check counts by the sheep's tick, which skipping ticks would miss. */
-		@Override
-		public boolean requiresUpdateEveryTick() {
-			return true;
-		}
+	@Override
+	public double daysToBirth() {
+		return daysToLambing();
+	}
 
-		/** Two seconds with no headway toward (x, z): a small push that way, as a snagged animal slides off a post corner, and a fresh path. */
-		private void unstick(double x, double z) {
-			double moved = Double.isNaN(lastX) ? 1 : Math.abs(sheep.getX() - lastX) + Math.abs(sheep.getZ() - lastZ);
-			if (sheep.tickCount % 20 != 0) {
-				return;
-			}
-			lastX = sheep.getX();
-			lastZ = sheep.getZ();
-			still = moved < 0.15 ? still + 1 : 0;
-			if (still >= 2) {
-				double dx = x - sheep.getX();
-				double dz = z - sheep.getZ();
-				double d = Math.sqrt(dx * dx + dz * dz);
-				if (d > 0.01) {
-					sheep.push(dx / d * 0.25, 0.0, dz / d * 0.25);
-				}
-				sheep.getNavigation().stop();
-				still = 0;
-			}
-		}
+	@Override
+	public double daysSinceBirth() {
+		return daysSinceLambing();
+	}
 
-		@Override
-		public void tick() {
-			if (sheep.route != null) {
-				if (sheep.routeIndex >= sheep.route.size()) {
-					sheep.route = null;
-					sheep.routeHome = false;
-					return;
-				}
-				BlockPos w = sheep.route.get(sheep.routeIndex);
-				double dx = sheep.getX() - (w.getX() + 0.5);
-				double dz = sheep.getZ() - (w.getZ() + 0.5);
-				double d2 = dx * dx + dz * dz;
-				if (d2 < 1.0 || (d2 < 2.25 && sheep.getNavigation().isDone())) {
-					sheep.routeIndex++;
-				} else {
-					sheep.getNavigation().moveTo(w.getX() + 0.5, w.getY() + 0.2, w.getZ() + 0.5, 1.0);
-				}
-				return;
-			}
-			BlockPos p = sheep.target != null ? sheep.target : sheep.home;
-			if (p == null) {
-				return;
-			}
-			double x = p.getX() + 0.5;
-			double z = p.getZ() + 0.5;
-			double dx = sheep.getX() - x;
-			double dz = sheep.getZ() - z;
-			// within a block of her pen cell she is home (two blocks let a sheep stop in the gate, a block outside the pen)
-			double reach = sheep.target != null ? 0.36 : 1.0;
-			if (dx * dx + dz * dz > reach) {
-				unstick(x, z);
-				sheep.getNavigation().moveTo(x, p.getY() + 0.1, z, 1.0);
-			} else {
-				still = 0;
-				if (sheep.target != null) {
-					sheep.getNavigation().stop();
-				}
-			}
-		}
+	@Override
+	public int youngNursing() {
+		return lambsNursing();
+	}
+
+	@Override
+	public double penBlocks() {
+		return Flock.PEN_M2_PER_SHEEP;
+	}
+
+	@Override
+	public double waterLPerKgDm() {
+		return Flock.WATER_L_PER_KG_DM;
+	}
+
+	@Override
+	public boolean dairy() {
+		return dairyEwe();
+	}
+
+	@Override
+	public dev.farmings.husbandry.parlor.MilkKind milkKind() {
+		return dev.farmings.husbandry.parlor.MilkKind.SHEEP;
 	}
 
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 1.25));
-		this.goalSelector.addGoal(2, new PlaceGoal(this));
+		this.goalSelector.addGoal(2, place().goal(this, this::isBaby));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
@@ -960,7 +881,7 @@ public class SheepEntity extends Animal implements Wild.Animal {
 			return;
 		}
 		double age = TimeScale.ticksToRealDays(now - birthTick);
-		double fed = shedController != null && !stageAt(now).lamb() ? lastFed : 1;
+		double fed = place().shedController() != null && !stageAt(now).lamb() ? lastFed : 1;
 		double mature = Flock.matureWeightKg(composition());
 		double gain = Flock.gainKg(composition(), age - span, span, fed) * (stageAt(now).lamb() ? dev.farmings.feed.Ration.lambFactor(ration) : 1);
 		if (gain > 0 && weightKg < mature) {
@@ -1088,7 +1009,7 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		if (dairyEwe()) {
 			b.append(String.format(Locale.ROOT, ", day %d in milk, %.2f kg in udder", daysInMilk(), milkKg));
 		}
-		if (shedController != null) {
+		if (place().shedController() != null) {
 			b.append(String.format(Locale.ROOT, ", fed %.0f%%, watered %.0f%%", lastFed * 100, lastWatered * 100));
 		}
 		b.append(String.format(Locale.ROOT, ", health %.0f/%.0f", getHealth(), getMaxHealth()));
@@ -1189,8 +1110,7 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		out.putDouble("LastFed", lastFed);
 		out.putDouble("LastWatered", lastWatered);
 		out.putDouble("Dirty", dirty);
-		out.putLong("Home", home == null ? Long.MIN_VALUE : home.asLong());
-		out.putLong("Shed", shedController == null ? Long.MIN_VALUE : shedController.asLong());
+		place().save(out);
 	}
 
 	@Override
@@ -1237,10 +1157,7 @@ public class SheepEntity extends Animal implements Wild.Animal {
 		lastFed = in.getDoubleOr("LastFed", 1);
 		lastWatered = in.getDoubleOr("LastWatered", 1);
 		dirty = in.getDoubleOr("Dirty", 0);
-		long h = in.getLongOr("Home", Long.MIN_VALUE);
-		home = h == Long.MIN_VALUE ? null : BlockPos.of(h);
-		long s = in.getLongOr("Shed", Long.MIN_VALUE);
-		shedController = s == Long.MIN_VALUE ? null : BlockPos.of(s);
+		place().load(in);
 		sync(level().getGameTime());
 	}
 

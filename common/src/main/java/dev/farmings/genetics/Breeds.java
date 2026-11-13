@@ -79,9 +79,13 @@ public final class Breeds {
 		SPECIES.put(code, Species.SHEEP);
 	}
 
-	/** The species a breed code belongs to; cattle for any code not registered as another species. */
+	/** The species a breed code belongs to; throws on a code no species registered, so a new breed can't fall into cattle. */
 	public static Species species(String code) {
-		return SPECIES.getOrDefault(code, Species.CATTLE);
+		Species s = SPECIES.get(code);
+		if (s == null) {
+			throw new IllegalArgumentException("not a Farmings breed code: " + code);
+		}
+		return s;
 	}
 
 	private Breeds() {

@@ -56,8 +56,8 @@ public class ParlorPartBlock extends BigPartBlock {
 			BlockHitResult hit) {
 		if (level.getBlockEntity(BigParts.main(pos, state)) instanceof TankEntity tank && stack.is(Items.BUCKET)) {
 			if (!level.isClientSide()) {
-				if (tank.tank().sheep()) {
-					player.sendOverlayMessage(Component.literal("The tank holds sheep milk: it goes to the creamery, not into a bucket"));
+				if (tank.tank().kind() != dev.farmings.husbandry.parlor.MilkKind.COW) {
+					player.sendOverlayMessage(Component.literal("The tank holds " + tank.tank().kind().label() + " milk: it goes to the creamery, not into a bucket"));
 				} else if (tank.tank().litres() >= BulkTank.BUCKET_L) {
 					tank.tank().take(BulkTank.BUCKET_L);
 					tank.setChanged();

@@ -93,13 +93,13 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 		output.putLong("SinceAdd", tank.sinceAddTicks());
 		output.putDouble("FatPct", tank.fatPct());
 		output.putDouble("ProteinPct", tank.proteinPct());
-		output.putBoolean("SheepMilk", tank.sheep());
+		output.putString("Milk", tank.kind().name());
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
-		tank.setSheep(input.getBooleanOr("SheepMilk", false));
+		tank.setKind(dev.farmings.husbandry.parlor.MilkKind.load(input.getStringOr("Milk", ""), input.getBooleanOr("SheepMilk", false)));
 		grown = input.getBooleanOr("grown", false);
 		tank.load(input.getDoubleOr("Litres", 0), input.getDoubleOr("TempC", BulkTank.COLD_C), input.getLongOr("SinceAdd", Long.MAX_VALUE / 2));
 		tank.loadComponents(input.getDoubleOr("FatPct", 3.72), input.getDoubleOr("ProteinPct", 3.06));

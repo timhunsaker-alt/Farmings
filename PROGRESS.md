@@ -281,6 +281,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   guinea fowl carry pearl, lavender and white genes and give an alarm call.
   - Spec: `docs/animals/goats.md` (new); geese and guinea fowl in `poultry.md`; goat and new-bird sections in `creamery.md`, `parlor.md`,
     `sheep-shed.md`, `food.md`, `eggs.md`, `breeding.md`, `taming.md`.
+  - Groundwork: each species says whether it is a bird (a new mammal can no longer fall onto the poultry clock), an unknown breed code
+    is refused instead of read as cattle, milk is a kind (cow, sheep, goat) in the tank and the creamery (old saves load), and the
+    shed, its pens, pasture, small stalls and the sheep dog work through one `SmallRuminant` face, with a pen run holding one species.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

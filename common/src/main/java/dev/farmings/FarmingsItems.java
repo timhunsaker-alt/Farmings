@@ -150,13 +150,20 @@ public final class FarmingsItems {
 	public static final Item SHEEP_CHEESE_WHEEL = item("sheep_cheese_wheel", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL, p.stacksTo(16)));
 	public static final Item SHEEP_CHEESE = item("sheep_cheese", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR, p.food(food(4, 0.8F))));
 
-	/** The bottle of a creamery store, for cow or sheep milk. */
-	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b, boolean sheep) {
-		return sheep && b == dev.farmings.process.creamery.Creamery.Bottle.MILK ? SHEEP_MILK_BOTTLE : bottle(b);
+	/** The bottle of a creamery store, for the milk kind it holds. Only whole milk has a bottle per kind; the rest are shared. */
+	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b, dev.farmings.husbandry.parlor.MilkKind kind) {
+		if (b != dev.farmings.process.creamery.Creamery.Bottle.MILK) {
+			return bottle(b);
+		}
+		return switch (kind) {
+			case COW -> bottle(b);
+			case SHEEP -> SHEEP_MILK_BOTTLE;
+			case GOAT -> bottle(b);      // goat milk bottles come with goats
+		};
 	}
 
-	public static Item cheeseWheel(boolean sheep) {
-		return sheep ? SHEEP_CHEESE_WHEEL : CHEDDAR_WHEEL;
+	public static Item cheeseWheel(dev.farmings.husbandry.parlor.MilkKind kind) {
+		return kind == dev.farmings.husbandry.parlor.MilkKind.SHEEP ? SHEEP_CHEESE_WHEEL : CHEDDAR_WHEEL;
 	}
 
 	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b) {

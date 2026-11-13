@@ -43,10 +43,7 @@ public final class TimeScale {
 
 	/** The scale an animal of this species lives on. */
 	public static Scale of(Species species) {
-		return switch (species) {
-			case CATTLE, SHEEP -> LIVESTOCK;
-			default -> FOWL;
-		};
+		return species.fowl() ? FOWL : LIVESTOCK;
 	}
 
 	public static double realDaysToGameDays(double realDays) {

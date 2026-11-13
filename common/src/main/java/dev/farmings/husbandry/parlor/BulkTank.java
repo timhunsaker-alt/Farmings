@@ -86,28 +86,34 @@ public final class BulkTank {
 		return out;
 	}
 
-	/** True while it holds sheep milk. A tank holds one kind; it can change kind only when empty (docs/multiblocks/parlor.md). */
-	private boolean sheep;
+	/** The milk it holds. A tank holds one kind; it can change kind only when empty (docs/multiblocks/parlor.md). */
+	private MilkKind kind = MilkKind.COW;
 
-	public boolean sheep() {
-		return sheep && litres > 1e-6;
+	/** The kind of milk in the tank; cow when it is empty. */
+	public MilkKind kind() {
+		return litres > 1e-6 ? kind : MilkKind.COW;
 	}
 
-	public void setSheep(boolean sheep) {
-		this.sheep = sheep;
+	/** True while it holds milk of this kind. */
+	public boolean holds(MilkKind k) {
+		return litres > 1e-6 && kind == k;
+	}
+
+	public void setKind(MilkKind kind) {
+		this.kind = kind;
 	}
 
 	/** True if milk of this kind can go in: the same kind, or an empty tank. */
-	public boolean accepts(boolean sheepMilk) {
-		return litres <= 1e-6 || sheep == sheepMilk;
+	public boolean accepts(MilkKind k) {
+		return litres <= 1e-6 || kind == k;
 	}
 
-	/** Adds milk of one kind; refused (0) if the tank holds the other. */
-	public double add(double addL, double inC, double fat, double protein, boolean sheepMilk) {
-		if (!accepts(sheepMilk)) {
+	/** Adds milk of one kind; refused (0) if the tank holds another. */
+	public double add(double addL, double inC, double fat, double protein, MilkKind k) {
+		if (!accepts(k)) {
 			return 0;
 		}
-		sheep = sheepMilk;
+		kind = k;
 		return add(addL, inC, fat, protein);
 	}
 

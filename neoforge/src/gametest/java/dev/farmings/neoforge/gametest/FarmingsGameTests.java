@@ -2365,7 +2365,7 @@ public class FarmingsGameTests {
 		ewe.setPos(stand.getX() + 0.5, stand.getY() + 0.2, stand.getZ() + 1.3);
 		ctl.milk(level, 20);
 		helper.assertTrue(ewe.milkKg() == 0 && ewe.reservedBy() == null, Component.literal("she is milked and let go"));
-		helper.assertTrue(Math.abs(tank.tank().litres() - kg / 1.03) < 1e-6 && tank.tank().sheep(), Component.literal("the tank holds her milk as sheep milk: " + tank.tank().litres()));
+		helper.assertTrue(Math.abs(tank.tank().litres() - kg / 1.03) < 1e-6 && tank.tank().holds(dev.farmings.husbandry.parlor.MilkKind.SHEEP), Component.literal("the tank holds her milk as sheep milk: " + tank.tank().litres()));
 		helper.assertTrue(Math.abs(tank.tank().fatPct() - 5.68) < 1e-6, Component.literal("East Friesian fat, got " + tank.tank().fatPct()));
 		helper.succeed();
 	}
@@ -2379,14 +2379,14 @@ public class FarmingsGameTests {
 		ctl.pump(level).forceRunning(true);
 		dev.farmings.parlor.TankEntity tank = ctl.tank(level);
 		tank.forceChilling(true);
-		tank.tank().add(10, 4, 3.72, 3.06, false);
+		tank.tank().add(10, 4, 3.72, 3.06, dev.farmings.husbandry.parlor.MilkKind.COW);
 		dev.farmings.entity.SheepEntity ewe = dairyEwe(level, c.offset(-2, -1, 3), shed, 502L);
 		ctl.milk(level, 20);
 		helper.assertTrue(ctl.fault().equals("TANK HOLDS COW MILK") && ewe.reservedBy() == null && ewe.milkKg() > 0,
 				Component.literal("fault " + ctl.fault() + ", ewe called " + (ewe.reservedBy() != null)));
-		helper.assertTrue(tank.tank().add(5, 35, 5.68, 4.92, true) == 0, Component.literal("the tank refuses sheep milk while it holds cow milk"));
+		helper.assertTrue(tank.tank().add(5, 35, 5.68, 4.92, dev.farmings.husbandry.parlor.MilkKind.SHEEP) == 0, Component.literal("the tank refuses sheep milk while it holds cow milk"));
 		tank.tank().take(10);
-		helper.assertTrue(tank.tank().add(5, 35, 5.68, 4.92, true) == 5, Component.literal("emptied, it takes sheep milk"));
+		helper.assertTrue(tank.tank().add(5, 35, 5.68, 4.92, dev.farmings.husbandry.parlor.MilkKind.SHEEP) == 5, Component.literal("emptied, it takes sheep milk"));
 		helper.succeed();
 	}
 
@@ -2397,8 +2397,8 @@ public class FarmingsGameTests {
 		buildCreamery(level, c);
 		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
 		ctl.creamery().setMode(dev.farmings.process.creamery.Creamery.Mode.CHEESE);
-		helper.assertTrue(ctl.creamery().addMilk(200, 5.68, 4.92, true) == 200, Component.literal("sheep milk goes in"));
-		helper.assertTrue(ctl.creamery().addMilk(10, 3.72, 3.06, false) == 0, Component.literal("cow milk is refused while it holds sheep milk"));
+		helper.assertTrue(ctl.creamery().addMilk(200, 5.68, 4.92, dev.farmings.husbandry.parlor.MilkKind.SHEEP) == 200, Component.literal("sheep milk goes in"));
+		helper.assertTrue(ctl.creamery().addMilk(10, 3.72, 3.06, dev.farmings.husbandry.parlor.MilkKind.COW) == 0, Component.literal("cow milk is refused while it holds sheep milk"));
 		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PHASE_TICKS * 3 + 60);
 		double expected = dev.farmings.process.creamery.Dairy.cheeseKg(200, 5.68, 4.92);
 		helper.assertTrue(expected > dev.farmings.process.creamery.Dairy.cheeseKg(200, 3.72, 3.06), Component.literal("richer milk gives more cheese"));

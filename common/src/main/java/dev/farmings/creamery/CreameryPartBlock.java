@@ -82,7 +82,7 @@ public class CreameryPartBlock extends BigPartBlock {
 				player.sendOverlayMessage(Component.literal("Nothing to bottle yet"));
 				return InteractionResult.FAIL;
 			}
-			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.bottle(b, creamery.sheep())), level.getGameTime())));
+			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.bottle(b, creamery.kind())), level.getGameTime())));
 		}
 		c.setChanged();
 		return InteractionResult.SUCCESS;
@@ -100,7 +100,7 @@ public class CreameryPartBlock extends BigPartBlock {
 			return InteractionResult.SUCCESS;
 		}
 		if (c != null && kind == CreameryParts.AGING_SHELF) {
-			give(player, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.cheeseWheel(c.creamery().sheep()), c.creamery().takeWheels(16)), level.getGameTime()));
+			give(player, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.cheeseWheel(c.creamery().kind()), c.creamery().takeWheels(16)), level.getGameTime()));
 			c.setChanged();
 			return InteractionResult.SUCCESS;
 		}
