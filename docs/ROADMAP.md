@@ -1,6 +1,6 @@
 # Farmings — Roadmap
 
-Exactly one phase is marked **CURRENT** while one is under way (none is: Phases 3 and 4 and the loose ends are done; new animals are next, planned on their own). A phase is done when `./gradlew build` and the game tests pass with new coverage for
+Exactly one phase is marked **CURRENT** while one is under way (none is: Phases 3 and 4 and the loose ends are done; new animals (goats, geese, guinea fowl) are done; pigs and horses are next when Tim wants them). A phase is done when `./gradlew build` and the game tests pass with new coverage for
 the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a page for each new system.
 
 ## Phase 0 — Set up — done
@@ -55,7 +55,7 @@ The Known gaps from Phases 2-4 (PROGRESS.md Step 16): poultry, straws, sheep, co
 size, the NeoForge client and a sourcing sweep over every doc.
 
 ## Ideas (not scheduled, not in code)
-- More species: goats, geese and guinea fowl (Step 17, under way, 2026-11-13); pigs and horses later.
+- More species: goats, geese and guinea fowl done (Step 17, 2026-11-13); pigs and horses later.
 - Animal health and a vet cycle; disease and quarantine.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).

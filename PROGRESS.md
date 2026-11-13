@@ -275,7 +275,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - **Client scenes:** `looseends` (dog, coats, plumage, rotten egg), `belts`, and `fields` (the gantry gliding, the full-size machines,
     the gas set under load).
   - **Art:** Ludo icons for raw and cooked chicken and the shepherd's whistle.
-- Step 17 (2026-11-13, under way): new animals. Tim chose goats (Saanen, Nubian, Boer) and geese (Embden, Toulouse, Chinese) and
+- Step 17 (2026-11-13): new animals. Tim chose goats (Saanen, Nubian, Boer) and geese (Embden, Toulouse, Chinese) and
   guinea fowl; pigs and horses wait. Approved in plan mode with his popup answers: goats share the sheep shed, dog and straws; goat milk
   through the parlor's sheep stalls into bottles and fresh chèvre; wild goats replace vanilla goats; geese graze, give down and guard;
   guinea fowl carry pearl, lavender and white genes and give an alarm call.
@@ -297,6 +297,13 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     6 game tests (210 in all), `GooseGeneticsTest`; client scene `newbirds`.
   - Guinea fowl: the helmeted guinea fowl in pearl, lavender and white (both recessive), seasonal laying, keets, wild in the savannas,
     and the alarm call that brings the coop in. 3 game tests (213 in all).
+  - Commits: deeb6bf spec; a75a90b groundwork; ae28b64 goats; c79d5c5 chèvre; f512803 geese; a5a5714 guinea fowl; then evidence.
+  - Evidence: client scenes `goats`, `newbirds` and `newanimals` (screenshots), and recordings of the sheep dog driving goats, a wild
+    goat ramming a husk, a guard goose biting one, and guinea fowl calling at one.
+  - Placeholder-free: goat and bird textures are drawn by `tools/goat_textures.py` and `tools/poultry_textures.py` as the sheep's are;
+    the new items have Ludo icons.
+  - Open (marked in the docs): a Nubian litter table, lop ears and beards as genes, goat milk fridge life, goose fertile days and adult
+    water, guinea water and colour loci by name.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

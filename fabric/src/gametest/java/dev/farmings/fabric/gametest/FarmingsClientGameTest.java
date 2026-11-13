@@ -1485,6 +1485,127 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	}
 
 	/** Every poultry breed, hen and male, the young of each species, and a cross: a row per species, then close-ups. */
+	/**
+	 * The new animals moving (2026-11-13), filmed: the sheep dog driving goats, a wild goat ramming a husk, a guard goose biting one, and a
+	 * guinea fowl calling at one. Husks stand in for zombies, which burn at noon.
+	 */
+	private static void newAnimals(ClientGameTestContext context, TestServerContext server, int y) {
+		// 1. Walk up: a Border Collie drives four goats to a hay block
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 8, 8, y, 16, 16, 6);
+			var player = srv.getPlayerList().getPlayers().get(0);
+			var dog = FarmingsEntities.SHEEP_DOG.create(level, EntitySpawnReason.COMMAND);
+			dog.setWild(false);
+			dog.setOwner(player.getUUID());
+			dog.snapTo(20.5, y, 18.5, 0, 0);
+			level.addFreshEntity(dog);
+			dev.farmings.husbandry.GoatBreed[] breeds = {dev.farmings.husbandry.GoatBreed.SAANEN, dev.farmings.husbandry.GoatBreed.NUBIAN,
+					dev.farmings.husbandry.GoatBreed.BOER, dev.farmings.husbandry.GoatBreed.SAANEN};
+			for (int i = 0; i < 4; i++) {
+				var g = goat(level, breeds[i], Sex.FEMALE, 1600 + i, 800);
+				g.setNoAi(false);
+				g.snapTo(15.5 + i, y, 15.5 + (i % 2), 0, 0);
+			}
+			level.setBlockAndUpdate(new BlockPos(0, y - 1, 0), net.minecraft.world.level.block.Blocks.HAY_BLOCK.defaultBlockState());
+		});
+		server.runCommand("tp @p 10.5 " + (y + 9) + " 27.5 200 38");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-new-dog-goats-before");
+		Filming herd = context.computeOnClient(client -> Filming.start(client, "dog-drives-goats"));
+		server.runOnServer(srv -> dev.farmings.item.WhistleItem.blow(srv.overworld(), srv.getPlayerList().getPlayers().get(0), dev.farmings.entity.SheepDogEntity.Command.WALK_UP,
+				new BlockPos(0, y, 0)));
+		for (int i = 0; i < 40; i++) {
+			context.waitTicks(10);
+			if (i % 4 == 0) {
+				actionbar(server, server.computeOnServer(srv -> srv.overworld().getEntitiesOfClass(dev.farmings.entity.SheepDogEntity.class,
+						new net.minecraft.world.phys.AABB(0, y - 2, 0, 1, y + 2, 1).inflate(40)).stream().findFirst().map(dev.farmings.entity.SheepDogEntity::readout).orElse("no dog")));
+			}
+		}
+		context.takeScreenshot("farmings-new-dog-goats-after");
+		herd.stop();
+		// 2. a wild Boer buck rams a husk that comes close
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 60, 0, y, 10, 10, 6);
+			var g = goat(level, dev.farmings.husbandry.GoatBreed.BOER, Sex.MALE, 1650, 800);
+			g.setNoAi(false);
+			g.setWild(true);
+			g.readyToRamForTest();
+			g.snapTo(57.5, y, 0.5, -90, 0);
+			var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			husk.setNoAi(true);
+			husk.snapTo(62.5, y, 0.5, 90, 0);
+			level.addFreshEntity(husk);
+		});
+		server.runCommand("tp @p 60 " + (y + 3) + " 8 180 20");
+		context.waitTicks(20);
+		Filming ram = context.computeOnClient(client -> Filming.start(client, "wild-goat-rams"));
+		for (int i = 0; i < 16; i++) {
+			context.waitTicks(10);
+			actionbar(server, "a wild Boer buck: rams " + server.computeOnServer(srv -> srv.overworld().getEntitiesOfClass(dev.farmings.entity.GoatEntity.class,
+					new net.minecraft.world.phys.AABB(50, y - 2, -10, 70, y + 4, 10)).stream().mapToInt(dev.farmings.entity.GoatEntity::rams).sum()));
+			if (i == 6) {
+				context.takeScreenshot("farmings-new-goat-ram");
+			}
+		}
+		ram.stop();
+		// 3. a guard goose of a coop charges a husk and bites it
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 100, 0, y, 10, 10, 6);
+			var goose = bird(level, dev.farmings.husbandry.poultry.FowlBreed.CHINESE, Sex.MALE, 1660, 500);
+			goose.setNoAi(false);
+			goose.assignCoop(new BlockPos(100, y, -8), null);     // a coop's bird (its guard needs only the link)
+			goose.snapTo(96.5, y, 0.5, -90, 0);
+			var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			husk.setNoAi(true);
+			husk.snapTo(102.5, y, 0.5, 90, 0);
+			level.addFreshEntity(husk);
+		});
+		server.runCommand("tp @p 99 " + (y + 2.5) + " 6 180 20");
+		context.waitTicks(20);
+		Filming guard = context.computeOnClient(client -> Filming.start(client, "guard-goose"));
+		for (int i = 0; i < 16; i++) {
+			context.waitTicks(10);
+			actionbar(server, "a Chinese gander guarding: bites " + server.computeOnServer(srv -> srv.overworld().getEntitiesOfClass(dev.farmings.entity.FowlEntity.class,
+					new net.minecraft.world.phys.AABB(90, y - 2, -10, 110, y + 4, 10)).stream().mapToInt(dev.farmings.entity.FowlEntity::bites).sum()));
+			if (i == 8) {
+				context.takeScreenshot("farmings-new-guard-goose");
+			}
+		}
+		guard.stop();
+		// 4. guinea fowl see a husk and call
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 140, 0, y, 12, 12, 6);
+			for (int i = 0; i < 3; i++) {
+				var g = bird(level, dev.farmings.husbandry.poultry.FowlBreed.HELMETED, i == 0 ? Sex.MALE : Sex.FEMALE, 1670 + i, 300);
+				g.setNoAi(false);
+				g.snapTo(136.5 + i, y, 0.5 + (i % 2), 0, 0);
+			}
+		});
+		server.runCommand("tp @p 140 " + (y + 3) + " 8 180 22");
+		context.waitTicks(20);
+		Filming call = context.computeOnClient(client -> Filming.start(client, "guinea-alarm"));
+		context.waitTicks(40);
+		server.runOnServer(srv -> {
+			var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(srv.overworld(), EntitySpawnReason.COMMAND);
+			husk.setNoAi(true);
+			husk.snapTo(148.5, y, -4.5, 90, 0);
+			srv.overworld().addFreshEntity(husk);
+		});
+		for (int i = 0; i < 14; i++) {
+			context.waitTicks(10);
+			actionbar(server, "guinea fowl alarm calls: " + server.computeOnServer(srv -> srv.overworld().getEntitiesOfClass(dev.farmings.entity.FowlEntity.class,
+					new net.minecraft.world.phys.AABB(130, y - 2, -10, 150, y + 4, 10)).stream().mapToInt(dev.farmings.entity.FowlEntity::alarms).sum()));
+			if (i == 6) {
+				context.takeScreenshot("farmings-new-guinea-alarm");
+			}
+		}
+		call.stop();
+	}
+
 	/** The new birds (docs/animals/poultry.md, "Geese and guinea fowl"): each breed's female and male and a young bird, close up, then in a row. */
 	private static void newBirds(ClientGameTestContext context, TestServerContext server, int y) {
 		java.util.List<dev.farmings.entity.FowlEntity> line = new java.util.ArrayList<>();
@@ -2319,6 +2440,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("sheepfarm".equals(only)) {
 				context.waitTicks(200);
 				sheepFarm(context, server, y);
+				return;
+			}
+			if ("newanimals".equals(only)) {
+				context.waitTicks(200);
+				newAnimals(context, server, y);
 				return;
 			}
 			if ("newbirds".equals(only)) {
