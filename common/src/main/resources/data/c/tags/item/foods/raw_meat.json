@@ -11,6 +11,9 @@
   "farmings:mutton_chop",
   "farmings:kid_chop",
   "farmings:chevon_chop",
+  "farmings:pork_chop",
+  "farmings:pork_belly",
+  "farmings:pork_shoulder",
   "farmings:select_steak",
   "farmings:choice_steak",
   "farmings:prime_steak"

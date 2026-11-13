@@ -56,6 +56,10 @@ public final class Breeds {
 		fowl(Species.GOOSE, "TOU", 70, 80, 65, 80, 65, 25, 75, 60);
 		fowl(Species.GOOSE, "CHI", 80, 80, 70, 75, 40, 55, 60, 60);
 		fowl(Species.GUINEA, "GUI", 70, 85, 75, 75, 55, 40, 40, 40);     // guinea fowl *(proposed baseline; hardy, flighty)*
+		// pigs *(proposed baselines)*: efficiency, health, fertility, longevity, temperament, hardiness
+		pig("LWH", 70, 70, 95, 75, 75, 60);
+		pig("DUR", 85, 75, 60, 70, 70, 75);
+		pig("BRK", 65, 75, 55, 70, 85, 80);
 	}
 
 	private static void fowl(Species species, String code, int efficiency, int health, int fertility, int longevity, int temperament, int eggs,
@@ -103,6 +107,18 @@ public final class Breeds {
 		m.put(Trait.HARDINESS, hardiness);
 		BASELINES.put(code, m);
 		SPECIES.put(code, Species.GOAT);
+	}
+
+	private static void pig(String code, int efficiency, int health, int fertility, int longevity, int temperament, int hardiness) {
+		Map<Trait, Integer> m = new EnumMap<>(Trait.class);
+		m.put(Trait.FEED_EFFICIENCY, efficiency);
+		m.put(Trait.HEALTH, health);
+		m.put(Trait.FERTILITY, fertility);
+		m.put(Trait.LONGEVITY, longevity);
+		m.put(Trait.TEMPERAMENT, temperament);
+		m.put(Trait.HARDINESS, hardiness);
+		BASELINES.put(code, m);
+		SPECIES.put(code, Species.PIG);
 	}
 
 	/** The species a breed code belongs to; throws on a code no species registered, so a new breed can't fall into cattle. */

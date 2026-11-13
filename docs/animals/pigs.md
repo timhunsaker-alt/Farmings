@@ -106,3 +106,11 @@ VS 0.96 lb of 10.9; gestating sow **4.1 kg**; lactating sow **10.6 kg**; boar **
 
 ## Open points
 - Registry figures for breed weights and litters; a creep temperature schedule by week; finisher intake from an extension table.
+
+## Built, 2026-11-13: the animal
+- **Code:** `entity/PigEntity`, rules in `husbandry/Swine`, `PigBreed`, `PigStage`; genes `PigLocus`/`PigGenes`/`PigLook`; model and
+  renderer `client/Pig*`, textures by `tools/pig_textures.py`; pork items with Ludo icons; boar straws keep 6 days.
+- **Wild pigs** take vanilla pigs' spawns.
+- **Tests:** `SwineTest`, `PigGeneticsTest`; game tests pig_spawns_and_survives_save, pig_lifecycle, sow_farrows_litter, pig_cuts_drop,
+  wild_pig_replaces_vanilla, boar_straw_goes_stale. Client scene `pigs`.
+- **Not yet:** the pig barn (next part); until it is built, pigs are fed as loose animals (fed share 1).

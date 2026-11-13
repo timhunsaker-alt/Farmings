@@ -162,4 +162,13 @@ public final class WildBreeds {
 	public static GoatBreed goat(double roll) {
 		return roll < 0.6 ? GoatBreed.SAANEN : roll < 0.8 ? GoatBreed.NUBIAN : GoatBreed.BOER;
 	}
+
+	/** A wild pig's breed (pigs.md, "Wild pigs"): forests Berkshire, elsewhere Large White or Duroc *(proposed)*; roll any int. */
+	public static PigBreed pig(String biome, int roll) {
+		String p = path(biome);
+		if (p.contains("forest") || p.contains("taiga")) {
+			return PigBreed.BERKSHIRE;
+		}
+		return Math.floorMod(roll, 2) == 0 ? PigBreed.LARGE_WHITE : PigBreed.DUROC;
+	}
 }

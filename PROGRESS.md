@@ -311,6 +311,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   stud book and a race track.
   - Spec: `docs/animals/pigs.md`, `horses.md`; `multiblocks/pig-barn.md`, `curing-room.md`, `stable.md`, `race-track.md`; notes in
     `breeding.md`, `taming.md`, `food.md`, `waste.md`.
+  - Pigs: Large White, Duroc and Berkshire (`entity/PigEntity`, `husbandry/Swine`): growth on the sourced curve, farrowing litters by
+    breed and parity with stillbirths, an 84% service, the KIT and MC1R coat genes, cuts (chops, bellies, shoulders, fat, hams by
+    weight), boar straws that keep 6 days, wild pigs. 6 game tests (219 in all); client scene `pigs`.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

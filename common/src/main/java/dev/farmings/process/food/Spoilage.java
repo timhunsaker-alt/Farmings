@@ -21,7 +21,7 @@ public final class Spoilage {
 	/** Spoil ticks are rounded up to this, and a fridge credits its food once per this many ticks, so stacks stay alike *(proposed)*. */
 	public static final long STEP = 1_200;
 
-	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON, EGG, POULTRY }
+	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON, EGG, POULTRY, PORK }
 
 	public enum Food {
 		MILK(7, 1, Spoiled.BOTTLE),
@@ -43,7 +43,10 @@ public final class Spoilage {
 		EGG(35, 7, Spoiled.EGG),
 		// Poultry: raw 1-2 days, cooked 3-4 days in the fridge (USDA FSIS via FoodSafety.gov, TO VERIFY); the middles. Room 1 day (proposed).
 		RAW_POULTRY(1.5, 1, Spoiled.POULTRY),
-		COOKED_POULTRY(3.5, 1, Spoiled.POULTRY);
+		COOKED_POULTRY(3.5, 1, Spoiled.POULTRY),
+		// Pork (curing-room.md): chops "3 to 5 days" (FoodSafety.gov chart), fresh ham "3–5 days" (FSIS), cooked 3-4 days; the middles.
+		RAW_PORK(4, 1, Spoiled.PORK),
+		COOKED_PORK(3.5, 1, Spoiled.PORK);
 
 		public final double fridgeDays;
 		public final double roomDays;

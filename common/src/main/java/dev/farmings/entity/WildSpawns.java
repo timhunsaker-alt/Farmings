@@ -30,6 +30,8 @@ public final class WildSpawns {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.CATTLE, entry.value().count()), entry.weight()));
 		} else if (t == net.minecraft.world.entity.EntityTypes.SHEEP) {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.SHEEP, entry.value().count()), entry.weight()));
+		} else if (t == net.minecraft.world.entity.EntityTypes.PIG) {
+			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.PIG, entry.value().count()), entry.weight()));     // pigs.md, "Wild pigs"
 		} else if (t == net.minecraft.world.entity.EntityTypes.GOAT) {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.GOAT, entry.value().count()), entry.weight()));     // goats.md, "Wild goats"
 		} else if (t == net.minecraft.world.entity.EntityTypes.CHICKEN) {
@@ -42,7 +44,8 @@ public final class WildSpawns {
 
 	public static boolean replaced(EntityType<?> t) {
 		return t == net.minecraft.world.entity.EntityTypes.COW || t == net.minecraft.world.entity.EntityTypes.SHEEP
-				|| t == net.minecraft.world.entity.EntityTypes.CHICKEN || t == net.minecraft.world.entity.EntityTypes.GOAT;
+				|| t == net.minecraft.world.entity.EntityTypes.CHICKEN || t == net.minecraft.world.entity.EntityTypes.GOAT
+				|| t == net.minecraft.world.entity.EntityTypes.PIG;
 	}
 
 	/**

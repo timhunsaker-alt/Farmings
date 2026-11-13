@@ -47,6 +47,8 @@ public class StrawItem extends Item {
 	private static final String KEY_TAKEN = "Taken";
 	/** Fresh turkey semen is used "within 30 minutes after collection" (TNAU): 30 real minutes at the poultry scale. */
 	public static final long TURKEY_FRESH_TICKS = TimeScale.FOWL.realDaysToTicks(30.0 / (24 * 60));
+	/** Fresh boar semen "survive[s] in a cooled state for 5–7 days" (MSD): 6 real days at the livestock scale (pigs.md). */
+	public static final long BOAR_FRESH_TICKS = TimeScale.LIVESTOCK.realDaysToTicks(6);
 	private final boolean filled;
 
 	public StrawItem(Properties properties, boolean filled) {
@@ -56,7 +58,8 @@ public class StrawItem extends Item {
 
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
-		if (!(target instanceof CattleEntity || target instanceof SheepEntity || target instanceof GoatEntity || target instanceof FowlEntity)) {
+		if (!(target instanceof CattleEntity || target instanceof SheepEntity || target instanceof GoatEntity || target instanceof FowlEntity
+				|| target instanceof dev.farmings.entity.PigEntity)) {
 			return InteractionResult.PASS;
 		}
 		if (player.level().isClientSide()) {
@@ -82,6 +85,11 @@ public class StrawItem extends Item {
 			g = buck.genome();
 			coat = buck.genes().save();
 			herd = buck.herdId();
+		} else if (male instanceof dev.farmings.entity.PigEntity boar && boar.sex() == Sex.MALE && boar.stage() == dev.farmings.husbandry.PigStage.BOAR
+				&& !boar.isWild() && boar.genome() != null) {
+			g = boar.genome();
+			coat = boar.genes().save();
+			herd = boar.herdId();
 		} else if (male instanceof FowlEntity tom && tom.species() == Species.TURKEY && tom.sex() == Sex.MALE && tom.adult() && !tom.isWild()
 				&& tom.genome() != null) {
 			g = tom.genome();
@@ -98,7 +106,7 @@ public class StrawItem extends Item {
 			tag.putIntArray(KEY_COAT, coat);
 			tag.putString(KEY_SIRE, male.getUUID().toString());
 			tag.putString(KEY_HERD, herd);
-			if (g.species() == Species.TURKEY) {
+			if (g.species() == Species.TURKEY || g.species() == Species.PIG) {
 				tag.putLong(KEY_TAKEN, now);
 			}
 		});
@@ -119,6 +127,7 @@ public class StrawItem extends Item {
 			case CattleEntity c -> Species.CATTLE;
 			case SheepEntity s -> Species.SHEEP;
 			case GoatEntity g -> Species.GOAT;
+			case dev.farmings.entity.PigEntity p -> Species.PIG;
 			case FowlEntity f -> f.species();
 			default -> null;
 		};
@@ -143,6 +152,14 @@ public class StrawItem extends Item {
 			case SheepEntity ewe -> {
 				dev.farmings.genetics.SheepGenes sg = coat == null ? null : dev.farmings.genetics.SheepGenes.load(coat);
 				yield ewe.sex() == Sex.FEMALE && ewe.canConceive() && sg != null && ewe.conceive(sire, sg, now);
+			}
+			case dev.farmings.entity.PigEntity sow -> {
+				if (stale(stack, now)) {
+					player.sendOverlayMessage(Component.translatable("message.farmings.straw.stale_boar"));
+					yield false;
+				}
+				dev.farmings.genetics.PigGenes pg = coat == null ? null : dev.farmings.genetics.PigGenes.load(coat);
+				yield sow.sex() == Sex.FEMALE && sow.canConceive() && pg != null && sow.conceive(sire, pg, now);
 			}
 			case GoatEntity doe -> {
 				dev.farmings.genetics.GoatGenes gg = coat == null ? null : dev.farmings.genetics.GoatGenes.load(coat);
@@ -178,7 +195,11 @@ public class StrawItem extends Item {
 			return false;
 		}
 		long taken = data.copyTag().getLongOr(KEY_TAKEN, Long.MIN_VALUE);
-		return taken != Long.MIN_VALUE && now - taken > TURKEY_FRESH_TICKS;
+		if (taken == Long.MIN_VALUE) {
+			return false;
+		}
+		Genome g = genomeOf(stack);
+		return now - taken > (g != null && g.species() == Species.PIG ? BOAR_FRESH_TICKS : TURKEY_FRESH_TICKS);
 	}
 
 	/** Stale turkey semen in an inventory turns back into an empty straw. */
@@ -206,6 +227,9 @@ public class StrawItem extends Item {
 		out.accept(Component.translatable("tooltip.farmings.straw", speciesName(g.species()), herd.isEmpty() ? "?" : herd));
 		if (g.species() == Species.TURKEY) {
 			out.accept(Component.translatable("tooltip.farmings.straw.fresh"));
+		}
+		if (g.species() == Species.PIG) {
+			out.accept(Component.translatable("tooltip.farmings.straw.fresh_boar"));
 		}
 	}
 

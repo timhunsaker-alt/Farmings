@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:smelting",
+ "category": "food",
+ "ingredient": "farmings:pork_chop",
+ "result": {
+  "id": "farmings:cooked_pork_chop"
+ },
+ "experience": 0.35,
+ "cookingtime": 200
+}

@@ -160,3 +160,13 @@ Every prompt ends "game item icon, plain white background, no text".
 |---|---|
 | guinea_egg | A single small guinea fowl egg, light brown speckled shell, pointed at one end, smaller than a hen egg |
 | guinea_fowl / cooked_guinea_fowl | A single raw guinea fowl drumstick, lean dark pinkish red game meat with thin pale skin / a single roasted guinea fowl drumstick, golden brown crisp skin, lean |
+
+## 2026-11-13: pigs (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+| file | prompt |
+|---|---|
+| pork_chop / cooked_pork_chop | A single raw bone-in pork loin chop, pale pink meat with a white fat edge / a single pan-seared bone-in pork chop, golden brown seared surface |
+| pork_belly | A single raw slab of fresh pork belly with skin on, visible layers of pink meat and white fat on the cut side |
+| pork_shoulder | A single raw pork shoulder roast (Boston butt), marbled deep pink meat |
+| pork_fat | A single thick slab of raw white pork back fat, creamy white |
+| fresh_ham | A single whole raw fresh pork ham leg, pink meat at the cut end, pale skin, shank bone |
+| spoiled_pork | A single spoiled raw pork chop: grey-green discoloured meat, slimy sheen, yellowed fat, a few mould spots |

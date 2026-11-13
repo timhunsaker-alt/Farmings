@@ -105,7 +105,7 @@ public class CompostControllerEntity extends BlockEntity implements ItemSink, Wo
 		}
 		// spoiled food (compost.md, "spoiled food into the windrow"): meat C:N 5 (Cornell CWMI, "Animal Carcass ... 5:1"); the rest as food
 		// waste, 15 (Cornell); masses and moistures proposed
-		if (s.is(FarmingsItems.SPOILED_STEAK) || s.is(FarmingsItems.SPOILED_MUTTON) || s.is(FarmingsItems.SPOILED_POULTRY)) {
+		if (s.is(FarmingsItems.SPOILED_STEAK) || s.is(FarmingsItems.SPOILED_MUTTON) || s.is(FarmingsItems.SPOILED_POULTRY) || s.is(FarmingsItems.SPOILED_PORK)) {
 			return new double[] {0.25, 5, 0.70};
 		}
 		if (s.is(FarmingsItems.SPOILED_BOTTLE)) {

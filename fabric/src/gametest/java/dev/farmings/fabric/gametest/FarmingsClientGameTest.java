@@ -837,6 +837,76 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-flock-all");
 	}
 
+	private static dev.farmings.entity.PigEntity pig(ServerLevel level, dev.farmings.husbandry.PigBreed breed, Sex sex, long seed, double age) {
+		dev.farmings.entity.PigEntity p = FarmingsEntities.PIG.create(level, EntitySpawnReason.COMMAND);
+		p.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Swine.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
+		p.setPos(200.5, 0, 200.5);
+		p.setNoAi(true);
+		level.addFreshEntity(p);
+		return p;
+	}
+
+	/** The pigs (docs/animals/pigs.md): each breed's sow and boar, a market pig, piglets, and the coat colours, close up then in a row. */
+	private static void pigs(ClientGameTestContext context, TestServerContext server, int y) {
+		java.util.List<dev.farmings.entity.PigEntity> line = new java.util.ArrayList<>();
+		java.util.List<String> names = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 0, 20, y, 16, 16, 6);
+			long seed = 1800;
+			for (dev.farmings.husbandry.PigBreed b : dev.farmings.husbandry.PigBreed.values()) {
+				line.add(pig(level, b, Sex.FEMALE, seed++, 800));
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " sow");
+				line.add(pig(level, b, Sex.MALE, seed++, 800));
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " boar");
+			}
+			line.add(pig(level, dev.farmings.husbandry.PigBreed.DUROC, Sex.FEMALE, seed++, 186));
+			names.add("duroc market pig 120 kg");
+			line.add(pig(level, dev.farmings.husbandry.PigBreed.BERKSHIRE, Sex.FEMALE, seed++, 10));
+			names.add("berkshire piglet");
+			int[][] mc = {{3, 3}, {2, 0}, {1, 1}};
+			String[] colourNames = {"dominant black", "black spots on red", "wild type"};
+			for (int i = 0; i < mc.length; i++) {
+				var p = pig(level, dev.farmings.husbandry.PigBreed.DUROC, Sex.FEMALE, seed++, 300);
+				java.util.EnumMap<dev.farmings.genetics.PigLocus, int[]> m = new java.util.EnumMap<>(p.genes().alleles());
+				m.put(dev.farmings.genetics.PigLocus.MC1R, mc[i]);
+				p.setGenesForTest(new dev.farmings.genetics.PigGenes(m));
+				line.add(p);
+				names.add(colourNames[i]);
+			}
+		});
+		context.waitTicks(60);
+		for (int i = 0; i < line.size(); i++) {
+			int shown = i;
+			server.runOnServer(srv -> {
+				for (int j = 0; j < line.size(); j++) {
+					var e = line.get(j);
+					e.setPos(j == shown ? 0.5 : 200.5 + 4 * j, y, j == shown ? 20.5 : 200.5);
+					e.setYRot(0);
+					e.setYHeadRot(0);
+					e.setYBodyRot(0);
+				}
+			});
+			actionbar(server, names.get(i) + ": " + line.get(i).look().describe());
+			server.runCommand("tp @p 2.1 " + (y - 0.3) + " 22.1 135 18");
+			context.waitTicks(30);
+			context.takeScreenshot("farmings-pigs-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + names.get(i).replace(' ', '-'));
+		}
+		server.runOnServer(srv -> {
+			for (int j = 0; j < line.size(); j++) {
+				var e = line.get(j);
+				e.setPos(-11.5 + 2.2 * j, y, 20.5);
+				e.setYRot(90);
+				e.setYHeadRot(90);
+				e.setYBodyRot(90);
+			}
+		});
+		actionbar(server, "the pigs: Large White, Duroc, Berkshire, a market pig, a piglet, the colours");
+		server.runCommand("tp @p 0.5 " + (y + 4.5) + " 32 180 18");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-pigs-all");
+	}
+
 	private static dev.farmings.entity.GoatEntity goat(ServerLevel level, dev.farmings.husbandry.GoatBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.GoatEntity g = FarmingsEntities.GOAT.create(level, EntitySpawnReason.COMMAND);
 		g.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Herd.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
@@ -2450,6 +2520,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("newbirds".equals(only)) {
 				context.waitTicks(200);
 				newBirds(context, server, y);
+				return;
+			}
+			if ("pigs".equals(only)) {
+				context.waitTicks(200);
+				pigs(context, server, y);
 				return;
 			}
 			if ("goats".equals(only)) {

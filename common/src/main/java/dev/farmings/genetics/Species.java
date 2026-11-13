@@ -26,7 +26,10 @@ public enum Species {
 	// Geese (docs/animals/poultry.md, "Geese and guinea fowl"), appended: the poultry traits.
 	GOOSE("farmings.goose.genome.v1", true, fowlTraits()),
 	// Helmeted guinea fowl (poultry.md, "Geese and guinea fowl"), appended: the poultry traits.
-	GUINEA("farmings.guinea.genome.v1", true, fowlTraits());
+	GUINEA("farmings.guinea.genome.v1", true, fowlTraits()),
+	// Pigs (docs/animals/pigs.md), appended: growth, efficiency and the fitness traits *(proposed list)*.
+	PIG("farmings.pig.genome.v1", false, EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT,
+			Trait.HARDINESS));
 
 	private static EnumSet<Trait> fowlTraits() {
 		return EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.EGG_PRODUCTION,

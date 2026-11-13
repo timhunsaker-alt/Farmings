@@ -117,6 +117,14 @@ ITEMS = [
     ("mutton_chop", "Mutton Chop", (176, 70, 66), "steak"),
     ("cooked_mutton_chop", "Cooked Mutton Chop", (124, 76, 46), "steak"),
     ("spoiled_mutton", "Spoiled Mutton", (110, 96, 72), "steak"),
+    # pigs (docs/animals/pigs.md)
+    ("pork_chop", "Raw Pork Chop", (230, 150, 150), "steak"),
+    ("cooked_pork_chop", "Cooked Pork Chop", (180, 120, 70), "steak"),
+    ("pork_belly", "Pork Belly", (232, 180, 170), "steak"),
+    ("pork_shoulder", "Pork Shoulder", (210, 120, 110), "steak"),
+    ("pork_fat", "Pork Fat", (244, 238, 226), "blob"),
+    ("fresh_ham", "Fresh Ham", (220, 140, 130), "steak"),
+    ("spoiled_pork", "Spoiled Pork", (130, 120, 90), "steak"),
     # goats (docs/animals/goats.md)
     ("kid_chop", "Kid Chop", (220, 132, 124), "steak"),
     ("cooked_kid_chop", "Cooked Kid Chop", (156, 100, 62), "steak"),
@@ -155,7 +163,7 @@ ITEMS = [
 SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
     "message.farmings.straw.not_a_bull": "Only a grown bull can fill a straw.",
-    "message.farmings.straw.not_a_sire": "Only a grown, tame bull, ram, buck or turkey tom can fill a straw.",
+    "message.farmings.straw.not_a_sire": "Only a grown, tame bull, ram, buck, boar or turkey tom can fill a straw.",
     "message.farmings.straw.wrong_species": "This straw holds %s semen.",
     "message.farmings.straw.stale": "This turkey semen is stale: use it within 30 minutes of collecting.",
     "tooltip.farmings.straw": "%s semen, sire %s",
@@ -163,6 +171,10 @@ EXTRA_LANG = {
     "species.farmings.cattle": "Bull",
     "species.farmings.sheep": "Ram",
     "species.farmings.goat": "Buck",
+    "species.farmings.pig": "Boar",
+    "message.farmings.barrow": "Castrated: he will grow as a barrow.",
+    "message.farmings.straw.stale_boar": "This boar semen is stale: use it within 6 days of collecting.",
+    "tooltip.farmings.straw.fresh_boar": "Fresh: use within 6 days (cooled)",
     "species.farmings.turkey": "Turkey",
     "species.farmings.chicken": "Chicken",
     "species.farmings.duck": "Duck",
@@ -271,7 +283,7 @@ def block_model(name, box):
 
 
 def main():
-    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "entity.farmings.goat": "Goat", "entity.farmings.chicken": "Chicken", "entity.farmings.turkey": "Turkey",
+    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "entity.farmings.goat": "Goat", "entity.farmings.pig": "Pig", "entity.farmings.chicken": "Chicken", "entity.farmings.turkey": "Turkey",
             "entity.farmings.quail": "Quail", "entity.farmings.duck": "Duck", "entity.farmings.goose": "Goose", "entity.farmings.guinea_fowl": "Guinea Fowl", "block.farmings.barn_controller": CONTROLLER[0]}
     lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
@@ -368,10 +380,10 @@ def main():
                                                                        "farmings:duck_egg", "farmings:goose_egg", "farmings:guinea_egg"]})
     # Farmings meat in the common meat tags, so other mods' recipes take it (docs/eggs.md, "Loose ends")
     write(os.path.join(ROOT_DATA, "c", "tags", "item", "foods", "raw_meat.json"), {"replace": False, "values": [
-        "farmings:chicken", "farmings:turkey", "farmings:duck", "farmings:goose", "farmings:guinea_fowl", "farmings:quail", "farmings:lamb_chop", "farmings:mutton_chop", "farmings:kid_chop", "farmings:chevon_chop",
+        "farmings:chicken", "farmings:turkey", "farmings:duck", "farmings:goose", "farmings:guinea_fowl", "farmings:quail", "farmings:lamb_chop", "farmings:mutton_chop", "farmings:kid_chop", "farmings:chevon_chop", "farmings:pork_chop", "farmings:pork_belly", "farmings:pork_shoulder",
         "farmings:select_steak", "farmings:choice_steak", "farmings:prime_steak"]})
     write(os.path.join(ROOT_DATA, "c", "tags", "item", "foods", "cooked_meat.json"), {"replace": False, "values": [
-        "farmings:cooked_chicken", "farmings:cooked_turkey", "farmings:cooked_duck", "farmings:cooked_goose", "farmings:cooked_guinea_fowl", "farmings:cooked_quail", "farmings:cooked_lamb_chop", "farmings:cooked_kid_chop", "farmings:cooked_chevon_chop",
+        "farmings:cooked_chicken", "farmings:cooked_turkey", "farmings:cooked_duck", "farmings:cooked_goose", "farmings:cooked_guinea_fowl", "farmings:cooked_quail", "farmings:cooked_lamb_chop", "farmings:cooked_kid_chop", "farmings:cooked_chevon_chop", "farmings:cooked_pork_chop",
         "farmings:cooked_mutton_chop", "farmings:cooked_select_steak", "farmings:cooked_choice_steak", "farmings:cooked_prime_steak"]})
     lang["entity.farmings.rotten_egg"] = "Rotten Egg"
     lang["entity.farmings.sheep_dog"] = "Border Collie"
@@ -539,7 +551,7 @@ SHAPELESS = {
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop",
-           "kid_chop": "cooked_kid_chop", "chevon_chop": "cooked_chevon_chop",
+           "kid_chop": "cooked_kid_chop", "chevon_chop": "cooked_chevon_chop", "pork_chop": "cooked_pork_chop",
            "chicken": "cooked_chicken", "turkey": "cooked_turkey", "duck": "cooked_duck", "goose": "cooked_goose", "guinea_fowl": "cooked_guinea_fowl", "quail": "cooked_quail"}
 
 

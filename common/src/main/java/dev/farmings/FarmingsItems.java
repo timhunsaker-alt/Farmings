@@ -129,6 +129,30 @@ public final class FarmingsItems {
 	public static final Item MUTTON_CHOP = item("mutton_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
 	public static final Item COOKED_MUTTON_CHOP = item("cooked_mutton_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_LAMB, p.food(net.minecraft.world.food.Foods.COOKED_MUTTON)));
 	public static final Item SPOILED_MUTTON = item("spoiled_mutton", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+	// Pork (docs/animals/pigs.md, "Meat"; curing-room.md): chops 0.5 kg, belly 2 kg, shoulder 2 kg, fat 1 kg; a ham carries its weight.
+	public static final Item PORK_CHOP = item("pork_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p.food(net.minecraft.world.food.Foods.PORKCHOP)));
+	public static final Item COOKED_PORK_CHOP = item("cooked_pork_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_PORK, p.food(net.minecraft.world.food.Foods.COOKED_PORKCHOP)));
+	public static final Item PORK_BELLY = item("pork_belly", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p.stacksTo(16)));
+	public static final Item PORK_SHOULDER = item("pork_shoulder", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p.stacksTo(16)));
+	public static final Item PORK_FAT = item("pork_fat", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p));
+	public static final Item FRESH_HAM = item("fresh_ham", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p.stacksTo(1)));
+	public static final Item SPOILED_PORK = item("spoiled_pork", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+
+	/** The "Kg" a ham (or other weighed piece) carries in its custom data. */
+	public static final String KEY_KG = "Kg";
+
+	/** A fresh ham of this weight, its spoil clock started. */
+	public static net.minecraft.world.item.ItemStack freshHam(double kg, long now) {
+		net.minecraft.world.item.ItemStack s = new net.minecraft.world.item.ItemStack(FRESH_HAM);
+		net.minecraft.world.item.component.CustomData.update(net.minecraft.core.component.DataComponents.CUSTOM_DATA, s, t -> t.putDouble(KEY_KG, kg));
+		return dev.farmings.item.Perishables.stamp(s, now);
+	}
+
+	/** The weight a weighed item carries, kg; 0 if none. */
+	public static double kgOf(net.minecraft.world.item.ItemStack s) {
+		net.minecraft.world.item.component.CustomData d = s.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+		return d == null ? 0 : d.copyTag().getDoubleOr(KEY_KG, 0);
+	}
 
 	/** Goat meat (docs/animals/goats.md, "Meat"): kid under 9 months, chevon after; keeps as lamb chops (FSIS goat, 3-5 days). */
 	public static final Item KID_CHOP = item("kid_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
@@ -334,6 +358,13 @@ public final class FarmingsItems {
 		ALL.put("mutton_chop", MUTTON_CHOP);
 		ALL.put("cooked_mutton_chop", COOKED_MUTTON_CHOP);
 		ALL.put("spoiled_mutton", SPOILED_MUTTON);
+		ALL.put("pork_chop", PORK_CHOP);
+		ALL.put("cooked_pork_chop", COOKED_PORK_CHOP);
+		ALL.put("pork_belly", PORK_BELLY);
+		ALL.put("pork_shoulder", PORK_SHOULDER);
+		ALL.put("pork_fat", PORK_FAT);
+		ALL.put("fresh_ham", FRESH_HAM);
+		ALL.put("spoiled_pork", SPOILED_PORK);
 		ALL.put("kid_chop", KID_CHOP);
 		ALL.put("cooked_kid_chop", COOKED_KID_CHOP);
 		ALL.put("chevon_chop", CHEVON_CHOP);

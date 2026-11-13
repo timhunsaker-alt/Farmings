@@ -26,6 +26,13 @@ public final class FarmingsEntities {
 			.clientTrackingRange(10)
 			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("sheep")));
 
+	/** A pig: the vanilla pig's size (0.9 x 0.9). */
+	public static final EntityType<dev.farmings.entity.PigEntity> PIG = EntityType.Builder.<dev.farmings.entity.PigEntity>of(dev.farmings.entity.PigEntity::new, MobCategory.CREATURE)
+			.sized(0.9F, 0.9F)
+			.eyeHeight(0.75F)
+			.clientTrackingRange(10)
+			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("pig")));
+
 	/** A goat: the vanilla goat's size (0.9 x 1.3). */
 	public static final EntityType<dev.farmings.entity.GoatEntity> GOAT = EntityType.Builder.<dev.farmings.entity.GoatEntity>of(dev.farmings.entity.GoatEntity::new, MobCategory.CREATURE)
 			.sized(0.9F, 1.3F)
@@ -112,6 +119,7 @@ public final class FarmingsEntities {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("cattle"), CATTLE);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("sheep"), SHEEP);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("goat"), GOAT);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("pig"), PIG);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("chicken"), CHICKEN);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("turkey"), TURKEY);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("quail"), QUAIL);
