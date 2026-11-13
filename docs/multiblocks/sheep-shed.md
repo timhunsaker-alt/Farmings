@@ -96,3 +96,13 @@ matter.
 - Resolved 2 marks from NMSU Circular 703: weaning age 120 to 84 days, and the stay in the lambing pen 14 to 2 real days.
 - Still proposed: moving a ewe in 3 days before lambing (CR703 brings ewes into the jug after lambing), the lamb manure figure and
   1 L = 1 kg. The rest are game sizes.
+
+## Goats, 2026-11-13 (spec; Tim: "Share the sheep shed")
+- **Small ruminants:** the shed takes in and houses tame **sheep and goats**. The pasture, racks, troughs, bedding store, sheep dog and
+  straws work the same for both.
+- **One species per pen cell group:** each connected run of pen cells holds one species. The first animal housed sets it; the run is free
+  again when it is empty *(proposed)*. A shed with only one pen run takes whichever species comes first. The readout lists pens by
+  species.
+- **Space:** a sheep takes 1.5 pen blocks, a goat **2** (goats.md, Purdue's 1.9-2.3 m²). Lambing pens are kidding pens for does.
+- **Pasture:** both graze grass; a goat beside leaves browses (goats.md), wearing the grass half as fast.
+- **Bedding:** goat manure at 1.3% of body weight in dry matter a day (goats.md, NRCS via Univ. of Kentucky).

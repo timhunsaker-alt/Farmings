@@ -55,7 +55,7 @@ The Known gaps from Phases 2-4 (PROGRESS.md Step 16): poultry, straws, sheep, co
 size, the NeoForge client and a sourcing sweep over every doc.
 
 ## Ideas (not scheduled, not in code)
-- More species (goats, pigs, horses, geese, guinea fowl).
+- More species: goats, geese and guinea fowl (Step 17, under way, 2026-11-13); pigs and horses later.
 - Animal health and a vet cycle; disease and quarantine.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).

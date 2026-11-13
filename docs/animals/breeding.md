@@ -101,3 +101,9 @@ Game test: herd_book_records.
 ### Sourcing pass, 2026-11-12
 Resolved 4 marks: heat length (18 h, matches the 0.75 day), the 60-day waiting period, sheep cervical AI (40%), and the conception rate the
 decision asked for (40% cows, 65% heifers; the "always conceives" rule stays a proposal). The other marks are game rules.
+
+## Goats, 2026-11-13 (spec)
+- **Buck straws:** the one straw item works for goats: a grown, tame buck fills it; a doe in heat (and in season) takes it. Straws are
+  species-checked as before (a buck straw on a ewe is refused). Goat straws keep, as bull and ram straws (goats.md).
+- **Polled bucks:** a straw from a P/P buck that is sterile does nothing *(goats.md: half of P/P bucks are sterile, proposed)*; the herd
+  book shows polled genotypes so a breeder can avoid P/P does.

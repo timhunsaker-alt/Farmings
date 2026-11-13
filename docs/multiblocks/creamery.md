@@ -112,3 +112,33 @@ Taking by hand still works. Game tests: hopper_takes_butter_and_wheels, hopper_b
 - Resolved: pasteurizer batch 200 L and heater (now 12 kW), separator (now 1.5 kW at 500 L/h), churn 1.5 kW. Whey density is a TO VERIFY.
 - Still unsourced: vat motor 0.75 kW (only 0.18-0.25 kW for 50-150 L vats found, in snippets), heat-up and cool-down 30 min (CFIA, Florida
   FDACS give the 63 C / 30 min hold only), press 12 h (Guelph text not reachable). Tank size, wheel size, flow, fat clamp and hunger are game values.
+
+## Goat milk and chèvre, 2026-11-13 (spec; Tim: "Bottled milk + chèvre")
+- **Milk kind:** the tank and the creamery hold **cow, sheep or goat** milk, one kind at a time, with the sheep milk rules above. Faults
+  read `TANK HOLDS GOAT MILK` and so on. Goat milk comes only by milk line, as sheep milk.
+- **Goat milk in each mode:**
+  - **BOTTLE:** goat milk bottles.
+  - **CREAM / BUTTER:** as cow milk, into the shared cream, skim, buttermilk and butter. Goat milk does make butter: "The following
+    recipe is for cow or goat's milk" ([FAO](https://www.fao.org/4/t1265e/t1265e13.htm)). Its small fat globules ("naturally
+    homogenized", Park, after Fahmi et al. 1956) cream slowly by gravity, which a separator does not need.
+  - **CHEESE:** refused for goat milk (no aged goat wheel this pass; Tim). The readout says to use CHÈVRE.
+  - **CHÈVRE** (new, goat milk only): below.
+
+### The chèvre mode
+| Step | Value | Source |
+|---|---|---|
+| Pasteurize | 63 C for 30 min, as every mode | 21 CFR 1240.61 |
+| Cool to set | **28 C** | "the milk was cooled to 28 °C" ([PMC10572428](https://pmc.ncbi.nlm.nih.gov/articles/PMC10572428/)); Cornell: "80-90 degrees" ([Cheesemaking Simplified](http://goatdocs.ansci.cornell.edu/Resources/GoatArticles/GoatProducts/CheesemakingSimplified.pdf)) |
+| Culture and rennet | 0.20% starter, 0.02% rennet; not separate items *(proposed: as cheddar, the vat supplies them)* | PMC10572428: "0.20% (w/w) of starter culture … 0.02% (v/w) of rennet" |
+| Set | **18 hours** (12-24) | "until there is a firm curd with a thin layer of clear whey on top, usually 12-24 hours" (Cornell) |
+| Drain | **16 hours** (8-24) in the cheese vat's cloths | "hang to drain for 8-24 hours depending on how firm you want the cheese to be" (Cornell) |
+| Yield | **17 kg of chèvre per 100 kg of milk** (14-20) at 60% moisture | Guo et al. 2004, Small Rumin. Res. 52:103: yield "ranged from 14% in June … to 20% in December and January" ([AGRIS](https://agris.fao.org/search/en/records/65df50124c5aef494fe1a1e5)). The game uses the middle; it does not move with fat and protein *(proposed)* |
+| The rest | whey, to the whey store (milk kg - chèvre kg) | as cheese |
+
+- **Machine time:** setting and draining run in the vat at the creamery's 15:1 machine scale (waste.md): 34 real hours is 113 s *(derived: 90 real minutes is 100 ticks, as the pasteurizer)*.
+  The vat needs power to hold 28 C *(proposed)*; with no power the batch waits.
+- **Item:** `chevre`, **0.25 kg** a piece *(proposed: a small log)*, taken from the vat by hand or hopper. 2 hunger *(proposed)*.
+  No aging shelf.
+- **Shelf life:** see food.md (goat products).
+- **Not modelled:** salt (1 tsp per pound, [Baetje Farms via SARE](https://projects.sare.org/wp-content/uploads/Baetje-Farms-CHEVRE-Cheese-recipe.pdf)),
+  molds, herbs or ash coatings.

@@ -72,3 +72,17 @@ Spoiled chops become **spoiled mutton** (Hunger and Nausea, as the other spoiled
 - One TO VERIFY added (hard cheese at room temperature). No value changed. The 1-day room lives are Tim's game choice over the 2-hour rule.
 - Still unsourced: whey and sheep-milk fridge lives (no FoodKeeper or extension entry found; only blogs), cheddar wheel room days.
   Rounding and spoiled-food hunger are game values.
+
+## Goat and new poultry products, 2026-11-13 (spec)
+| Item | Fridge | Room | Turns into | Source |
+|---|---|---|---|---|
+| Goat milk | 7 days | 1 day | spoiled bottle | cow milk's figure *(proposed: no FSIS or extension figure for goat milk; searched, only blogs)* |
+| Chèvre | **14 days** (1-3 weeks) | 1 day | moldy cheese | soft cheeses "will keep from one to three weeks after opening" ([Clemson HGIC](https://hgic.clemson.edu/factsheet/handling-of-cheese-for-safety-quality/)). A sealed commercial log keeps 45 days (**TO VERIFY**, snippet: Masotti et al. 2012, J. Dairy Sci.); farm chèvre is not sealed |
+| Kid and chevon chops, raw | **4 days** (3-5) | 1 day | spoiled mutton | "use within 3 to 5 days" (FSIS *Goat from Farm to Table*, as reproduced by [ABGA](https://www.abga.org/goat-from-farm-to-table)) |
+| Kid and chevon chops, cooked | 3.5 days (3-4) | 1 day | spoiled mutton | "Cooked meat or poultry \| 3 to 4 days" ([FoodSafety.gov chart](https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts)) |
+| Goose, raw | **1.5 days** (1-2) | 1 day | spoiled poultry | "Fresh Duck or Goose 1 to 2 days" ([FSIS, Duck and goose](https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/duck-and-goose-farm-table)) |
+| Goose, cooked | 3.5 days (3-4) | 1 day | spoiled poultry | "Cooked Duck or Goose … 3 to 4 days" (FSIS) |
+| Guinea fowl, raw | 1.5 days (1-2) | 1 day | spoiled poultry | chicken's "1 to 2 days" (FoodSafety.gov) *(proxy: no guinea figure found)* |
+| Guinea fowl, cooked | 3.5 days | 1 day | spoiled poultry | "Cooked meat or poultry \| 3 to 4 days" |
+
+The room column is Tim's 1-day game rule, as for every other food. Eggs are in eggs.md.

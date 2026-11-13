@@ -111,3 +111,10 @@ separate from the entry lane.
 ### Sourcing pass, 2026-11-12
 Resolved 3 marks: vacuum pump 4 kW (dealer table), chiller now 2.6 kW (Mueller R-1000), WARM above 10 C (PMO). The rest are game
 choices (stall rounding, call range, the 6,000-tick grace, the 10 L bucket, layout).
+
+## Goat does, 2026-11-13 (spec)
+- The `sheep_stall` milks **dairy does** too: a doe with Saanen or Nubian blood and milk in the udder, from the same shed (goats.md).
+  The block keeps its id; the docs call it the small-ruminant stall.
+- **One milk kind per tank** now has three kinds: cow, sheep, goat. A stall calls ewes or does only while the tank is empty or holds
+  that kind; when a shed has both, the stall calls the kind the tank holds first *(proposed)*.
+- **Milk:** the doe's breed fat and protein (Saanen 3.2 / 2.8, Nubian 4.6 / 3.7; goats.md), and her yield from the goat Wood curve.

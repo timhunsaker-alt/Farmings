@@ -426,7 +426,7 @@ Nothing is sold (cattle rule, 2026-11-07).
 - Seasons, if ever added: turkeys and wild birds lay in spring.
 - Better sources for the TO VERIFY rows; the turkey's daily feed; the Silkie's egg weight.
 - Poultry artificial insemination, for Broad Breasted White.
-- Geese and guinea fowl.
+- Geese and guinea fowl: specced 2026-11-13 (below).
 
 ## Built, 2026-11-11
 - **Rules and genes:**
@@ -520,3 +520,144 @@ is given.
   first egg, duck fertile days, turkey feed, quail water.
 - Still unsourced: Silkie egg weight and weights (Poultry Hub differs from Wikipedia), Bourbon Red and Mallard broodiness, Bobwhite
   weight, quail manure, Muscovy first egg. Searched extension, BTO, Livestock Conservancy and Cornell pages; several refused the fetch.
+
+## Geese and guinea fowl, 2026-11-13 (spec; Tim's answers of the same day)
+Tim's choices: geese **Embden, Toulouse, Chinese**; geese live **mostly on grass** on a grassy run, with grain to top up; geese give
+**down** and are **guard geese**; guinea fowl in **pearl, lavender and white** by genes, with an **alarm call**. Both run on the poultry
+scale (3:1). Not in this pass: guinea fowl eating ticks, roosting in trees, goose fat.
+
+Sources used throughout:
+- **FAO** *Goose Production* (Buckland & Guy, 2002): [ch. 1 breeds](https://www.fao.org/4/y4359e/y4359e03.htm),
+  [ch. 2 behaviour](https://www.fao.org/4/y4359e/y4359e04.htm), [ch. 6 breeders](https://www.fao.org/4/y4359e/y4359e08.htm),
+  [ch. 8 incubation](https://www.fao.org/4/y4359e/y4359e0a.htm), [ch. 9 meat](https://www.fao.org/4/y4359e/y4359e0b.htm),
+  [ch. 10 down](https://www.fao.org/4/y4359e/y4359e0c.htm), [ch. 13 killing](https://www.fao.org/4/y4359e/y4359e0f.htm).
+- **MSU E-1050** ([archived 1977 bulletin](https://archive.lib.msu.edu/DMC/extension_publications/e1050/e1050_77.pdf); it is marked
+  "do not use for current recommendations", so its figures are **TO VERIFY**).
+- **TLC**: Livestock Conservancy pages for [Toulouse](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/toulouse-goose/) and
+  [Chinese](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/chinese-goose/).
+- **UKY ASC-209** [Raising guinea fowl](https://publications.mgcafe.uky.edu/sites/publications.ca.uky.edu/files/ASC209.pdf); **EXT-GF**
+  [extension.org, raising guinea fowl](https://poultry.extension.org/articles/poultry-management/raising-guinea-fowl/).
+
+### Breeds
+| Species | Breed | Code | Use | Male / female kg | Eggs a year | Egg g | Shell | Broody |
+|---|---|---|---|---|---|---|---|---|
+| Goose | Embden | EMB | meat | 11.8 / 9.1 | 40 | 170 | white | yes *(proposed)* |
+| Goose | Toulouse | TOU | meat | 11.8 / 9.1 | 20-35 (27.5) | 170 *(proposed)* | white | yes *(proposed)* |
+| Goose | Chinese | CHI | eggs, guard | 5.4 / 4.5 | 50-60 (55) | 120 | white | yes *(proposed)* |
+| Guinea fowl | Helmeted | GUI | meat, eggs, alarm | 1.5 / 1.5 | 100 | 40 | brown, speckled *(proposed)* | late in the season |
+
+- **Weights:** MSU's table, "Toulouse 26 20 … Embden 26 20 … Chinese 12 10" lb (**TO VERIFY**: 1977); TLC agrees for Toulouse
+  ("Males – 20-26 lbs. / Females – 16-20 lbs.") and Chinese ("Mature ganders average 12 lbs. while mature geese average 10 lbs.").
+  FAO gives lighter Embden ("up to 10.0 kg … up to 9.0 kg") and Chinese ("5.0 kg and females 4.0 kg"). Guinea fowl: "Both male and
+  female adult guineas weigh 3.0 to 3.5 lb (~1.5 kg)" (UKY).
+- **Eggs:** Embden "40 eggs per year", "egg size of 170 g" (FAO); Toulouse "moderate egg-layers of 20-35 eggs annually" (TLC); Chinese
+  "50-60 eggs is the average", "Egg weight, at 120 g" (FAO). The Toulouse egg weight is NOT FOUND (TLC says only "extra large"), so it
+  takes the Embden's. Guinea: "Hens can lay more than 100 eggs per year"; "about 1.4 oz (40 g)" (UKY).
+- **Broody:** the geese's broodiness is NOT FOUND in these sources; all three sit *(proposed)*. Guinea hens "do not go broody until the
+  nest has around thirty eggs" (UKY): a guinea hen turns broody only with 30 eggs in her nest *(the game rule)*.
+
+### Laying season and first egg
+Geese and guinea fowl lay in a season. The poultry year is the sheep calendar at the poultry scale: a real year is 365 / 3 =
+**121.7 game days**, and day 0 of a world is 1 October (sheep.md) *(proposed: one calendar for every species)*.
+
+| Species | First egg | Season | Rate in season | Source |
+|---|---|---|---|---|
+| Goose (Embden, Toulouse) | **1 year** old | **15 Feb - 15 Jun** | the year's eggs spread over the season | "geese begin to lay about mid-February and continue until early or mid-June" (FAO ch. 6); "Young females (approximately one year old) will lay eggs" (MSU) |
+| Goose (Chinese) | 1 year | **1 Feb - 30 Jun** | as above | "a breeding season of approximately five months (February to the end of June)" (FAO ch. 1) |
+| Guinea fowl | **30 weeks** (28-32) | **1 Apr - 31 Oct** | up to one a day, to the year's total | "start laying in March or April and may continue to lay until October" (EXT-GF); "an egg a day is common" (UKY); 28-32 weeks (**TO VERIFY**: [Farm Radio](https://scripts.farmradio.fm/radio-script/13-backgrounder-raising-guinea-fowl-for-food-and-income/), secondary) |
+
+- A new world starts on 1 October, so geese first lay about 46 game days in *(derived)* and guinea fowl about 61. Out of season they
+  lay nothing. The coop readout shows the date and IN LAY or OUT OF SEASON.
+- Toulouse geese "do not reproduce consistently until two or three years of age" (TLC); the game uses one year for all *(proposed)*.
+
+### Mating and incubation
+| Quantity | Goose | Guinea fowl | Source |
+|---|---|---|---|
+| Females per male | **4** | **5** (4-5) | "select one male for every four females" (FAO ch. 6); "one male for each four to five females" (UKY) |
+| Fertile days after mating | **14** *(proposed)* | 21 *(proposed: the default)* | NOT FOUND for geese (searched FAO, extension, AI literature; only forum figures of 10-14 days) |
+| Incubation | **30 days** | **27 days** (26-28) | "The incubation period for goose eggs is 30 days" (FAO ch. 8); "26 to 28 days" (UKY, EXT-GF) |
+| Stop turning after day | **27** | **25** | goose: the hatcher takes the eggs for "days 27-30" and they are no longer turned (FAO ch. 8, *derived*); guinea: "Stop turning on day 25" (**TO VERIFY**: NC State 4-H egg chart, snippet) |
+| Setter | 37.7 C, 50-55% RH, turned every 2 h | 37.7 C, 55% RH | FAO ch. 8; Onagbesan & Tona 2021 (**TO VERIFY**, snippet) |
+
+- Goose pairs: "In flocks larger than twenty this bond does not exist" (FAO ch. 2); the game uses the ratio only.
+- Embden goslings can be sexed by down colour until 2-3 weeks (FAO ch. 1); not modelled.
+
+### Grazing (geese)
+- **Share from grass:** on a grassy run a goose gets **two-thirds** of its feed from grass *(derived)*: geese on pasture are held to
+  "between 0.5-1.0 kg of grain per goose per week" (FAO ch. 9), about 107 g a day at the middle, against a full ration of "320 g per
+  day bird" (FAO ch. 6). FAO also measured that geese with pasture "consumed 34 percent less of the grain-based ration", and "48
+  percent less" at 12-14 weeks.
+- **Grass worn:** the goose's grass share comes off the run's grass blocks at the hen rule (1.5 kg DM a block, regrowth 0.31 g a day),
+  so a goose wears a run about ten times as fast as a hen (3.3 times the share of 3 times the feed) *(derived)*. "Stocking densities for geese on pasture are around
+  150 geese per hectare" (FAO ch. 9): a run that would last is about 67 m² a goose *(derived)*. A bare run gives no forage; the grain
+  feeder covers the full ration.
+- Insects and snails "can provide about 10 percent of their total protein intake" (FAO ch. 9); not modelled.
+
+### Feed, water and housing
+| Quantity | Goose | Guinea fowl | Source |
+|---|---|---|---|
+| Full ration | **320 g a day** | **85 g a day** | FAO ch. 6; guinea "about 84.5 g per bird per day" (**TO VERIFY**, snippet, a Nigerian field study) |
+| Water | 3x feed *(proposed: the duck rule; NOT FOUND for adult geese)* | 2x feed *(proposed: NOT FOUND)* | |
+| House floor | **1 block holds 1** (1.0 m² on deep litter) | **1 block holds 4** (2-3 sq ft, 0.19-0.28 m²) | "each bird be given approximately 1.0 m 2 of floor space" (FAO ch. 6); "2 to 3 square feet per guinea" (UKY) |
+| Run | **1 block a bird** (at least 1.0 m²) | 1 block a bird *(proposed: as hens)* | "a minimum of 1.0 m 2 per bird in a yard or run" (FAO ch. 6) |
+| Nests | 4 birds a nest *(proposed: as ducks)* | 4 *(proposed)* | |
+| Perch | none | **3 a perch block** *(proposed: as hens; guinea fowl roost high)* | "guineas roost in the trees at night" (UKY) |
+| Forage share on the run | two-thirds (above) | **20%** (the hen rule) | guinea: "able to meet most of their nutrition requirements on their own" (UKY), no share found |
+
+- Geese need no pond *(proposed: no source found that requires swimming water)*.
+
+### Meat, down and guarding
+- **Dressing:** goose **70%** ("approximately 70 percent with giblets", FAO ch. 13); guinea fowl **70%** ("70-71%" at 16 weeks,
+  [UMaine 2223](https://extension.umaine.edu/publications/2223e/)).
+- **Items:** `goose` / `cooked_goose` and `guinea_fowl` / `cooked_guinea_fowl`, at one item per 0.5 kg (eggs.md). An Embden goose
+  gives 12 goose items *(derived)*.
+- **Down:** a goose plucked live gives "between 100-120 g" of feathers and down, of which "between 15-20 percent" is down (FAO ch. 10).
+  At slaughter a goose drops **1 down item** (about 30 g, the duck's item) *(proposed: no slaughter figure found; one plucking's down
+  is 15-24 g)*. Live plucking is not modelled.
+- **Guard geese:** "it does not forget people, animals or situations easily which is what makes it such a good watch animal against
+  intruders whether human or animal" (FAO ch. 2); "The Chinese goose is reported to be very effective as a guard animal" (FAO ch. 1);
+  guard geese "will almost charge you, honk, and use intimidation tactics", but "only … if there's an intruder that goes into their
+  special area" ([National Geographic, 2022](https://www.nationalgeographic.com/animals/article/why-china-is-using-guard-geese-to-uphold-its-zero-covid-policy)).
+  - **Game:** a tame goose on its coop's run (or in its coop) honks and charges a hostile mob, or a player who is not the coop's
+    owner, inside the run or within **4 blocks** of it *(proposed)*. It bites for **1 damage** a second while touching *(proposed)*
+    and goes back when the intruder leaves.
+  - Chinese geese guard at twice the range *(proposed: the "very effective" breed)*. Hissing has no authoritative source; the goose
+    honks.
+
+### Alarm call (guinea fowl)
+- "Guinea fowl will sound an alarm whenever anything unusual occurs on the farm"; "The warning call of guineas notifies others when
+  raptors are in the area, giving them time to dash under shelter" (UKY).
+- **Game:** a tame guinea that sees a hostile mob within **16 blocks** *(proposed)* calls (a loud call, at most once every 10 s per
+  bird *(proposed)*). Every bird of that coop that is out on the run goes inside, and the coop readout shows `ALARM: <mob>` for the
+  next minute. Wild guinea fowl call too, and flee.
+
+### Plumage genes (new loci, appended after the Coturnix mutants)
+| Locus | Species | Alleles | Source |
+|---|---|---|---|
+| `GOOSE_DILUTION` | goose | sex-linked dilution Sd > sd+ (Z-linked); two copies pale the bird to white, one copy to pale grey | "an allele for sex-linked dilution and white spotting, together producing white plumage"; Sd "was confirmed to cause sex-linked dilution, and thus autosexing" (Ollila et al. 2026, [bioRxiv preprint](https://www.biorxiv.org/content/10.64898/2026.01.19.700295v1.full), **TO VERIFY**: not peer reviewed). The one-copy and two-copy looks follow the Pilgrim, "the males being white and the females grey" (FAO ch. 1) |
+| `GOOSE_SPOTTING` | goose | white spotting S, recessive to plain *(proposed mode)*; with dilution it makes the white Embden, alone the saddleback | "Saddleback pattern is caused by white spotting" (Ollila et al.) |
+| `GOOSE_WHITE` | goose (Chinese) | Chinese white, recessive | "the white plumage phenotype in Chinese geese should be recessive" ([Xi et al. 2020, BMC Genomics](https://pmc.ncbi.nlm.nih.gov/articles/PMC7027040)); OMIA lists it as co-dominant in one breed, so **TO VERIFY** |
+| `GUINEA_LAVENDER` | guinea | lavender, recessive | "recessive to pearl grey" (**TO VERIFY**, breeder source); "all of these loci are autosomal with three being recessive and the fourth incompletely dominant" ([Soara et al. 2022, PeerJ](https://pmc.ncbi.nlm.nih.gov/articles/PMC8784013)) |
+| `GUINEA_WHITE` | guinea | white, recessive *(proposed: one of the three recessive loci; which one is NOT FOUND)*. White keets hatch white | "the only solid white bird that hatches solid white and not yellow" (UKY) |
+
+- **Looks:** goose grey (Toulouse, wild type), pale grey, white, saddleback, Chinese brown (the swan goose's wild type) and Chinese
+  white; guinea pearl, lavender, white (white over lavender). The Chinese goose has the bill knob on the model.
+- **Founders:** Embden Sd/Sd (gander) or Sd (goose) with spotting; Toulouse wild type; Chinese 60% white homozygous and 40% brown
+  carrying white at 25% *(proposed)*; guinea fowl pearl, with lavender and white carriers at 10% each *(proposed)*.
+
+### Wild geese and guinea fowl
+| Biome group | Added | Source |
+|---|---|---|
+| River, swamp | goose: Toulouse, Embden | the greylag, ancestor of European geese, breeds in wetlands *(proposed mapping)* |
+| Plains | goose: Chinese | the swan goose, the Chinese goose's ancestor, grazes grassland by water *(proposed mapping)* |
+| Savanna | guinea fowl | helmeted guinea fowl are African savanna birds *(proposed mapping)* |
+
+Groups of 4 with one male, weight 10, as the other fowl. Wild geese and guinea fowl tame in the corral on grain.
+
+### Keets
+- Brooding: "Hovers should be started at 95°F (35°C) for the first two weeks, and then lowered by 5°F (2.75°C) per week" (UKY). The
+  brooder's warmth rule covers keets and goslings as the other young.
+- Keets are "very susceptible to dampness during their first two weeks"; not modelled (no death from care).
+
+### Open points
+- A goose fertile-days figure, adult goose and guinea water, the Toulouse egg weight, gene names for guinea colours.

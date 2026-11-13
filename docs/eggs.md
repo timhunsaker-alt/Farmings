@@ -146,3 +146,15 @@ since laying *(proposed thresholds)*:
 ### Sourcing pass, 2026-11-12
 - Resolved 1 mark: the FSIS raw and cooked poultry fridge times.
 - Still unsourced: shell eggs out of the cold (the FSIS egg page refused the fetch) and the duck down yield (Farrell review only).
+
+## Geese and guinea fowl, 2026-11-13 (spec)
+- **Egg items:** `goose_egg` (Embden and Toulouse 170 g, Chinese 120 g) and `guinea_egg` (40 g); weights in poultry.md. Graded by
+  species only, as turkey and duck eggs. A goose egg is "1 egg" = 144.0 g in USDA FoodData Central
+  ([FDC 172190](https://fdc.nal.usda.gov/food-details/172190)), inside the breed range.
+- **Keeping:** as hen eggs (5 weeks cold). Goose and guinea egg figures are NOT FOUND in FSIS or FoodSafety.gov; the hen figure ("Raw
+  eggs in shell | 3 to 5 weeks") stands in. Guinea eggs have a "longer shelf life, in comparison to chicken eggs"
+  ([SciELO review](https://www.scielo.br/j/rbca/a/KwspKmHJXdMGhypFbRX4dpC/)); not used *(no number)*.
+- **Fried egg:** both fry, as the other eggs.
+- **Meat:** `goose` / `cooked_goose`, `guinea_fowl` / `cooked_guinea_fowl` (food.md for keeping). Food values copy chicken's *(proposed)*.
+- **Down:** a goose drops 1 down item at slaughter (poultry.md).
+- **Feathers:** 1-2 vanilla feathers per goose or guinea fowl *(proposed: as the others)*.

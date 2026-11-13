@@ -151,3 +151,8 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
 ### Sourcing pass, 2026-11-12
 - Resolved 2 marks. Sheep settling now has a sheep figure (day six in an MLA feedlot study; 7 is kept for both species). The dog's meat ration is sourced in animals/sheep.md (0.5 kg a day).
 - Still proposed: the bird settling time, and the spawn, flight-distance and corral sizes, which are game choices.
+
+## New animals, 2026-11-13 (spec)
+- **Goats:** wild goats replace vanilla goats in snowy slopes, jagged peaks and frozen peaks, 2-4 a group with one buck (goats.md). They
+  follow hay and wheat, settle on hay or wheat in the bait trough, and tame in 7 real days. Wild goats jump and can ram; tame ones don't.
+- **Geese and guinea fowl:** spawn wild as the other birds (poultry.md) and tame in the corral on grain, as the other birds.

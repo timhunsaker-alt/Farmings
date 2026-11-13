@@ -275,6 +275,12 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - **Client scenes:** `looseends` (dog, coats, plumage, rotten egg), `belts`, and `fields` (the gantry gliding, the full-size machines,
     the gas set under load).
   - **Art:** Ludo icons for raw and cooked chicken and the shepherd's whistle.
+- Step 17 (2026-11-13, under way): new animals. Tim chose goats (Saanen, Nubian, Boer) and geese (Embden, Toulouse, Chinese) and
+  guinea fowl; pigs and horses wait. Approved in plan mode with his popup answers: goats share the sheep shed, dog and straws; goat milk
+  through the parlor's sheep stalls into bottles and fresh chèvre; wild goats replace vanilla goats; geese graze, give down and guard;
+  guinea fowl carry pearl, lavender and white genes and give an alarm call.
+  - Spec: `docs/animals/goats.md` (new); geese and guinea fowl in `poultry.md`; goat and new-bird sections in `creamery.md`, `parlor.md`,
+    `sheep-shed.md`, `food.md`, `eggs.md`, `breeding.md`, `taming.md`.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing
