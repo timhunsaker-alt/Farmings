@@ -32,6 +32,8 @@ public final class Spoilage {
 		BUTTER(45, 1.5, Spoiled.BUTTER),
 		CHEDDAR_WHEEL(180, 14, Spoiled.CHEESE),
 		CHEDDAR(24.5, 1, Spoiled.CHEESE),
+		// fresh chèvre: soft cheese "from one to three weeks after opening" (Clemson HGIC; food.md), 14 days
+		CHEVRE(14, 1, Spoiled.CHEESE),
 		RAW_STEAK(4, 1, Spoiled.STEAK),
 		COOKED_STEAK(3.5, 1, Spoiled.STEAK),
 		// Lamb chops: raw 3-5 days, cooked 3-4 days in the fridge (USDA FoodKeeper, lamb); the middles. Room 1 day as all (proposed).

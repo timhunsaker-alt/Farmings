@@ -90,7 +90,13 @@ public final class CreameryOutlet {
 				int n = (int) Math.min(64, Math.floor(c.butterKg() / Creamery.BUTTER_ITEM_KG + 1e-9));
 				yield n <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.BUTTER, n);
 			}
-			case AGING_SHELF -> c.agedWheels() <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.cheeseWheel(c.kind()), Math.min(16, c.agedWheels()));
+			case AGING_SHELF -> {
+				if (c.agedWheels() > 0) {
+					yield new ItemStack(FarmingsItems.cheeseWheel(c.kind()), Math.min(16, c.agedWheels()));
+				}
+				int n = (int) Math.min(64, Math.floor(c.chevreKg() / Creamery.CHEVRE_ITEM_KG + 1e-9));     // drained chèvre comes off the shelf too
+				yield n <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.CHEVRE, n);
+			}
 			default -> ItemStack.EMPTY;
 		};
 	}
@@ -126,7 +132,11 @@ public final class CreameryOutlet {
 			}
 			case AGING_SHELF -> {
 				int n = c.takeWheels(count);
-				yield n <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.cheeseWheel(c.kind()), n);
+				if (n > 0) {
+					yield new ItemStack(FarmingsItems.cheeseWheel(c.kind()), n);
+				}
+				int ch = c.takeChevre(count);
+				yield ch <= 0 ? ItemStack.EMPTY : new ItemStack(FarmingsItems.CHEVRE, ch);
 			}
 			default -> ItemStack.EMPTY;
 		};
@@ -149,6 +159,8 @@ public final class CreameryOutlet {
 			c.returnButter(stack.getCount());
 		} else if (stack.is(FarmingsItems.CHEDDAR_WHEEL) || stack.is(FarmingsItems.SHEEP_CHEESE_WHEEL)) {
 			c.returnWheels(stack.getCount());
+		} else if (stack.is(FarmingsItems.CHEVRE)) {
+			c.returnChevre(stack.getCount());
 		} else {
 			for (Creamery.Bottle b : Creamery.Bottle.values()) {
 				if (stack.is(FarmingsItems.bottle(b, c.kind()))) {

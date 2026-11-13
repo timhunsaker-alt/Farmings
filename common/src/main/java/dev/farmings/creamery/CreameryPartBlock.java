@@ -100,7 +100,10 @@ public class CreameryPartBlock extends BigPartBlock {
 			return InteractionResult.SUCCESS;
 		}
 		if (c != null && kind == CreameryParts.AGING_SHELF) {
-			give(player, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.cheeseWheel(c.creamery().kind()), c.creamery().takeWheels(16)), level.getGameTime()));
+			int wheels = c.creamery().takeWheels(16);
+			ItemStack out = wheels > 0 ? new ItemStack(FarmingsItems.cheeseWheel(c.creamery().kind()), wheels)
+					: new ItemStack(FarmingsItems.CHEVRE, c.creamery().takeChevre(64));
+			give(player, dev.farmings.item.Perishables.stamp(out, level.getGameTime()));
 			c.setChanged();
 			return InteractionResult.SUCCESS;
 		}

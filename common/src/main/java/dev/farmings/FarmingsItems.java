@@ -159,6 +159,8 @@ public final class FarmingsItems {
 			.food(food(5, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 	public static final Item SHEEP_CHEESE_WHEEL = item("sheep_cheese_wheel", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL, p.stacksTo(16)));
 	public static final Item SHEEP_CHEESE = item("sheep_cheese", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR, p.food(food(4, 0.8F))));
+	/** Fresh chèvre, a 0.25 kg log (creamery.md, "The chèvre mode"). */
+	public static final Item CHEVRE = item("chevre", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEVRE, p.food(food(2, 0.6F))));
 	/** Goat milk keeps as cow milk (food.md: no goat-milk figure found). */
 	public static final Item GOAT_MILK_BOTTLE = item("goat_milk_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.MILK, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
 			.food(food(4, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
@@ -277,6 +279,7 @@ public final class FarmingsItems {
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
 		ALL.put("goat_milk_bottle", GOAT_MILK_BOTTLE);
+		ALL.put("chevre", CHEVRE);
 		ALL.put("poultry_litter", POULTRY_LITTER);
 		ALL.put("shepherds_whistle", SHEPHERDS_WHISTLE);
 		ALL.put("chicken", CHICKEN);

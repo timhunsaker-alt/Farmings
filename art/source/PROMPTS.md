@@ -147,3 +147,4 @@ Every prompt ends "game item icon, plain white background, no text".
 | kid_chop / cooked_kid_chop | A single raw goat kid loin chop, pale pink lean meat, thin white fat rim, small bone / a single grilled goat kid loin chop, browned with crisscross grill marks, small bone |
 | chevon_chop / cooked_chevon_chop | A single large raw chevon goat chop, deep red lean meat, very thin fat edge, bone / a single roasted chevon goat chop, dark brown crust, bone |
 | goat_milk_bottle | A single old-fashioned 1 litre clear glass bottle full of bright pure white goat milk, a cardboard cap with a small goat silhouette |
+| chevre | A single small log of fresh soft white goat cheese chevre, bright white, slightly crumbly creamy surface, on nothing |

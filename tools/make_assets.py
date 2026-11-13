@@ -123,6 +123,7 @@ ITEMS = [
     ("chevon_chop", "Chevon Chop", (170, 72, 64), "steak"),
     ("cooked_chevon_chop", "Cooked Chevon Chop", (120, 74, 44), "steak"),
     ("goat_milk_bottle", "Goat Milk", (250, 250, 244), "bottle"),
+    ("chevre", "Chevre", (246, 244, 236), "blob"),
     # eggs (docs/eggs.md); placeholders until the Ludo icons
     ("poultry_litter", "Poultry Litter", (120, 100, 70), "blob"),
     ("shepherds_whistle", "Shepherd's Whistle", (200, 200, 190), "blob"),

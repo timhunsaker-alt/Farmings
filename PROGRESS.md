@@ -290,6 +290,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     goats in their own pen run, the dog and buck straws, wild goats in vanilla's goat biomes that ram players and hostile mobs.
     Textures by `tools/goat_textures.py`; Ludo icons for the meat and milk. 13 game tests (202 in all), `HerdTest`, `GoatGeneticsTest`;
     client scene `goats`.
+  - Chèvre: the creamery's CHEVRE mode for goat milk (pasteurize, set 18 h, drain 16 h at the machine scale, 17 kg per 100 kg, whey
+    kept), taken off the aging shelf; goat milk bottles. 2 game tests (204 in all), `ChevreTest`.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

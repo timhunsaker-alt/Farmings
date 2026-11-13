@@ -137,8 +137,14 @@ Taking by hand still works. Game tests: hopper_takes_butter_and_wheels, hopper_b
 
 - **Machine time:** setting and draining run in the vat at the creamery's 15:1 machine scale (waste.md): 34 real hours is 113 s *(derived: 90 real minutes is 100 ticks, as the pasteurizer)*.
   The vat needs power to hold 28 C *(proposed)*; with no power the batch waits.
-- **Item:** `chevre`, **0.25 kg** a piece *(proposed: a small log)*, taken from the vat by hand or hopper. 2 hunger *(proposed)*.
-  No aging shelf.
+- **Item:** `chevre`, **0.25 kg** a piece *(proposed: a small log)*, 2 hunger *(proposed)*. It is not aged; it is taken from the aging
+  shelf (by hand or a hopper below), the creamery's one cheese outlet, after any aged wheels.
 - **Shelf life:** see food.md (goat products).
 - **Not modelled:** salt (1 tsp per pound, [Baetje Farms via SARE](https://projects.sare.org/wp-content/uploads/Baetje-Farms-CHEVRE-Cheese-recipe.pdf)),
   molds, herbs or ash coatings.
+
+### Built, 2026-11-13: goat milk and chèvre
+- **Code:** `husbandry/parlor/MilkKind` (cow, sheep, goat) in the tank and creamery; `Creamery.Mode.CHEVRE` with the vat's setting and
+  draining, saved as version 3 (older saves load). Items `goat_milk_bottle` and `chevre` (Ludo icons).
+- **Faults:** CHEVRE NEEDS GOAT MILK; GOAT MILK: USE CHEVRE (in the CHEESE mode); VAT BUSY while a batch drains.
+- **Tests:** `ChevreTest`; game tests chevre_from_goat_milk, cow_milk_refused_for_chevre.

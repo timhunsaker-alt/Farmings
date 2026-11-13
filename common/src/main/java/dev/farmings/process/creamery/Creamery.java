@@ -10,7 +10,9 @@ import java.util.List;
  */
 public final class Creamery {
 	public enum Mode {
-		BOTTLE, CREAM, BUTTER, CHEESE;
+		BOTTLE, CREAM, BUTTER, CHEESE,
+		/** Fresh lactic goat cheese (creamery.md, "The chèvre mode"); goat milk only. */
+		CHEVRE;
 
 		public Mode next() {
 			return values()[(ordinal() + 1) % values().length];
@@ -47,6 +49,14 @@ public final class Creamery {
 	public static final long PRESS_TICKS = TimeScale.realDaysToTicks(0.5);
 	/** Aging: 60 days real, 4 game days. */
 	public static final long AGE_TICKS = TimeScale.realDaysToTicks(60);
+	/** Chèvre: set 18 h ("usually 12-24 hours", Cornell) and drain 16 h ("8-24 hours", Cornell), 34 real hours at the machine scale. */
+	public static final long CHEVRE_TICKS = TimeScale.realDaysToTicks(34.0 / 24);
+	/** 17 kg of chèvre per 100 kg of milk, the middle of 14-20 at 60% moisture (Guo et al. 2004, Small Rumin. Res. 52:103). */
+	public static final double CHEVRE_YIELD = 0.17;
+	/** A chèvre item, a small log, 0.25 kg *(proposed)*. */
+	public static final double CHEVRE_ITEM_KG = 0.25;
+	/** The chèvre the vat holds once drained *(proposed: as the butter store)*. */
+	public static final double STORE_CHEVRE_KG = 500;
 
 	private double rawL;
 	private double rawFat = DEFAULT_FAT;
@@ -65,6 +75,10 @@ public final class Creamery {
 	private int inPress;
 	private final List<Long> aging = new ArrayList<>();
 	private int agedWheels;
+	/** The chèvre batch setting and draining in the vat: ticks so far (-1 none) and its milk, kg. */
+	private long chevreTicks = -1;
+	private double chevreMilkKg;
+	private double chevreKg;
 	private String fault = "";
 
 	// ---- milk in ----
@@ -98,7 +112,8 @@ public final class Creamery {
 		for (double b : bottles) {
 			stores += b;
 		}
-		return rawL <= 1e-6 && batchL <= 1e-6 && stores <= 1e-6 && butterKg <= 1e-6 && curdKg <= 1e-6 && inPress == 0 && aging.isEmpty() && agedWheels == 0;
+		return rawL <= 1e-6 && batchL <= 1e-6 && stores <= 1e-6 && butterKg <= 1e-6 && curdKg <= 1e-6 && inPress == 0 && aging.isEmpty() && agedWheels == 0
+				&& chevreTicks < 0 && chevreKg <= 1e-6;
 	}
 
 	/** True if milk of this kind can go in now: the same kind, or an empty creamery. Kinds are never mixed. */
@@ -155,6 +170,7 @@ public final class Creamery {
 	public void step(long ticks, Power power) {
 		fault = "";
 		age(ticks);
+		drain(ticks, power);
 		if (phase == Phase.IDLE && rawL >= 1) {
 			batchL = Math.min(BATCH_L, rawL);
 			batchFat = rawFat;
@@ -228,6 +244,10 @@ public final class Creamery {
 				return true;
 			}
 			case CHEESE -> {
+				if (kind == dev.farmings.husbandry.parlor.MilkKind.GOAT) {
+					fault = "GOAT MILK: USE CHEVRE";
+					return false;
+				}
 				if (!power.vat()) {
 					fault = "NO POWER: cheese vat";
 					return false;
@@ -246,8 +266,69 @@ public final class Creamery {
 				bottles[Bottle.WHEY.ordinal()] += whey;
 				return true;
 			}
+			case CHEVRE -> {
+				if (kind != dev.farmings.husbandry.parlor.MilkKind.GOAT) {
+					fault = "CHEVRE NEEDS GOAT MILK";
+					return false;
+				}
+				if (!power.vat()) {
+					fault = "NO POWER: cheese vat";
+					return false;
+				}
+				if (chevreTicks >= 0) {
+					fault = "VAT BUSY: chevre draining";
+					return false;
+				}
+				chevreTicks = 0;
+				chevreMilkKg = batchL * Dairy.MILK_KG_PER_L;
+				return true;
+			}
 		}
 		return false;
+	}
+
+	/** The vat holds the chèvre batch at its set temperature (power), then it drains into chèvre and whey. */
+	private void drain(long ticks, Power power) {
+		if (chevreTicks < 0) {
+			return;
+		}
+		if (!power.vat()) {
+			fault = "NO POWER: cheese vat";
+			return;
+		}
+		chevreTicks = Math.min(CHEVRE_TICKS, chevreTicks + ticks);
+		if (chevreTicks < CHEVRE_TICKS) {
+			return;
+		}
+		double cheese = chevreMilkKg * CHEVRE_YIELD;
+		double whey = (chevreMilkKg - cheese) / Dairy.MILK_KG_PER_L;
+		if (chevreKg + cheese > STORE_CHEVRE_KG || bottles[Bottle.WHEY.ordinal()] + whey > STORE_L) {
+			fault = "VAT OR BOTTLER FULL";
+			return;
+		}
+		chevreKg += cheese;
+		bottles[Bottle.WHEY.ordinal()] += whey;
+		chevreTicks = -1;
+		chevreMilkKg = 0;
+	}
+
+	public double chevreKg() {
+		return chevreKg;
+	}
+
+	public boolean chevreDraining() {
+		return chevreTicks >= 0;
+	}
+
+	/** Takes whole chèvre pieces (0.25 kg each); returns how many. */
+	public int takeChevre(int max) {
+		int n = (int) Math.min(max, Math.floor(chevreKg / CHEVRE_ITEM_KG + 1e-9));
+		chevreKg -= n * CHEVRE_ITEM_KG;
+		return n;
+	}
+
+	public void returnChevre(int n) {
+		chevreKg += n * CHEVRE_ITEM_KG;
 	}
 
 	/** The press makes a wheel from each 10 kg of curd (all whole wheels at once); each wheel then ages on the shelf. */
@@ -358,8 +439,20 @@ public final class Creamery {
 
 	/** Marks the save layout with whey (version 2); a first value of -2 cannot be a raw-milk volume, so older saves still read. */
 	private static final double SAVE_V2 = -2;
+	/** Version 3: version 2 with the chèvre vat's three numbers on the end. */
+	private static final double SAVE_V3 = -3;
 
 	public double[] save() {
+		double[] v2 = saveV2();
+		double[] out = java.util.Arrays.copyOf(v2, v2.length + 3);
+		out[0] = SAVE_V3;
+		out[v2.length] = chevreTicks;
+		out[v2.length + 1] = chevreMilkKg;
+		out[v2.length + 2] = chevreKg;
+		return out;
+	}
+
+	private double[] saveV2() {
 		double[] head = {SAVE_V2, rawL, rawFat, rawProtein, mode.ordinal(), phase.ordinal(), phaseTicks, batchL, batchFat, batchProtein,
 				bottles[0], bottles[1], bottles[2], bottles[3], bottles[4], butterKg, curdKg, pressing, agedWheels, inPress, aging.size()};
 		double[] out = new double[head.length + aging.size()];
@@ -371,6 +464,15 @@ public final class Creamery {
 	}
 
 	public void load(double[] d) {
+		if (d.length > 3 && d[0] == SAVE_V3) {
+			double[] v2 = java.util.Arrays.copyOf(d, d.length - 3);
+			v2[0] = SAVE_V2;
+			load(v2);
+			chevreTicks = (long) d[d.length - 3];
+			chevreMilkKg = d[d.length - 2];
+			chevreKg = d[d.length - 1];
+			return;
+		}
 		if (d.length > 0 && d[0] == SAVE_V2) {
 			// version 2: the old layout with a leading marker and whey after buttermilk
 			if (d.length < 21) {
@@ -412,8 +514,12 @@ public final class Creamery {
 	}
 
 	public String summary() {
-		return String.format(java.util.Locale.ROOT, "%s, raw %.0f L (%.2f%% fat), pasteurizer %s; milk %.0f L, cream %.0f L, skim %.0f L, buttermilk %.0f L, whey %.0f L, butter %.1f kg, curd %.1f kg, wheels aging %d, aged %d",
-				mode, rawL, rawFat, phase.name().toLowerCase(java.util.Locale.ROOT), bottles[0], bottles[1], bottles[2], bottles[3], bottles[4], butterKg, curdKg,
+		String s = String.format(java.util.Locale.ROOT, "%s, %s milk, raw %.0f L (%.2f%% fat), pasteurizer %s; milk %.0f L, cream %.0f L, skim %.0f L, buttermilk %.0f L, whey %.0f L, butter %.1f kg, curd %.1f kg, wheels aging %d, aged %d",
+				mode, kind.label(), rawL, rawFat, phase.name().toLowerCase(java.util.Locale.ROOT), bottles[0], bottles[1], bottles[2], bottles[3], bottles[4], butterKg, curdKg,
 				aging.size() + inPress, agedWheels);
+		if (chevreTicks >= 0 || chevreKg > 0) {
+			s += String.format(java.util.Locale.ROOT, ", chevre %s, %.1f kg ready", chevreTicks >= 0 ? "draining " + (100 * chevreTicks / CHEVRE_TICKS) + "%" : "vat free", chevreKg);
+		}
+		return s;
 	}
 }
