@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "S S",
+  "S S",
+  "SSS"
+ ],
+ "key": {
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:slurry_store",
+  "count": 1
+ }
+}

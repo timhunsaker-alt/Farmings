@@ -314,6 +314,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Pigs: Large White, Duroc and Berkshire (`entity/PigEntity`, `husbandry/Swine`): growth on the sourced curve, farrowing litters by
     breed and parity with stillbirths, an 84% service, the KIT and MC1R coat genes, cuts (chops, bellies, shoulders, fat, hams by
     weight), boar straws that keep 6 days, wild pigs. 6 game tests (219 in all); client scene `pigs`.
+  - The pig barn: slatted pens over a pit, farrowing crates a sow takes 5 days before farrowing until weaning, heat lamps on Wildcatter
+    power for piglets, the barn's feeders and troughs, rooting on its pasture, and a slurry pump to a digester feed pit or a slurry
+    store. 5 game tests (224 in all).
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

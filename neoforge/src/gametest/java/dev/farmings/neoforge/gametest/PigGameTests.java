@@ -180,4 +180,138 @@ final class PigGameTests {
 		helper.assertTrue(straw.getItem().interactLivingEntity(straw, player, sow, HAND).consumesAction() && sow.pregnant(), Component.literal("the sow takes it"));
 		helper.succeed();
 	}
+
+	// ---- the pig barn (docs/multiblocks/pig-barn.md) ----
+
+	/**
+	 * A pig barn and pasture, relative to the scene: the controller at (1,1,2); slatted floor x 2-4, z 1-3; a feeder north at (2,1,0); a
+	 * trough south at (3,1,4); a farrowing crate at (5,1,1) and the pasture gate at (5,1,3); the pasture x 6-13, z 0-5, fenced.
+	 */
+	static BlockPos buildBarn(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		for (int x = -1; x <= 15; x++) {
+			for (int z = -2; z <= 8; z++) {
+				helper.setBlock(new BlockPos(x, 0, z), x >= 6 && x <= 13 && z >= 0 && z <= 5 ? net.minecraft.world.level.block.Blocks.GRASS_BLOCK
+						: net.minecraft.world.level.block.Blocks.STONE);
+				for (int y = 1; y <= 4; y++) {
+					helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+				}
+			}
+		}
+		for (int x = 5; x <= 14; x++) {
+			for (int z = -1; z <= 6; z++) {
+				if (x == 5 || x == 14 || z == -1 || z == 6) {
+					helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.OAK_FENCE);
+				}
+			}
+		}
+		helper.setBlock(new BlockPos(1, 1, 2), dev.farmings.piggery.PigBarnBlocks.PIG_BARN_CONTROLLER);
+		for (int x = 2; x <= 4; x++) {
+			for (int z = 1; z <= 3; z++) {
+				helper.setBlock(new BlockPos(x, 1, z), dev.farmings.piggery.PigBarnBlocks.SLATTED_FLOOR);
+			}
+		}
+		helper.setBlock(new BlockPos(5, 1, 1), dev.farmings.piggery.PigBarnBlocks.FARROWING_CRATE);
+		helper.setBlock(new BlockPos(5, 1, 3), dev.farmings.shed.ShedBlocks.PASTURE_GATE);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.HAY_FEEDER, helper.absolutePos(new BlockPos(2, 1, 0)), net.minecraft.core.Direction.NORTH);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.WATER_TROUGH, helper.absolutePos(new BlockPos(3, 1, 4)), net.minecraft.core.Direction.NORTH);
+		return helper.absolutePos(new BlockPos(1, 1, 2));
+	}
+
+	static dev.farmings.piggery.PigBarnControllerEntity barn(GameTestHelper helper, BlockPos c) {
+		return (dev.farmings.piggery.PigBarnControllerEntity) helper.getLevel().getBlockEntity(c);
+	}
+
+	/** The barn forms with its pens, crate, feeder, drinker and pasture; without a drinker it names it. */
+	static void pigBarnForms(GameTestHelper helper) {
+		BlockPos c = buildBarn(helper);
+		ServerLevel level = helper.getLevel();
+		var barn = barn(helper, c);
+		barn.refresh(level);
+		helper.assertTrue(barn.check().formed() && barn.check().pen().size() == 9 && barn.check().lambing().size() == 1,
+				Component.literal("the barn forms: " + barn.readout()));
+		helper.assertTrue(barn.pasture() != null && barn.pasture().found() && barn.pitCapacityKg() == 4500, Component.literal(barn.readout()));
+		level.destroyBlock(helper.absolutePos(new BlockPos(3, 1, 4)), false);
+		barn.refresh(level);
+		helper.assertTrue(barn.status().equals("No drinker (trough) beside the pen"), Component.literal(barn.status()));
+		helper.succeed();
+	}
+
+	/** A sow due within 5 days is given the farrowing crate and walks to it. */
+	static void sowGoesToCrate(GameTestHelper helper) {
+		BlockPos c = buildBarn(helper);
+		var barn = barn(helper, c);
+		barn.forceDayForTest(false);
+		PigEntity sow = adult(helper, PigBreed.LARGE_WHITE, Sex.FEMALE, 51L, new BlockPos(3, 1, 2));
+		PigEntity boar = adult(helper, PigBreed.DUROC, Sex.MALE, 52L, new BlockPos(3, 1, 3));
+		sow.place().assignShed(c, null);
+		boar.place().assignShed(c, null);
+		sow.startHeatForDisplay();
+		sow.sureConceptionForTest();
+		helper.assertTrue(sow.conceive(boar.genome(), boar.genes(), helper.getLevel().getGameTime()), Component.literal("she conceives"));
+		sow.setDueInForTest(3);
+		BlockPos crate = helper.absolutePos(new BlockPos(5, 1, 1));
+		TamingGameTests.waitFor(helper, 0, 600, () -> crate.equals(sow.place().home()) && sow.blockPosition().distManhattan(crate) <= 1,
+				() -> "she should go to the crate: home " + sow.place().home() + ", at " + sow.blockPosition() + "; " + barn.readout(), helper::succeed);
+	}
+
+	/** A piglet in a crate under a powered heat lamp keeps its health; one without a lamp loses some. */
+	static void pigletColdWithoutLamp(GameTestHelper helper) {
+		BlockPos c = buildBarn(helper);
+		ServerLevel level = helper.getLevel();
+		var barn = barn(helper, c);
+		barn.refresh(level);
+		BlockPos crate = helper.absolutePos(new BlockPos(5, 1, 1));
+		PigEntity warm = pig(helper, PigBreed.LARGE_WHITE, Sex.FEMALE, 61L, 3, new BlockPos(5, 1, 1));
+		PigEntity cold = pig(helper, PigBreed.LARGE_WHITE, Sex.FEMALE, 62L, 3, new BlockPos(3, 1, 2));
+		warm.setNoAi(true);
+		cold.setNoAi(true);
+		warm.place().assignShed(c, crate);
+		cold.place().assignShed(c, helper.absolutePos(new BlockPos(3, 1, 2)));
+		helper.setBlock(new BlockPos(5, 3, 1), dev.farmings.piggery.PigBarnBlocks.HEAT_LAMP);
+		((dev.farmings.piggery.HeatLampEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 3, 1)))).forceRunning(true);
+		float full = cold.getMaxHealth();
+		for (int i = 0; i < 50; i++) {
+			barn.tend(level, List.of(warm, cold), 0.01);
+		}
+		helper.assertTrue(warm.getHealth() == full && cold.getHealth() < full, Component.literal("warm " + warm.getHealth() + ", cold " + cold.getHealth()));
+		helper.succeed();
+	}
+
+	/** The pump moves slurry from the pit along a pipe to a slurry store. */
+	static void slurryPumpedToStore(GameTestHelper helper) {
+		BlockPos c = buildBarn(helper);
+		ServerLevel level = helper.getLevel();
+		var barn = barn(helper, c);
+		barn.refresh(level);
+		barn.addSlurryForTest(100);
+		helper.setBlock(new BlockPos(1, 1, 3), dev.farmings.piggery.PigBarnBlocks.SLURRY_PUMP);
+		helper.setBlock(new BlockPos(1, 1, 4), dev.farmings.piggery.PigBarnBlocks.SLURRY_PIPE);
+		helper.setBlock(new BlockPos(1, 1, 5), dev.farmings.piggery.PigBarnBlocks.SLURRY_PIPE);
+		helper.setBlock(new BlockPos(1, 1, 6), dev.farmings.piggery.PigBarnBlocks.SLURRY_STORE);
+		var pump = (dev.farmings.piggery.SlurryPumpEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(1, 1, 3)));
+		var store = (dev.farmings.piggery.SlurryStoreEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(1, 1, 6)));
+		pump.forceRunning(true);
+		TamingGameTests.waitFor(helper, 0, 200, () -> store.kg() >= 100 - 1e-6 && barn.pitKg() < 1e-6,
+				() -> "the slurry should reach the store: " + pump.readout() + "; " + store.readout(), helper::succeed);
+	}
+
+	/** On the pasture a pig roots: grass turns to dirt and it gets part of its feed with an empty feeder. */
+	static void pigsRootPasture(GameTestHelper helper) {
+		BlockPos c = buildBarn(helper);
+		ServerLevel level = helper.getLevel();
+		var barn = barn(helper, c);
+		barn.refresh(level);
+		PigEntity sow = adult(helper, PigBreed.BERKSHIRE, Sex.FEMALE, 71L, new BlockPos(9, 1, 3));
+		sow.setNoAi(true);
+		sow.setFarrowedForTest(60, 8);     // a sow, her litter weaned
+		sow.place().assignShed(c, helper.absolutePos(new BlockPos(3, 1, 2)));
+		sow.recordTending(0, 1);
+		for (int i = 0; i < 200; i++) {
+			barn.tend(level, List.of(sow), 0.01);
+		}
+		helper.assertTrue(barn.rooted() >= 1, Component.literal("she roots grass: " + barn.rooted()));
+		helper.assertTrue(sow.lastFed() > 0.4 && sow.lastFed() < 0.6, Component.literal("a sow gets half her feed rooting, fed " + sow.lastFed()));
+		helper.succeed();
+	}
 }

@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "ICI",
+  "IRI",
+  " G "
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "G": "minecraft:glass",
+  "I": "minecraft:iron_ingot",
+  "R": "minecraft:redstone"
+ },
+ "result": {
+  "id": "farmings:heat_lamp",
+  "count": 1
+ }
+}

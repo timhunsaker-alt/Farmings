@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "K K",
+  "III"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:slatted_floor",
+  "count": 4
+ }
+}

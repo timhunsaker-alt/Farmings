@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "N N",
+  "NNN",
+  "KKK"
+ ],
+ "key": {
+  "K": "minecraft:gray_concrete",
+  "N": "minecraft:iron_bars"
+ },
+ "result": {
+  "id": "farmings:farrowing_crate",
+  "count": 1
+ }
+}

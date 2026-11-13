@@ -1,0 +1,6 @@
+{
+ "model": {
+  "type": "minecraft:model",
+  "model": "farmings:block/pig_barn_controller"
+ }
+}

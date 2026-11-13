@@ -36,3 +36,17 @@
 
 ## Not in this pass
 - Ventilation and room temperature, sorting, all-in-all-out, lagoons as earthworks (the slurry store stands in).
+
+## Built, 2026-11-13
+- **Code:** `piggery/` (`PigBarnBlocks`, `PigBarnControllerEntity`, `HeatLampEntity`, `SlurryPumpEntity`, `SlurryStoreEntity`). The layout is
+  the sheep shed's check (`ShedLayout`) with the barn's cells.
+- **Differences from the spec above:**
+  - The **feeder and drinker are the barn's hay feeder and water trough**, not new blocks: the feeder already takes grain, meal and
+    rations. The readout gives each one's room (5 pigs a feeder, 12 a drinker).
+  - A **farrowing crate is one block**, not 1 x 2 *(proposed: a block's floor stands for the crate and its creep)*.
+  - The **slurry store** only stores (a lagoon stand-in); the gantry spreader does not draw from it in this pass.
+  - **Slurry into a digester:** a kg of slurry feeds the digester as 2.14 kg of dairy manure (49 / 23 m³ a tonne, *derived*; the
+    digester counts one kind of manure).
+  - Piglets need a powered heat lamp within 3 blocks above their crate or pen cell until weaning; without one they lose health as cold
+    chicks do.
+- **Tests:** game tests pig_barn_forms, sow_goes_to_crate, piglet_cold_without_lamp, slurry_pumped_to_store, pigs_root_pasture.

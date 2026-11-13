@@ -395,6 +395,7 @@ def main():
     wool_mill_assets(lang)
     cold_room_assets(lang)
     shed_assets(lang)
+    pig_barn_assets(lang)
     corral_assets(lang)
     coop_assets(lang)
     hatchery_assets(lang)
@@ -462,6 +463,14 @@ SHAPED = {
     "sheep_pen": (["HHH", "WWW"], 6),
     "lambing_pen": (["F F", "HHH", "WWW"], 2),
     "pasture_gate": (["FWF", "FWF"], 1),
+    # the pig barn (docs/multiblocks/pig-barn.md): concrete slats over iron, a steel crate, a lamp, a pump, pipe and a tank
+    "pig_barn_controller": (["WRW", "WCW", "WWW"], 1),
+    "slatted_floor": (["K K", "III"], 4),
+    "farrowing_crate": (["N N", "NNN", "KKK"], 1),
+    "heat_lamp": (["ICI", "IRI", " G "], 1),
+    "slurry_pump": (["SRS", "CBC", "SSS"], 1),
+    "slurry_pipe": (["III"], 6),
+    "slurry_store": (["S S", "S S", "SSS"], 1),
     # the taming corral (docs/taming.md): a log post, a fence-and-plank gate, a plank trough with hay
     "corral_post": (["T", "W", "W"], 1),
     "corral_gate": (["TFT", "TWT"], 1),
@@ -878,6 +887,67 @@ def corral_textures():
     for name, im in out.items():
         if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
             im.save(os.path.join(tex, name + ".png"))
+
+
+PIG_BARN = {"pig_barn_controller": "Pig Barn Controller", "slatted_floor": "Slatted Floor", "farrowing_crate": "Farrowing Crate",
+            "heat_lamp": "Heat Lamp", "slurry_pump": "Slurry Pump", "slurry_pipe": "Slurry Pipe", "slurry_store": "Slurry Store"}
+
+
+def pig_barn_assets(lang):
+    """Drawn stand-ins: concrete slats with gaps, a crate's steel bars over a mat, a red lamp, pump and tank steel, a pipe."""
+    from PIL import Image, ImageDraw
+    m = os.path.join(ASSETS, "models", "block")
+    tex = os.path.join(ASSETS, "textures", "block")
+    out = {}
+    slats = Image.new("RGBA", (16, 16), (150, 150, 146, 255))
+    d = ImageDraw.Draw(slats)
+    for x in range(3, 16, 4):
+        d.line([(x, 0), (x, 15)], fill=(40, 36, 32, 255))          # the gaps manure falls through
+    out["slatted_floor_top"] = slats
+    crate = Image.new("RGBA", (16, 16), (96, 88, 78, 255))
+    d = ImageDraw.Draw(crate)
+    d.rectangle([5, 0, 10, 15], fill=(70, 70, 74, 255))             # the sow's mat in the middle
+    for x in (4, 11):
+        d.line([(x, 0), (x, 15)], fill=(196, 196, 202, 255))        # the crate bars
+    out["farrowing_crate_top"] = crate
+    lamp = Image.new("RGBA", (16, 16), (60, 60, 64, 255))
+    ImageDraw.Draw(lamp).ellipse([3, 3, 12, 12], fill=(240, 96, 40, 255))
+    out["heat_lamp"] = lamp
+    steel = Image.new("RGBA", (16, 16), (120, 124, 130, 255))
+    d = ImageDraw.Draw(steel)
+    d.rectangle([0, 0, 15, 15], outline=(80, 84, 90, 255))
+    d.ellipse([4, 4, 11, 11], outline=(60, 64, 70, 255))
+    out["slurry_pump"] = steel
+    store = Image.new("RGBA", (16, 16), (110, 116, 104, 255))
+    d = ImageDraw.Draw(store)
+    for y in (3, 8, 13):
+        d.line([(0, y), (15, y)], fill=(80, 86, 76, 255))
+    out["slurry_store"] = store
+    pipe = Image.new("RGBA", (16, 16), (92, 92, 96, 255))
+    ImageDraw.Draw(pipe).rectangle([4, 4, 11, 11], fill=(60, 60, 64, 255))
+    out["slurry_pipe"] = pipe
+    board = Image.new("RGBA", (16, 16), (150, 108, 64, 255))
+    d = ImageDraw.Draw(board)
+    d.rectangle([4, 2, 11, 13], fill=(236, 232, 214, 255), outline=(90, 70, 50, 255))
+    d.ellipse([6, 5, 9, 8], fill=(226, 160, 160, 255))               # a pig's snout on the card
+    out["pig_barn_controller"] = board
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+    for name, title in PIG_BARN.items():
+        lang["block.farmings." + name] = title
+    for cube in ("pig_barn_controller", "heat_lamp", "slurry_pump", "slurry_pipe", "slurry_store"):
+        write(os.path.join(m, cube + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + cube}})
+    for name in ("slatted_floor", "farrowing_crate"):
+        write(os.path.join(m, name + ".json"), {
+            "textures": {"top": "farmings:block/%s_top" % name, "side": "farmings:block/shed_floor_side", "particle": "farmings:block/%s_top" % name},
+            "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {
+                "up": {"texture": "#top"}, "down": {"texture": "#side", "cullface": "down"},
+                **{f: {"texture": "#side", "uv": [0, 14, 16, 16]} for f in ("north", "south", "east", "west")}}}]})
+    for name in PIG_BARN:
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
 
 
 def corral_assets(lang):

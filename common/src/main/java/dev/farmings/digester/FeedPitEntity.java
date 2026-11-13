@@ -53,6 +53,22 @@ public class FeedPitEntity extends BlockEntity implements ItemSink, WorldlyConta
 		return ItemStack.EMPTY;
 	}
 
+	/**
+	 * Pig slurry from a slurry pump (pig-barn.md, "Digester"): 0.56 m³ of biogas a kg VS at VS 8.8% of fresh weight (NC State; MWPS-18) is
+	 * 49 m³ a tonne against dairy manure's 23, so a kg of slurry feeds the digester as 2.14 kg of dairy manure *(derived)*. Returns kg taken.
+	 */
+	public double feedSlurry(double kg) {
+		DigesterEntity t = tank();
+		if (t == null || kg <= 0) {
+			return 0;
+		}
+		t.digester().feed(kg * SLURRY_DAIRY_EQUIVALENT);
+		t.setChanged();
+		return kg;
+	}
+
+	public static final double SLURRY_DAIRY_EQUIVALENT = 0.56 * 0.088 * 1000 / (dev.farmings.farm.digester.Digester.M3_PER_KG * 1000);
+
 	/** Pulls manure from a barn collection pit it touches, a few items a second. */
 	public void serverTick(ServerLevel level) {
 		if (level.getGameTime() % 20 != 0 || tank() == null) {
