@@ -7,6 +7,8 @@
   "farmings:quail",
   "farmings:lamb_chop",
   "farmings:mutton_chop",
+  "farmings:kid_chop",
+  "farmings:chevon_chop",
   "farmings:select_steak",
   "farmings:choice_steak",
   "farmings:prime_steak"

@@ -57,14 +57,15 @@ day 0 is 1 October; `Flock.dayOfYear`).
 | Nubian | as Saanen | as Saanen | NOT FOUND for Nubian alone (searched breed and parity litter distributions). Five dairy genotypes pooled, Saanen and Anglo-Nubian among them, give "singles (56.2%) … twins (41.1%)" (**TO VERIFY**, snippet, Mellado 2011) |
 | Boer | **1.64** | **43 / 50 / 7** | "single 43 per cent, twin 50 per cent, triplet 7 per cent" ([FAO, Boer goat](https://www.fao.org/4/t0376e/T0376E06.htm)) |
 
-- **First kidding for Boer:** the FAO odds are for all does; a first kidding uses the Saanen first-kidding odds scaled to the Boer mean
-  *(proposed)*.
+- **First kidding:** every breed's mean is multiplied by 1.37 / 1.56, the Saanen first-to-later ratio *(derived)*; the FAO Boer odds
+  are for all does. Odds for a mean are read off the table rows (1.37, 1.56, 1.64) by straight lines, up to 2.0 *(proposed ceiling)*.
 - Crosses take the breed-weighted odds; the fertility trait moves the mean by up to ±0.2 *(proposed; as sheep)*.
 
 ### Stillborn kids
 - **Chance a kid is stillborn: 6%.** German dairy goat farms: stillbirth 6.4% (median 5.8%) (**TO VERIFY**, snippet: Balasopoulou et
   al. 2022, [DOAJ](https://doaj.org/article/bde2f6be18e644a2a8b7931c1ae1cc24)). The game rounds to 6.
-- First kidding and litter size scale it as for sheep (single 0.8x, twin or triplet 1.2x) *(proposed)*.
+- Litter size scales it as for sheep (single 0.8x, twin or triplet 1.2x) *(proposed)*. A first kidding has no extra risk: the sheep
+  study's first-lambing figure is for ewe hoggets and has no goat counterpart *(proposed)*.
 - "On average, nearly 14 percent of kids in the U.S. die before weaning" ([Univ. of Arkansas FSA9615](https://www.uaex.uada.edu/publications/pdf/FSA-9615.pdf)).
   Only the stillbirth is modelled; kids are never lost after birth (cattle rule: no death from care).
 
@@ -156,7 +157,8 @@ day 0 is 1 October; `Flock.dayOfYear`).
   from the dam are weaned at 42-56 days ([Vickery et al. 2023](https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2023.1200849/full));
   the game keeps kids with the dam (90 days) *(proposed)*.
 - **Growth:** the sheep growth curve (`Flock.targetKg`) from birth weight to mature weight *(proposed shape)*, checked against "35 to 50
-  pounds or more by 90 days of age" for meat kids (16-23 kg; Penn State). A Boer kid reaches about 18 kg at 90 days *(target)*.
+  pounds or more by 90 days of age" for meat kids (16-23 kg; Penn State). A Boer kid reaches about 22 kg at 90 days on this line *(derived)*, inside the range. Twins are born at 92% and triplets at 87% of a
+  single's weight (Mellado et al., above).
 - **Ration:** kids' growth takes the lamb ration factor (feed-mill.md).
 
 ## Meat
@@ -189,11 +191,12 @@ day 0 is 1 October; `Flock.dayOfYear`).
 - **Spawns:** Farmings goats take the vanilla goat's spawns (snowy slopes, jagged peaks, frozen peaks; vanilla's biome tags) in groups
   of 2-4, one buck a group *(proposed: vanilla's group size)*.
 - **Breeds by biome** *(proposed)*: Saanen 60%, Nubian 20%, Boer 20% (Saanen is the alpine breed).
-- **Behaviour:** wild goats jump as vanilla goats do and can ram a player or mob that comes close *(proposed: vanilla's ram, half its
-  knock-back)*. Tame goats don't ram.
+- **Behaviour:** a wild goat rams a player (not in creative or spectator) or a hostile mob within 6 blocks: a straight charge, the vanilla
+  goat's 2 damage and half its knock-back, then 30-300 s before the next (vanilla's ram cooldown) *(proposed)*. Tame goats don't ram.
 - **Taming:** in the corral, as sheep: hay or wheat in the bait trough, 7 real days settled (taming.md).
 - **Climbing:** goats "use elevated surfaces to climb and rest" ([MSD: behavior of goats](https://www.msdvetmanual.com/behavior/behavior-of-production-animals/behavior-of-goats));
-  the game gives goats a step height of 1.5 blocks while wild *(proposed)*.
+  the game gives every goat a step height of 1 block, so it climbs a block without jumping and a 1.5-block fence still holds it
+  *(proposed)*.
 
 ## Economy
 Nothing is sold (cattle rule, 2026-11-07).

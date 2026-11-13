@@ -20,6 +20,7 @@ public final class FarmingsNeoForgeClient {
 				event -> {
 					event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer);
 					event.registerLayerDefinition(dev.farmings.client.SheepModels.SHEEP, dev.farmings.client.SheepModels::createLayer);
+					event.registerLayerDefinition(dev.farmings.client.GoatModels.GOAT, dev.farmings.client.GoatModels::createLayer);
 					event.registerLayerDefinition(dev.farmings.client.SheepModels.FLEECE, dev.farmings.client.SheepModels::createFleeceLayer);
 					event.registerLayerDefinition(dev.farmings.client.FowlModels.FOWL, dev.farmings.client.FowlModels::createLayer);
 				});
@@ -27,6 +28,7 @@ public final class FarmingsNeoForgeClient {
 				event -> {
 					event.registerEntityRenderer(FarmingsEntities.CATTLE, CattleRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.SHEEP, dev.farmings.client.SheepRenderer::new);
+					event.registerEntityRenderer(FarmingsEntities.GOAT, dev.farmings.client.GoatRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.ROTTEN_EGG, net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.SHEEP_DOG, dev.farmings.client.SheepDogRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.FIELD_GANTRY, dev.farmings.client.FieldGantryRenderer::new);

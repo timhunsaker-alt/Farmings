@@ -139,3 +139,11 @@ Ludo createImage, item-icon, Photorealistic 3D, n 1.
 - `chicken`: "A raw whole chicken leg and thigh piece, pale pink raw poultry meat with skin, game item icon, centered, plain transparent background"
 - `cooked_chicken`: "A roasted golden-brown cooked chicken leg and thigh, crispy skin, game item icon, centered, plain transparent background"
 - `shepherds_whistle`: "A shepherd's sheepdog whistle: a small curved crescent-shaped metal whistle on a short leather lanyard, brushed steel, game item icon, centered, plain transparent background"
+
+## 2026-11-13: goats (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+Every prompt ends "game item icon, plain white background, no text".
+| file | prompt |
+|---|---|
+| kid_chop / cooked_kid_chop | A single raw goat kid loin chop, pale pink lean meat, thin white fat rim, small bone / a single grilled goat kid loin chop, browned with crisscross grill marks, small bone |
+| chevon_chop / cooked_chevon_chop | A single large raw chevon goat chop, deep red lean meat, very thin fat edge, bone / a single roasted chevon goat chop, dark brown crust, bone |
+| goat_milk_bottle | A single old-fashioned 1 litre clear glass bottle full of bright pure white goat milk, a cardboard cap with a small goat silhouette |

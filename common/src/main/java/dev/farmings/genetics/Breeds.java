@@ -30,6 +30,11 @@ public final class Breeds {
 		sheep("SUF", 45, 45, 75, 70, 75, 60, 65, 60, 30);
 		sheep("DOR", 10, 10, 85, 85, 70, 75, 75, 95, 30);
 		sheep("EFR", 55, 50, 60, 55, 90, 60, 80, 45, 95);
+		// Goat baselines (docs/animals/goats.md) *(proposed: 0-100 scores set from the breed table, as the sheep baselines)*:
+		// milk, fat, protein, efficiency, health, fertility, longevity, temperament, hardiness.
+		goat("SAA", 95, 40, 40, 60, 55, 70, 65, 80, 50);
+		goat("NUB", 70, 85, 85, 60, 60, 70, 65, 70, 60);
+		goat("BOE", 10, 50, 50, 80, 75, 80, 65, 75, 80);
 		// Poultry: all proposed (2026-11-11), set from the direction of the real differences in docs/animals/poultry.md (eggs a
 		// year, egg size, broodiness, the broad-breasted turkey's poor fertility, the Silkie's calm, the Mallard's wildness).
 		//    species          code   eff health fert long temp eggs egg-wt broody
@@ -77,6 +82,22 @@ public final class Breeds {
 		m.put(Trait.MILK_YIELD, milk);
 		BASELINES.put(code, m);
 		SPECIES.put(code, Species.SHEEP);
+	}
+
+	private static void goat(String code, int milk, int fat, int protein, int efficiency, int health, int fertility, int longevity, int temperament,
+			int hardiness) {
+		Map<Trait, Integer> m = new EnumMap<>(Trait.class);
+		m.put(Trait.MILK_YIELD, milk);
+		m.put(Trait.BUTTERFAT, fat);
+		m.put(Trait.PROTEIN, protein);
+		m.put(Trait.FEED_EFFICIENCY, efficiency);
+		m.put(Trait.HEALTH, health);
+		m.put(Trait.FERTILITY, fertility);
+		m.put(Trait.LONGEVITY, longevity);
+		m.put(Trait.TEMPERAMENT, temperament);
+		m.put(Trait.HARDINESS, hardiness);
+		BASELINES.put(code, m);
+		SPECIES.put(code, Species.GOAT);
 	}
 
 	/** The species a breed code belongs to; throws on a code no species registered, so a new breed can't fall into cattle. */

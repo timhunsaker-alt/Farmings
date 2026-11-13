@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:smelting",
+ "category": "food",
+ "ingredient": "farmings:kid_chop",
+ "result": {
+  "id": "farmings:cooked_kid_chop"
+ },
+ "experience": 0.35,
+ "cookingtime": 200
+}

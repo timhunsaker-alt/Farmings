@@ -145,8 +145,8 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 			return List.of();
 		}
 		List<SmallRuminant> l = new ArrayList<>();
-		for (SmallRuminant s : SmallRuminant.in(level(), getBoundingBox().inflate(GATHER_RANGE), s -> !s.isWild() && s.self().isAlive())) {
-			if (s.self().blockPosition().distSqr(target) > ARRIVED * ARRIVED) {
+		for (SmallRuminant s : SmallRuminant.in(level(), getBoundingBox().inflate(GATHER_RANGE), s -> !s.isWild() && s.animal().isAlive())) {
+			if (s.animal().blockPosition().distSqr(target) > ARRIVED * ARRIVED) {
 				l.add(s);
 			}
 		}
@@ -155,7 +155,7 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 
 	private void holdSheep() {
 		for (SmallRuminant s : drivenSheep()) {
-			s.sendTo(s.self().blockPosition());
+			s.sendTo(s.animal().blockPosition());
 		}
 	}
 
@@ -191,9 +191,9 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 		List<SmallRuminant> flock = flock();
 		// sheep already at the target are let go, under their shed's rules again
 		for (SmallRuminant s : drivenSheep()) {
-			if (s.self().blockPosition().distSqr(target) <= ARRIVED * ARRIVED) {
+			if (s.animal().blockPosition().distSqr(target) <= ARRIVED * ARRIVED) {
 				s.sendTo(null);
-				driven.remove(s.self().getUUID());
+				driven.remove(s.animal().getUUID());
 			}
 		}
 		if (flock.isEmpty()) {
@@ -205,8 +205,8 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 		double cx = 0;
 		double cz = 0;
 		for (SmallRuminant s : flock) {
-			cx += s.self().getX();
-			cz += s.self().getZ();
+			cx += s.animal().getX();
+			cz += s.animal().getZ();
 		}
 		cx /= flock.size();
 		cz /= flock.size();
@@ -218,9 +218,9 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 		double pz = cz + dz / d * BEHIND;
 		getNavigation().moveTo(px, getY(), pz, 1.3);
 		for (SmallRuminant s : flock) {
-			if (s.self().distanceTo(this) <= PRESSURE || driven.contains(s.self().getUUID())) {
+			if (s.animal().distanceTo(this) <= PRESSURE || driven.contains(s.animal().getUUID())) {
 				s.sendTo(target);
-				driven.add(s.self().getUUID());
+				driven.add(s.animal().getUUID());
 			}
 		}
 	}

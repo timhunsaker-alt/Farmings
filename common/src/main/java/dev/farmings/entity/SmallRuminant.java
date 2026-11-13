@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
  */
 public interface SmallRuminant {
 	/** The animal itself. */
-	Animal self();
+	Animal animal();
 
 	Species species();
 
@@ -55,6 +55,9 @@ public interface SmallRuminant {
 
 	/** Pen floor blocks an adult takes (sheep 1.5, goats 2). */
 	double penBlocks();
+
+	/** Fresh manure a day, kg, into the shed's bedding. */
+	double manureKgPerDay();
 
 	/** Litres of water a day per kg of dry matter eaten. */
 	double waterLPerKgDm();

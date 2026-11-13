@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:smelting",
+ "category": "food",
+ "ingredient": "farmings:chevon_chop",
+ "result": {
+  "id": "farmings:cooked_chevon_chop"
+ },
+ "experience": 0.35,
+ "cookingtime": 200
+}

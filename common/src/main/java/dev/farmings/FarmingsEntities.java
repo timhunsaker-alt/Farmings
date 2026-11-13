@@ -26,6 +26,13 @@ public final class FarmingsEntities {
 			.clientTrackingRange(10)
 			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("sheep")));
 
+	/** A goat: the vanilla goat's size (0.9 x 1.3). */
+	public static final EntityType<dev.farmings.entity.GoatEntity> GOAT = EntityType.Builder.<dev.farmings.entity.GoatEntity>of(dev.farmings.entity.GoatEntity::new, MobCategory.CREATURE)
+			.sized(0.9F, 1.3F)
+			.eyeHeight(1.235F)
+			.clientTrackingRange(10)
+			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("goat")));
+
 	// Poultry (docs/animals/poultry.md). Sizes: the vanilla chicken's 0.4 x 0.7, scaled for each species (proposed).
 	public static final EntityType<FowlEntity> CHICKEN = fowl("chicken", 0.4F, 0.7F);
 	public static final EntityType<FowlEntity> TURKEY = fowl("turkey", 0.75F, 1.2F);
@@ -94,6 +101,7 @@ public final class FarmingsEntities {
 	public static void register() {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("cattle"), CATTLE);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("sheep"), SHEEP);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("goat"), GOAT);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("chicken"), CHICKEN);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("turkey"), TURKEY);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("quail"), QUAIL);

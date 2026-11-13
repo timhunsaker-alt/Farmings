@@ -18,7 +18,11 @@ public enum Species {
 	CHICKEN("farmings.chicken.genome.v1", true, fowlTraits()),
 	TURKEY("farmings.turkey.genome.v1", true, fowlTraits()),
 	QUAIL("farmings.quail.genome.v1", true, fowlTraits()),
-	DUCK("farmings.duck.genome.v1", true, fowlTraits());
+	DUCK("farmings.duck.genome.v1", true, fowlTraits()),
+	// Goats (docs/animals/goats.md), appended so no saved ordinal moves: the dairy loci plus the small-ruminant fitness traits
+	// *(proposed list: FarmChain has no goat catalog)*.
+	GOAT("farmings.goat.genome.v1", false, EnumSet.of(Trait.MILK_YIELD, Trait.BUTTERFAT, Trait.PROTEIN, Trait.FEED_EFFICIENCY, Trait.HEALTH,
+			Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.HARDINESS));
 
 	private static EnumSet<Trait> fowlTraits() {
 		return EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.EGG_PRODUCTION,

@@ -837,6 +837,95 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-flock-all");
 	}
 
+	private static dev.farmings.entity.GoatEntity goat(ServerLevel level, dev.farmings.husbandry.GoatBreed breed, Sex sex, long seed, double age) {
+		dev.farmings.entity.GoatEntity g = FarmingsEntities.GOAT.create(level, EntitySpawnReason.COMMAND);
+		g.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Herd.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
+		java.util.EnumMap<dev.farmings.genetics.GoatLocus, int[]> m = new java.util.EnumMap<>(g.genes().alleles());
+		m.put(dev.farmings.genetics.GoatLocus.POLLED, new int[] {0, 0});
+		g.setGenesForTest(new dev.farmings.genetics.GoatGenes(m));
+		g.setPos(200.5, 0, 200.5);
+		g.setNoAi(true);
+		level.addFreshEntity(g);
+		return g;
+	}
+
+	/** The goats (docs/animals/goats.md): each breed's doe and buck, a doe in milk, a kid, a Saanen x Boer cross, and the agouti colours. */
+	private static void goats(ClientGameTestContext context, TestServerContext server, int y) {
+		java.util.List<dev.farmings.entity.GoatEntity> line = new java.util.ArrayList<>();
+		java.util.List<String> names = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, 0, 20, y, 16, 16, 6);
+			long seed = 1300;
+			for (dev.farmings.husbandry.GoatBreed b : dev.farmings.husbandry.GoatBreed.values()) {
+				dev.farmings.entity.GoatEntity doe = goat(level, b, Sex.FEMALE, seed++, 900);
+				doe.setKiddedForTest(30, 1);
+				line.add(doe);
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " doe");
+				line.add(goat(level, b, Sex.MALE, seed++, 900));
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " buck");
+			}
+			line.add(goat(level, dev.farmings.husbandry.GoatBreed.BOER, Sex.FEMALE, seed++, 40));
+			names.add("boer kid");
+			dev.farmings.entity.GoatEntity saa = line.get(0);
+			dev.farmings.entity.GoatEntity boerBuck = line.get(5);
+			dev.farmings.genetics.Offspring.Result r = dev.farmings.genetics.Offspring.create(saa.genome(), boerBuck.genome(), "scene-goat", "scene",
+					dev.farmings.genetics.Ruleset.defaults(), Sex.FEMALE);
+			dev.farmings.entity.GoatEntity f1 = FarmingsEntities.GOAT.create(level, EntitySpawnReason.COMMAND);
+			f1.initKid(r, dev.farmings.genetics.GoatGenes.inherit(saa.genes(), boerBuck.genes(), seed++), 1, level.getGameTime());
+			f1.advanceForTest(500);
+			f1.setWeightKg(dev.farmings.husbandry.Herd.targetKg(r.genome().breedCompositionBp(), false, 500));
+			f1.setPos(200.5, 0, 200.5);
+			f1.setNoAi(true);
+			level.addFreshEntity(f1);
+			f1.settle(level);
+			line.add(f1);
+			names.add("saanen x boer F1");
+			int[][] colours = {{1, 0}, {2, 0}, {3, 0}, {4, 0}, {4, 1}};
+			String[] colourNames = {"bezoar", "badgerface", "swiss markings", "black (nonagouti)", "brown"};
+			for (int i = 0; i < colours.length; i++) {
+				dev.farmings.entity.GoatEntity g = goat(level, dev.farmings.husbandry.GoatBreed.NUBIAN, Sex.FEMALE, seed++, 700);
+				java.util.EnumMap<dev.farmings.genetics.GoatLocus, int[]> m = new java.util.EnumMap<>(g.genes().alleles());
+				m.put(dev.farmings.genetics.GoatLocus.AGOUTI, new int[] {colours[i][0], colours[i][0]});
+				m.put(dev.farmings.genetics.GoatLocus.BROWN, new int[] {colours[i][1], colours[i][1]});
+				m.put(dev.farmings.genetics.GoatLocus.WATTLES, new int[] {i % 2, 0});
+				g.setGenesForTest(new dev.farmings.genetics.GoatGenes(m));
+				line.add(g);
+				names.add("nubian " + colourNames[i]);
+			}
+		});
+		context.waitTicks(60);
+		for (int i = 0; i < line.size(); i++) {
+			int shown = i;
+			server.runOnServer(srv -> {
+				for (int j = 0; j < line.size(); j++) {
+					dev.farmings.entity.GoatEntity g = line.get(j);
+					g.setPos(j == shown ? 0.5 : 200.5 + 4 * j, y, j == shown ? 20.5 : 200.5);
+					g.setYRot(0);
+					g.setYHeadRot(0);
+					g.setYBodyRot(0);
+				}
+			});
+			actionbar(server, names.get(i) + ": " + line.get(i).look().describe());
+			server.runCommand("tp @p 2.1 " + (y - 0.3) + " 22.1 135 18");
+			context.waitTicks(30);
+			context.takeScreenshot("farmings-goats-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + names.get(i).replace(' ', '-').replace("(", "").replace(")", ""));
+		}
+		server.runOnServer(srv -> {
+			for (int j = 0; j < line.size(); j++) {
+				dev.farmings.entity.GoatEntity g = line.get(j);
+				g.setPos(-13.5 + 2.2 * j, y, 20.5);
+				g.setYRot(90);
+				g.setYHeadRot(90);
+				g.setYBodyRot(90);
+			}
+		});
+		actionbar(server, "the goats: Saanen, Nubian, Boer, a kid, a cross, the colours");
+		server.runCommand("tp @p 0.5 " + (y + 4.5) + " 32 180 18");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-goats-all");
+	}
+
 	/** A heifer in heat (hearts), twins born to a cow, the readout of a calf, and the herd book open on its page. */
 	private static void breeding(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
@@ -2167,6 +2256,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("sheepfarm".equals(only)) {
 				context.waitTicks(200);
 				sheepFarm(context, server, y);
+				return;
+			}
+			if ("goats".equals(only)) {
+				context.waitTicks(200);
+				goats(context, server, y);
 				return;
 			}
 			if ("flock".equals(only)) {

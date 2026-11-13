@@ -130,6 +130,16 @@ public final class FarmingsItems {
 	public static final Item COOKED_MUTTON_CHOP = item("cooked_mutton_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_LAMB, p.food(net.minecraft.world.food.Foods.COOKED_MUTTON)));
 	public static final Item SPOILED_MUTTON = item("spoiled_mutton", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
 
+	/** Goat meat (docs/animals/goats.md, "Meat"): kid under 9 months, chevon after; keeps as lamb chops (FSIS goat, 3-5 days). */
+	public static final Item KID_CHOP = item("kid_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
+	public static final Item COOKED_KID_CHOP = item("cooked_kid_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_LAMB, p.food(net.minecraft.world.food.Foods.COOKED_MUTTON)));
+	public static final Item CHEVON_CHOP = item("chevon_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_LAMB, p.food(net.minecraft.world.food.Foods.MUTTON)));
+	public static final Item COOKED_CHEVON_CHOP = item("cooked_chevon_chop", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_LAMB, p.food(net.minecraft.world.food.Foods.COOKED_MUTTON)));
+
+	public static Item goatMeat(boolean kid, boolean cooked) {
+		return kid ? (cooked ? COOKED_KID_CHOP : KID_CHOP) : (cooked ? COOKED_CHEVON_CHOP : CHEVON_CHOP);
+	}
+
 	public static Item sheepMeat(boolean lamb, boolean cooked) {
 		return lamb ? (cooked ? COOKED_LAMB_CHOP : LAMB_CHOP) : (cooked ? COOKED_MUTTON_CHOP : MUTTON_CHOP);
 	}
@@ -149,6 +159,9 @@ public final class FarmingsItems {
 			.food(food(5, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 	public static final Item SHEEP_CHEESE_WHEEL = item("sheep_cheese_wheel", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL, p.stacksTo(16)));
 	public static final Item SHEEP_CHEESE = item("sheep_cheese", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR, p.food(food(4, 0.8F))));
+	/** Goat milk keeps as cow milk (food.md: no goat-milk figure found). */
+	public static final Item GOAT_MILK_BOTTLE = item("goat_milk_bottle", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.MILK, p.stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.GLASS_BOTTLE)
+			.food(food(4, 0.4F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 
 	/** The bottle of a creamery store, for the milk kind it holds. Only whole milk has a bottle per kind; the rest are shared. */
 	public static Item bottle(dev.farmings.process.creamery.Creamery.Bottle b, dev.farmings.husbandry.parlor.MilkKind kind) {
@@ -158,7 +171,7 @@ public final class FarmingsItems {
 		return switch (kind) {
 			case COW -> bottle(b);
 			case SHEEP -> SHEEP_MILK_BOTTLE;
-			case GOAT -> bottle(b);      // goat milk bottles come with goats
+			case GOAT -> GOAT_MILK_BOTTLE;
 		};
 	}
 
@@ -263,6 +276,7 @@ public final class FarmingsItems {
 		ALL.put("sheep_milk_bottle", SHEEP_MILK_BOTTLE);
 		ALL.put("sheep_cheese_wheel", SHEEP_CHEESE_WHEEL);
 		ALL.put("sheep_cheese", SHEEP_CHEESE);
+		ALL.put("goat_milk_bottle", GOAT_MILK_BOTTLE);
 		ALL.put("poultry_litter", POULTRY_LITTER);
 		ALL.put("shepherds_whistle", SHEPHERDS_WHISTLE);
 		ALL.put("chicken", CHICKEN);
@@ -303,6 +317,10 @@ public final class FarmingsItems {
 		ALL.put("mutton_chop", MUTTON_CHOP);
 		ALL.put("cooked_mutton_chop", COOKED_MUTTON_CHOP);
 		ALL.put("spoiled_mutton", SPOILED_MUTTON);
+		ALL.put("kid_chop", KID_CHOP);
+		ALL.put("cooked_kid_chop", COOKED_KID_CHOP);
+		ALL.put("chevon_chop", CHEVON_CHOP);
+		ALL.put("cooked_chevon_chop", COOKED_CHEVON_CHOP);
 	}
 
 	private FarmingsItems() {

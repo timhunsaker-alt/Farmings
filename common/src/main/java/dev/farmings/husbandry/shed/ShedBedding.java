@@ -29,9 +29,14 @@ public final class ShedBedding {
 
 	/** One step of {@code dayShare} of a day for one housed sheep. */
 	public void housed(double weightKg, boolean lamb, double dayShare) {
+		housedKg(manureKgPerDay(weightKg, lamb), dayShare);
+	}
+
+	/** One step for one housed animal making {@code manureKgPerDay} (a goat: goats.md); its straw is used as a sheep's. */
+	public void housedKg(double manureKgPerDay, double dayShare) {
 		double used = Math.min(strawKg, STRAW_KG_PER_DAY * dayShare);
 		strawKg -= used;
-		soiledKg = Math.min(MAX_SOILED_KG, soiledKg + manureKgPerDay(weightKg, lamb) * dayShare + used);
+		soiledKg = Math.min(MAX_SOILED_KG, soiledKg + manureKgPerDay * dayShare + used);
 	}
 
 	/** Adds straw; returns how much of {@code kg} went in (the rest doesn't fit). */

@@ -787,7 +787,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	// ---- the shared face (SmallRuminant) ----
 
 	@Override
-	public Animal self() {
+	public Animal animal() {
 		return this;
 	}
 
@@ -824,6 +824,11 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	@Override
 	public double waterLPerKgDm() {
 		return Flock.WATER_L_PER_KG_DM;
+	}
+
+	@Override
+	public double manureKgPerDay() {
+		return dev.farmings.husbandry.shed.ShedBedding.manureKgPerDay(weightKg, stage().lamb());
 	}
 
 	@Override

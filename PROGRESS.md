@@ -284,6 +284,12 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Groundwork: each species says whether it is a bird (a new mammal can no longer fall onto the poultry clock), an unknown breed code
     is refused instead of read as cattle, milk is a kind (cow, sheep, goat) in the tank and the creamery (old saves load), and the
     shed, its pens, pasture, small stalls and the sheep dog work through one `SmallRuminant` face, with a pen run holding one species.
+  - Goats: Saanen, Nubian and Boer (`entity/GoatEntity`, rules in `husbandry/Herd`, genes in `GoatLocus`/`GoatGenes`/`GoatLook`):
+    seasons by breed, kidding with sourced litter odds and twin birth weights, stillbirths, the polled/intersex link, milk on a Wood
+    curve summing to the ADGA totals, goat milk through the small stalls into a goat tank, kid and chevon meat, browsing beside leaves,
+    goats in their own pen run, the dog and buck straws, wild goats in vanilla's goat biomes that ram players and hostile mobs.
+    Textures by `tools/goat_textures.py`; Ludo icons for the meat and milk. 13 game tests (202 in all), `HerdTest`, `GoatGeneticsTest`;
+    client scene `goats`.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

@@ -3,6 +3,7 @@ package dev.farmings.item;
 import dev.farmings.FarmingsItems;
 import dev.farmings.entity.CattleEntity;
 import dev.farmings.entity.FowlEntity;
+import dev.farmings.entity.GoatEntity;
 import dev.farmings.entity.SheepEntity;
 import dev.farmings.genetics.Genome;
 import dev.farmings.genetics.Sex;
@@ -31,8 +32,9 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Artificial insemination, one straw for every species (docs/animals/breeding.md, "one straw for every species"). An empty straw used
- * on a grown bull, ram or tom becomes a semen straw holding his genome; the genome says the species. A semen straw used on a female of
- * that species in heat (a turkey hen needs no heat) inseminates her and is used up. Bull and ram straws keep forever *(proposed)*;
+ * on a grown bull, ram, buck or tom becomes a semen straw holding his genome; the genome says the species. A semen straw used on a
+ * female of that species in heat (a turkey hen needs no heat) inseminates her and is used up. Bull, ram and buck straws keep forever
+ * *(proposed)*;
  * turkey semen is fresh and spoils 30 real minutes after collection (TNAU; poultry.md), turning back into an empty straw.
  */
 public class StrawItem extends Item {
@@ -54,7 +56,7 @@ public class StrawItem extends Item {
 
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
-		if (!(target instanceof CattleEntity || target instanceof SheepEntity || target instanceof FowlEntity)) {
+		if (!(target instanceof CattleEntity || target instanceof SheepEntity || target instanceof GoatEntity || target instanceof FowlEntity)) {
 			return InteractionResult.PASS;
 		}
 		if (player.level().isClientSide()) {
@@ -75,6 +77,11 @@ public class StrawItem extends Item {
 			g = ram.genome();
 			coat = ram.genes().save();
 			herd = ram.herdId();
+		} else if (male instanceof GoatEntity buck && buck.sex() == Sex.MALE && buck.stage() == dev.farmings.husbandry.GoatStage.BUCK && !buck.isWild()
+				&& buck.genome() != null) {
+			g = buck.genome();
+			coat = buck.genes().save();
+			herd = buck.herdId();
 		} else if (male instanceof FowlEntity tom && tom.species() == Species.TURKEY && tom.sex() == Sex.MALE && tom.adult() && !tom.isWild()
 				&& tom.genome() != null) {
 			g = tom.genome();
@@ -108,7 +115,16 @@ public class StrawItem extends Item {
 			player.sendOverlayMessage(Component.translatable("message.farmings.straw.not_in_heat"));
 			return InteractionResult.FAIL;
 		}
-		Species want = female instanceof CattleEntity ? Species.CATTLE : female instanceof SheepEntity ? Species.SHEEP : ((FowlEntity) female).species();
+		Species want = switch (female) {
+			case CattleEntity c -> Species.CATTLE;
+			case SheepEntity s -> Species.SHEEP;
+			case GoatEntity g -> Species.GOAT;
+			case FowlEntity f -> f.species();
+			default -> null;
+		};
+		if (want == null) {
+			return InteractionResult.PASS;
+		}
 		if (sire.species() != want) {
 			player.sendOverlayMessage(Component.translatable("message.farmings.straw.wrong_species", speciesName(sire.species())));
 			return InteractionResult.FAIL;
@@ -127,6 +143,10 @@ public class StrawItem extends Item {
 			case SheepEntity ewe -> {
 				dev.farmings.genetics.SheepGenes sg = coat == null ? null : dev.farmings.genetics.SheepGenes.load(coat);
 				yield ewe.sex() == Sex.FEMALE && ewe.canConceive() && sg != null && ewe.conceive(sire, sg, now);
+			}
+			case GoatEntity doe -> {
+				dev.farmings.genetics.GoatGenes gg = coat == null ? null : dev.farmings.genetics.GoatGenes.load(coat);
+				yield doe.sex() == Sex.FEMALE && doe.canConceive() && gg != null && doe.conceive(sire, gg, now);
 			}
 			case FowlEntity hen -> {
 				if (stale(stack, now)) {

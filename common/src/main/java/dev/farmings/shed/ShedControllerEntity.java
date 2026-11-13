@@ -381,17 +381,17 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 				}
 				continue;
 			}
-			Long last = lastPick.get(s.self().getUUID());
+			Long last = lastPick.get(s.animal().getUUID());
 			if (s.sentTo() == null || last == null || now - last >= REPICK_TICKS) {
 				PastureLayout.Spot spot = spots.get(level.getRandom().nextInt(spots.size()));
 				s.sendTo(new BlockPos(spot.x(), spot.y(), spot.z()));
-				lastPick.put(s.self().getUUID(), now);
+				lastPick.put(s.animal().getUUID(), now);
 			}
 		}
 	}
 
 	private boolean onPasture(SmallRuminant s) {
-		BlockPos p = s.self().blockPosition();
+		BlockPos p = s.animal().blockPosition();
 		return pastureCells.contains(p.asLong()) || pastureCells.contains(p.above().asLong()) || pastureCells.contains(p.below().asLong());
 	}
 
@@ -405,14 +405,14 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 		for (SmallRuminant s : members) {
 			if (!onPasture(s)) {
 				housed.add(s);
-				bedding.housed(s.weightKg(), s.young(), dayShare);
+				bedding.housedKg(s.manureKgPerDay(), dayShare);
 			}
 		}
 		dirty = bedding.dirty(!housed.isEmpty());
 		if (dirty) {
 			// wet, warm bedding (NADIS: scald): the barn's dirty-stall rule, -1 health a day, never below 2 (proposed, as cattle)
 			for (SmallRuminant r : housed) {
-				net.minecraft.world.entity.animal.Animal s = r.self();
+				net.minecraft.world.entity.animal.Animal s = r.animal();
 				if (s.getHealth() > dev.farmings.husbandry.Hygiene.HEALTH_FLOOR) {
 					s.setHealth((float) Math.max(dev.farmings.husbandry.Hygiene.HEALTH_FLOOR, s.getHealth() - dev.farmings.husbandry.Hygiene.HEALTH_LOSS_PER_GAME_DAY * dayShare));
 				}
@@ -466,12 +466,12 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 	 * rest comes off grass blocks, each grazed bare for 1.5 kg DM.
 	 */
 	private double graze(ServerLevel level, SmallRuminant s, double need) {
-		double browsed = s.browseShare() > 0 && besideLeaves(level, s.self().blockPosition()) ? need * s.browseShare() : 0;
+		double browsed = s.browseShare() > 0 && besideLeaves(level, s.animal().blockPosition()) ? need * s.browseShare() : 0;
 		need -= browsed;
-		java.util.UUID id = s.self().getUUID();
+		java.util.UUID id = s.animal().getUUID();
 		double credit = grazeCredit.getOrDefault(id, 0.0);
 		while (credit < need) {
-			BlockPos grass = nearestGrass(level, s.self().blockPosition());
+			BlockPos grass = nearestGrass(level, s.animal().blockPosition());
 			if (grass == null) {
 				break;
 			}

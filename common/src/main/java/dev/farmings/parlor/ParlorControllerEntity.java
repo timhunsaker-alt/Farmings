@@ -361,7 +361,7 @@ public class ParlorControllerEntity extends BlockEntity {
 				here.sendTo(null);
 				continue;
 			}
-			net.minecraft.world.entity.animal.Animal a = here.self();
+			net.minecraft.world.entity.animal.Animal a = here.animal();
 			double d2 = a.distanceToSqr(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
 			if (d2 < 4.0) {
 				// within reach of the stall she is stepped up onto it, as dairy ewes and does are led into a raised parlor

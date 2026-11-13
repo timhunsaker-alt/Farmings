@@ -13,7 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
 
 /**
- * Farmings animals replace vanilla cows, sheep and chickens in the world's spawn lists (docs/taming.md, "Spawns"; docs/animals/poultry.md,
+ * Farmings animals replace vanilla cows, sheep, goats and chickens in the world's spawn lists (docs/taming.md, "Spawns"; docs/animals/poultry.md,
  * "Wild fowl"). Each vanilla entry is swapped for the Farmings species with the same weight and group size, so every biome that had them,
  * modded ones too, keeps its numbers. A chicken entry is shared between the bird species of the biome. Both loaders call this from their
  * biome modification hooks.
@@ -30,6 +30,8 @@ public final class WildSpawns {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.CATTLE, entry.value().count()), entry.weight()));
 		} else if (t == net.minecraft.world.entity.EntityTypes.SHEEP) {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.SHEEP, entry.value().count()), entry.weight()));
+		} else if (t == net.minecraft.world.entity.EntityTypes.GOAT) {
+			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.GOAT, entry.value().count()), entry.weight()));     // goats.md, "Wild goats"
 		} else if (t == net.minecraft.world.entity.EntityTypes.CHICKEN) {
 			for (Map.Entry<Species, Integer> e : WildBreeds.fowlWeights(biome, entry.weight()).entrySet()) {
 				out.add(new Weighted<>(new SpawnerData(FarmingsEntities.fowl(e.getKey()), entry.value().count()), e.getValue()));
@@ -40,7 +42,7 @@ public final class WildSpawns {
 
 	public static boolean replaced(EntityType<?> t) {
 		return t == net.minecraft.world.entity.EntityTypes.COW || t == net.minecraft.world.entity.EntityTypes.SHEEP
-				|| t == net.minecraft.world.entity.EntityTypes.CHICKEN;
+				|| t == net.minecraft.world.entity.EntityTypes.CHICKEN || t == net.minecraft.world.entity.EntityTypes.GOAT;
 	}
 
 	/**

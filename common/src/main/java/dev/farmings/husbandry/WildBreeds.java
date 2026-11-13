@@ -129,4 +129,12 @@ public final class WildBreeds {
 	public static final double SETTLE_DAYS = 7;
 	/** How far a wild animal keeps from a player who holds no feed (proposed). */
 	public static final double FLIGHT_BLOCKS = 6;
+
+	/**
+	 * A wild goat's breed (docs/animals/goats.md, "Wild goats"): Saanen 60%, Nubian 20%, Boer 20% wherever vanilla goats spawn *(proposed:
+	 * Saanen is the alpine breed)*. {@code roll} is 0-1.
+	 */
+	public static GoatBreed goat(double roll) {
+		return roll < 0.6 ? GoatBreed.SAANEN : roll < 0.8 ? GoatBreed.NUBIAN : GoatBreed.BOER;
+	}
 }
