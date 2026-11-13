@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WRW",
+  "WEW",
+  "WWW"
+ ],
+ "key": {
+  "E": "minecraft:leather",
+  "R": "minecraft:redstone",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:stable_controller",
+  "count": 1
+ }
+}

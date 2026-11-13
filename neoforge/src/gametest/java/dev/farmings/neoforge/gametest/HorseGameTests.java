@@ -236,4 +236,113 @@ final class HorseGameTests {
 		helper.assertTrue(Equine.dryMatterKg(cc.weightKg()) == cc.dailyDryMatterKg(), Component.literal("2.25% of body weight in dry matter"));
 		helper.succeed();
 	}
+
+	// ---- the stable (docs/multiblocks/stable.md) ----
+
+	/** Stall floor 3 x 8 (two stalls) with a hay rack and trough, a controller, and a gate to a fenced grass paddock to the east. */
+	static BlockPos buildStable(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		for (int x = -1; x <= 15; x++) {
+			for (int z = -2; z <= 11; z++) {
+				helper.setBlock(new BlockPos(x, 0, z), x >= 6 && x <= 13 && z >= 0 && z <= 9 ? net.minecraft.world.level.block.Blocks.GRASS_BLOCK
+						: net.minecraft.world.level.block.Blocks.STONE);
+				for (int y = 1; y <= 4; y++) {
+					helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+				}
+			}
+		}
+		for (int x = 5; x <= 14; x++) {
+			for (int z = -1; z <= 10; z++) {
+				if (x == 5 || x == 14 || z == -1 || z == 10) {
+					helper.setBlock(new BlockPos(x, 1, z), net.minecraft.world.level.block.Blocks.OAK_FENCE);
+				}
+			}
+		}
+		helper.setBlock(new BlockPos(1, 1, 2), dev.farmings.stable.StableBlocks.STABLE_CONTROLLER);
+		for (int x = 2; x <= 4; x++) {
+			for (int z = 1; z <= 8; z++) {
+				helper.setBlock(new BlockPos(x, 1, z), dev.farmings.stable.StableBlocks.HORSE_STALL);
+			}
+		}
+		helper.setBlock(new BlockPos(5, 1, 3), dev.farmings.shed.ShedBlocks.PASTURE_GATE);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.HAY_FEEDER, helper.absolutePos(new BlockPos(2, 1, 0)), net.minecraft.core.Direction.NORTH);
+		FarmingsGameTests.barnPart(level, dev.farmings.barn.BarnParts.WATER_TROUGH, helper.absolutePos(new BlockPos(3, 1, 9)), net.minecraft.core.Direction.NORTH);
+		return helper.absolutePos(new BlockPos(1, 1, 2));
+	}
+
+	static dev.farmings.stable.StableControllerEntity stable(GameTestHelper helper, BlockPos c) {
+		return (dev.farmings.stable.StableControllerEntity) helper.getLevel().getBlockEntity(c);
+	}
+
+	/** The stable forms: 24 blocks of stall floor are two stalls, with a rack, a trough and a paddock; without the trough it names it. */
+	static void stableForms(GameTestHelper helper) {
+		BlockPos c = buildStable(helper);
+		ServerLevel level = helper.getLevel();
+		var st = stable(helper, c);
+		st.refresh(level);
+		helper.assertTrue(st.formed() && st.stalls() == 2 && st.paddock() != null && st.paddock().found(), Component.literal("it forms: " + st.readout(level)));
+		level.destroyBlock(helper.absolutePos(new BlockPos(3, 1, 9)), false);
+		st.refresh(level);
+		helper.assertTrue(!st.formed() && st.status().contains("trough"), Component.literal(st.status()));
+		helper.succeed();
+	}
+
+	/**
+	 * Two stalls take two horses, each its own; a third waits. Horses on the paddock graze it bare to dirt and are fed; a stalled horse
+	 * eats hay from the rack; indoors their manure soils the straw, and with no straw the bedding is dirty.
+	 */
+	static void stableHousesFeedsBeds(GameTestHelper helper) {
+		BlockPos c = buildStable(helper);
+		ServerLevel level = helper.getLevel();
+		var st = stable(helper, c);
+		st.refresh(level);
+		st.forceDayForTest(false);
+		HorseEntity a = adult(helper, HorseBreed.THOROUGHBRED, Sex.FEMALE, 61L, new BlockPos(3, 1, 2));
+		HorseEntity b = adult(helper, HorseBreed.ARABIAN, Sex.FEMALE, 62L, new BlockPos(3, 1, 6));
+		HorseEntity extra = adult(helper, HorseBreed.QUARTER_HORSE, Sex.MALE, 63L, new BlockPos(0, 1, 6));
+		for (HorseEntity h : List.of(a, b, extra)) {
+			h.setNoAi(true);
+		}
+		helper.runAfterDelay(45, () -> {
+			List<HorseEntity> members = st.members(level);
+			helper.assertTrue(members.size() == 2 && extra.place().shedController() == null, Component.literal("two stalls, two horses: " + members.size()));
+			helper.assertTrue(a.place().home() != null && b.place().home() != null && !a.place().home().equals(b.place().home()),
+					Component.literal("each its own stall"));
+			// a on the paddock grazes; b in her stall eats from the rack
+			BlockPos pad = helper.absolutePos(new BlockPos(9, 1, 4));
+			a.snapTo(pad.getX() + 0.5, pad.getY(), pad.getZ() + 0.5, 0, 0);
+			st.refresh(level);
+			var rack = (dev.farmings.barn.FeederEntity) level.getBlockEntity(dev.wildcatter.multiblock.BigParts.owner(level, helper.absolutePos(new BlockPos(2, 1, 0))));
+			rack.addBlock();
+			a.recordTending(0, 1);
+			b.recordTending(0, 1);
+			ItemStack straw = new ItemStack(dev.farmings.crops.FieldCrops.STRAW_BALE);
+			helper.assertTrue(st.addStraw(straw), Component.literal("a straw bale beds the stable"));
+			for (int i = 0; i < 100; i++) {
+				st.tend(level, List.of(a, b), 0.01);
+			}
+			helper.assertTrue(st.grazedBlocks() >= 1 && a.lastFed() > 0.85, Component.literal("she grazes the paddock: " + st.grazedBlocks() + ", fed " + a.lastFed()));
+			helper.assertTrue(b.lastFed() > 0.85 && rack.dryMatterKg() < 1000, Component.literal("she eats from the rack: fed " + b.lastFed()));
+			helper.assertTrue(st.bedding().soiledKg() > 0 && !st.beddingDirty(), Component.literal("manure soils clean straw: " + st.readout(level)));
+			helper.assertTrue(st.readout(level).contains("fitness"), Component.literal("the readout lists fitness"));
+			st.bedding().load(0, 0);
+			st.tend(level, List.of(a, b), 0.01);
+			helper.assertTrue(st.beddingDirty(), Component.literal("no straw: dirty"));
+			helper.succeed();
+		});
+	}
+
+	/** An underfed horse gains no fitness from work; a fed one does. */
+	static void underfedHorseNoFitness(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		HorseEntity h = adult(helper, HorseBreed.QUARTER_HORSE, Sex.FEMALE, 71L, new BlockPos(3, 1, 3));
+		h.setNoAi(true);
+		h.recordTending(0.5, 1);
+		h.work(1000);
+		helper.assertTrue(h.fitness() == 0, Component.literal("underfed: no gain, " + h.fitness()));
+		h.recordTending(1, 1);
+		h.work(1000);
+		helper.assertTrue(Math.abs(h.fitness() - 0.02) < 1e-9, Component.literal("fed: 0.02, " + h.fitness()));
+		helper.succeed();
+	}
 }

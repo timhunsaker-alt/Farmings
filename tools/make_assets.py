@@ -414,6 +414,7 @@ def main():
     shed_assets(lang)
     pig_barn_assets(lang)
     curing_assets(lang)
+    stable_assets(lang)
     corral_assets(lang)
     coop_assets(lang)
     hatchery_assets(lang)
@@ -489,6 +490,9 @@ SHAPED = {
     "slurry_pump": (["SRS", "CBC", "SSS"], 1),
     "slurry_pipe": (["III"], 6),
     "slurry_store": (["S S", "S S", "SSS"], 1),
+    # the stable (docs/multiblocks/stable.md): a plank board with leather, plank stall floor over straw-coloured hay
+    "stable_controller": (["WRW", "WEW", "WWW"], 1),
+    "horse_stall": (["H H", "WWW"], 6),
     # curing (docs/multiblocks/curing-room.md): a plank rack with hooks, a plank smokehouse, an iron kettle, an iron grinder
     "curing_rack": (["WTW", "I I", "WTW"], 1),
     "smokehouse": (["WWW", "W W", "WCW"], 1),
@@ -973,6 +977,47 @@ def pig_barn_assets(lang):
                 "up": {"texture": "#top"}, "down": {"texture": "#side", "cullface": "down"},
                 **{f: {"texture": "#side", "uv": [0, 14, 16, 16]} for f in ("north", "south", "east", "west")}}}]})
     for name in PIG_BARN:
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+
+
+STABLE = {"stable_controller": "Stable Controller", "horse_stall": "Horse Stall Floor"}
+
+
+def stable_assets(lang):
+    """Drawn stand-ins: a board with a horseshoe for the controller, plank boards under straw for the stall floor."""
+    from PIL import Image, ImageDraw
+    m = os.path.join(ASSETS, "models", "block")
+    tex = os.path.join(ASSETS, "textures", "block")
+    out = {}
+    board = Image.new("RGBA", (16, 16), (150, 108, 64, 255))
+    d = ImageDraw.Draw(board)
+    d.rectangle([3, 2, 12, 13], fill=(236, 232, 214, 255), outline=(90, 70, 50, 255))
+    d.arc([5, 4, 10, 11], 200, 340, fill=(90, 90, 96, 255), width=2)     # a horseshoe on the card
+    d.arc([5, 4, 10, 11], 160, 20, fill=(90, 90, 96, 255), width=0)
+    out["stable_controller"] = board
+    stall = Image.new("RGBA", (16, 16), (128, 92, 56, 255))
+    d = ImageDraw.Draw(stall)
+    for y in (3, 7, 11, 15):
+        d.line([(0, y), (15, y)], fill=(96, 68, 40, 255))               # the boards
+    rnd = __import__("random").Random(41)
+    for _ in range(40):
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        d.line([(x, y), (min(15, x + rnd.randrange(1, 4)), y + rnd.choice((-1, 0, 1)))], fill=(222, 196, 120, 255))     # straw
+    out["horse_stall_top"] = stall
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+    for name, title in STABLE.items():
+        lang["block.farmings." + name] = title
+    write(os.path.join(m, "stable_controller.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/stable_controller"}})
+    write(os.path.join(m, "horse_stall.json"), {
+        "textures": {"top": "farmings:block/horse_stall_top", "side": "farmings:block/shed_floor_side", "particle": "farmings:block/horse_stall_top"},
+        "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {
+            "up": {"texture": "#top"}, "down": {"texture": "#side", "cullface": "down"},
+            **{f: {"texture": "#side", "uv": [0, 14, 16, 16]} for f in ("north", "south", "east", "west")}}}]})
+    for name in STABLE:
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))

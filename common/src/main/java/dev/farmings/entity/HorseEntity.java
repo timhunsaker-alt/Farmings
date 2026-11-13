@@ -84,6 +84,8 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 	private static final double WALK_SPEED = 0.225;
 	private static final double JUMP = 0.7;
 	private static final double HEALTH = 22.5;
+	/** An underfed horse gains no fitness (horses.md): fed under 95% of its need in the stable *(proposed tolerance)*. */
+	public static final double FED_FOR_FITNESS = 0.95;
 
 	private HorseBreed breed = HorseBreed.THOROUGHBRED;
 	private Sex sex = Sex.FEMALE;
@@ -406,7 +408,7 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 			gainedToday = 0;
 		}
 		double f = fitness();
-		double g = lastFed < 1 ? 0 : Gallop.gain(metres / 1000.0, gainedToday);
+		double g = lastFed < FED_FOR_FITNESS ? 0 : Gallop.gain(metres / 1000.0, gainedToday);
 		fitness = Math.min(1, f + g);
 		gainedToday += g;
 		lastWorkTick = now;
@@ -618,7 +620,7 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 1.2));
-		this.goalSelector.addGoal(3, place().goal(this, this::isBaby));
+		this.goalSelector.addGoal(3, new NotRidden(place().goal(this, this::isBaby)));
 		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.7));
 		this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -656,6 +658,46 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 		long ticks = TimeScale.realDaysToTicks(realDays);
 		birthTick -= ticks;
 		growthTick -= ticks;
+	}
+
+	/** The stable's walking goal, held off while someone rides the horse. */
+	private final class NotRidden extends net.minecraft.world.entity.ai.goal.Goal {
+		private final net.minecraft.world.entity.ai.goal.Goal inner;
+
+		NotRidden(net.minecraft.world.entity.ai.goal.Goal inner) {
+			this.inner = inner;
+			setFlags(inner.getFlags());
+		}
+
+		@Override
+		public boolean canUse() {
+			return !isVehicle() && inner.canUse();
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return !isVehicle() && inner.canContinueToUse();
+		}
+
+		@Override
+		public void start() {
+			inner.start();
+		}
+
+		@Override
+		public void stop() {
+			inner.stop();
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return inner.requiresUpdateEveryTick();
+		}
+
+		@Override
+		public void tick() {
+			inner.tick();
+		}
 	}
 
 	// ---- vanilla hooks ----

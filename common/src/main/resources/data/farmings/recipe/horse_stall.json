@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "H H",
+  "WWW"
+ ],
+ "key": {
+  "H": "minecraft:hay_block",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:horse_stall",
+  "count": 6
+ }
+}

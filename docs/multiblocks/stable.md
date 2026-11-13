@@ -23,3 +23,20 @@
 
 ## Not in this pass
 - Tack rooms, farriers, turnout rugs.
+
+## Built, 2026-11-13
+- **Code:** `stable/` (`StableBlocks`, `StableControllerBlock`, `StableControllerEntity`). The layout is the sheep shed's check
+  (`ShedLayout`) with the stable's cells: `horse_stall` floor, the barn's hay feeder and water trough, the shed's pasture gate.
+- **Differences from the spec above:**
+  - A **stall is any 12 blocks of stall floor** in the run: the controller counts stalls by area (24 blocks, 2 stalls) and gives each
+    horse the middle block of its 12 as home; it doesn't look for fences between stalls *(proposed: simpler to build)*.
+  - The **paddock gate is the sheep shed's pasture gate**, not a new block.
+  - **Feed and water** follow the shed's rule: a game day's tending gives each horse one real day's intake (2.25% of body weight in
+    dry matter, 0.05 L a kg). Foals nurse until weaning and take nothing. A horse someone is riding is out working: it is skipped, and
+    the stable's walking goal is held off while it is ridden.
+  - **Bedding** is the shed's straw store (`ShedBedding`): straw by hand or hopper, manure items out by a hopper under the controller,
+    at 5.1% of body weight a day for each horse indoors.
+  - **Fitness and feed:** a horse fed under 95% of its need gains no fitness from work *(proposed tolerance)*. The readout lists every
+    horse's fitness, fed and watered shares.
+- **Training** is riding: fitness builds with galloping (horses.md). No lunge line or walker in this pass.
+- **Tests:** game tests stable_forms, stable_houses_feeds_beds, underfed_horse_no_fitness.
