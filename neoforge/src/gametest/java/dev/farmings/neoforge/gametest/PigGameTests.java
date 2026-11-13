@@ -24,6 +24,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -312,6 +313,70 @@ final class PigGameTests {
 		}
 		helper.assertTrue(barn.rooted() >= 1, Component.literal("she roots grass: " + barn.rooted()));
 		helper.assertTrue(sow.lastFed() > 0.4 && sow.lastFed() < 0.6, Component.literal("a sow gets half her feed rooting, fed " + sow.lastFed()));
+		helper.succeed();
+	}
+
+	// ---- curing, lard and sausage (docs/multiblocks/curing-room.md) ----
+
+	/** A belly with its cure on a cold rack cures in 7 days, a lit smokehouse beside it smokes it, and out comes bacon; warm, it spoils. */
+	static void cureMakesBacon(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(2, 1, 2), dev.farmings.curing.CuringBlocks.CURING_RACK);
+		helper.setBlock(new BlockPos(3, 1, 2), dev.farmings.curing.CuringBlocks.SMOKEHOUSE);
+		helper.setBlock(new BlockPos(6, 1, 2), dev.farmings.curing.CuringBlocks.CURING_RACK);
+		var rack = (dev.farmings.curing.CuringRackEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 2)));
+		var warm = (dev.farmings.curing.CuringRackEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(6, 1, 2)));
+		var smoke = (dev.farmings.curing.SmokehouseEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 2)));
+		helper.assertTrue(!rack.insert(new ItemStack(FarmingsItems.PORK_BELLY), level), Component.literal("no belly goes in without its cure"));
+		rack.insert(new ItemStack(FarmingsItems.CURE, 4), level);
+		warm.insert(new ItemStack(FarmingsItems.CURE, 2), level);
+		helper.assertTrue(rack.insert(new ItemStack(FarmingsItems.PORK_BELLY), level) && warm.insert(new ItemStack(FarmingsItems.PORK_BELLY), level),
+				Component.literal("a belly with 2 kg of cure goes in"));
+		smoke.insert(new ItemStack(Items.OAK_LOG, 2), level);
+		rack.forceColdForTest(true);
+		long day = dev.farmings.husbandry.TimeScale.LIVESTOCK.realDaysToTicks(1);
+		for (int i = 0; i < 8; i++) {
+			rack.run(level, day);
+			warm.run(level, day);
+		}
+		ItemStack bacon = rack.take(level);
+		helper.assertTrue(bacon.is(FarmingsItems.BACON) && bacon.getCount() == 3, Component.literal("3 bacon (2 kg x 90%): " + bacon + "; " + rack.readout()));
+		helper.assertTrue(warm.take(level).is(FarmingsItems.SPOILED_PORK), Component.literal("the warm rack's belly spoiled: " + warm.readout()));
+		helper.succeed();
+	}
+
+	/** The lard kettle renders fat over a lit campfire, 0.75 kg of lard a kg; with no fire it waits. */
+	static void lardFromFat(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(2, 1, 2), Blocks.CAMPFIRE);
+		helper.setBlock(new BlockPos(2, 2, 2), dev.farmings.curing.CuringBlocks.LARD_KETTLE);
+		var kettle = (dev.farmings.curing.LardKettleEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 2, 2)));
+		kettle.insert(new ItemStack(FarmingsItems.PORK_FAT, 12), level);
+		kettle.run(level, dev.farmings.husbandry.TimeScale.LIVESTOCK.realDaysToTicks(0.2));
+		ItemStack lard = kettle.take(level);
+		helper.assertTrue(lard.is(FarmingsItems.LARD) && lard.getCount() == 9, Component.literal("12 kg of fat gives 9 lard: " + lard));
+		helper.succeed();
+	}
+
+	/** The grinder makes 32 sausages from 3 shoulders, 2 fat and a salt; salt is boiled from a water bucket, which comes back. */
+	static void sausageFromGrinder(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(2, 1, 2), dev.farmings.curing.CuringBlocks.MEAT_GRINDER);
+		var grinder = (dev.farmings.curing.MeatGrinderEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 2)));
+		for (int i = 0; i < 3; i++) {
+			grinder.insert(new ItemStack(FarmingsItems.PORK_SHOULDER), level);
+		}
+		grinder.insert(new ItemStack(FarmingsItems.PORK_FAT), level);
+		helper.assertTrue(grinder.take(level).isEmpty(), Component.literal("not enough fat yet"));
+		grinder.insert(new ItemStack(FarmingsItems.PORK_FAT), level);
+		grinder.insert(new ItemStack(FarmingsItems.SALT), level);
+		ItemStack out = grinder.take(level);
+		helper.assertTrue(out.is(FarmingsItems.SAUSAGE) && out.getCount() == 32, Component.literal("32 sausages: " + out));
+		helper.assertTrue(new ItemStack(Items.WATER_BUCKET).getItem().getCraftingRemainder().is(Items.BUCKET),
+				Component.literal("the salt recipe gives the bucket back"));
 		helper.succeed();
 	}
 }

@@ -1,0 +1,15 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:salt",
+  "farmings:salt",
+  "farmings:salt",
+  "farmings:salt",
+  "minecraft:sugar"
+ ],
+ "result": {
+  "id": "farmings:cure",
+  "count": 5
+ }
+}

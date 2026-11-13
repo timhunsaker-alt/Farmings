@@ -108,6 +108,9 @@ public class ColdRoomEntity extends BlockEntity {
 			return;     // no cooler than the outside: no credit
 		}
 		for (int[] c : check.inside()) {
+			if (level.getBlockEntity(new BlockPos(c[0], c[1], c[2])) instanceof dev.farmings.curing.CuringRackEntity rack) {
+				rack.chill(mean, now);     // the cure runs only in the cold (curing-room.md)
+			}
 			if (level.getBlockEntity(new BlockPos(c[0], c[1], c[2])) instanceof Container box) {
 				boolean changed = false;
 				for (int i = 0; i < box.getContainerSize(); i++) {

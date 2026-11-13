@@ -137,6 +137,24 @@ public final class FarmingsItems {
 	public static final Item PORK_FAT = item("pork_fat", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p));
 	public static final Item FRESH_HAM = item("fresh_ham", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_PORK, p.stacksTo(1)));
 	public static final Item SPOILED_PORK = item("spoiled_pork", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+	// Curing, lard and sausage (docs/multiblocks/curing-room.md)
+	public static final Item SALT = item("salt", Item::new);
+	public static final Item CURE = item("cure", Item::new);
+	public static final Item COUNTRY_HAM = item("country_ham", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COUNTRY_HAM, p.stacksTo(1)));
+	public static final Item HAM_SLICE = item("ham_slice", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.HAM_SLICE, p.food(food(4, 0.6F))));
+	public static final Item BACON = item("bacon", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.BACON, p.food(food(2, 0.3F))));
+	public static final Item COOKED_BACON = item("cooked_bacon", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_PORK, p.food(food(5, 0.8F))));
+	public static final Item SAUSAGE = item("sausage", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.RAW_SAUSAGE, p.food(food(1, 0.2F))));
+	public static final Item COOKED_SAUSAGE = item("cooked_sausage", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.COOKED_SAUSAGE, p.food(food(4, 0.6F))));
+	public static final Item LARD = item("lard", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.LARD, p));
+	public static final Item RANCID_LARD = item("rancid_lard", Item::new);
+
+	/** A country ham of this weight. */
+	public static net.minecraft.world.item.ItemStack countryHam(double kg, long now) {
+		net.minecraft.world.item.ItemStack s = new net.minecraft.world.item.ItemStack(COUNTRY_HAM);
+		net.minecraft.world.item.component.CustomData.update(net.minecraft.core.component.DataComponents.CUSTOM_DATA, s, t -> t.putDouble(KEY_KG, kg));
+		return dev.farmings.item.Perishables.stamp(s, now);
+	}
 
 	/** The "Kg" a ham (or other weighed piece) carries in its custom data. */
 	public static final String KEY_KG = "Kg";
@@ -365,6 +383,16 @@ public final class FarmingsItems {
 		ALL.put("pork_fat", PORK_FAT);
 		ALL.put("fresh_ham", FRESH_HAM);
 		ALL.put("spoiled_pork", SPOILED_PORK);
+		ALL.put("salt", SALT);
+		ALL.put("cure", CURE);
+		ALL.put("country_ham", COUNTRY_HAM);
+		ALL.put("ham_slice", HAM_SLICE);
+		ALL.put("bacon", BACON);
+		ALL.put("cooked_bacon", COOKED_BACON);
+		ALL.put("sausage", SAUSAGE);
+		ALL.put("cooked_sausage", COOKED_SAUSAGE);
+		ALL.put("lard", LARD);
+		ALL.put("rancid_lard", RANCID_LARD);
 		ALL.put("kid_chop", KID_CHOP);
 		ALL.put("cooked_kid_chop", COOKED_KID_CHOP);
 		ALL.put("chevon_chop", CHEVON_CHOP);

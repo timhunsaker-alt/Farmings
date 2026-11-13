@@ -1,0 +1,18 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WTW",
+  "I I",
+  "WTW"
+ ],
+ "key": {
+  "I": "minecraft:iron_ingot",
+  "T": "minecraft:stick",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:curing_rack",
+  "count": 1
+ }
+}

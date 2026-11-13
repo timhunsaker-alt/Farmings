@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "WWW",
+  "W W",
+  "WCW"
+ ],
+ "key": {
+  "C": "minecraft:copper_ingot",
+  "W": "#minecraft:planks"
+ },
+ "result": {
+  "id": "farmings:smokehouse",
+  "count": 1
+ }
+}

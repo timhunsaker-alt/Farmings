@@ -69,3 +69,18 @@ The room column's 1 day is Tim's game rule for fresh food, as elsewhere.
 
 ## Not in this pass
 - Nitrate and nitrite as separate items; country-ham mould; prosciutto and other styles; liver sausage, scrapple, chorizo.
+
+## Built, 2026-11-13
+- **Code:** rules in `process/curing/Curing` (plain Java, `CuringTest`); blocks in `curing/` (`CuringBlocks`, `CuringRackEntity`,
+  `SmokehouseEntity`, `LardKettleEntity`, `MeatGrinderEntity`). Use an item on a block to put it in; an empty hand takes out what is done,
+  or reads the block out.
+- **Differences from the spec above:**
+  - **Salt** is crafted from a water bucket and coal (the bucket comes back), not smelted *(proposed: boiling brine over a fire)*.
+  - The **cure stops above 4.5 °C**, not 10 °C: the rack is cold only when the cold room's mean over its last step is at or under the
+    4 °C set point plus half a degree. A piece still in its cure that is warm for 1 real day spoils (`spoiled_pork`).
+  - The **smokehouse is its own block beside the rack**, not a box of meat slots: while a rack's piece is in its smoking step the
+    smokehouse next to it burns fuel (one log, charcoal or coal: 2,000 ticks, 2 game hours) and the piece smokes. Ham and bacon use the
+    same smoke; their times differ (2 days, 3 hours).
+  - **Sausage:** 3 pork shoulders (6 kg) + 2 pork fat (2 kg) + 1 salt give **32 links** of 0.25 kg: the spec's 25% fat at the item sizes.
+  - Lard does not yet stand in for butter in recipes.
+- **Tests:** unit `CuringTest`; game tests cure_makes_bacon, lard_from_fat, sausage_from_grinder (227 in all).

@@ -317,6 +317,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - The pig barn: slatted pens over a pit, farrowing crates a sow takes 5 days before farrowing until weaning, heat lamps on Wildcatter
     power for piglets, the barn's feeders and troughs, rooting on its pasture, and a slurry pump to a digester feed pit or a slurry
     store. 5 game tests (224 in all).
+  - Pork products: salt and the 8-2 cure, a curing rack that cures hams and bellies in a cold room, a smokehouse beside it, country
+    hams aged 90 days and sliced, bacon, a lard kettle over fire and a meat grinder for sausage, with sourced shelf lives and Ludo
+    icons. 3 game tests (227 in all).
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

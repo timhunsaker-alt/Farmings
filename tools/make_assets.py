@@ -125,6 +125,16 @@ ITEMS = [
     ("pork_fat", "Pork Fat", (244, 238, 226), "blob"),
     ("fresh_ham", "Fresh Ham", (220, 140, 130), "steak"),
     ("spoiled_pork", "Spoiled Pork", (130, 120, 90), "steak"),
+    ("salt", "Salt", (240, 240, 240), "blob"),
+    ("cure", "Curing Mix", (236, 226, 214), "blob"),
+    ("country_ham", "Country Ham", (160, 90, 60), "steak"),
+    ("ham_slice", "Ham Slice", (200, 110, 100), "steak"),
+    ("bacon", "Bacon", (210, 130, 120), "steak"),
+    ("cooked_bacon", "Cooked Bacon", (170, 90, 60), "steak"),
+    ("sausage", "Sausage", (220, 150, 140), "steak"),
+    ("cooked_sausage", "Cooked Sausage", (150, 90, 50), "steak"),
+    ("lard", "Lard", (248, 246, 236), "blob"),
+    ("rancid_lard", "Rancid Lard", (200, 190, 140), "blob"),
     # goats (docs/animals/goats.md)
     ("kid_chop", "Kid Chop", (220, 132, 124), "steak"),
     ("cooked_kid_chop", "Cooked Kid Chop", (156, 100, 62), "steak"),
@@ -396,6 +406,7 @@ def main():
     cold_room_assets(lang)
     shed_assets(lang)
     pig_barn_assets(lang)
+    curing_assets(lang)
     corral_assets(lang)
     coop_assets(lang)
     hatchery_assets(lang)
@@ -471,6 +482,11 @@ SHAPED = {
     "slurry_pump": (["SRS", "CBC", "SSS"], 1),
     "slurry_pipe": (["III"], 6),
     "slurry_store": (["S S", "S S", "SSS"], 1),
+    # curing (docs/multiblocks/curing-room.md): a plank rack with hooks, a plank smokehouse, an iron kettle, an iron grinder
+    "curing_rack": (["WTW", "I I", "WTW"], 1),
+    "smokehouse": (["WWW", "W W", "WCW"], 1),
+    "lard_kettle": (["I I", "I I", "III"], 1),
+    "meat_grinder": (["III", " IT", "WWW"], 1),
     # the taming corral (docs/taming.md): a log post, a fence-and-plank gate, a plank trough with hay
     "corral_post": (["T", "W", "W"], 1),
     "corral_gate": (["TFT", "TWT"], 1),
@@ -556,11 +572,16 @@ SHAPELESS = {
     "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
     "mineral_premix": (["minecraft:bone_meal", "farmings:ground_limestone"], 4),
     "sheep_cheese": (["farmings:sheep_cheese_wheel"], 8),
+    # curing (docs/multiblocks/curing-room.md): salt boiled from a bucket of water over coal (the bucket comes back), the 8-2 cure, ham slices
+    "salt": (["minecraft:water_bucket", "minecraft:coal"], 1),
+    "cure": (["farmings:salt", "farmings:salt", "farmings:salt", "farmings:salt", "minecraft:sugar"], 5),
+    "ham_slice": (["farmings:country_ham"], 10),
     "shepherds_whistle": (["minecraft:iron_nugget", "minecraft:iron_nugget", "minecraft:string"], 1),
 }
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop",
            "kid_chop": "cooked_kid_chop", "chevon_chop": "cooked_chevon_chop", "pork_chop": "cooked_pork_chop",
+           "bacon": "cooked_bacon", "sausage": "cooked_sausage",
            "chicken": "cooked_chicken", "turkey": "cooked_turkey", "duck": "cooked_duck", "goose": "cooked_goose", "guinea_fowl": "cooked_guinea_fowl", "quail": "cooked_quail"}
 
 
@@ -945,6 +966,51 @@ def pig_barn_assets(lang):
                 "up": {"texture": "#top"}, "down": {"texture": "#side", "cullface": "down"},
                 **{f: {"texture": "#side", "uv": [0, 14, 16, 16]} for f in ("north", "south", "east", "west")}}}]})
     for name in PIG_BARN:
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+
+
+CURING = {"curing_rack": "Curing Rack", "smokehouse": "Smokehouse", "lard_kettle": "Lard Kettle", "meat_grinder": "Meat Grinder"}
+
+
+def curing_assets(lang):
+    """Drawn stand-ins: rack hooks, smokehouse boards, kettle iron, grinder iron."""
+    from PIL import Image, ImageDraw
+    m = os.path.join(ASSETS, "models", "block")
+    tex = os.path.join(ASSETS, "textures", "block")
+    out = {}
+    rack = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(rack)
+    d.rectangle([0, 0, 15, 2], fill=(140, 100, 60, 255))
+    d.rectangle([0, 13, 15, 15], fill=(140, 100, 60, 255))
+    for x in (3, 8, 13):
+        d.line([(x, 3), (x, 7)], fill=(180, 180, 186, 255))       # the hooks
+    out["curing_rack"] = rack
+    smoke = Image.new("RGBA", (16, 16), (96, 70, 44, 255))
+    d = ImageDraw.Draw(smoke)
+    for y in range(0, 16, 4):
+        d.line([(0, y), (15, y)], fill=(70, 50, 30, 255))
+    d.rectangle([5, 10, 10, 15], fill=(40, 28, 20, 255))            # the fire door
+    out["smokehouse"] = smoke
+    kettle = Image.new("RGBA", (16, 16), (70, 70, 74, 255))
+    ImageDraw.Draw(kettle).ellipse([2, 2, 13, 13], fill=(236, 230, 210, 255))     # lard in the pot
+    out["lard_kettle"] = kettle
+    grinder = Image.new("RGBA", (16, 16), (150, 150, 156, 255))
+    d = ImageDraw.Draw(grinder)
+    d.ellipse([4, 4, 11, 11], outline=(90, 90, 96, 255))
+    d.line([(11, 8), (15, 4)], fill=(60, 60, 64, 255), width=2)    # the crank
+    out["meat_grinder"] = grinder
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+    for name, title in CURING.items():
+        lang["block.farmings." + name] = title
+        if name == "curing_rack":
+            write(os.path.join(m, name + ".json"), {"parent": "minecraft:block/cube_all", "render_type": "minecraft:cutout",
+                                                    "textures": {"all": "farmings:block/" + name}})
+        else:
+            write(os.path.join(m, name + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + name}})
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))

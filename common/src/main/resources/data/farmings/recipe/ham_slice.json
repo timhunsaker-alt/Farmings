@@ -1,0 +1,11 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:country_ham"
+ ],
+ "result": {
+  "id": "farmings:ham_slice",
+  "count": 10
+ }
+}

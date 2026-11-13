@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:smelting",
+ "category": "food",
+ "ingredient": "farmings:sausage",
+ "result": {
+  "id": "farmings:cooked_sausage"
+ },
+ "experience": 0.35,
+ "cookingtime": 200
+}

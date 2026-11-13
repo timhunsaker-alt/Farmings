@@ -76,6 +76,7 @@ public final class Perishables {
 			case EGG -> FarmingsItems.ROTTEN_EGG;
 			case POULTRY -> FarmingsItems.SPOILED_POULTRY;
 			case PORK -> FarmingsItems.SPOILED_PORK;
+			case LARD -> FarmingsItems.RANCID_LARD;
 		};
 	}
 }

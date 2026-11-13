@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:water_bucket",
+  "minecraft:coal"
+ ],
+ "result": {
+  "id": "farmings:salt",
+  "count": 1
+ }
+}

@@ -21,7 +21,7 @@ public final class Spoilage {
 	/** Spoil ticks are rounded up to this, and a fridge credits its food once per this many ticks, so stacks stay alike *(proposed)*. */
 	public static final long STEP = 1_200;
 
-	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON, EGG, POULTRY, PORK }
+	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON, EGG, POULTRY, PORK, LARD }
 
 	public enum Food {
 		MILK(7, 1, Spoiled.BOTTLE),
@@ -46,7 +46,15 @@ public final class Spoilage {
 		COOKED_POULTRY(3.5, 1, Spoiled.POULTRY),
 		// Pork (curing-room.md): chops "3 to 5 days" (FoodSafety.gov chart), fresh ham "3–5 days" (FSIS), cooked 3-4 days; the middles.
 		RAW_PORK(4, 1, Spoiled.PORK),
-		COOKED_PORK(3.5, 1, Spoiled.PORK);
+		COOKED_PORK(3.5, 1, Spoiled.PORK),
+		// Cured pork (curing-room.md): "A whole, uncut country ham can be stored safely at room temperature for up to 1 year" (FSIS); cut
+		// uncooked 2-3 months; "Bacon 1 week"; raw sausage 1-2 days, cooked "1 week" (FoodSafety.gov chart); lard proposed (NOT FOUND).
+		COUNTRY_HAM(365, 365, Spoiled.PORK),
+		HAM_SLICE(75, 1, Spoiled.PORK),
+		BACON(7, 1, Spoiled.PORK),
+		RAW_SAUSAGE(1.5, 1, Spoiled.PORK),
+		COOKED_SAUSAGE(7, 1, Spoiled.PORK),
+		LARD(365, 150, Spoiled.LARD);
 
 		public final double fridgeDays;
 		public final double roomDays;
