@@ -330,7 +330,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 		double room = spots.size();
 		out = day && !spots.isEmpty();
 		for (FowlEntity f : members) {
-			boolean goes = out && !f.broody() && !f.young() && (!rain || f.species() == Species.DUCK);
+			boolean goes = out && !f.broody() && !f.young() && (!rain || f.species() == Species.DUCK || f.species() == Species.GOOSE);     // waterfowl go out in rain (proposed for geese)
 			double need = Fowl.runCellsPerBird(f.species());
 			if (goes && room >= need) {
 				room -= need;
@@ -353,7 +353,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 			double need = Fowl.feedKgPerDay(f.species(), f.weightKg()) * dayShare;
 			double got = 0;
 			if (onGrassRun(level, f)) {
-				got = need * Fowl.FORAGE_SHARE;
+				got = need * Fowl.forageShare(f.species());     // geese two-thirds, the rest a fifth (poultry.md)
 				foraged += got;
 				f.recordRation(dev.farmings.feed.Feedstuff.PASTURE.analysis());
 			}

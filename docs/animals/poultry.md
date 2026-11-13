@@ -642,8 +642,8 @@ Geese and guinea fowl lay in a season. The poultry year is the sheep calendar at
 
 - **Looks:** goose grey (Toulouse, wild type), pale grey, white, saddleback, Chinese brown (the swan goose's wild type) and Chinese
   white; guinea pearl, lavender, white (white over lavender). The Chinese goose has the bill knob on the model.
-- **Founders:** Embden Sd/Sd (gander) or Sd (goose) with spotting; Toulouse wild type; Chinese 60% white homozygous and 40% brown
-  carrying white at 25% *(proposed)*; guinea fowl pearl, with lavender and white carriers at 10% each *(proposed)*.
+- **Founders:** Embden Sd/Sd (gander) or Sd (goose) with spotting; Toulouse wild type; Chinese with the white allele at 77%, so about
+  60% white *(proposed)*; guinea fowl pearl, with lavender and white carriers at 10% each *(proposed)*.
 
 ### Wild geese and guinea fowl
 | Biome group | Added | Source |
@@ -661,3 +661,13 @@ Groups of 4 with one male, weight 10, as the other fowl. Wild geese and guinea f
 
 ### Open points
 - A goose fertile-days figure, adult goose and guinea water, the Toulouse egg weight, gene names for guinea colours.
+
+### Built, 2026-11-13: geese
+- **Code:** `Species.GOOSE`; `FowlBreed` EMBDEN, TOULOUSE, CHINESE with laying seasons (`inLay`, `seasonDays`); `LayingCycle` lays a
+  seasonal bird's year evenly over its season; loci GOOSE_DILUTION (Z), GOOSE_SPOTTING, GOOSE_WHITE; `PoultryLook` six goose plumages,
+  packed in 6 bits now; `Fowl.forageShare`; the guard goal in `FowlEntity`; the calendar on every bird (`dayOfYear`).
+- **Wild geese:** their own spawn entries (river, swamp, plains), so the chicken weights are unchanged.
+- **The model:** the goose has the duck's bill and webbed feet, a long neck, and the Chinese its knob.
+- **Sound:** geese use the bird call, low and loud for the guard's honk (no goose sound in the game).
+- **Tests:** `GooseGeneticsTest`; game tests goose_founders, goose_lays_in_season, goose_grazes_run, goose_drops_down,
+  guard_goose_chases_zombie, goose_egg_hatches. Client scene `newbirds`.

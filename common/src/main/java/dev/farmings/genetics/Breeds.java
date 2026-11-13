@@ -51,6 +51,10 @@ public final class Breeds {
 		fowl(Species.DUCK, "KHC", 75, 80, 75, 65, 65, 90, 70, 15);
 		fowl(Species.DUCK, "MAL", 50, 85, 70, 70, 25, 15, 60, 90);
 		fowl(Species.DUCK, "MUS", 70, 85, 70, 75, 60, 35, 70, 90);
+		// geese *(proposed baselines, as the other birds')*: Embden and Toulouse heavy, the Chinese the layer
+		fowl(Species.GOOSE, "EMB", 75, 80, 70, 80, 60, 30, 70, 60);
+		fowl(Species.GOOSE, "TOU", 70, 80, 65, 80, 65, 25, 75, 60);
+		fowl(Species.GOOSE, "CHI", 80, 80, 70, 75, 40, 55, 60, 60);
 	}
 
 	private static void fowl(Species species, String code, int efficiency, int health, int fertility, int longevity, int temperament, int eggs,

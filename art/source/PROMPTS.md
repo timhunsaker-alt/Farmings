@@ -148,3 +148,9 @@ Every prompt ends "game item icon, plain white background, no text".
 | chevon_chop / cooked_chevon_chop | A single large raw chevon goat chop, deep red lean meat, very thin fat edge, bone / a single roasted chevon goat chop, dark brown crust, bone |
 | goat_milk_bottle | A single old-fashioned 1 litre clear glass bottle full of bright pure white goat milk, a cardboard cap with a small goat silhouette |
 | chevre | A single small log of fresh soft white goat cheese chevre, bright white, slightly crumbly creamy surface, on nothing |
+
+## 2026-11-13: geese (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+| file | prompt |
+|---|---|
+| goose_egg | A single large white goose egg, smooth matte chalky shell, much bigger than a hen egg |
+| goose / cooked_goose | A single raw goose leg and thigh portion, dark red meat with a thick layer of pale yellow fat and skin / a single roast goose leg and thigh portion, crisp glossy deep golden brown skin |

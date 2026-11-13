@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:campfire_cooking",
+ "category": "food",
+ "ingredient": "farmings:goose",
+ "result": {
+  "id": "farmings:cooked_goose"
+ },
+ "experience": 0.35,
+ "cookingtime": 600
+}

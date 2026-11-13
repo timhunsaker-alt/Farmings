@@ -135,6 +135,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		double health = switch (s) {
 			case TURKEY -> 10.0;
 			case DUCK -> 6.0;
+			case GOOSE -> 8.0;
 			case QUAIL -> 2.0;
 			default -> 4.0;
 		};
@@ -313,7 +314,8 @@ public class FowlEntity extends Animal implements Wild.Animal {
 
 	/** A bird that lays eggs now: an adult hen, tame, not retired, not sitting. */
 	public boolean laying() {
-		return sex == Sex.FEMALE && !wild && !broody && genome != null && LayingCycle.eggsPerDay(species, composition(), ageRealDays(), score(Trait.EGG_PRODUCTION)) > 0;
+		return sex == Sex.FEMALE && !wild && !broody && genome != null && LayingCycle.eggsPerDay(species, composition(), ageRealDays(), score(Trait.EGG_PRODUCTION),
+				dayOfYear(level().getGameTime())) > 0;
 	}
 
 	/** A Broad Breasted White tom cannot mate (broad-breasted selection, Livestock Conservancy). */
@@ -521,12 +523,119 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
+		this.goalSelector.addGoal(1, new GuardGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 1.4));
 		this.goalSelector.addGoal(2, new PlaceGoal(this));
 		this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
 		this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
 		Wild.addGoals(this, this.goalSelector, this::isWild, Wild::grain);
+	}
+
+	// ---- the calendar (seasonal layers: geese and guinea fowl) ----
+
+	/** Game tests: fix the day of the year (0 = 1 January); -1 reads the world clock. Not saved. */
+	private int forcedDayOfYear = -1;
+
+	public void setDayOfYearForTest(int day) {
+		this.forcedDayOfYear = day;
+	}
+
+	/** The day of the year by the world clock at the poultry scale (the sheep calendar; poultry.md, "Laying season"). */
+	public int dayOfYear(long now) {
+		return forcedDayOfYear >= 0 ? forcedDayOfYear : dev.farmings.husbandry.Flock.dayOfYear(TimeScale.FOWL.ticksToRealDays(now));
+	}
+
+	// ---- guard geese (poultry.md, "Meat, down and guarding") ----
+
+	/** Bites a guard goose has landed since it was loaded (not saved); game tests read it, as a peaceful world zeroes player damage. */
+	private int bites;
+
+	public int bites() {
+		return bites;
+	}
+
+	/** How far a tame goose with a coop guards: 4 blocks, 8 for the Chinese *(proposed)*. */
+	public double guardRange() {
+		return breed == FowlBreed.CHINESE ? 8.0 : 4.0;
+	}
+
+	/**
+	 * A tame goose of a coop honks and charges a hostile mob, or a player who is not the coop's owner (not in creative or spectator), within
+	 * its guard range, and bites for 1 damage a second while touching *(proposed)*; it lets go when the intruder is twice the range away.
+	 */
+	static final class GuardGoal extends net.minecraft.world.entity.ai.goal.Goal {
+		private final FowlEntity goose;
+		private net.minecraft.world.entity.@Nullable LivingEntity target;
+		private int biteCooldown;
+		private int scan;
+
+		GuardGoal(FowlEntity goose) {
+			this.goose = goose;
+			setFlags(java.util.EnumSet.of(Flag.MOVE, Flag.LOOK));
+		}
+
+		@Override
+		public boolean requiresUpdateEveryTick() {
+			return true;
+		}
+
+		private boolean intruder(net.minecraft.world.entity.LivingEntity e) {
+			if (!e.isAlive()) {
+				return false;
+			}
+			if (e instanceof Player p) {
+				return !p.isCreative() && !p.isSpectator() && !p.getUUID().equals(goose.ownerId);
+			}
+			return e instanceof net.minecraft.world.entity.monster.Monster;
+		}
+
+		@Override
+		public boolean canUse() {
+			if (goose.species != Species.GOOSE || goose.wild || goose.coop == null || goose.young() || goose.broody || ++scan % 5 != 0) {
+				return false;     // looks about every fifth check, not every tick
+			}
+			double r = goose.guardRange();
+			java.util.List<net.minecraft.world.entity.LivingEntity> near = goose.level().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class,
+					goose.getBoundingBox().inflate(r), e -> e != goose && intruder(e) && e.distanceTo(goose) <= r);
+			target = near.isEmpty() ? null : near.get(0);
+			return target != null;
+		}
+
+		@Override
+		public boolean canContinueToUse() {
+			return target != null && intruder(target) && target.distanceTo(goose) <= goose.guardRange() * 2;
+		}
+
+		@Override
+		public void start() {
+			biteCooldown = 0;
+			goose.playSound(goose.getAmbientSound(), 1.5F, 0.5F);     // a honk: its own call, loud and low
+		}
+
+		@Override
+		public void stop() {
+			target = null;
+			goose.getNavigation().stop();
+		}
+
+		@Override
+		public void tick() {
+			if (target == null) {
+				return;
+			}
+			goose.getLookControl().setLookAt(target);
+			goose.getNavigation().stop();
+			goose.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), 1.5);
+			if (biteCooldown > 0) {
+				biteCooldown--;
+			}
+			if (biteCooldown == 0 && goose.distanceToSqr(target) < 2.25 && goose.level() instanceof ServerLevel server) {
+				target.hurtServer(server, goose.damageSources().mobAttack(goose), 1.0F);
+				goose.bites++;
+				biteCooldown = 20;
+			}
+		}
 	}
 
 	/** Goes to the spot its coop picks (a nest, the run, home), as the sheep's place goal does. A sitting hen stays on her nest. */
@@ -671,7 +780,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		if (!laying()) {
 			return;
 		}
-		double rate = LayingCycle.eggsPerDay(species, composition(), ageRealDays(now), score(Trait.EGG_PRODUCTION));
+		double rate = LayingCycle.eggsPerDay(species, composition(), ageRealDays(now), score(Trait.EGG_PRODUCTION), dayOfYear(now));
 		eggCounter += rate * Math.min(lastFed, lastWatered) * dev.farmings.feed.Ration.eggFactor(ration) * days;
 		while (eggCounter >= 1) {
 			eggCounter -= 1;
@@ -798,6 +907,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			return switch (species) {
 				case TURKEY -> "poult";
 				case DUCK -> "duckling";
+				case GOOSE -> "gosling";
 				default -> "chick";
 			};
 		}
@@ -807,6 +917,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			case TURKEY -> male ? "tom" : "hen";
 			case QUAIL -> male ? "cock" : "hen";
 			case DUCK -> male ? "drake" : "duck";
+			case GOOSE -> male ? "gander" : "goose";
 			default -> "bird";
 		};
 	}
@@ -833,8 +944,10 @@ public class FowlEntity extends Animal implements Wild.Animal {
 				b.append(", mothering her young");
 			} else if (LayingCycle.retired(composition(), age)) {
 				b.append(", retired");
+			} else if (adult() && sex == Sex.FEMALE && breed.seasonal() && !breed.inLay(dayOfYear(level().getGameTime()))) {
+				b.append(", OUT OF SEASON (").append(dev.farmings.husbandry.Flock.date(dayOfYear(level().getGameTime()))).append(")");
 			} else if (laying()) {
-				double rate = LayingCycle.eggsPerDay(species, composition(), age, score(Trait.EGG_PRODUCTION));
+				double rate = LayingCycle.eggsPerDay(species, composition(), age, score(Trait.EGG_PRODUCTION), dayOfYear(level().getGameTime()));
 				b.append(String.format(Locale.ROOT, ", laying %.0f%%, %s eggs", rate * 100,
 						PoultryLook.shellColour(genes().expressed(dev.farmings.genetics.PoultryLocus.SHELL, sex))));
 				b.append(fertile() ? ", fertile" : ", not fertile");
@@ -861,7 +974,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	public boolean checkSpawnRules(net.minecraft.world.level.LevelAccessor level, EntitySpawnReason reason) {
 		if (Wild.wildReason(reason)) {
 			BlockPos p = blockPosition();
-			if (species == Species.DUCK && level.getBlockState(p.below()).is(net.minecraft.tags.BlockTags.SAND) && nearWater(level, p)) {
+			if ((species == Species.DUCK || species == Species.GOOSE) && level.getBlockState(p.below()).is(net.minecraft.tags.BlockTags.SAND) && nearWater(level, p)) {
 				return level.getRawBrightness(p, 0) > 8;
 			}
 			@SuppressWarnings("unchecked")
@@ -1016,6 +1129,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		float base = switch (species) {
 			case TURKEY -> 0.6F;
 			case DUCK -> 0.75F;
+			case GOOSE -> 0.55F;
 			case QUAIL -> 1.6F;
 			default -> 1.0F;
 		};

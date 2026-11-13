@@ -30,7 +30,13 @@ public enum FowlBreed {
 	PEKIN("PEK", Species.DUCK, 4.31, 3.86, 140, 78, 182, 28, 25, 28, 0.675),
 	KHAKI_CAMPBELL("KHC", Species.DUCK, 1.93, 1.70, 250, 78, 182, 28, 25, 28, 0.65),
 	MALLARD("MAL", Species.DUCK, 1.08, 0.94, 35, 54, 182, 28, 25, 28, 0.65),
-	MUSCOVY("MUS", Species.DUCK, 4.99, 2.95, 90, 78, 182, 35, 31, 28, 0.72);
+	MUSCOVY("MUS", Species.DUCK, 4.99, 2.95, 90, 78, 182, 35, 31, 28, 0.72),
+	// Geese (poultry.md, "Geese and guinea fowl"), appended so saved ordinals hold. MSU weights (TO VERIFY: 1977); FAO eggs and egg weights
+	// (Toulouse: TLC's 20-35, egg weight NOT FOUND, the Embden's); first egg at a year (MSU); FAO 30-day incubation, the hatcher from day 27;
+	// goslings kept warm 4 weeks (the duck figure, proposed); FAO dressing 70%. Laying seasons FAO: 15 Feb - 15 Jun, Chinese 1 Feb - 30 Jun.
+	EMBDEN("EMB", Species.GOOSE, 11.8, 9.1, 40, 170, 365, 30, 27, 28, 0.70, 45, 165),
+	TOULOUSE("TOU", Species.GOOSE, 11.8, 9.1, 27.5, 170, 365, 30, 27, 28, 0.70, 45, 165),
+	CHINESE("CHI", Species.GOOSE, 5.4, 4.5, 55, 120, 365, 30, 27, 28, 0.70, 31, 180);
 
 	public final String code;
 	public final Species species;
@@ -46,9 +52,19 @@ public enum FowlBreed {
 	/** Age until which a young bird needs heat, in real days. */
 	public final double heatUntilDays;
 	public final double dressing;
+	/** The laying season as day-of-year {first, last}, wrapping past New Year; -1 for a bird that lays all year. */
+	public final int seasonStart;
+	public final int seasonEnd;
 
 	FowlBreed(String code, Species species, double maleKg, double femaleKg, double eggsPerYear, double eggGrams, double firstEggDays,
 			double incubationDays, double stopTurningDay, double heatUntilDays, double dressing) {
+		this(code, species, maleKg, femaleKg, eggsPerYear, eggGrams, firstEggDays, incubationDays, stopTurningDay, heatUntilDays, dressing, -1, -1);
+	}
+
+	FowlBreed(String code, Species species, double maleKg, double femaleKg, double eggsPerYear, double eggGrams, double firstEggDays,
+			double incubationDays, double stopTurningDay, double heatUntilDays, double dressing, int seasonStart, int seasonEnd) {
+		this.seasonStart = seasonStart;
+		this.seasonEnd = seasonEnd;
 		this.code = code;
 		this.species = species;
 		this.maleKg = maleKg;
@@ -69,6 +85,26 @@ public enum FowlBreed {
 			}
 		}
 		return null;
+	}
+
+	public boolean seasonal() {
+		return seasonStart >= 0;
+	}
+
+	/** Lays on this day of the year (always, for a bird with no season). */
+	public boolean inLay(int dayOfYear) {
+		if (seasonStart < 0) {
+			return true;
+		}
+		return seasonStart <= seasonEnd ? dayOfYear >= seasonStart && dayOfYear <= seasonEnd : dayOfYear >= seasonStart || dayOfYear <= seasonEnd;
+	}
+
+	/** Days in the laying season (365 for a bird with no season). */
+	public int seasonDays() {
+		if (seasonStart < 0) {
+			return 365;
+		}
+		return seasonStart <= seasonEnd ? seasonEnd - seasonStart + 1 : 365 - seasonStart + seasonEnd + 1;
 	}
 
 	public String displayName() {

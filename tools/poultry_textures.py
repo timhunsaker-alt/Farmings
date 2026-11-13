@@ -22,6 +22,7 @@ BOXES = [
     ("comb", (26, 0), (1, 3, 4)), ("crest", (36, 0), (5, 3, 5)), ("beard", (56, 0), (1, 3, 1)), ("body", (0, 9), (6, 8, 6)),
     ("wing", (24, 13), (1, 4, 6)), ("leg", (38, 13), (3, 5, 3)), ("tail", (50, 8), (4, 4, 2)), ("fan", (0, 24), (12, 10, 1)),
     ("bill", (26, 24), (4, 1, 3)), ("caruncle", (40, 24), (4, 2, 1)), ("foot", (52, 24), (3, 1, 3)), ("duckleg", (0, 36), (2, 4, 2)),
+    ("neck", (16, 36), (2, 6, 2)), ("knob", (28, 36), (2, 2, 2)),
 ]
 
 
@@ -87,14 +88,23 @@ PLUMAGE = {
     "turkey_young": dict(all=hexc(0xC8A878), down=True, stripe=hexc(0x8A6A40)),
     "quail_young": dict(all=hexc(0xB08A50), down=True, stripe=hexc(0x4A3420)),
     "duck_young": dict(all=hexc(0xF0D860), down=True, stripe=hexc(0x8A7A40)),
+    # geese (docs/animals/poultry.md, "Geese and guinea fowl"): Toulouse grey, dilution pale and white, saddleback, the Chinese
+    "goose_goose_grey": dict(all=hexc(0x7A7468), head=hexc(0x6A645A), chest=hexc(0xA8A296), wingedge=hexc(0xC8C4BA)),
+    "goose_goose_pale": dict(all=hexc(0xB8B4AC), head=hexc(0xA8A49C), chest=hexc(0xD0CCC4), wingedge=hexc(0xE0DCD4)),
+    "goose_goose_white": dict(all=hexc(0xF4F2EC)),
+    "goose_goose_saddleback": dict(all=hexc(0xF4F2EC), head=hexc(0x7A7468), wing=hexc(0x7A7468)),
+    "goose_chinese_brown": dict(all=hexc(0x8A7458), head=hexc(0x6A4E36), chest=hexc(0xD8C8A8), wingedge=hexc(0xC8B898)),
+    "goose_chinese_white": dict(all=hexc(0xF4F2EC)),
+    "goose_young": dict(all=hexc(0xD8D060), down=True, stripe=hexc(0x8A8A50)),
 }
 
-BEAK = {"chicken": hexc(0xE8C060), "turkey": hexc(0xC8B090), "quail": hexc(0x6B5B4B), "duck": hexc(0xE8B040)}
-LEGS = {"chicken": hexc(0xE0B040), "turkey": hexc(0xC89080), "quail": hexc(0xD8A090), "duck": hexc(0xE89030)}
+BEAK = {"chicken": hexc(0xE8C060), "turkey": hexc(0xC8B090), "quail": hexc(0x6B5B4B), "duck": hexc(0xE8B040), "goose": hexc(0xE88A30)}
+LEGS = {"chicken": hexc(0xE0B040), "turkey": hexc(0xC89080), "quail": hexc(0xD8A090), "duck": hexc(0xE89030), "goose": hexc(0xE88A30)}
 BILL = {"duck_mallard_male": hexc(0xC8C040), "duck_mallard": hexc(0xB07030), "duck_restricted": hexc(0xB07030),
         "duck_restricted_male": hexc(0xC8C040), "duck_khaki_male": hexc(0x5A6A30), "duck_khaki": hexc(0x4A4A30),
         "duck_dusky": hexc(0x4A4A30), "duck_muscovy": hexc(0xD8A0A0), "duck_muscovy_blue": hexc(0xD8A0A0),
-        "duck_muscovy_silver": hexc(0xD8A0A0), "duck_muscovy_lavender": hexc(0xD8A0A0), "duck_muscovy_chocolate": hexc(0xD8A0A0)}
+        "duck_muscovy_silver": hexc(0xD8A0A0), "duck_muscovy_lavender": hexc(0xD8A0A0), "duck_muscovy_chocolate": hexc(0xD8A0A0),
+        "goose_chinese_brown": hexc(0x1C1A18)}
 
 
 def plumage_colour(p, part, face, i, j, fw, fh, salt):
@@ -104,7 +114,7 @@ def plumage_colour(p, part, face, i, j, fw, fh, salt):
         if p.get("stripe") and part == "body" and face == "back" and (i in (1, fw - 2)):
             c = p["stripe"]
         return mix(c, 10 * grain(i + 7 * fw, j, salt))
-    c = p.get(part if part in ("head", "tail", "wing") else "none", base)
+    c = p.get(part if part in ("head", "tail", "wing") else "head" if part == "neck" else "none", base)
     if part in ("fan",):
         c = p.get("tail", base)
         if "fanband" in p and fh - 3 <= (fh - 1 - j) <= fh - 2:
@@ -148,8 +158,8 @@ def draw(name):
                         c = mix(RED, 12 * grain(i, j, salt))
                     elif part == "beak":
                         c = BEAK[species]
-                    elif part == "bill":
-                        c = BILL.get(name, BEAK["duck"])
+                    elif part in ("bill", "knob"):
+                        c = BILL.get(name, BEAK.get(species, BEAK["duck"]))
                     elif part in ("leg", "foot", "duckleg"):
                         c = hexc(0x5A5A6A) if name == "chicken_white_silkie" else LEGS[species]
                     elif part == "beard":

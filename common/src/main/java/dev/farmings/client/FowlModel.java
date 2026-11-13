@@ -21,6 +21,8 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 	private final ModelPart crest;
 	private final ModelPart bill;
 	private final ModelPart caruncle;
+	private final ModelPart knob;
+	private final ModelPart neck;
 	private final ModelPart beard;
 	private final ModelPart body;
 	private final ModelPart rightWing;
@@ -42,6 +44,8 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 		crest = head.getChild("crest");
 		bill = head.getChild("bill");
 		caruncle = head.getChild("caruncle");
+		knob = head.getChild("knob");
+		neck = root.getChild("neck");
 		beard = root.getChild("beard");
 		body = root.getChild("body");
 		rightWing = root.getChild("right_wing");
@@ -57,7 +61,8 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 	@Override
 	public void setupAnim(FowlRenderState s) {
 		super.setupAnim(s);
-		boolean duck = s.species == Species.DUCK;
+		boolean goose = s.species == Species.GOOSE;
+		boolean duck = s.species == Species.DUCK || goose;     // a goose has the duck's bill and webbed feet
 		boolean chicken = s.species == Species.CHICKEN;
 		boolean turkey = s.species == Species.TURKEY;
 		boolean grown = !s.young;
@@ -65,6 +70,8 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 		beak.visible = !duck;
 		bill.visible = duck;
 		caruncle.visible = duck && s.breed == FowlBreed.MUSCOVY && grown;
+		knob.visible = goose && s.breed == FowlBreed.CHINESE && grown;
+		neck.visible = goose && grown;
 		comb.visible = chicken && grown && !s.look.silky();
 		crest.visible = chicken && s.look.silky();
 		wattle.visible = (chicken || turkey) && grown;
@@ -105,6 +112,13 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 		if (s.breed == FowlBreed.PEKIN && grown) {
 			body.xRot -= 0.45F;
 			head.y -= 1.5F;
+		}
+		// a goose carries its head high on a long neck
+		if (goose && grown) {
+			head.y -= 5.0F;
+			head.z -= 0.5F;
+			head.xScale = head.yScale = head.zScale = 0.7F;
+			body.xRot -= 0.15F;
 		}
 		// young birds: a big head on a small round body
 		if (s.young) {

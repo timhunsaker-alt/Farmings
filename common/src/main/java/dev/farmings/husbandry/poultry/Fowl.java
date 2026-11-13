@@ -32,8 +32,9 @@ public final class Fowl {
 	/** Ducks: 0.44 lb a day for a 4 lb duck (MWPS-18, Table 6, Duck row; sourcing pass 2026-11-12). */
 	public static final double DUCK_LITTER_KG_PER_KG_DAY = 0.44 / 4.0;
 
+	/** Litter rate; geese take the duck's (waterfowl, proposed: no goose row in MWPS-18). */
 	public static double litterKgPerKgDay(Species s) {
-		return s == Species.DUCK ? DUCK_LITTER_KG_PER_KG_DAY : LITTER_KG_PER_KG_DAY;
+		return s == Species.DUCK || s == Species.GOOSE ? DUCK_LITTER_KG_PER_KG_DAY : LITTER_KG_PER_KG_DAY;
 	}
 	/** A fertile egg not started within this many real days no longer hatches (proposed). */
 	public static final double HATCHABLE_DAYS = 7;
@@ -84,6 +85,7 @@ public final class Fowl {
 		return switch (s) {
 			case QUAIL -> new double[] {16, 0.14};      // NSW DPI, 14-18 g
 			case DUCK -> new double[] {218, 3.9};       // breeder ducks, 48 lb per 100 a day
+			case GOOSE -> new double[] {320, 6.75};     // FAO: 320 g a day for breeder geese of 6.5-7.0 kg
 			default -> new double[] {100, 2.0};          // laying hen (Hy-Line 99.6 g); turkeys use it too (proposed)
 		};
 	}
@@ -94,9 +96,9 @@ public final class Fowl {
 		return a[0] / 1000.0 * Math.pow(weightKg / a[1], FEED_EXPONENT);
 	}
 
-	/** One real day's water in litres: 2× the feed (3× for ducks). */
+	/** One real day's water in litres: 2× the feed (3× for ducks, and geese: proposed, adult goose water NOT FOUND). */
 	public static double waterLPerDay(Species s, double weightKg) {
-		return feedKgPerDay(s, weightKg) * (s == Species.DUCK ? 3.0 : 2.0);
+		return feedKgPerDay(s, weightKg) * (s == Species.DUCK || s == Species.GOOSE ? 3.0 : 2.0);
 	}
 
 	/** Females one adult male serves in a coop. */
@@ -106,6 +108,16 @@ public final class Fowl {
 	 * end, for every species *(proposed)*.
 	 */
 	public static final double FORAGE_SHARE = 0.20;
+	/**
+	 * Geese take two-thirds of their feed off a grassy run (poultry.md, "Grazing (geese)"): FAO holds pasture geese to 0.5-1.0 kg of grain
+	 * a week, about 107 g a day against a full 320 g *(derived)*.
+	 */
+	public static final double GOOSE_FORAGE_SHARE = 2.0 / 3.0;
+
+	/** The share of a bird's day it takes as forage on a grassy run. */
+	public static double forageShare(Species s) {
+		return s == Species.GOOSE ? GOOSE_FORAGE_SHARE : FORAGE_SHARE;
+	}
 	/** Forage a run's grass block regrows a day, kg DM: 50 hens an acre for good x 25 g / 4,047 m² *(derived; the 50 is TO VERIFY)*. */
 	public static final double RUN_REGROWTH_KG_PER_BLOCK_DAY = 50 * 0.025 / 4047.0;
 
@@ -122,6 +134,7 @@ public final class Fowl {
 		return switch (s) {
 			case QUAIL -> 3;
 			case DUCK -> 5;
+			case GOOSE -> 4;      // FAO: "one male for every four females"
 			default -> 10;
 		};
 	}
@@ -132,6 +145,7 @@ public final class Fowl {
 		return switch (s) {
 			case CHICKEN -> 28;
 			case QUAIL -> 11;
+			case GOOSE -> 14;     // NOT FOUND for geese; proposed (forum figures 10-14)
 			default -> 21;
 		};
 	}
@@ -142,6 +156,7 @@ public final class Fowl {
 			case CHICKEN -> 3;
 			case TURKEY -> 1;
 			case QUAIL -> 16;
+			case GOOSE -> 1;      // FAO: 1.0 m² a goose on deep litter
 			default -> 2;
 		};
 	}
@@ -151,6 +166,7 @@ public final class Fowl {
 		return switch (s) {
 			case CHICKEN -> 1;
 			case QUAIL -> 1.0 / 8;
+			case GOOSE -> 1;      // FAO: at least 1.0 m² a bird in a yard or run
 			default -> 2;
 		};
 	}

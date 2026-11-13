@@ -45,6 +45,7 @@ public class FowlRenderer extends MobRenderer<FowlEntity, FowlRenderState, FowlM
 			case TURKEY -> new float[] {9.0F, 1.7F};
 			case QUAIL -> new float[] {0.14F, 0.5F};
 			case DUCK -> new float[] {3.0F, 1.05F};
+			case GOOSE -> new float[] {9.0F, 1.55F};
 			default -> new float[] {2.5F, 1.0F};
 		};
 	}

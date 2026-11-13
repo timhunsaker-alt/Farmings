@@ -48,6 +48,7 @@ public final class FowlEggs {
 			case TURKEY -> FarmingsItems.TURKEY_EGG;
 			case QUAIL -> FarmingsItems.QUAIL_EGG;
 			case DUCK -> FarmingsItems.DUCK_EGG;
+			case GOOSE -> FarmingsItems.GOOSE_EGG;
 			default -> FarmingsItems.CHICKEN_EGG;
 		};
 	}
@@ -61,6 +62,9 @@ public final class FowlEggs {
 		}
 		if (stack.is(FarmingsItems.QUAIL_EGG)) {
 			return Species.QUAIL;
+		}
+		if (stack.is(FarmingsItems.GOOSE_EGG)) {
+			return Species.GOOSE;
 		}
 		return stack.is(FarmingsItems.DUCK_EGG) ? Species.DUCK : null;
 	}
@@ -190,8 +194,9 @@ public final class FowlEggs {
 		if (feathers > 0) {
 			bird.spawnAtLocation(level, new ItemStack(Items.FEATHER, feathers));
 		}
-		if (bird.species() == Species.DUCK) {
-			bird.spawnAtLocation(level, new ItemStack(FarmingsItems.DOWN));     // about 30 g of down a duck (docs/eggs.md)
+		if (bird.species() == Species.DUCK || bird.species() == Species.GOOSE) {
+			// about 30 g of down a duck (docs/eggs.md); a goose one item too (poultry.md: no slaughter figure, a plucking's down is 15-24 g)
+			bird.spawnAtLocation(level, new ItemStack(FarmingsItems.DOWN));
 		}
 	}
 }

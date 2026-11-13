@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:campfire_cooking",
+ "category": "food",
+ "ingredient": "farmings:goose_egg",
+ "result": {
+  "id": "farmings:fried_egg"
+ },
+ "experience": 0.35,
+ "cookingtime": 600
+}

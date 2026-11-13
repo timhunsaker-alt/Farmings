@@ -53,6 +53,21 @@ public final class LayingCycle {
 	 * @param eggScore       her egg_production score, 0-1000
 	 */
 	public static double eggsPerDay(Species species, Map<String, Integer> c, double ageDays, int eggScore) {
+		return eggsPerDay(species, c, ageDays, eggScore, -1);
+	}
+
+	/**
+	 * The same on a day of the year: a seasonal bird (geese, guinea fowl; poultry.md, "Laying season") lays its year's eggs evenly over its
+	 * season and none outside it, up to one a day. {@code dayOfYear} -1 ignores the season.
+	 */
+	public static double eggsPerDay(Species species, Map<String, Integer> c, double ageDays, int eggScore, int dayOfYear) {
+		FowlBreed top = top(c);
+		if (top != null && top.seasonal() && dayOfYear >= 0) {
+			if (ageDays < Fowl.mean(c, b -> b.firstEggDays) || retired(c, ageDays) || !top.inLay(dayOfYear)) {
+				return 0;
+			}
+			return Math.min(1.0, Fowl.mean(c, b -> b.eggsPerYear) / top.seasonDays() * Fowl.factor(eggScore, Fowl.EGG_RATE_SWING));
+		}
 		double first = Fowl.mean(c, b -> b.firstEggDays);
 		double since = ageDays - first;
 		if (since < 0 || since >= Fowl.LAYING_YEARS * 365) {
@@ -67,6 +82,20 @@ public final class LayingCycle {
 			rate = shape(since / 7.0) * perYear / YEAR_SUM;
 		}
 		return Math.min(1.0, rate * Fowl.factor(eggScore, Fowl.EGG_RATE_SWING));
+	}
+
+	/** The breed a composition holds most of, or null. */
+	public static FowlBreed top(Map<String, Integer> c) {
+		FowlBreed best = null;
+		int most = -1;
+		for (Map.Entry<String, Integer> e : c.entrySet()) {
+			FowlBreed b = FowlBreed.byCode(e.getKey());
+			if (b != null && e.getValue() > most) {
+				most = e.getValue();
+				best = b;
+			}
+		}
+		return best;
 	}
 
 	/** Retired: past three laying years. */

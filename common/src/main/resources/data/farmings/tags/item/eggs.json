@@ -3,6 +3,7 @@
   "farmings:chicken_egg",
   "farmings:turkey_egg",
   "farmings:quail_egg",
-  "farmings:duck_egg"
+  "farmings:duck_egg",
+  "farmings:goose_egg"
  ]
 }

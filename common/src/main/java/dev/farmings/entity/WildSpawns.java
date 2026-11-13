@@ -58,6 +58,10 @@ public final class WildSpawns {
 		if (biome.equals("minecraft:plains") || biome.equals("minecraft:meadow") || biome.equals("minecraft:windswept_hills")) {
 			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.SHEEP_DOG, ConstantInt.of(2)), 2));
 		}
+		// wild geese in groups of 4 (poultry.md, "Wild geese and guinea fowl"; weight 6, proposed)
+		if (!WildBreeds.geese(biome).isEmpty()) {
+			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.GOOSE, ConstantInt.of(4)), 6));
+		}
 		if (biome.equals("minecraft:river") || biome.equals("minecraft:mangrove_swamp")) {
 			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.DUCK, ConstantInt.of(4)), 10));
 		}

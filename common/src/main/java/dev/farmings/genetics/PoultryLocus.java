@@ -44,7 +44,14 @@ public enum PoultryLocus {
 	/** Coturnix extended brown (E, MC1R): 0 +, 1 E; incomplete: one is Rosetta, two are Tibetan. */
 	QUAIL_BROWN("quail_brown", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, false, new String[] {"+", "E"}),
 	/** Coturnix dotted white (S, EDNRB2): 0 +, 1 s, recessive; s/s is English White. */
-	QUAIL_WHITE("quail_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "s"});
+	QUAIL_WHITE("quail_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "s"}),
+	// Geese (poultry.md, "Plumage genes"), 2026-11-13, appended so older birds' alleles and draws stay as they were.
+	/** Goose sex-linked dilution Sd (MLANA; Ollila et al. 2026, preprint): 0 sd+, 1 Sd, dominant, Z-linked. Two copies white, one pale. */
+	GOOSE_DILUTION("goose_dilution", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, true, new String[] {"sd+", "Sd"}),
+	/** Goose white spotting: 0 plain, 1 spotted (saddleback), recessive *(proposed mode)*. With dilution, the white Embden. */
+	GOOSE_SPOTTING("goose_spotting", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"S+", "s"}),
+	/** Chinese goose white (EDNRB2 insertion; Xi et al. 2020): 0 coloured, 1 white, recessive. */
+	GOOSE_WHITE("goose_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"W+", "w"});
 
 	/** Herd founders of the breed carry each colour mutant at this share *(proposed)*; other breeds never. */
 	static final int MUTANT_PERCENT = 5;
@@ -123,6 +130,9 @@ public enum PoultryLocus {
 			};
 			case MUSCOVY_BLUE, MUSCOVY_LAVENDER, MUSCOVY_CHOCOLATE -> breed.equals("MUS") ? new int[] {0, 100 - MUTANT_PERCENT, 1, MUTANT_PERCENT} : new int[] {0, 1};
 			case QUAIL_FAWN, QUAIL_BROWN, QUAIL_WHITE -> breed.equals("COT") ? new int[] {0, 100 - MUTANT_PERCENT, 1, MUTANT_PERCENT} : new int[] {0, 1};
+			case GOOSE_DILUTION, GOOSE_SPOTTING -> breed.equals("EMB") ? new int[] {1, 1} : new int[] {0, 1};
+			// the white allele at 77% *(proposed)*, so about 60% of Chinese founders are white and the rest brown, many carrying white
+			case GOOSE_WHITE -> breed.equals("CHI") ? new int[] {1, 77, 0, 23} : new int[] {0, 1};
 		};
 	}
 }

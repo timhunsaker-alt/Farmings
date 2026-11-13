@@ -38,6 +38,7 @@ public final class FarmingsEntities {
 	public static final EntityType<FowlEntity> TURKEY = fowl("turkey", 0.75F, 1.2F);
 	public static final EntityType<FowlEntity> QUAIL = fowl("quail", 0.3F, 0.4F);
 	public static final EntityType<FowlEntity> DUCK = fowl("duck", 0.45F, 0.7F);
+	public static final EntityType<FowlEntity> GOOSE = fowl("goose", 0.6F, 1.0F);
 
 	private static EntityType<FowlEntity> fowl(String name, float width, float height) {
 		return EntityType.Builder.<FowlEntity>of(FowlEntity::new, MobCategory.CREATURE)
@@ -52,6 +53,7 @@ public final class FarmingsEntities {
 			case TURKEY -> TURKEY;
 			case QUAIL -> QUAIL;
 			case DUCK -> DUCK;
+			case GOOSE -> GOOSE;
 			default -> CHICKEN;
 		};
 	}
@@ -66,6 +68,9 @@ public final class FarmingsEntities {
 		}
 		if (type == DUCK) {
 			return Species.DUCK;
+		}
+		if (type == GOOSE) {
+			return Species.GOOSE;
 		}
 		return Species.CHICKEN;
 	}
@@ -93,7 +98,7 @@ public final class FarmingsEntities {
 			.updateInterval(10)
 			.build(ResourceKey.create(Registries.ENTITY_TYPE, Farmings.id("rotten_egg")));
 
-	public static final java.util.List<EntityType<FowlEntity>> FOWL = java.util.List.of(CHICKEN, TURKEY, QUAIL, DUCK);
+	public static final java.util.List<EntityType<FowlEntity>> FOWL = java.util.List.of(CHICKEN, TURKEY, QUAIL, DUCK, GOOSE);
 
 	private FarmingsEntities() {
 	}
@@ -106,6 +111,7 @@ public final class FarmingsEntities {
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("turkey"), TURKEY);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("quail"), QUAIL);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("duck"), DUCK);
+		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("goose"), GOOSE);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("rotten_egg"), ROTTEN_EGG);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("sheep_dog"), SHEEP_DOG);
 		Registry.register(BuiltInRegistries.ENTITY_TYPE, Farmings.id("field_gantry"), FIELD_GANTRY);

@@ -19,7 +19,9 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 	public enum Plumage {
 		WHITE, WILD, RED, BLACK, BARRED, BRONZE, BOURBON, MALLARD, RESTRICTED, DUSKY, KHAKI, MUSCOVY, COTURNIX, BOBWHITE,
 		// colour mutants (2026-11-11)
-		MUSCOVY_BLUE, MUSCOVY_SILVER, MUSCOVY_LAVENDER, MUSCOVY_CHOCOLATE, ITALIAN, GOLDEN, ROSETTA, TIBETAN, ENGLISH_WHITE
+		MUSCOVY_BLUE, MUSCOVY_SILVER, MUSCOVY_LAVENDER, MUSCOVY_CHOCOLATE, ITALIAN, GOLDEN, ROSETTA, TIBETAN, ENGLISH_WHITE,
+		// geese (2026-11-13)
+		GOOSE_GREY, GOOSE_PALE, GOOSE_WHITE, GOOSE_SADDLEBACK, CHINESE_BROWN, CHINESE_WHITE
 	}
 
 	public enum Comb { SINGLE, ROSE, PEA, WALNUT }
@@ -66,6 +68,15 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 						: brown == 2 ? Plumage.TIBETAN : fawn == 2 ? Plumage.GOLDEN : brown == 1 ? Plumage.ROSETTA : fawn == 1 ? Plumage.ITALIAN
 						: Plumage.COTURNIX;
 			}
+			case GOOSE -> {
+				if (breedCode.equals("CHI")) {
+					yield g.expressed(PoultryLocus.GOOSE_WHITE, sex) == 1 ? Plumage.CHINESE_WHITE : Plumage.CHINESE_BROWN;
+				}
+				int dil = g.count(PoultryLocus.GOOSE_DILUTION, sex);
+				boolean spotted = g.expressed(PoultryLocus.GOOSE_SPOTTING, sex) == 1;
+				yield spotted ? (dil >= 1 ? Plumage.GOOSE_WHITE : Plumage.GOOSE_SADDLEBACK)
+						: dil == 2 ? Plumage.GOOSE_WHITE : dil == 1 ? Plumage.GOOSE_PALE : Plumage.GOOSE_GREY;
+			}
 			default -> throw new IllegalArgumentException("not a bird: " + species);
 		};
 		Comb comb = Comb.SINGLE;
@@ -95,18 +106,18 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 		return shade < 100 ? "white" : shade < 350 ? "cream" : shade < 550 ? "tinted" : "brown";
 	}
 
-	/** Packs the look for syncing to clients: plumage 5 bits, comb 2, silky 1, shell 10, seed 32. */
+	/** Packs the look for syncing to clients: plumage 6 bits (widened from 5 for the geese and guinea fowl), comb 2, silky 1, shell 10, seed 32. */
 	public long pack() {
 		long v = plumage.ordinal();
-		v |= (long) comb.ordinal() << 5;
-		v |= (silky ? 1L : 0L) << 7;
-		v |= (long) (shell & 0x3FF) << 8;
-		v |= (seed & 0xFFFFFFFFL) << 18;
+		v |= (long) comb.ordinal() << 6;
+		v |= (silky ? 1L : 0L) << 8;
+		v |= (long) (shell & 0x3FF) << 9;
+		v |= (seed & 0xFFFFFFFFL) << 19;
 		return v;
 	}
 
 	public static PoultryLook unpack(long v) {
-		return new PoultryLook(Plumage.values()[(int) (v & 0x1F)], Comb.values()[(int) (v >> 5 & 3)], (v >> 7 & 1) == 1, (int) (v >> 8 & 0x3FF),
-				(int) (v >> 18 & 0xFFFFFFFFL));
+		return new PoultryLook(Plumage.values()[(int) (v & 0x3F) % Plumage.values().length], Comb.values()[(int) (v >> 6 & 3)], (v >> 8 & 1) == 1,
+				(int) (v >> 9 & 0x3FF), (int) (v >> 19 & 0xFFFFFFFFL));
 	}
 }

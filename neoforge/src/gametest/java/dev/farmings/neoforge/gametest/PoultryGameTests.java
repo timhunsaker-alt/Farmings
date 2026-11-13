@@ -35,6 +35,7 @@ final class PoultryGameTests {
 		int x = 1;
 		for (FowlBreed b : FowlBreed.values()) {
 			FowlEntity hen = adult(helper, b, Sex.FEMALE, x, new BlockPos(1 + (x % 6), 1, 1 + x / 6));
+			hen.setDayOfYearForTest(110);     // 20 April: geese and guinea fowl lay in season
 			helper.assertTrue(hen.species() == b.species && hen.breed() == b, Component.literal(b + " is a " + b.species));
 			helper.assertTrue(hen.adult() && hen.laying(), Component.literal(b + " hen lays: " + hen.readout()));
 			x++;
@@ -710,6 +711,127 @@ final class PoultryGameTests {
 		var chick = dev.farmings.genetics.PoultryGenes.inherit(duck.genes(), drake.genes(), Sex.FEMALE, 5L);
 		helper.assertTrue(dev.farmings.genetics.PoultryLook.of(dev.farmings.genetics.Species.DUCK, "MUS", chick, Sex.FEMALE).plumage() == dev.farmings.genetics.PoultryLook.Plumage.MUSCOVY_BLUE,
 				Component.literal("silver x black gives blue"));
+		helper.succeed();
+	}
+
+	// ---- geese (docs/animals/poultry.md, "Geese and guinea fowl") ----
+
+	/** The three geese: a white Embden gander and goose, a grey Toulouse, a Chinese with its knob; named gander and goose; saved. */
+	static void gooseFounders(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity gander = adult(helper, FowlBreed.EMBDEN, Sex.MALE, 201L, new BlockPos(1, 1, 1));
+		FowlEntity embden = adult(helper, FowlBreed.EMBDEN, Sex.FEMALE, 202L, new BlockPos(3, 1, 1));
+		FowlEntity toulouse = adult(helper, FowlBreed.TOULOUSE, Sex.FEMALE, 203L, new BlockPos(5, 1, 1));
+		FowlEntity chinese = adult(helper, FowlBreed.CHINESE, Sex.FEMALE, 204L, new BlockPos(7, 1, 1));
+		helper.assertTrue(gander.species() == Species.GOOSE && gander.readout().contains("gander") && embden.readout().contains("goose"),
+				Component.literal("a gander and a goose: " + gander.readout()));
+		helper.assertTrue(gander.look().plumage() == PoultryLook.Plumage.GOOSE_WHITE && embden.look().plumage() == PoultryLook.Plumage.GOOSE_WHITE,
+				Component.literal("Embden white both sexes (dilution and spotting): " + embden.look().describe()));
+		helper.assertTrue(toulouse.look().plumage() == PoultryLook.Plumage.GOOSE_GREY, Component.literal("Toulouse grey: " + toulouse.look().describe()));
+		var chineseLook = chinese.look().plumage();
+		helper.assertTrue(chineseLook == PoultryLook.Plumage.CHINESE_WHITE || chineseLook == PoultryLook.Plumage.CHINESE_BROWN, Component.literal("Chinese: " + chineseLook));
+		var out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess());
+		toulouse.saveWithoutId(out);
+		FowlEntity b = FarmingsEntities.GOOSE.create(level, EntitySpawnReason.LOAD);
+		b.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(b.breed() == FowlBreed.TOULOUSE && b.genome().equals(toulouse.genome()) && b.genes().equals(toulouse.genes()), Component.literal("a goose survives a save"));
+		helper.succeed();
+	}
+
+	/** A goose lays in her season (15 Feb - 15 Jun) and not out of it; her eggs are goose eggs of the breed weight. */
+	static void gooseLaysInSeason(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity goose = adult(helper, FowlBreed.EMBDEN, Sex.FEMALE, 211L, new BlockPos(3, 1, 3));
+		goose.setNoAi(true);
+		goose.setDayOfYearForTest(273);
+		helper.assertTrue(!goose.laying() && goose.readout().contains("OUT OF SEASON"), Component.literal("1 October: out of season: " + goose.readout()));
+		goose.setDayOfYearForTest(100);
+		helper.assertTrue(goose.laying(), Component.literal("10 April: she lays: " + goose.readout()));
+		double rate = dev.farmings.husbandry.poultry.LayingCycle.eggsPerDay(Species.GOOSE, goose.composition(), goose.ageRealDays(), 500, 100);
+		helper.assertTrue(Math.abs(rate - 40.0 / 121) < 1e-9, Component.literal("40 eggs over a 121-day season: " + rate));
+		ItemStack egg = goose.makeEgg(level.getGameTime());
+		helper.assertTrue(egg.is(dev.farmings.FarmingsItems.GOOSE_EGG), Component.literal("a goose egg"));
+		helper.succeed();
+	}
+
+	/** On a grassy run a goose takes two-thirds of her feed from the grass; she draws the run down far faster than a hen. */
+	static void gooseGrazesRun(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		fillCoop(helper);
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		var feeder = (dev.farmings.coop.GrainFeederEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 1, 4)));
+		FowlEntity inside = adult(helper, FowlBreed.TOULOUSE, Sex.FEMALE, 221L, new BlockPos(3, 1, 2));
+		FowlEntity out = adult(helper, FowlBreed.TOULOUSE, Sex.FEMALE, 221L, new BlockPos(9, 1, 3));
+		inside.setNoAi(true);
+		out.setNoAi(true);
+		inside.assignCoop(c, null);
+		out.assignCoop(c, null);
+		double before = feeder.kg();
+		coop.tend(level, java.util.List.of(inside), 1.0);
+		double tookInside = before - feeder.kg();
+		before = feeder.kg();
+		coop.tend(level, java.util.List.of(out), 1.0);
+		double tookOut = before - feeder.kg();
+		helper.assertTrue(Math.abs(tookOut - tookInside / 3) < 1e-6, Component.literal("on the run she takes a third from the feeder: " + tookOut + " vs " + tookInside));
+		coop.tend(level, java.util.List.of(out), 40.0);
+		int dirt = 0;
+		for (var sp : coop.run().spots()) {
+			if (level.getBlockState(new BlockPos(sp.x(), sp.y() - 1, sp.z())).is(net.minecraft.world.level.block.Blocks.DIRT)) {
+				dirt++;
+			}
+		}
+		helper.assertTrue(dirt >= 2, Component.literal("40 days of one goose bares grass: " + dirt));
+		helper.succeed();
+	}
+
+	/** A goose gives goose meat, feathers and down. */
+	static void gooseDropsDown(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity g = adult(helper, FowlBreed.EMBDEN, Sex.MALE, 231L, new BlockPos(3, 1, 3));
+		int want = dev.farmings.husbandry.poultry.Fowl.meatItems(g.composition(), g.weightKg());
+		g.kill(level);
+		helper.runAfterDelay(5, () -> {
+			var items = level.getEntitiesOfClass(ItemEntity.class, new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12));
+			int meat = items.stream().filter(i -> i.getItem().is(dev.farmings.FarmingsItems.GOOSE_MEAT)).mapToInt(i -> i.getItem().getCount()).sum();
+			boolean down = items.stream().anyMatch(i -> i.getItem().is(dev.farmings.FarmingsItems.DOWN));
+			helper.assertTrue(meat == want && meat >= 16 && down, Component.literal("goose meat " + meat + " of " + want + ", down " + down));
+			helper.succeed();
+		});
+	}
+
+	/** A tame goose of a coop charges a zombie that comes near and bites it. */
+	static void guardGooseChasesZombie(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		coop(helper, c).refresh(level);
+		FowlEntity goose = adult(helper, FowlBreed.TOULOUSE, Sex.MALE, 241L, new BlockPos(8, 1, 2));
+		goose.assignCoop(c, null);
+		var zombie = helper.spawn(net.minecraft.world.entity.EntityTypes.ZOMBIE, new BlockPos(10, 1, 3));
+		zombie.setNoAi(true);
+		TamingGameTests.waitFor(helper, 0, 200, () -> goose.bites() > 0, () -> "the guard goose should bite the zombie: at " + goose.distanceTo(zombie), helper::succeed);
+	}
+
+	/** Goose eggs hatch in a powered incubator after 30 days. */
+	static void gooseEggHatches(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		helper.setBlock(new BlockPos(3, 1, 3), dev.farmings.hatchery.HatcheryBlocks.INCUBATOR);
+		var inc = (dev.farmings.hatchery.IncubatorEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(3, 1, 3)));
+		inc.forceRunning(true);
+		for (ItemStack e : fertileEggs(helper, FowlBreed.CHINESE, 2, 251L)) {
+			helper.assertTrue(inc.add(e), Component.literal("a fertile goose egg goes in"));
+		}
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(29.9));
+		helper.assertTrue(inc.hatched() == 0, Component.literal("nothing at 29.9 days: " + inc.readout()));
+		inc.warm(level, dev.farmings.husbandry.TimeScale.FOWL.realDaysToTicks(0.2));
+		var goslings = level.getEntitiesOfClass(FowlEntity.class, new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(3, 1, 3))).inflate(2),
+				f -> f.species() == Species.GOOSE && f.young());
+		helper.assertTrue(inc.hatched() == 2 && goslings.size() == 2 && goslings.get(0).readout().contains("gosling"), Component.literal("two goslings at 30 days: " + inc.readout()));
 		helper.succeed();
 	}
 }

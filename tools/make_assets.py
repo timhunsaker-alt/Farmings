@@ -133,6 +133,8 @@ ITEMS = [
     ("cooked_turkey", "Roast Turkey", (184, 120, 64), "steak"),
     ("duck", "Raw Duck", (214, 120, 110), "steak"),
     ("cooked_duck", "Roast Duck", (166, 96, 50), "steak"),
+    ("goose", "Raw Goose", (200, 110, 100), "steak"),
+    ("cooked_goose", "Roast Goose", (160, 92, 46), "steak"),
     ("quail", "Raw Quail", (220, 140, 130), "steak"),
     ("cooked_quail", "Roast Quail", (176, 110, 60), "steak"),
     ("spoiled_poultry", "Spoiled Poultry", (130, 120, 80), "steak"),
@@ -145,6 +147,7 @@ ITEMS = [
     ("turkey_egg", "Turkey Egg", (214, 190, 150), "blob"),
     ("quail_egg", "Quail Egg", (170, 140, 100), "blob"),
     ("duck_egg", "Duck Egg", (236, 234, 222), "blob"),
+    ("goose_egg", "Goose Egg", (244, 242, 234), "blob"),
 ]
 SPOILED_COLOUR = (196, 200, 150)
 EXTRA_LANG = {
@@ -160,6 +163,7 @@ EXTRA_LANG = {
     "species.farmings.turkey": "Turkey",
     "species.farmings.chicken": "Chicken",
     "species.farmings.duck": "Duck",
+    "species.farmings.goose": "Gander",
     "species.farmings.quail": "Quail",
     "message.farmings.straw.not_in_heat": "She is not in heat, or the straw is empty.",
     "message.farmings.castrated": "Castrated: he will grow as a steer.",
@@ -264,7 +268,7 @@ def block_model(name, box):
 
 def main():
     lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "entity.farmings.goat": "Goat", "entity.farmings.chicken": "Chicken", "entity.farmings.turkey": "Turkey",
-            "entity.farmings.quail": "Quail", "entity.farmings.duck": "Duck", "block.farmings.barn_controller": CONTROLLER[0]}
+            "entity.farmings.quail": "Quail", "entity.farmings.duck": "Duck", "entity.farmings.goose": "Goose", "block.farmings.barn_controller": CONTROLLER[0]}
     lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
         lang["block.farmings." + name] = title
@@ -357,13 +361,13 @@ def main():
                                       "farmings:down_jacket"]})
     # poultry products (docs/eggs.md): every Farmings egg counts where a recipe takes an egg
     write(os.path.join(DATA, "tags", "item", "eggs.json"), {"values": ["farmings:chicken_egg", "farmings:turkey_egg", "farmings:quail_egg",
-                                                                       "farmings:duck_egg"]})
+                                                                       "farmings:duck_egg", "farmings:goose_egg"]})
     # Farmings meat in the common meat tags, so other mods' recipes take it (docs/eggs.md, "Loose ends")
     write(os.path.join(ROOT_DATA, "c", "tags", "item", "foods", "raw_meat.json"), {"replace": False, "values": [
-        "farmings:chicken", "farmings:turkey", "farmings:duck", "farmings:quail", "farmings:lamb_chop", "farmings:mutton_chop", "farmings:kid_chop", "farmings:chevon_chop",
+        "farmings:chicken", "farmings:turkey", "farmings:duck", "farmings:goose", "farmings:quail", "farmings:lamb_chop", "farmings:mutton_chop", "farmings:kid_chop", "farmings:chevon_chop",
         "farmings:select_steak", "farmings:choice_steak", "farmings:prime_steak"]})
     write(os.path.join(ROOT_DATA, "c", "tags", "item", "foods", "cooked_meat.json"), {"replace": False, "values": [
-        "farmings:cooked_chicken", "farmings:cooked_turkey", "farmings:cooked_duck", "farmings:cooked_quail", "farmings:cooked_lamb_chop", "farmings:cooked_kid_chop", "farmings:cooked_chevon_chop",
+        "farmings:cooked_chicken", "farmings:cooked_turkey", "farmings:cooked_duck", "farmings:cooked_goose", "farmings:cooked_quail", "farmings:cooked_lamb_chop", "farmings:cooked_kid_chop", "farmings:cooked_chevon_chop",
         "farmings:cooked_mutton_chop", "farmings:cooked_select_steak", "farmings:cooked_choice_steak", "farmings:cooked_prime_steak"]})
     lang["entity.farmings.rotten_egg"] = "Rotten Egg"
     lang["entity.farmings.sheep_dog"] = "Border Collie"
@@ -532,7 +536,7 @@ SHAPELESS = {
 COOKING = {"select_steak": "cooked_select_steak", "choice_steak": "cooked_choice_steak", "prime_steak": "cooked_prime_steak",
            "lamb_chop": "cooked_lamb_chop", "mutton_chop": "cooked_mutton_chop",
            "kid_chop": "cooked_kid_chop", "chevon_chop": "cooked_chevon_chop",
-           "chicken": "cooked_chicken", "turkey": "cooked_turkey", "duck": "cooked_duck", "quail": "cooked_quail"}
+           "chicken": "cooked_chicken", "turkey": "cooked_turkey", "duck": "cooked_duck", "goose": "cooked_goose", "quail": "cooked_quail"}
 
 
 def ingredient(ref):
@@ -553,7 +557,7 @@ def recipes():
             write(os.path.join(out, "%s_from_%s.json" % (cooked, kind)), {"type": "minecraft:" + kind, "category": "food",
                   "ingredient": "farmings:" + raw, "result": {"id": "farmings:" + cooked}, "experience": 0.35, "cookingtime": time})
     # poultry recipes with vanilla results or several inputs (docs/eggs.md)
-    for egg in ("chicken_egg", "turkey_egg", "quail_egg", "duck_egg"):
+    for egg in ("chicken_egg", "turkey_egg", "quail_egg", "duck_egg", "goose_egg"):
         for kind, time in (("smelting", 200), ("smoking", 100), ("campfire_cooking", 600)):
             fname = "fried_egg" if (egg, kind) == ("chicken_egg", "smelting") else "fried_egg_from_%s_%s" % (egg, kind)
             write(os.path.join(out, fname + ".json"), {"type": "minecraft:" + kind, "category": "food",

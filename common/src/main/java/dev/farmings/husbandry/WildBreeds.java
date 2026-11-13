@@ -99,8 +99,24 @@ public final class WildBreeds {
 		return FOWL.getOrDefault(path(biome), OTHER);
 	}
 
+	/**
+	 * Wild geese live apart from the chicken table (poultry.md, "Wild geese and guinea fowl"), as their own spawn entries: Toulouse and
+	 * Embden by rivers and in swamps (the greylag's wetlands), the Chinese on the plains (the swan goose's grassland) *(proposed mapping)*.
+	 */
+	private static final Map<String, List<FowlBreed>> GEESE = Map.of(
+			"river", List.of(FowlBreed.TOULOUSE, FowlBreed.EMBDEN), "swamp", List.of(FowlBreed.TOULOUSE, FowlBreed.EMBDEN),
+			"plains", List.of(FowlBreed.CHINESE), "sunflower_plains", List.of(FowlBreed.CHINESE));
+
+	public static List<FowlBreed> geese(String biome) {
+		return GEESE.getOrDefault(path(biome), List.of());
+	}
+
 	/** A wild breed of this species for the biome, or null if the species doesn't live there. */
 	public static FowlBreed fowl(Species species, String biome, int roll) {
+		if (species == Species.GOOSE) {
+			List<FowlBreed> g = geese(biome);
+			return g.isEmpty() ? null : g.get(Math.floorMod(roll, g.size()));
+		}
 		List<FowlBreed> l = new ArrayList<>();
 		for (FowlBreed b : fowlBreeds(biome)) {
 			if (b.species == species) {
