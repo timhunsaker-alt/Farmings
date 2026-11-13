@@ -62,6 +62,10 @@ public final class WildSpawns {
 		if (!WildBreeds.geese(biome).isEmpty()) {
 			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.GOOSE, ConstantInt.of(4)), 6));
 		}
+		// wild guinea fowl in the savannas, groups of 4 (weight 6, proposed)
+		if (WildBreeds.guineaFowl(biome)) {
+			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.GUINEA, ConstantInt.of(4)), 6));
+		}
 		if (biome.equals("minecraft:river") || biome.equals("minecraft:mangrove_swamp")) {
 			l.add(new Weighted<>(new SpawnerData(FarmingsEntities.DUCK, ConstantInt.of(4)), 10));
 		}

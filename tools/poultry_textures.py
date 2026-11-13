@@ -22,7 +22,7 @@ BOXES = [
     ("comb", (26, 0), (1, 3, 4)), ("crest", (36, 0), (5, 3, 5)), ("beard", (56, 0), (1, 3, 1)), ("body", (0, 9), (6, 8, 6)),
     ("wing", (24, 13), (1, 4, 6)), ("leg", (38, 13), (3, 5, 3)), ("tail", (50, 8), (4, 4, 2)), ("fan", (0, 24), (12, 10, 1)),
     ("bill", (26, 24), (4, 1, 3)), ("caruncle", (40, 24), (4, 2, 1)), ("foot", (52, 24), (3, 1, 3)), ("duckleg", (0, 36), (2, 4, 2)),
-    ("neck", (16, 36), (2, 6, 2)), ("knob", (28, 36), (2, 2, 2)),
+    ("neck", (16, 36), (2, 6, 2)), ("knob", (28, 36), (2, 2, 2)), ("casque", (36, 36), (1, 2, 2)),
 ]
 
 
@@ -96,10 +96,17 @@ PLUMAGE = {
     "goose_chinese_brown": dict(all=hexc(0x8A7458), head=hexc(0x6A4E36), chest=hexc(0xD8C8A8), wingedge=hexc(0xC8B898)),
     "goose_chinese_white": dict(all=hexc(0xF4F2EC)),
     "goose_young": dict(all=hexc(0xD8D060), down=True, stripe=hexc(0x8A8A50)),
+    # helmeted guinea fowl: pearl (dark grey dotted white), lavender (pale grey dotted white), white; a bare blue-white head
+    "guinea_pearl": dict(all=hexc(0x3A3C44), dots=hexc(0xE8E8EE), head=hexc(0xC8D4E8)),
+    "guinea_lavender": dict(all=hexc(0x9A98A8), dots=hexc(0xF0F0F4), head=hexc(0xC8D4E8)),
+    "guinea_guinea_white": dict(all=hexc(0xF2F0EA), head=hexc(0xE8E0DA)),
+    "guinea_young": dict(all=hexc(0xA88A60), down=True, stripe=hexc(0x4A3420)),
 }
 
-BEAK = {"chicken": hexc(0xE8C060), "turkey": hexc(0xC8B090), "quail": hexc(0x6B5B4B), "duck": hexc(0xE8B040), "goose": hexc(0xE88A30)}
-LEGS = {"chicken": hexc(0xE0B040), "turkey": hexc(0xC89080), "quail": hexc(0xD8A090), "duck": hexc(0xE89030), "goose": hexc(0xE88A30)}
+BEAK = {"chicken": hexc(0xE8C060), "turkey": hexc(0xC8B090), "quail": hexc(0x6B5B4B), "duck": hexc(0xE8B040), "goose": hexc(0xE88A30),
+        "guinea": hexc(0xC8A880)}
+LEGS = {"chicken": hexc(0xE0B040), "turkey": hexc(0xC89080), "quail": hexc(0xD8A090), "duck": hexc(0xE89030), "goose": hexc(0xE88A30),
+        "guinea": hexc(0x5A5048)}
 BILL = {"duck_mallard_male": hexc(0xC8C040), "duck_mallard": hexc(0xB07030), "duck_restricted": hexc(0xB07030),
         "duck_restricted_male": hexc(0xC8C040), "duck_khaki_male": hexc(0x5A6A30), "duck_khaki": hexc(0x4A4A30),
         "duck_dusky": hexc(0x4A4A30), "duck_muscovy": hexc(0xD8A0A0), "duck_muscovy_blue": hexc(0xD8A0A0),
@@ -141,6 +148,8 @@ def plumage_colour(p, part, face, i, j, fw, fh, salt):
         c = p["streak"]
     if "sheen" in p and grain(i, j, salt + 3) > 0.6:
         c = p["sheen"]
+    if "dots" in p and part in ("body", "wing", "tail", "neck") and (i + 2 * j) % 3 == 0 and j % 2 == 0:
+        c = p["dots"]
     return mix(c, 9 * grain(i + 13 * fw, j + 17 * fh, salt))
 
 
@@ -154,7 +163,9 @@ def draw(name):
         for face, (fu, fv, fw, fh) in net(u, v, w, h, d).items():
             for j in range(fh):
                 for i in range(fw):
-                    if part in ("comb", "wattle", "snood", "caruncle"):
+                    if part == "casque":
+                        c = mix(hexc(0xB89A6A), 8 * grain(i, j, salt))
+                    elif part in ("comb", "wattle", "snood", "caruncle"):
                         c = mix(RED, 12 * grain(i, j, salt))
                     elif part == "beak":
                         c = BEAK[species]

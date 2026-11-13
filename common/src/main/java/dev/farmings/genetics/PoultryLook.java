@@ -21,7 +21,9 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 		// colour mutants (2026-11-11)
 		MUSCOVY_BLUE, MUSCOVY_SILVER, MUSCOVY_LAVENDER, MUSCOVY_CHOCOLATE, ITALIAN, GOLDEN, ROSETTA, TIBETAN, ENGLISH_WHITE,
 		// geese (2026-11-13)
-		GOOSE_GREY, GOOSE_PALE, GOOSE_WHITE, GOOSE_SADDLEBACK, CHINESE_BROWN, CHINESE_WHITE
+		GOOSE_GREY, GOOSE_PALE, GOOSE_WHITE, GOOSE_SADDLEBACK, CHINESE_BROWN, CHINESE_WHITE,
+		// guinea fowl (2026-11-13)
+		PEARL, LAVENDER, GUINEA_WHITE
 	}
 
 	public enum Comb { SINGLE, ROSE, PEA, WALNUT }
@@ -77,6 +79,8 @@ public record PoultryLook(Plumage plumage, Comb comb, boolean silky, int shell, 
 				yield spotted ? (dil >= 1 ? Plumage.GOOSE_WHITE : Plumage.GOOSE_SADDLEBACK)
 						: dil == 2 ? Plumage.GOOSE_WHITE : dil == 1 ? Plumage.GOOSE_PALE : Plumage.GOOSE_GREY;
 			}
+			case GUINEA -> g.expressed(PoultryLocus.GUINEA_WHITE, sex) == 1 ? Plumage.GUINEA_WHITE
+					: g.expressed(PoultryLocus.GUINEA_LAVENDER, sex) == 1 ? Plumage.LAVENDER : Plumage.PEARL;
 			default -> throw new IllegalArgumentException("not a bird: " + species);
 		};
 		Comb comb = Comb.SINGLE;

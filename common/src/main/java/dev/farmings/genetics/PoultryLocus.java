@@ -51,7 +51,12 @@ public enum PoultryLocus {
 	/** Goose white spotting: 0 plain, 1 spotted (saddleback), recessive *(proposed mode)*. With dilution, the white Embden. */
 	GOOSE_SPOTTING("goose_spotting", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"S+", "s"}),
 	/** Chinese goose white (EDNRB2 insertion; Xi et al. 2020): 0 coloured, 1 white, recessive. */
-	GOOSE_WHITE("goose_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"W+", "w"});
+	GOOSE_WHITE("goose_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"W+", "w"}),
+	// Guinea fowl (poultry.md, "Plumage genes"): autosomal, recessive to pearl (Soara et al. 2022, PeerJ; which locus is which NOT FOUND).
+	/** Guinea lavender: 0 +, 1 lav, recessive (TO VERIFY: breeder source). */
+	GUINEA_LAVENDER("guinea_lavender", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "lav"}),
+	/** Guinea white: 0 +, 1 w, recessive *(proposed: one of the three recessive loci)*; shows over lavender. */
+	GUINEA_WHITE("guinea_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "w"});
 
 	/** Herd founders of the breed carry each colour mutant at this share *(proposed)*; other breeds never. */
 	static final int MUTANT_PERCENT = 5;
@@ -133,6 +138,8 @@ public enum PoultryLocus {
 			case GOOSE_DILUTION, GOOSE_SPOTTING -> breed.equals("EMB") ? new int[] {1, 1} : new int[] {0, 1};
 			// the white allele at 77% *(proposed)*, so about 60% of Chinese founders are white and the rest brown, many carrying white
 			case GOOSE_WHITE -> breed.equals("CHI") ? new int[] {1, 77, 0, 23} : new int[] {0, 1};
+			// founders mostly pearl, carrying lavender and white at 10% each *(proposed)*
+			case GUINEA_LAVENDER, GUINEA_WHITE -> breed.equals("GUI") ? new int[] {0, 90, 1, 10} : new int[] {0, 1};
 		};
 	}
 }

@@ -55,6 +55,7 @@ public final class Breeds {
 		fowl(Species.GOOSE, "EMB", 75, 80, 70, 80, 60, 30, 70, 60);
 		fowl(Species.GOOSE, "TOU", 70, 80, 65, 80, 65, 25, 75, 60);
 		fowl(Species.GOOSE, "CHI", 80, 80, 70, 75, 40, 55, 60, 60);
+		fowl(Species.GUINEA, "GUI", 70, 85, 75, 75, 55, 40, 40, 40);     // guinea fowl *(proposed baseline; hardy, flighty)*
 	}
 
 	private static void fowl(Species species, String code, int efficiency, int health, int fertility, int longevity, int temperament, int eggs,

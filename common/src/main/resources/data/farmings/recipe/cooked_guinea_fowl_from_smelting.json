@@ -1,0 +1,10 @@
+{
+ "type": "minecraft:smelting",
+ "category": "food",
+ "ingredient": "farmings:guinea_fowl",
+ "result": {
+  "id": "farmings:cooked_guinea_fowl"
+ },
+ "experience": 0.35,
+ "cookingtime": 200
+}

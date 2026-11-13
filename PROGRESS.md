@@ -295,6 +295,8 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Geese: Embden, Toulouse and Chinese in the coop: laying seasons, sex-linked dilution and spotting (the white Embden), Chinese white,
     two-thirds of their feed from a grassy run, down, guard geese that charge and bite intruders, wild geese by rivers and on plains.
     6 game tests (210 in all), `GooseGeneticsTest`; client scene `newbirds`.
+  - Guinea fowl: the helmeted guinea fowl in pearl, lavender and white (both recessive), seasonal laying, keets, wild in the savannas,
+    and the alarm call that brings the coop in. 3 game tests (213 in all).
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

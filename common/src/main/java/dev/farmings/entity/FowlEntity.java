@@ -136,6 +136,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			case TURKEY -> 10.0;
 			case DUCK -> 6.0;
 			case GOOSE -> 8.0;
+			case GUINEA -> 4.0;
 			case QUAIL -> 2.0;
 			default -> 4.0;
 		};
@@ -870,6 +871,42 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		super.customServerAiStep(level);
 		if (tickCount % 20 == 0) {
 			settle(level);
+			if (species == Species.GUINEA) {
+				watch(level);
+			}
+		}
+	}
+
+	// ---- the guinea fowl's alarm call (poultry.md, "Alarm call") ----
+
+	/** A guinea fowl sees hostile mobs this far *(proposed)*. */
+	public static final double ALARM_RANGE = 16;
+	/** At most one call every 10 s a bird *(proposed)*. */
+	public static final long ALARM_COOLDOWN = 200;
+	private long alarmReadyAt;
+	/** Calls since it was loaded (not saved); game tests read it. */
+	private int alarms;
+
+	public int alarms() {
+		return alarms;
+	}
+
+	/** A guinea fowl that sees a hostile mob calls, loud and shrill; its coop brings every bird in from the run. Wild ones call too. */
+	private void watch(ServerLevel level) {
+		long now = level.getGameTime();
+		if (young() || now < alarmReadyAt) {
+			return;
+		}
+		List<net.minecraft.world.entity.monster.Monster> seen = level.getEntitiesOfClass(net.minecraft.world.entity.monster.Monster.class,
+				getBoundingBox().inflate(ALARM_RANGE), m -> m.isAlive() && m.distanceTo(this) <= ALARM_RANGE && hasLineOfSight(m));
+		if (seen.isEmpty()) {
+			return;
+		}
+		alarmReadyAt = now + ALARM_COOLDOWN;
+		alarms++;
+		playSound(getAmbientSound(), 2.0F, 1.8F);
+		if (coop != null && level.getBlockEntity(coop) instanceof dev.farmings.coop.CoopControllerEntity c) {
+			c.alarm(seen.get(0).getType().getDescription().getString(), now);
 		}
 	}
 
@@ -908,6 +945,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 				case TURKEY -> "poult";
 				case DUCK -> "duckling";
 				case GOOSE -> "gosling";
+				case GUINEA -> "keet";
 				default -> "chick";
 			};
 		}
@@ -918,6 +956,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			case QUAIL -> male ? "cock" : "hen";
 			case DUCK -> male ? "drake" : "duck";
 			case GOOSE -> male ? "gander" : "goose";
+			case GUINEA -> male ? "cock" : "hen";
 			default -> "bird";
 		};
 	}
@@ -1130,6 +1169,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			case TURKEY -> 0.6F;
 			case DUCK -> 0.75F;
 			case GOOSE -> 0.55F;
+			case GUINEA -> 1.35F;
 			case QUAIL -> 1.6F;
 			default -> 1.0F;
 		};

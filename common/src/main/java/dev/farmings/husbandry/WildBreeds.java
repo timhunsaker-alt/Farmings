@@ -111,8 +111,17 @@ public final class WildBreeds {
 		return GEESE.getOrDefault(path(biome), List.of());
 	}
 
+	/** Helmeted guinea fowl are African savanna birds: they spawn in the savannas, as their own entry *(proposed mapping)*. */
+	public static boolean guineaFowl(String biome) {
+		String p = path(biome);
+		return p.equals("savanna") || p.equals("savanna_plateau") || p.equals("windswept_savanna");
+	}
+
 	/** A wild breed of this species for the biome, or null if the species doesn't live there. */
 	public static FowlBreed fowl(Species species, String biome, int roll) {
+		if (species == Species.GUINEA) {
+			return guineaFowl(biome) ? FowlBreed.HELMETED : null;
+		}
 		if (species == Species.GOOSE) {
 			List<FowlBreed> g = geese(biome);
 			return g.isEmpty() ? null : g.get(Math.floorMod(roll, g.size()));

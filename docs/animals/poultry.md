@@ -671,3 +671,11 @@ Groups of 4 with one male, weight 10, as the other fowl. Wild geese and guinea f
 - **Sound:** geese use the bird call, low and loud for the guard's honk (no goose sound in the game).
 - **Tests:** `GooseGeneticsTest`; game tests goose_founders, goose_lays_in_season, goose_grazes_run, goose_drops_down,
   guard_goose_chases_zombie, goose_egg_hatches. Client scene `newbirds`.
+
+### Built, 2026-11-13: guinea fowl
+- **Code:** `Species.GUINEA`, `FowlBreed.HELMETED` (laying 1 Apr - 31 Oct); loci GUINEA_LAVENDER and GUINEA_WHITE; plumages PEARL,
+  LAVENDER, GUINEA_WHITE; the casque and wattles on the bird model; the alarm in `FowlEntity.watch` and `CoopControllerEntity.alarm`.
+- **The alarm:** a guinea fowl that sees a hostile mob within 16 blocks calls (at most every 10 s); its coop brings every bird in from
+  the run for a minute and the readout shows `ALARM: <mob>`. The call is the bird call, loud and shrill.
+- **Wild guinea fowl:** their own spawn entry in the savannas.
+- **Tests:** game tests guinea_colours_inherit, guinea_lays_in_season, guinea_alarm_on_zombie; client scene `newbirds`.

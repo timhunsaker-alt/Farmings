@@ -24,7 +24,9 @@ public enum Species {
 	GOAT("farmings.goat.genome.v1", false, EnumSet.of(Trait.MILK_YIELD, Trait.BUTTERFAT, Trait.PROTEIN, Trait.FEED_EFFICIENCY, Trait.HEALTH,
 			Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.HARDINESS)),
 	// Geese (docs/animals/poultry.md, "Geese and guinea fowl"), appended: the poultry traits.
-	GOOSE("farmings.goose.genome.v1", true, fowlTraits());
+	GOOSE("farmings.goose.genome.v1", true, fowlTraits()),
+	// Helmeted guinea fowl (poultry.md, "Geese and guinea fowl"), appended: the poultry traits.
+	GUINEA("farmings.guinea.genome.v1", true, fowlTraits());
 
 	private static EnumSet<Trait> fowlTraits() {
 		return EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.EGG_PRODUCTION,

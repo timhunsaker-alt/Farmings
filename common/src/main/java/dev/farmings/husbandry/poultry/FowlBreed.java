@@ -36,7 +36,11 @@ public enum FowlBreed {
 	// goslings kept warm 4 weeks (the duck figure, proposed); FAO dressing 70%. Laying seasons FAO: 15 Feb - 15 Jun, Chinese 1 Feb - 30 Jun.
 	EMBDEN("EMB", Species.GOOSE, 11.8, 9.1, 40, 170, 365, 30, 27, 28, 0.70, 45, 165),
 	TOULOUSE("TOU", Species.GOOSE, 11.8, 9.1, 27.5, 170, 365, 30, 27, 28, 0.70, 45, 165),
-	CHINESE("CHI", Species.GOOSE, 5.4, 4.5, 55, 120, 365, 30, 27, 28, 0.70, 31, 180);
+	CHINESE("CHI", Species.GOOSE, 5.4, 4.5, 55, 120, 365, 30, 27, 28, 0.70, 31, 180),
+	// Helmeted guinea fowl (poultry.md): UKY ASC-209 weights (1.5 kg both sexes), "more than 100 eggs", 40 g eggs, incubation 26-28 days
+	// (27), stop turning day 25 (TO VERIFY: NC State 4-H chart); first egg at 30 weeks (28-32, TO VERIFY: Farm Radio); keets kept warm
+	// 6 weeks (the chicken figure, proposed); UMaine dressing 70%; laying season 1 Apr - 31 Oct (extension.org: March or April to October).
+	HELMETED("GUI", Species.GUINEA, 1.5, 1.5, 100, 40, 210, 27, 25, 42, 0.70, 90, 303);
 
 	public final String code;
 	public final Species species;

@@ -1493,7 +1493,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			ServerLevel level = srv.overworld();
 			clear(level, 0, 20, y, 16, 16, 6);
 			long seed = 1500;
-			for (dev.farmings.genetics.Species sp : new dev.farmings.genetics.Species[] {dev.farmings.genetics.Species.GOOSE}) {
+			for (dev.farmings.genetics.Species sp : new dev.farmings.genetics.Species[] {dev.farmings.genetics.Species.GOOSE, dev.farmings.genetics.Species.GUINEA}) {
 				dev.farmings.entity.FowlEntity firstHen = null;
 				dev.farmings.entity.FowlEntity firstMale = null;
 				for (dev.farmings.husbandry.poultry.FowlBreed b : dev.farmings.husbandry.poultry.FowlBreed.values()) {

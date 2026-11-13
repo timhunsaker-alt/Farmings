@@ -17,7 +17,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
  *   head 4x6x3 (0,0)    beak 4x2x2 (14,0)   wattle 2x2x2 (14,4)  snood 1x3x1 (22,4)  comb 1x3x4 (26,0)  crest 5x3x5 (36,0)
  *   beard 1x3x1 (56,0)  body 6x8x6 (0,9)    wing 1x4x6 (24,13)   leg 3x5x3 (38,13)   tail 4x4x2 (50,8)
  *   fan 12x10x1 (0,24)  bill 4x1x3 (26,24)  caruncle 4x2x1 (40,24)  web foot 3x1x3 (52,24)  duck leg 2x4x2 (0,36)
- *   goose neck 2x6x2 (16,36)  Chinese goose knob 2x2x2 (28,36)
+ *   goose neck 2x6x2 (16,36)  Chinese goose knob 2x2x2 (28,36)  guinea casque 1x2x2 (36,36)
  * </pre>
  */
 public final class FowlModels {
@@ -38,6 +38,7 @@ public final class FowlModels {
 		head.addOrReplaceChild("crest", CubeListBuilder.create().texOffs(36, 0).addBox(-2.5F, -8.5F, -2.0F, 5.0F, 3.0F, 5.0F), PartPose.ZERO);
 		head.addOrReplaceChild("bill", CubeListBuilder.create().texOffs(26, 24).addBox(-2.0F, -3.0F, -5.0F, 4.0F, 1.0F, 3.0F), PartPose.ZERO);
 		head.addOrReplaceChild("caruncle", CubeListBuilder.create().texOffs(40, 24).addBox(-2.0F, -5.0F, -2.5F, 4.0F, 2.0F, 1.0F), PartPose.ZERO);
+		head.addOrReplaceChild("casque", CubeListBuilder.create().texOffs(36, 36).addBox(-0.5F, -8.0F, -1.0F, 1.0F, 2.0F, 2.0F), PartPose.rotation(-0.35F, 0.0F, 0.0F));
 		head.addOrReplaceChild("knob", CubeListBuilder.create().texOffs(28, 36).addBox(-1.0F, -5.0F, -3.5F, 2.0F, 2.0F, 2.0F), PartPose.ZERO);
 		root.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(16, 36).addBox(-1.0F, -6.0F, -1.0F, 2.0F, 6.0F, 2.0F),
 				PartPose.offsetAndRotation(0.0F, 15.0F, -3.0F, 0.15F, 0.0F, 0.0F));

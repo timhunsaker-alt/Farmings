@@ -49,6 +49,7 @@ public final class FowlEggs {
 			case QUAIL -> FarmingsItems.QUAIL_EGG;
 			case DUCK -> FarmingsItems.DUCK_EGG;
 			case GOOSE -> FarmingsItems.GOOSE_EGG;
+			case GUINEA -> FarmingsItems.GUINEA_EGG;
 			default -> FarmingsItems.CHICKEN_EGG;
 		};
 	}
@@ -65,6 +66,9 @@ public final class FowlEggs {
 		}
 		if (stack.is(FarmingsItems.GOOSE_EGG)) {
 			return Species.GOOSE;
+		}
+		if (stack.is(FarmingsItems.GUINEA_EGG)) {
+			return Species.GUINEA;
 		}
 		return stack.is(FarmingsItems.DUCK_EGG) ? Species.DUCK : null;
 	}

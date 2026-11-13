@@ -834,4 +834,73 @@ final class PoultryGameTests {
 		helper.assertTrue(inc.hatched() == 2 && goslings.size() == 2 && goslings.get(0).readout().contains("gosling"), Component.literal("two goslings at 30 days: " + inc.readout()));
 		helper.succeed();
 	}
+
+	// ---- guinea fowl ----
+
+	/** Pearl, lavender and white guinea fowl: lavender and white are recessive and breed true; a guinea survives a save. */
+	static void guineaColoursInherit(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		FowlEntity hen = adult(helper, FowlBreed.HELMETED, Sex.FEMALE, 301L, new BlockPos(2, 1, 2));
+		FowlEntity cock = adult(helper, FowlBreed.HELMETED, Sex.MALE, 302L, new BlockPos(4, 1, 2));
+		hen.setNoAi(true);
+		cock.setNoAi(true);
+		java.util.EnumMap<PoultryLocus, int[]> lav = new java.util.EnumMap<>(hen.genes().alleles());
+		lav.put(PoultryLocus.GUINEA_LAVENDER, new int[] {1, 1});
+		lav.put(PoultryLocus.GUINEA_WHITE, new int[] {0, 0});
+		hen.setGenes(new dev.farmings.genetics.PoultryGenes(lav));
+		cock.setGenes(new dev.farmings.genetics.PoultryGenes(lav));
+		helper.assertTrue(hen.look().plumage() == PoultryLook.Plumage.LAVENDER && hen.readout().contains("hen"), Component.literal("a lavender hen: " + hen.readout()));
+		hen.setDayOfYearForTest(150);
+		hen.mate(cock);
+		ItemStack egg = hen.makeEgg(level.getGameTime());
+		helper.assertTrue(egg.is(dev.farmings.FarmingsItems.GUINEA_EGG), Component.literal("a guinea egg"));
+		var chick = FowlEggs.hatch(level, egg, helper.absolutePos(new BlockPos(6, 1, 2)), null);
+		helper.assertTrue(chick != null && chick.look().plumage() == PoultryLook.Plumage.LAVENDER && chick.readout().contains("keet"),
+				Component.literal("lavender x lavender breeds true: " + (chick == null ? "none" : chick.readout())));
+		java.util.EnumMap<PoultryLocus, int[]> wh = new java.util.EnumMap<>(lav);
+		wh.put(PoultryLocus.GUINEA_WHITE, new int[] {1, 1});
+		cock.setGenes(new dev.farmings.genetics.PoultryGenes(wh));
+		helper.assertTrue(cock.look().plumage() == PoultryLook.Plumage.GUINEA_WHITE, Component.literal("white shows over lavender"));
+		wh.put(PoultryLocus.GUINEA_WHITE, new int[] {1, 0});
+		cock.setGenes(new dev.farmings.genetics.PoultryGenes(wh));
+		helper.assertTrue(cock.look().plumage() == PoultryLook.Plumage.LAVENDER, Component.literal("one white is hidden"));
+		var out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess());
+		hen.saveWithoutId(out);
+		FowlEntity b = FarmingsEntities.GUINEA.create(level, EntitySpawnReason.LOAD);
+		b.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(), out.buildResult()));
+		helper.assertTrue(b.species() == Species.GUINEA && b.genes().equals(hen.genes()), Component.literal("a guinea fowl survives a save"));
+		helper.succeed();
+	}
+
+	/** Guinea hens lay 1 April - 31 October, about 100 eggs over the season. */
+	static void guineaLaysInSeason(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		FowlEntity hen = adult(helper, FowlBreed.HELMETED, Sex.FEMALE, 311L, new BlockPos(3, 1, 3));
+		hen.setNoAi(true);
+		hen.setDayOfYearForTest(20);
+		helper.assertTrue(!hen.laying() && hen.readout().contains("OUT OF SEASON"), Component.literal("21 January: out of season: " + hen.readout()));
+		hen.setDayOfYearForTest(180);
+		helper.assertTrue(hen.laying(), Component.literal("30 June: she lays: " + hen.readout()));
+		double rate = dev.farmings.husbandry.poultry.LayingCycle.eggsPerDay(Species.GUINEA, hen.composition(), hen.ageRealDays(), 500, 180);
+		helper.assertTrue(Math.abs(rate - 100.0 / 214) < 1e-9, Component.literal("100 eggs over 214 days: " + rate));
+		helper.succeed();
+	}
+
+	/** A guinea fowl of a coop sees a zombie and calls: the coop's birds come in from the run and the readout names the alarm. */
+	static void guineaAlarmOnZombie(GameTestHelper helper) {
+		BlockPos c = buildCoop(helper);
+		ServerLevel level = helper.getLevel();
+		fillCoop(helper);
+		var coop = coop(helper, c);
+		coop.refresh(level);
+		FowlEntity guinea = adult(helper, FowlBreed.HELMETED, Sex.FEMALE, 321L, new BlockPos(8, 1, 2));
+		guinea.assignCoop(c, null);
+		var zombie = helper.spawn(net.minecraft.world.entity.EntityTypes.ZOMBIE, new BlockPos(12, 1, 4));
+		zombie.setNoAi(true);
+		TamingGameTests.waitFor(helper, 0, 200, () -> guinea.alarms() > 0, () -> "the guinea should call: " + guinea.readout(), () -> {
+			helper.assertTrue(coop.alarmed(level.getGameTime()) && coop.readout().contains("ALARM: Zombie"), Component.literal(coop.readout()));
+			helper.succeed();
+		});
+	}
 }

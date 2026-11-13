@@ -86,6 +86,7 @@ public final class Fowl {
 			case QUAIL -> new double[] {16, 0.14};      // NSW DPI, 14-18 g
 			case DUCK -> new double[] {218, 3.9};       // breeder ducks, 48 lb per 100 a day
 			case GOOSE -> new double[] {320, 6.75};     // FAO: 320 g a day for breeder geese of 6.5-7.0 kg
+			case GUINEA -> new double[] {85, 1.5};      // "about 84.5 g per bird per day" (TO VERIFY: a Nigerian field study, snippet)
 			default -> new double[] {100, 2.0};          // laying hen (Hy-Line 99.6 g); turkeys use it too (proposed)
 		};
 	}
@@ -135,6 +136,7 @@ public final class Fowl {
 			case QUAIL -> 3;
 			case DUCK -> 5;
 			case GOOSE -> 4;      // FAO: "one male for every four females"
+			case GUINEA -> 5;     // UKY: "one male for each four to five females"
 			default -> 10;
 		};
 	}
@@ -157,6 +159,7 @@ public final class Fowl {
 			case TURKEY -> 1;
 			case QUAIL -> 16;
 			case GOOSE -> 1;      // FAO: 1.0 m² a goose on deep litter
+			case GUINEA -> 4;     // UKY: 2-3 sq ft a guinea
 			default -> 2;
 		};
 	}
@@ -166,7 +169,7 @@ public final class Fowl {
 		return switch (s) {
 			case CHICKEN -> 1;
 			case QUAIL -> 1.0 / 8;
-			case GOOSE -> 1;      // FAO: at least 1.0 m² a bird in a yard or run
+			case GOOSE, GUINEA -> 1;     // FAO: at least 1.0 m² a goose in a run; guinea fowl as hens (proposed)
 			default -> 2;
 		};
 	}
@@ -178,7 +181,7 @@ public final class Fowl {
 	/** Birds one perch block holds; 0 for birds that don't perch. */
 	public static int birdsPerPerch(Species s) {
 		return switch (s) {
-			case CHICKEN -> 3;
+			case CHICKEN, GUINEA -> 3;     // guinea fowl roost high (UKY); as hens (proposed)
 			case TURKEY -> 1;
 			default -> 0;
 		};

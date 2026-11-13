@@ -72,6 +72,21 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 	private int pond;
 	private final Map<UUID, Long> lastPick = new HashMap<>();
 	private boolean out;
+	/** A guinea fowl's alarm (poultry.md, "Alarm call"): until this tick the birds stay in, and the readout names the mob. Not saved. */
+	private long alarmUntil = -1;
+	private String alarmMob = "";
+	/** The alarm lasts a minute *(proposed)*. */
+	public static final long ALARM_TICKS = 1200;
+
+	/** A guinea fowl of this coop has called: every bird out on the run comes in. */
+	public void alarm(String mob, long now) {
+		alarmUntil = now + ALARM_TICKS;
+		alarmMob = mob;
+	}
+
+	public boolean alarmed(long now) {
+		return now < alarmUntil;
+	}
 	private int flock;
 	private double litterKg;
 	/** Forage the run's birds have eaten past its regrowth, kg DM; each 1.5 kg bares one grass block (poultry.md, "Foraging on the run"). */
@@ -328,7 +343,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 	private void toRun(ServerLevel level, List<FowlEntity> members, long now, boolean day, boolean rain) {
 		List<PastureLayout.Spot> spots = run != null ? run.spots() : List.of();
 		double room = spots.size();
-		out = day && !spots.isEmpty();
+		out = day && !spots.isEmpty() && !alarmed(now);     // an alarm calls everyone in ("time to dash under shelter", UKY)
 		for (FowlEntity f : members) {
 			boolean goes = out && !f.broody() && !f.young() && (!rain || f.species() == Species.DUCK || f.species() == Species.GOOSE);     // waterfowl go out in rain (proposed for geese)
 			double need = Fowl.runCellsPerBird(f.species());
@@ -623,6 +638,9 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 			b.append(", ").append(broody).append(" broody");
 		}
 		b.append(out ? ", out on the run" : ", in");
+		if (level != null && alarmed(level.getGameTime())) {
+			b.append(", ALARM: ").append(alarmMob);
+		}
 		return b.toString();
 	}
 

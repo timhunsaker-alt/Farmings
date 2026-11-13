@@ -198,6 +198,7 @@ public final class FarmingsItems {
 	public static final Item QUAIL_EGG = item("quail_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
 	public static final Item DUCK_EGG = item("duck_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
 	public static final Item GOOSE_EGG = item("goose_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
+	public static final Item GUINEA_EGG = item("guinea_egg", p -> new dev.farmings.item.FowlEggItem(p.stacksTo(16)));
 
 	/** Poultry meat (docs/eggs.md): Farmings birds drop Farmings meat, chicken included, so all of it spoils. */
 	public static @org.jspecify.annotations.Nullable Item fowlMeat(dev.farmings.genetics.Species s, boolean cooked) {
@@ -205,6 +206,7 @@ public final class FarmingsItems {
 			case TURKEY -> cooked ? COOKED_TURKEY : TURKEY_MEAT;
 			case DUCK -> cooked ? COOKED_DUCK : DUCK_MEAT;
 			case GOOSE -> cooked ? COOKED_GOOSE : GOOSE_MEAT;
+			case GUINEA -> cooked ? COOKED_GUINEA : GUINEA_MEAT;
 			case QUAIL -> cooked ? COOKED_QUAIL : QUAIL_MEAT;
 			default -> cooked ? COOKED_CHICKEN : CHICKEN;
 		};
@@ -225,6 +227,8 @@ public final class FarmingsItems {
 	public static final Item COOKED_DUCK = cookedPoultry("cooked_duck");
 	public static final Item GOOSE_MEAT = rawPoultry("goose");
 	public static final Item COOKED_GOOSE = cookedPoultry("cooked_goose");
+	public static final Item GUINEA_MEAT = rawPoultry("guinea_fowl");
+	public static final Item COOKED_GUINEA = cookedPoultry("cooked_guinea_fowl");
 	public static final Item QUAIL_MEAT = rawPoultry("quail");
 	public static final Item COOKED_QUAIL = cookedPoultry("cooked_quail");
 	public static final Item SPOILED_POULTRY = item("spoiled_poultry", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
@@ -294,6 +298,8 @@ public final class FarmingsItems {
 		ALL.put("cooked_duck", COOKED_DUCK);
 		ALL.put("goose", GOOSE_MEAT);
 		ALL.put("cooked_goose", COOKED_GOOSE);
+		ALL.put("guinea_fowl", GUINEA_MEAT);
+		ALL.put("cooked_guinea_fowl", COOKED_GUINEA);
 		ALL.put("quail", QUAIL_MEAT);
 		ALL.put("cooked_quail", COOKED_QUAIL);
 		ALL.put("spoiled_poultry", SPOILED_POULTRY);
@@ -307,6 +313,7 @@ public final class FarmingsItems {
 		ALL.put("quail_egg", QUAIL_EGG);
 		ALL.put("duck_egg", DUCK_EGG);
 		ALL.put("goose_egg", GOOSE_EGG);
+		ALL.put("guinea_egg", GUINEA_EGG);
 		ALL.put("fleece", FLEECE);
 		ALL.put("loose_wool", LOOSE_WOOL);
 		ALL.put("skirtings", SKIRTINGS);

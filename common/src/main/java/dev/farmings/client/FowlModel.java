@@ -22,6 +22,7 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 	private final ModelPart bill;
 	private final ModelPart caruncle;
 	private final ModelPart knob;
+	private final ModelPart casque;
 	private final ModelPart neck;
 	private final ModelPart beard;
 	private final ModelPart body;
@@ -45,6 +46,7 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 		bill = head.getChild("bill");
 		caruncle = head.getChild("caruncle");
 		knob = head.getChild("knob");
+		casque = head.getChild("casque");
 		neck = root.getChild("neck");
 		beard = root.getChild("beard");
 		body = root.getChild("body");
@@ -71,10 +73,12 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 		bill.visible = duck;
 		caruncle.visible = duck && s.breed == FowlBreed.MUSCOVY && grown;
 		knob.visible = goose && s.breed == FowlBreed.CHINESE && grown;
+		boolean guinea = s.species == Species.GUINEA;
+		casque.visible = guinea && grown;
 		neck.visible = goose && grown;
 		comb.visible = chicken && grown && !s.look.silky();
 		crest.visible = chicken && s.look.silky();
-		wattle.visible = (chicken || turkey) && grown;
+		wattle.visible = (chicken || turkey || guinea) && grown;
 		snood.visible = turkey && grown;
 		beard.visible = turkey && grown && s.male;
 		fan.visible = turkey && grown && s.male;
@@ -119,6 +123,13 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 			head.z -= 0.5F;
 			head.xScale = head.yScale = head.zScale = 0.7F;
 			body.xRot -= 0.15F;
+		}
+		// a guinea fowl: a small bare head on a round, hunched body
+		if (guinea && grown) {
+			head.xScale = head.yScale = head.zScale = 0.75F;
+			head.y += 1.0F;
+			body.xScale = 1.15F;
+			tail.yScale = 0.6F;
 		}
 		// young birds: a big head on a small round body
 		if (s.young) {
