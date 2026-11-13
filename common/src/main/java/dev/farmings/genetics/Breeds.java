@@ -60,6 +60,25 @@ public final class Breeds {
 		pig("LWH", 70, 70, 95, 75, 75, 60);
 		pig("DUR", 85, 75, 60, 70, 70, 75);
 		pig("BRK", 65, 75, 55, 70, 85, 80);
+		// horses *(proposed baselines)*: efficiency, health, fertility, longevity, temperament, hardiness, speed, stamina
+		horse("TB", 60, 65, 60, 70, 50, 55, 80, 70);
+		horse("QH", 75, 80, 70, 75, 85, 75, 80, 45);
+		horse("ARA", 85, 85, 65, 90, 60, 90, 60, 90);
+	}
+
+	private static void horse(String code, int efficiency, int health, int fertility, int longevity, int temperament, int hardiness, int speed,
+			int stamina) {
+		Map<Trait, Integer> m = new EnumMap<>(Trait.class);
+		m.put(Trait.FEED_EFFICIENCY, efficiency);
+		m.put(Trait.HEALTH, health);
+		m.put(Trait.FERTILITY, fertility);
+		m.put(Trait.LONGEVITY, longevity);
+		m.put(Trait.TEMPERAMENT, temperament);
+		m.put(Trait.HARDINESS, hardiness);
+		m.put(Trait.SPEED, speed);
+		m.put(Trait.STAMINA, stamina);
+		BASELINES.put(code, m);
+		SPECIES.put(code, Species.HORSE);
 	}
 
 	private static void fowl(Species species, String code, int efficiency, int health, int fertility, int longevity, int temperament, int eggs,

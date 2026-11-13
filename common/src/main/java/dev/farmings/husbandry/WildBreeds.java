@@ -171,4 +171,12 @@ public final class WildBreeds {
 		}
 		return Math.floorMod(roll, 2) == 0 ? PigBreed.LARGE_WHITE : PigBreed.DUROC;
 	}
+
+	/** A wild horse's breed (horses.md, "Wild horses"): savanna Arabian, elsewhere Quarter Horse or Thoroughbred *(proposed)*; roll any int. */
+	public static HorseBreed horse(String biome, int roll) {
+		if (path(biome).contains("savanna")) {
+			return HorseBreed.ARABIAN;
+		}
+		return Math.floorMod(roll, 2) == 0 ? HorseBreed.QUARTER_HORSE : HorseBreed.THOROUGHBRED;
+	}
 }

@@ -59,7 +59,7 @@ public class StrawItem extends Item {
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
 		if (!(target instanceof CattleEntity || target instanceof SheepEntity || target instanceof GoatEntity || target instanceof FowlEntity
-				|| target instanceof dev.farmings.entity.PigEntity)) {
+				|| target instanceof dev.farmings.entity.PigEntity || target instanceof dev.farmings.entity.HorseEntity)) {
 			return InteractionResult.PASS;
 		}
 		if (player.level().isClientSide()) {
@@ -90,6 +90,12 @@ public class StrawItem extends Item {
 			g = boar.genome();
 			coat = boar.genes().save();
 			herd = boar.herdId();
+		} else if (male instanceof dev.farmings.entity.HorseEntity stallion && stallion.sex() == Sex.MALE
+				&& stallion.stage() == dev.farmings.husbandry.HorseStage.STALLION && !stallion.isWild() && stallion.genome() != null) {
+			// stallion straws keep as bull straws do (horses.md, "Service")
+			g = stallion.genome();
+			coat = stallion.genes().save();
+			herd = stallion.herdId();
 		} else if (male instanceof FowlEntity tom && tom.species() == Species.TURKEY && tom.sex() == Sex.MALE && tom.adult() && !tom.isWild()
 				&& tom.genome() != null) {
 			g = tom.genome();
@@ -128,6 +134,7 @@ public class StrawItem extends Item {
 			case SheepEntity s -> Species.SHEEP;
 			case GoatEntity g -> Species.GOAT;
 			case dev.farmings.entity.PigEntity p -> Species.PIG;
+			case dev.farmings.entity.HorseEntity h -> Species.HORSE;
 			case FowlEntity f -> f.species();
 			default -> null;
 		};
@@ -160,6 +167,10 @@ public class StrawItem extends Item {
 				}
 				dev.farmings.genetics.PigGenes pg = coat == null ? null : dev.farmings.genetics.PigGenes.load(coat);
 				yield sow.sex() == Sex.FEMALE && sow.canConceive() && pg != null && sow.conceive(sire, pg, now);
+			}
+			case dev.farmings.entity.HorseEntity mare -> {
+				dev.farmings.genetics.HorseGenes hg = coat == null ? null : dev.farmings.genetics.HorseGenes.load(coat);
+				yield mare.sex() == Sex.FEMALE && mare.canConceive() && hg != null && mare.conceive(sire, hg, now);
 			}
 			case GoatEntity doe -> {
 				dev.farmings.genetics.GoatGenes gg = coat == null ? null : dev.farmings.genetics.GoatGenes.load(coat);

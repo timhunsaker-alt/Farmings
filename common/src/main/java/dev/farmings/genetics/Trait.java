@@ -21,7 +21,10 @@ public enum Trait {
 	// Poultry (approved with the poultry plan, Tim 2026-11-10; docs/animals/poultry.md). Appended so earlier ordinals never move.
 	EGG_PRODUCTION("egg_production", "EP", false),
 	EGG_WEIGHT("egg_weight", "EW", false),
-	BROODINESS("broodiness", "BR", false);
+	BROODINESS("broodiness", "BR", false),
+	// Horses (docs/animals/horses.md, "Speed": Tim 2026-11-13, "real genes plus traits"). Appended so earlier ordinals never move.
+	SPEED("speed", "SP", false),
+	STAMINA("stamina", "SN", false);
 
 	public final String id;
 	/** Short code used in allele ids (milk_yield -> MY, so MY_A0 ... MY_A6). */

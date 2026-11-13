@@ -31,6 +31,7 @@ public final class FarmingsNeoForgeClient {
 					event.registerEntityRenderer(FarmingsEntities.SHEEP, dev.farmings.client.SheepRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.GOAT, dev.farmings.client.GoatRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.PIG, dev.farmings.client.PigRenderer::new);
+					event.registerEntityRenderer(FarmingsEntities.HORSE, dev.farmings.client.HorseRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.ROTTEN_EGG, net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.SHEEP_DOG, dev.farmings.client.SheepDogRenderer::new);
 					event.registerEntityRenderer(FarmingsEntities.FIELD_GANTRY, dev.farmings.client.FieldGantryRenderer::new);

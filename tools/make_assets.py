@@ -182,6 +182,10 @@ EXTRA_LANG = {
     "species.farmings.sheep": "Ram",
     "species.farmings.goat": "Buck",
     "species.farmings.pig": "Boar",
+    "species.farmings.horse": "Stallion",
+    "message.farmings.gelding": "Gelded: he will grow as a gelding.",
+    "message.farmings.horse.wild": "This horse is wild: it rears and won't be ridden. Tame it in a corral first.",
+    "message.farmings.horse.too_young": "Too young to ride: horses are ridden from 2 years.",
     "message.farmings.barrow": "Castrated: he will grow as a barrow.",
     "message.farmings.straw.stale_boar": "This boar semen is stale: use it within 6 days of collecting.",
     "tooltip.farmings.straw.fresh_boar": "Fresh: use within 6 days (cooled)",
@@ -293,7 +297,7 @@ def block_model(name, box):
 
 
 def main():
-    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "entity.farmings.goat": "Goat", "entity.farmings.pig": "Pig", "entity.farmings.chicken": "Chicken", "entity.farmings.turkey": "Turkey",
+    lang = {"itemGroup.farmings": "Farmings", "entity.farmings.cattle": "Cattle", "entity.farmings.sheep": "Sheep", "entity.farmings.goat": "Goat", "entity.farmings.pig": "Pig", "entity.farmings.horse": "Horse", "entity.farmings.chicken": "Chicken", "entity.farmings.turkey": "Turkey",
             "entity.farmings.quail": "Quail", "entity.farmings.duck": "Duck", "entity.farmings.goose": "Goose", "entity.farmings.guinea_fowl": "Guinea Fowl", "block.farmings.barn_controller": CONTROLLER[0]}
     lang.update(EXTRA_LANG)
     for name, (title, colour, fp, boxes) in PARTS.items():
@@ -400,6 +404,9 @@ def main():
     lang["entity.farmings.field_gantry"] = "Field Gantry"
     # Farmings crops keep the farmland under them, as vanilla crops do; without this, dry farmland turns back to dirt on a random tick
     # and the crop pops off (found 2026-11-11 by an intermittent gantry test)
+    # Farmings horses take vanilla saddles and horse armour (horses.md): the equippable items check these entity tags
+    for tag in ("can_equip_saddle", "can_wear_horse_armor"):
+        write(os.path.join(ROOT_DATA, "minecraft", "tags", "entity_type", tag + ".json"), {"replace": False, "values": ["farmings:horse"]})
     write(os.path.join(ROOT_DATA, "minecraft", "tags", "block", "maintains_farmland.json"), {"replace": False, "values": [
         "farmings:" + c for c in CROPS]})
     wool_mill_assets(lang)

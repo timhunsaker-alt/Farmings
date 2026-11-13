@@ -29,7 +29,10 @@ public enum Species {
 	GUINEA("farmings.guinea.genome.v1", true, fowlTraits()),
 	// Pigs (docs/animals/pigs.md), appended: growth, efficiency and the fitness traits *(proposed list)*.
 	PIG("farmings.pig.genome.v1", false, EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT,
-			Trait.HARDINESS));
+			Trait.HARDINESS)),
+	// Horses (docs/animals/horses.md), appended: the fitness traits plus racing speed and stamina *(proposed list)*.
+	HORSE("farmings.horse.genome.v1", false, EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT,
+			Trait.HARDINESS, Trait.SPEED, Trait.STAMINA));
 
 	private static EnumSet<Trait> fowlTraits() {
 		return EnumSet.of(Trait.FEED_EFFICIENCY, Trait.HEALTH, Trait.FERTILITY, Trait.LONGEVITY, Trait.TEMPERAMENT, Trait.EGG_PRODUCTION,

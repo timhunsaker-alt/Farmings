@@ -22,7 +22,7 @@ public final class WildSpawns {
 	private WildSpawns() {
 	}
 
-	/** The Farmings entries that replace a vanilla one in a biome; empty if the entry is not a cow, sheep or chicken. */
+	/** The Farmings entries that replace a vanilla one in a biome; empty if the entry is not an animal Farmings replaces. */
 	public static List<Weighted<SpawnerData>> replacements(Weighted<SpawnerData> entry, String biome) {
 		EntityType<?> t = entry.value().type();
 		List<Weighted<SpawnerData>> out = new ArrayList<>();
@@ -32,6 +32,8 @@ public final class WildSpawns {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.SHEEP, entry.value().count()), entry.weight()));
 		} else if (t == net.minecraft.world.entity.EntityTypes.PIG) {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.PIG, entry.value().count()), entry.weight()));     // pigs.md, "Wild pigs"
+		} else if (t == net.minecraft.world.entity.EntityTypes.HORSE) {
+			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.HORSE, entry.value().count()), entry.weight()));     // horses.md, "Wild horses"
 		} else if (t == net.minecraft.world.entity.EntityTypes.GOAT) {
 			out.add(new Weighted<>(new SpawnerData(FarmingsEntities.GOAT, entry.value().count()), entry.weight()));     // goats.md, "Wild goats"
 		} else if (t == net.minecraft.world.entity.EntityTypes.CHICKEN) {
@@ -45,7 +47,7 @@ public final class WildSpawns {
 	public static boolean replaced(EntityType<?> t) {
 		return t == net.minecraft.world.entity.EntityTypes.COW || t == net.minecraft.world.entity.EntityTypes.SHEEP
 				|| t == net.minecraft.world.entity.EntityTypes.CHICKEN || t == net.minecraft.world.entity.EntityTypes.GOAT
-				|| t == net.minecraft.world.entity.EntityTypes.PIG;
+				|| t == net.minecraft.world.entity.EntityTypes.PIG || t == net.minecraft.world.entity.EntityTypes.HORSE;
 	}
 
 	/**

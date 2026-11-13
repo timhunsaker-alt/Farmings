@@ -30,6 +30,9 @@ public record Ruleset(String version, Map<Trait, Integer> heterosisMaxBp, Map<Tr
 		het.put(Trait.EGG_PRODUCTION, 200);
 		het.put(Trait.EGG_WEIGHT, 0);
 		het.put(Trait.BROODINESS, 100);
+		// Racing speed and stamina (horses.md, proposed: racing speed is weakly heritable, so a small heterosis as broodiness).
+		het.put(Trait.SPEED, 100);
+		het.put(Trait.STAMINA, 100);
 		Map<Trait, Integer> inbreeding = new EnumMap<>(Trait.class);
 		for (Trait t : Trait.values()) {
 			inbreeding.put(t, 500);

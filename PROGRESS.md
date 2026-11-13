@@ -320,6 +320,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - Pork products: salt and the 8-2 cure, a curing rack that cures hams and bellies in a cold room, a smokehouse beside it, country
     hams aged 90 days and sliced, bacon, a lard kettle over fire and a meat grinder for sausage, with sourced shelf lives and Ludo
     icons. 3 game tests (227 in all).
+  - Horses: Thoroughbred, Quarter Horse and Arabian on vanilla's `AbstractHorse` (saddles and riding as vanilla), replacing vanilla
+    horses wild; the MSTN speed gene, SPEED and STAMINA traits, age and fitness set the ridden pace by the distance galloped; coat genes
+    (E, A, Cr, D, G, Rn, SB1) with grey by age; one foal a season; stallion straws. 7 game tests (234 in all); client scene `horses`.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

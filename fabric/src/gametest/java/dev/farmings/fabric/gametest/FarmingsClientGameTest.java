@@ -907,6 +907,102 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-pigs-all");
 	}
 
+	private static dev.farmings.entity.HorseEntity horse(ServerLevel level, dev.farmings.husbandry.HorseBreed breed, Sex sex, long seed, double age) {
+		dev.farmings.entity.HorseEntity h = FarmingsEntities.HORSE.create(level, EntitySpawnReason.COMMAND);
+		h.initFounder(breed, sex, seed, age, level.getGameTime());
+		h.setWild(false);
+		h.setPos(200.5, 0, 200.5);
+		h.setNoAi(true);
+		level.addFreshEntity(h);
+		return h;
+	}
+
+	/** Coat genes for the horses scene: E, A, Cr, D, G, Rn, SB1 copies, the rest as the founder had them. */
+	private static dev.farmings.genetics.HorseGenes coat(dev.farmings.genetics.HorseGenes g, int e, int a, int cr, int d, int grey, int rn, int sb) {
+		dev.farmings.genetics.HorseLocus[] l = {dev.farmings.genetics.HorseLocus.E, dev.farmings.genetics.HorseLocus.A, dev.farmings.genetics.HorseLocus.CR,
+				dev.farmings.genetics.HorseLocus.D, dev.farmings.genetics.HorseLocus.G, dev.farmings.genetics.HorseLocus.RN, dev.farmings.genetics.HorseLocus.SB1};
+		int[] n = {e, a, cr, d, grey, rn, sb};
+		for (int i = 0; i < l.length; i++) {
+			g = g.with(l[i], n[i] >= 1 ? 1 : 0, n[i] >= 2 ? 1 : 0);
+		}
+		return g;
+	}
+
+	/**
+	 * The horses (docs/animals/horses.md): each breed's mare and stallion, a foal and a yearling, the coat colours from the genes, greying
+	 * with age, and a saddled horse; close up, then the breeds in a row.
+	 */
+	private static void horses(ClientGameTestContext context, TestServerContext server, int y) {
+		java.util.List<dev.farmings.entity.HorseEntity> line = new java.util.ArrayList<>();
+		java.util.List<String> names = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, -14, 20, y, 30, 16, 6);
+			long seed = 2600;
+			for (dev.farmings.husbandry.HorseBreed b : dev.farmings.husbandry.HorseBreed.values()) {
+				line.add(horse(level, b, Sex.FEMALE, seed++, 6 * 365));
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " mare");
+				line.add(horse(level, b, Sex.MALE, seed++, 6 * 365));
+				names.add(b.label().toLowerCase(java.util.Locale.ROOT) + " stallion");
+			}
+			line.add(horse(level, dev.farmings.husbandry.HorseBreed.THOROUGHBRED, Sex.FEMALE, seed++, 40));
+			names.add("thoroughbred foal");
+			line.add(horse(level, dev.farmings.husbandry.HorseBreed.QUARTER_HORSE, Sex.MALE, seed++, 365));
+			names.add("quarter horse yearling");
+			int[][] coats = {{0, 0, 0, 0, 0, 0, 0}, {2, 2, 0, 0, 0, 0, 0}, {2, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}, {2, 2, 1, 0, 0, 0, 0},
+					{1, 0, 1, 0, 0, 0, 0}, {0, 0, 2, 0, 0, 0, 0}, {2, 2, 2, 0, 0, 0, 0}, {2, 2, 0, 1, 0, 0, 0}, {2, 0, 0, 1, 0, 0, 0},
+					{0, 0, 0, 1, 0, 0, 0}, {2, 2, 0, 0, 0, 1, 0}, {2, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 1}, {2, 2, 0, 0, 0, 0, 2}};
+			for (int[] c : coats) {
+				var h = horse(level, dev.farmings.husbandry.HorseBreed.QUARTER_HORSE, Sex.FEMALE, seed++, 5 * 365);
+				h.setGenesForTest(coat(h.genes(), c[0], c[1], c[2], c[3], c[4], c[5], c[6]));
+				line.add(h);
+				names.add(h.look().describe());
+			}
+			double[] greyAges = {0.5, 2, 4, 8};
+			for (double a : greyAges) {
+				var h = horse(level, dev.farmings.husbandry.HorseBreed.ARABIAN, Sex.FEMALE, seed++, Math.max(40, a * 365));
+				h.setGenesForTest(coat(h.genes(), 2, 2, 0, 0, 1, 0, 0));
+				line.add(h);
+				names.add("grey gene at " + a + " years");
+			}
+			var saddled = horse(level, dev.farmings.husbandry.HorseBreed.THOROUGHBRED, Sex.MALE, seed++, 5 * 365);
+			saddled.setItemSlot(net.minecraft.world.entity.EquipmentSlot.SADDLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
+			line.add(saddled);
+			names.add("saddled thoroughbred");
+		});
+		context.waitTicks(60);
+		for (int i = 0; i < line.size(); i++) {
+			int shown = i;
+			server.runOnServer(srv -> {
+				for (int j = 0; j < line.size(); j++) {
+					var e = line.get(j);
+					e.setPos(j == shown ? 0.5 : 200.5 + 4 * j, y, j == shown ? 20.5 : 200.5);
+					e.setYRot(0);
+					e.setYHeadRot(0);
+					e.setYBodyRot(0);
+				}
+			});
+			var h = line.get(i);
+			actionbar(server, names.get(i) + ": " + h.breedLabel() + ", " + h.look().describe() + ", MSTN " + h.genes().mstn());
+			server.runCommand("tp @p 3.2 " + (y + 0.1) + " 22.9 135 12");
+			context.waitTicks(30);
+			context.takeScreenshot("farmings-horses-" + String.format(java.util.Locale.ROOT, "%02d", i) + "-" + names.get(i).replace(' ', '-').replace(',', '-'));
+		}
+		server.runOnServer(srv -> {
+			for (int j = 0; j < line.size(); j++) {
+				var e = line.get(j);
+				e.setPos(j < 8 ? -8.6 + 2.6 * j : 200.5 + 4 * j, y, j < 8 ? 20.5 : 200.5);
+				e.setYRot(90);
+				e.setYHeadRot(90);
+				e.setYBodyRot(90);
+			}
+		});
+		actionbar(server, "the horses: Thoroughbred, Quarter Horse, Arabian mares and stallions, a foal and a yearling");
+		server.runCommand("tp @p 0.5 " + (y + 3.2) + " 30.5 180 14");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-horses-all");
+	}
+
 	private static dev.farmings.entity.GoatEntity goat(ServerLevel level, dev.farmings.husbandry.GoatBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.GoatEntity g = FarmingsEntities.GOAT.create(level, EntitySpawnReason.COMMAND);
 		g.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Herd.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
@@ -2525,6 +2621,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("pigs".equals(only)) {
 				context.waitTicks(200);
 				pigs(context, server, y);
+				return;
+			}
+			if ("horses".equals(only)) {
+				context.waitTicks(200);
+				horses(context, server, y);
 				return;
 			}
 			if ("goats".equals(only)) {

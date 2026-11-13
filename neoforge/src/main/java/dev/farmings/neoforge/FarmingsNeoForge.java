@@ -40,6 +40,7 @@ public final class FarmingsNeoForge {
 					event.put(FarmingsEntities.SHEEP, dev.farmings.entity.SheepEntity.createAttributes().build());
 					event.put(FarmingsEntities.GOAT, dev.farmings.entity.GoatEntity.createAttributes().build());
 					event.put(FarmingsEntities.PIG, dev.farmings.entity.PigEntity.createAttributes().build());
+					event.put(FarmingsEntities.HORSE, dev.farmings.entity.HorseEntity.createAttributes().build());
 					event.put(FarmingsEntities.SHEEP_DOG, dev.farmings.entity.SheepDogEntity.createAttributes().build());
 					for (var type : FarmingsEntities.FOWL) {
 						event.put(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)).build());

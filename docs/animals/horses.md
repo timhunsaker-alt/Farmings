@@ -138,3 +138,33 @@ colour, sire and dam, the grandparents, fitness, and race records (best time at 
 ## Open points
 - Breed-standard heights and weights from AQHA, the Jockey Club and the Arabian Horse Association; Arabian flat-race times.
 - A percentage for fitness, the weight-carried rule, colour frequencies by breed, Thoroughbred MSTN frequency.
+
+## Built, 2026-11-13: the animal
+- **Code:** `entity/HorseEntity` extends vanilla `AbstractHorse`, so saddles, horse armour, riding and jumping are vanilla's; rules in
+  `husbandry/Equine` (reproduction, growth, feed) and `husbandry/Gallop` (speed and fitness), `HorseBreed`, `HorseStage`; genes
+  `HorseLocus`/`HorseGenes`/`HorseLook`; `SPEED` and `STAMINA` appended to the core traits (`Species.HORSE`); renderer `client/HorseRenderer`
+  with textures from `tools/horse_textures.py`; stallion straws.
+- **How speed works in play:** `Gallop.Runner.pace(d)` is the best *average* pace over d metres (the record curve by breed share, times
+  the MSTN, SPEED, age and fitness factors). A horse x metres into a run goes at `speedAt(x)`, one metre over the time that metre takes
+  on the `time(d) = d / pace(d)` curve, so a race of any length takes exactly its `time` *(derived: this is what makes the MSTN rule hold
+  over a whole race; a horse simply running each metre at `pace(x)` let C/C horses win at 2,414 m too)*. The server counts metres
+  galloped (moving faster than half the horse's 402 m pace) and resets them after 30 s slower; it syncs `speedAt` to the rider's side,
+  where the ridden speed is that over 43.17 blocks a second per point of movement speed (the player's 0.1 walks 4.317 m/s,
+  **TO VERIFY** in a timed ridden lap, Step 18 part 8).
+- **Differences from the spec above:**
+  - **SPEED** is 1.0 at a score of 1000, 0.97 at 500 and 0.94 at 0 (the ±3% swing around the middle), so only an elite horse at its
+    best distance runs the record; **STAMINA** flattens the fall with distance by 20% at 1000 and steepens it 20% at 0.
+  - **MSTN founders** draw each allele by the breed's C share (Hardy-Weinberg, *derived*): Quarter Horse C 0.90, Thoroughbred 0.45,
+    Arabian 0.05. Coat founders by allele share *(proposed, derived from the phenotype shares above)*: TB e 0.387, A 0.70, G 0.025; QH
+    e 0.632, A 0.60, Cr 0.05, D 0.05, Rn 0.03, SB1 0.03; ARA e 0.45, A 0.65, G 0.163, SB1 0.05. Roan and sabino are in the QH and Arabian
+    founders at these small shares *(proposed)* so the loci show up.
+  - Beyond 2,414 m the curve keeps falling 1% a doubling; the Tevis pace is not used (galloped distance resets with each rest).
+  - **Model:** vanilla's horse model with Farmings textures (18 base coats; roan, sabino, star, blaze, socks and three grey stages
+    drawn over), not a new model, so vanilla saddles and armour fit. Foals are the adult model scaled by the cube root of their share of
+    mature weight *(proposed)*. The model's four legs share one texture, so socks are on all four or none.
+  - Spawned horses are 3 to 10 years old *(proposed)*. Vanilla's random speed, jump and health rolls are off: walking speed 0.225, jump
+    0.7 and health 22.5, vanilla's middles.
+  - A horse fed vanilla horse food (wheat, apples, hay, sugar, golden carrots) is healed as vanilla's; golden carrots don't breed it.
+- **Tests:** unit `GallopTest`, `HorseGeneticsTest`; game tests horse_spawns_and_survives_save, horse_lifecycle, mare_foals,
+  wild_horse_replaces_vanilla, horse_gallop_builds_fitness, stallion_straw_inseminates_mare, sprinter_and_stayer. Client scene `horses`.
+- **Not yet:** the stable and training (next part); the race track and stud book (part 7).
