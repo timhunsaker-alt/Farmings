@@ -86,3 +86,7 @@ Spoiled chops become **spoiled mutton** (Hunger and Nausea, as the other spoiled
 | Guinea fowl, cooked | 3.5 days | 1 day | spoiled poultry | "Cooked meat or poultry \| 3 to 4 days" |
 
 The room column is Tim's 1-day game rule, as for every other food. Eggs are in eggs.md.
+
+## Pork, 2026-11-13 (spec)
+Pork products and their shelf lives are in `multiblocks/curing-room.md`: chops 4 days, country ham a year even out of the cold (FSIS),
+bacon 7 days, raw sausage 1.5 days, lard *(proposed)*.

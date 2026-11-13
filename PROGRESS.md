@@ -304,6 +304,13 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     the new items have Ludo icons.
   - Open (marked in the docs): a Nubian litter table, lop ears and beards as genes, goat milk fridge life, goose fertile days and adult
     water, guinea water and colour loci by name.
+- Step 18 (2026-11-13, under way): pigs and horses. Tim: "since horses are not used for farming they can still be ridden but we should
+  also breed for racing." Approved in plan mode with his popup answers: Large White, Duroc and Berkshire in a new pig barn with
+  farrowing crates, heat lamps and a slurry pit, rooting only on pasture, bacon, ham, lard and sausage; Thoroughbred, Quarter Horse and
+  Arabian replacing vanilla horses, ridden, bred for racing by the MSTN speed gene and traits, with fitness, a stable, coat genes, a
+  stud book and a race track.
+  - Spec: `docs/animals/pigs.md`, `horses.md`; `multiblocks/pig-barn.md`, `curing-room.md`, `stable.md`, `race-track.md`; notes in
+    `breeding.md`, `taming.md`, `food.md`, `waste.md`.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

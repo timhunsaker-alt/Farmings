@@ -156,3 +156,6 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
 - **Goats:** wild goats replace vanilla goats in snowy slopes, jagged peaks and frozen peaks, 2-4 a group with one buck (goats.md). They
   follow hay and wheat, settle on hay or wheat in the bait trough, and tame in 7 real days. Wild goats jump and can ram; tame ones don't.
 - **Geese and guinea fowl:** spawn wild as the other birds (poultry.md) and tame in the corral on grain, as the other birds.
+- **Pigs** (2026-11-13): wild pigs replace vanilla pigs, one boar a group; they follow grain and settle on grain (pigs.md).
+- **Horses** (2026-11-13): wild horses replace vanilla horses, one stallion a group; they settle on hay. A wild horse throws a rider;
+  vanilla taming by riding is off (horses.md).

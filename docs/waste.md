@@ -91,3 +91,7 @@ into the vanilla composter (`docs/eggs.md`). It is an input to the compost line 
 ### Sourcing pass, 2026-11-12
 - Resolved: the hygiene and mastitis effect (Schreiner & Ruegg 2003), the OMAFA yields, digestate nitrogen (MSU E3080).
 - Still unsourced: the ASAE D384 table (paywalled), the methane yield and retention range (pages would not load). The 10 kg litter item is a game choice.
+
+## Pig slurry, 2026-11-13 (spec)
+Pig manure falls through the pig barn's slats into its pit and is pumped as slurry to a digester feed pit or a slurry store
+(`multiblocks/pig-barn.md`); horse manure goes into the stable's bedding store (`multiblocks/stable.md`).

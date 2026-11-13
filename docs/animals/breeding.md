@@ -107,3 +107,8 @@ decision asked for (40% cows, 65% heifers; the "always conceives" rule stays a p
   species-checked as before (a buck straw on a ewe is refused). Goat straws keep, as bull and ram straws (goats.md).
 - **Polled bucks:** a straw from a P/P buck that is sterile does nothing *(goats.md: half of P/P bucks are sterile, proposed)*; the herd
   book shows polled genotypes so a breeder can avoid P/P does.
+
+## Pigs and horses, 2026-11-13 (spec)
+- **Boar straws:** fresh semen keeps **6 days** (MSD: "survive in a cooled state for 5–7 days"), then turns back into an empty straw,
+  as turkey straws; a service conceives 84% of the time (PigCHAMP farrowing rate; pigs.md).
+- **Stallion straws:** keep as bull straws; a service conceives 60% of the time (horses.md).
