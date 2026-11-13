@@ -53,6 +53,10 @@ sold (VISION.md).
   - **AI jockeys** run a led-in horse along its own lane (its start offset from the centre line) the whole way, at `Gallop.speedAt` for
     the distance covered; they move the horse directly, a tick at a time, with the horse's own AI held off and handed back after.
     No move to the rail in the last 400 m. A horse ridden by a player runs as its rider rides it (`horses.md`).
+  - An AI lane is kept 1.3 m inside the track's edge so the horse clears the rails (found by the `race` client scene, where horses in
+    the outside and inside stalls ran into the rails). An AI-run horse that gains less than a metre in 5 s is out.
+  - Distance counts from where each horse is as the gate opens, so a rider who sets off in the countdown gains no ground (there is no
+    false-start rule).
   - A horse off the track for 2 s is out. A race ends when every horse has finished or is out, or after the distance at 4 m/s.
   - The race in hand isn't saved: after a save a horse held by a jockey gets its AI back. The last result is saved with the gate.
   - **Rails** (`track_rail`, a fence) are for the builder; the track forms without them.

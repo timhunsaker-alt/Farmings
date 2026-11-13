@@ -149,8 +149,9 @@ colour, sire and dam, the grandparents, fitness, and race records (best time at 
   on the `time(d) = d / pace(d)` curve, so a race of any length takes exactly its `time` *(derived: this is what makes the MSTN rule hold
   over a whole race; a horse simply running each metre at `pace(x)` let C/C horses win at 2,414 m too)*. The server counts metres
   galloped (moving faster than half the horse's 402 m pace) and resets them after 30 s slower; it syncs `speedAt` to the rider's side,
-  where the ridden speed is that over 43.17 blocks a second per point of movement speed (the player's 0.1 walks 4.317 m/s,
-  **TO VERIFY** in a timed ridden lap, Step 18 part 8).
+  where the ridden speed is that over 43.17 blocks a second per point of movement speed (the player's 0.1 walks 4.317 m/s). Checked
+  in the `race` client scene, 2026-11-13: a ridden Thoroughbred set to 18.39 m/s moved 18.38 m/s on the straights, and its ridden
+  402 m took 22.10 s against the model's 21.86 s (+1.1%, lost on the bends).
 - **Differences from the spec above:**
   - **SPEED** is 1.0 at a score of 1000, 0.97 at 500 and 0.94 at 0 (the ±3% swing around the middle), so only an elite horse at its
     best distance runs the record; **STAMINA** flattens the fall with distance by 20% at 1000 and steepens it 20% at 0.

@@ -304,7 +304,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     the new items have Ludo icons.
   - Open (marked in the docs): a Nubian litter table, lop ears and beards as genes, goat milk fridge life, goose fertile days and adult
     water, guinea water and colour loci by name.
-- Step 18 (2026-11-13, under way): pigs and horses. Tim: "since horses are not used for farming they can still be ridden but we should
+- Step 18 (2026-11-13): pigs and horses. Tim: "since horses are not used for farming they can still be ridden but we should
   also breed for racing." Approved in plan mode with his popup answers: Large White, Duroc and Berkshire in a new pig barn with
   farrowing crates, heat lamps and a slurry pit, rooting only on pasture, bacon, ham, lard and sausage; Thoroughbred, Quarter Horse and
   Arabian replacing vanilla horses, ridden, bred for racing by the MSTN speed gene and traits, with fitness, a stable, coat genes, a
@@ -328,6 +328,17 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
   - The race track: a ring of track blocks with a start gate and finish post; the lap measured along its centre line; races over 402 to
     2,414 m with AI jockeys or riders, timed to the tick along the centre line; places, wins and best times on each horse; the stud book
     with race records and grandparents. 4 game tests (241 in all).
+  - Evidence: client scenes `pigs`, `pigbarn`, `horses`, `race` (screenshots); recordings of a sow farrowing in her crate, pigs rooting
+    the pasture, the slurry pump emptying the pit, a four-horse AI race over 402 m, and a ridden timed 402 m. The NeoForge client loads
+    to the title screen with no errors.
+  - Found by the client scenes: AI horses in the outside and inside stalls ran into the rails and stuck, so lanes now keep 1.3 m inside
+    the edge and a stuck AI horse is out; a rider moving during the countdown gained ground, so distance now counts from where each
+    horse is as the gate opens. The ridden speed checked out: set to 18.39 m/s, the horse moved 18.38 m/s on the straights; the ridden
+    402 m took 22.10 s against the model's 21.86 s.
+  - Open (marked in the docs): breed-standard heights and weights, a fitness percentage, Thoroughbred MSTN and coat frequencies, a
+    lard yield, bacon yield, the 6-week detraining figure.
+  - Commits: 45206b0 spec; 6346cec pigs; 87a4b5d pig barn; 482feec pork; a53a96b horses; bc1db31 stable; 415806e race track; then
+    evidence.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

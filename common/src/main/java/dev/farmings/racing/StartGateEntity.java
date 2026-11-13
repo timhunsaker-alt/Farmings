@@ -39,6 +39,10 @@ public class StartGateEntity extends BlockEntity {
 	public static final int COUNTDOWN_TICKS = 60;
 	/** A horse off the track this long is out *(proposed)*. */
 	public static final int OFF_TRACK_TICKS = 40;
+	/** A horse that gains less than a metre in this long is out: stuck on a rail or another horse *(proposed)*. */
+	public static final int STUCK_TICKS = 100;
+	/** An AI lane keeps this far inside the track's edge, so a horse 1.4 blocks wide clears rails on the bends *(proposed)*. */
+	private static final double LANE_MARGIN = 1.3;
 	/** A race ends when the last horse is slower than this, m/s *(proposed: a slow trot)*. */
 	private static final double SLOWEST_MPS = 4;
 	/** The most track blocks a gate looks at. */
@@ -56,6 +60,8 @@ public class StartGateEntity extends BlockEntity {
 		double s;
 		double covered;
 		int offTicks;
+		double progressMark;
+		int stuckTicks;
 		int finishTicks = -1;
 		int place;
 		boolean out;
@@ -245,7 +251,8 @@ public class StartGateEntity extends BlockEntity {
 				double cx = stall.getX() + 0.5;
 				double cz = stall.getZ() + 0.5;
 				boolean ai = !h.isVehicle();
-				Entrant e = new Entrant(h.getUUID(), ai, shape.project(cx, cz), shape.offset(cx, cz));
+				double half = Math.max(0, stalls.size() / 2.0 - LANE_MARGIN);
+				Entrant e = new Entrant(h.getUUID(), ai, shape.project(cx, cz), Math.max(-half, Math.min(half, shape.offset(cx, cz))));
 				e.name = h.raceName();
 				if (ai) {
 					h.holdForRace();
@@ -287,6 +294,12 @@ public class StartGateEntity extends BlockEntity {
 			if (now >= goTick) {
 				state = State.RUNNING;
 				startTick = now;
+				// distance counts from where each horse is as the gate opens: a rider who moved early gains nothing by it
+				for (Entrant e : entrants) {
+					if (level.getEntity(e.horse) instanceof HorseEntity h) {
+						e.s = shape.project(h.getX(), h.getZ());
+					}
+				}
 				announce(level, "And they're off!");
 			}
 			return;
@@ -310,7 +323,13 @@ public class StartGateEntity extends BlockEntity {
 			e.s = s;
 			e.covered += ds;
 			e.offTicks = onTrack(h) ? 0 : e.offTicks + 1;
-			if (e.offTicks > OFF_TRACK_TICKS) {
+			if (e.covered >= e.progressMark + 1) {
+				e.progressMark = e.covered;
+				e.stuckTicks = 0;
+			} else {
+				e.stuckTicks++;
+			}
+			if (e.offTicks > OFF_TRACK_TICKS || e.ai && e.stuckTicks > STUCK_TICKS) {
 				e.out = true;
 				release(h, e);
 				continue;

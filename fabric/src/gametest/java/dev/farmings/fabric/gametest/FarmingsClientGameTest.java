@@ -1003,6 +1003,316 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-horses-all");
 	}
 
+	/**
+	 * The pig barn (docs/multiblocks/pig-barn.md), filmed: a sow farrows in her crate under a heat lamp, pigs root the pasture, the slurry
+	 * pump moves the pit to the store. Barn at (ox, oz), as the game test's layout.
+	 */
+	private static void pigBarn(ClientGameTestContext context, TestServerContext server, int y) {
+		int ox = -6;
+		int oz = 14;
+		java.util.List<dev.farmings.entity.PigEntity> pigs = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, ox + 7, oz + 3, y, 14, 12, 6);
+			java.util.function.BiFunction<Integer, Integer, BlockPos> at = (x, z) -> new BlockPos(ox + x, y, oz + z);
+			for (int x = 5; x <= 14; x++) {
+				for (int z = -1; z <= 6; z++) {
+					if (x == 5 || x == 14 || z == -1 || z == 6) {
+						level.setBlockAndUpdate(at.apply(x, z), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+					}
+				}
+			}
+			level.setBlockAndUpdate(at.apply(1, 2), dev.farmings.piggery.PigBarnBlocks.PIG_BARN_CONTROLLER.defaultBlockState());
+			for (int x = 2; x <= 4; x++) {
+				for (int z = 1; z <= 3; z++) {
+					level.setBlockAndUpdate(at.apply(x, z), dev.farmings.piggery.PigBarnBlocks.SLATTED_FLOOR.defaultBlockState());
+				}
+			}
+			level.setBlockAndUpdate(at.apply(5, 1), dev.farmings.piggery.PigBarnBlocks.FARROWING_CRATE.defaultBlockState());
+			level.setBlockAndUpdate(at.apply(5, 3), dev.farmings.shed.ShedBlocks.PASTURE_GATE.defaultBlockState());
+			level.setBlockAndUpdate(at.apply(5, 1).above(2), dev.farmings.piggery.PigBarnBlocks.HEAT_LAMP.defaultBlockState());
+			barnPart(level, BarnParts.HAY_FEEDER, at.apply(2, 0));
+			barnPart(level, BarnParts.WATER_TROUGH, at.apply(3, 4));
+			level.setBlockAndUpdate(at.apply(1, 3), dev.farmings.piggery.PigBarnBlocks.SLURRY_PUMP.defaultBlockState());
+			level.setBlockAndUpdate(at.apply(1, 4), dev.farmings.piggery.PigBarnBlocks.SLURRY_PIPE.defaultBlockState());
+			level.setBlockAndUpdate(at.apply(1, 5), dev.farmings.piggery.PigBarnBlocks.SLURRY_PIPE.defaultBlockState());
+			level.setBlockAndUpdate(at.apply(1, 6), dev.farmings.piggery.PigBarnBlocks.SLURRY_STORE.defaultBlockState());
+			if (level.getBlockEntity(at.apply(5, 1).above(2)) instanceof dev.farmings.piggery.HeatLampEntity lamp) {
+				lamp.forceRunning(true);
+			}
+			var sow = pig(level, dev.farmings.husbandry.PigBreed.LARGE_WHITE, Sex.FEMALE, 1900, 400);
+			sow.setNoAi(false);
+			sow.snapTo(ox + 5.5, y, oz + 1.5, 90, 0);
+			sow.startHeatForDisplay();
+			sow.sureConceptionForTest();
+			var boar = pig(level, dev.farmings.husbandry.PigBreed.DUROC, Sex.MALE, 1901, 400);
+			boar.snapTo(ox + 3.5, y, oz + 2.5, 0, 0);
+			sow.conceive(boar.genome(), boar.genes(), level.getGameTime());
+			sow.setDueInForTest(2);
+			sow.forcePigletsForTest(10);
+			pigs.add(sow);
+			pigs.add(boar);
+			for (int i = 0; i < 3; i++) {
+				var grower = pig(level, dev.farmings.husbandry.PigBreed.values()[i], Sex.FEMALE, 1902 + i, 400);
+				grower.setFarrowedForTest(60, 8);
+				grower.setNoAi(false);
+				grower.snapTo(ox + 8.5 + i * 2, y, oz + 2.5, 0, 0);
+				pigs.add(grower);
+			}
+		});
+		context.waitTicks(60);
+		// 1. farrowing: she goes to the crate, then farrows under the lamp
+		server.runCommand("tp @p " + (ox + 3.5) + " " + (y + 3) + " " + (oz + 6.5) + " 200 40");
+		context.waitTicks(20);
+		Filming farrow = context.computeOnClient(client -> Filming.start(client, "sow-farrows-in-crate"));
+		context.waitTicks(60);
+		server.runOnServer(srv -> {
+			var sow = pigs.get(0);
+			sow.makeDueNow();
+			sow.settle(srv.overworld());
+		});
+		for (int i = 0; i < 8; i++) {
+			context.waitTicks(10);
+			actionbar(server, "a Large White sow farrows in her crate under the heat lamp: " + server.computeOnServer(srv -> pigs.get(0).readout()));
+		}
+		context.takeScreenshot("farmings-pigbarn-farrowing");
+		farrow.stop();
+		// 2. rooting: by day the pigs go out and root the pasture
+		server.runOnServer(srv -> {
+			var level = srv.overworld();
+			for (var be : java.util.List.of(new BlockPos(ox + 1, y, oz + 2))) {
+				if (level.getBlockEntity(be) instanceof dev.farmings.piggery.PigBarnControllerEntity barn) {
+					barn.forceDayForTest(true);
+				}
+			}
+			for (int i = 2; i < pigs.size(); i++) {
+				pigs.get(i).recordTending(0.2, 1);
+			}
+		});
+		server.runCommand("tp @p " + (ox + 9.5) + " " + (y + 6) + " " + (oz + 10.5) + " 180 45");
+		context.waitTicks(20);
+		Filming root = context.computeOnClient(client -> Filming.start(client, "pigs-root-pasture"));
+		for (int i = 0; i < 20; i++) {
+			context.waitTicks(10);
+			server.runOnServer(srv -> {
+				if (srv.overworld().getBlockEntity(new BlockPos(ox + 1, y, oz + 2)) instanceof dev.farmings.piggery.PigBarnControllerEntity barn) {
+					java.util.List<dev.farmings.entity.PigEntity> out = pigs.subList(2, pigs.size());
+					barn.tend(srv.overworld(), out, 0.02);
+				}
+			});
+			actionbar(server, "pigs root the pasture: grass rooted to dirt " + server.computeOnServer(srv ->
+					srv.overworld().getBlockEntity(new BlockPos(ox + 1, y, oz + 2)) instanceof dev.farmings.piggery.PigBarnControllerEntity b ? b.rooted() : 0));
+		}
+		context.takeScreenshot("farmings-pigbarn-rooting");
+		root.stop();
+		// 3. the slurry pump empties the pit into the store
+		server.runOnServer(srv -> {
+			var level = srv.overworld();
+			if (level.getBlockEntity(new BlockPos(ox + 1, y, oz + 2)) instanceof dev.farmings.piggery.PigBarnControllerEntity barn) {
+				barn.addSlurryForTest(240);
+			}
+		});
+		server.runCommand("tp @p " + (ox - 2.5) + " " + (y + 3) + " " + (oz + 4) + " -90 35");
+		context.waitTicks(20);
+		Filming pump = context.computeOnClient(client -> Filming.start(client, "slurry-pump"));
+		server.runOnServer(srv -> {
+			if (srv.overworld().getBlockEntity(new BlockPos(ox + 1, y, oz + 3)) instanceof dev.farmings.piggery.SlurryPumpEntity p) {
+				p.forceRunning(true);
+			}
+		});
+		for (int i = 0; i < 30; i++) {
+			context.waitTicks(10);
+			actionbar(server, server.computeOnServer(srv -> {
+				var level = srv.overworld();
+				String pit = level.getBlockEntity(new BlockPos(ox + 1, y, oz + 2)) instanceof dev.farmings.piggery.PigBarnControllerEntity b
+						? String.format(java.util.Locale.ROOT, "pit %.0f kg", b.pitKg()) : "";
+				String store = level.getBlockEntity(new BlockPos(ox + 1, y, oz + 6)) instanceof dev.farmings.piggery.SlurryStoreEntity st ? st.readout() : "";
+				return "slurry pump: " + pit + " -> " + store;
+			}));
+		}
+		context.takeScreenshot("farmings-pigbarn-slurry");
+		pump.stop();
+		server.runOnServer(srv -> {
+			if (srv.overworld().getBlockEntity(new BlockPos(ox + 1, y, oz + 2)) instanceof dev.farmings.piggery.PigBarnControllerEntity barn) {
+				barn.refresh(srv.overworld());
+			}
+		});
+		server.runCommand("tp @p " + (ox + 7) + " " + (y + 9) + " " + (oz + 14) + " 180 40");
+		actionbar(server, "the pig barn: slatted pens, a farrowing crate under a heat lamp, feeder, drinker, pasture, slurry pump and store");
+		context.waitTicks(30);
+		context.takeScreenshot("farmings-pigbarn-all");
+	}
+
+	/** An oval race track centred on (cx, cz): semi-axes 30 by 14 at the centre line, 4 wide, white rails, a gate east and a post west. */
+	private static BlockPos raceTrack(ServerLevel level, int cx, int cz, int y) {
+		double a = 30;
+		double b = 14;
+		double w = 4;
+		int maxX = Integer.MIN_VALUE;
+		for (int x = -36; x <= 36; x++) {
+			for (int z = -20; z <= 20; z++) {
+				double px = x + 0.5;
+				double pz = z + 0.5;
+				double r = Math.hypot(px / a, pz / b);
+				double along = Math.hypot(px, pz);
+				double off = along - along / Math.max(1e-9, r);
+				BlockPos p = new BlockPos(cx + x, y - 1, cz + z);
+				if (Math.abs(off) <= w / 2) {
+					level.setBlockAndUpdate(p, dev.farmings.racing.RaceBlocks.RACE_TRACK.defaultBlockState());
+					if (z == 0) {
+						maxX = Math.max(maxX, x);
+					}
+				} else if (Math.abs(off) <= w / 2 + 1 && level.getBlockState(p.above()).isAir()) {
+					level.setBlockAndUpdate(p.above(), dev.farmings.racing.RaceBlocks.TRACK_RAIL.defaultBlockState());
+				}
+			}
+		}
+		// open the rail where the gate and post stand, and set them beside the track
+		BlockPos gate = new BlockPos(cx + maxX + 1, y - 1, cz);
+		level.setBlockAndUpdate(gate.above(), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+		level.setBlockAndUpdate(gate, dev.farmings.racing.RaceBlocks.START_GATE.defaultBlockState());
+		BlockPos post = new BlockPos(cx - maxX - 2, y, cz);
+		level.setBlockAndUpdate(post, dev.farmings.racing.RaceBlocks.FINISH_POST.defaultBlockState());
+		return gate;
+	}
+
+	/**
+	 * The race track (docs/multiblocks/race-track.md), filmed: four horses run 402 m by AI jockeys and the result is read; then the player
+	 * rides a saddled Thoroughbred a timed 402 m, steering round the centre line, which checks the ridden speed against the model.
+	 */
+	private static void race(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 0;
+		int cz = 60;
+		BlockPos[] gatePos = new BlockPos[1];
+		java.util.List<dev.farmings.entity.HorseEntity> field = new java.util.ArrayList<>();
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			clear(level, cx, cz, y, 40, 24, 6);
+			gatePos[0] = raceTrack(level, cx, cz, y);
+			var gate = (dev.farmings.racing.StartGateEntity) level.getBlockEntity(gatePos[0]);
+			gate.refresh(level);
+			dev.farmings.husbandry.HorseBreed[] breeds = {dev.farmings.husbandry.HorseBreed.QUARTER_HORSE, dev.farmings.husbandry.HorseBreed.THOROUGHBRED,
+					dev.farmings.husbandry.HorseBreed.ARABIAN, dev.farmings.husbandry.HorseBreed.THOROUGHBRED};
+			for (int i = 0; i < 4; i++) {
+				var h = horse(level, breeds[i], Sex.MALE, 2700 + i, 5 * 365);
+				h.setFitnessForTest(0.9);
+				BlockPos st = gate.stalls().get(i);
+				h.snapTo(st.getX() + 0.5, y, st.getZ() + 0.5, 180, 0);
+				field.add(h);
+			}
+		});
+		context.waitTicks(40);
+		// 1. an AI race over 402 m, filmed from the infield
+		server.runCommand("tp @p " + (cx + 6) + " " + (y + 9) + " " + (cz + 2) + " 90 30");
+		context.waitTicks(20);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "horse-race"));
+		actionbar(server, server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).start(srv.overworld())));
+		context.waitTicks(70);
+		context.takeScreenshot("farmings-race-start");
+		boolean shotMid = false;
+		for (int i = 0; i < 60; i++) {
+			context.waitTicks(10);
+			String r = server.computeOnServer(srv -> {
+				var gate = (dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0]);
+				return gate.state() == dev.farmings.racing.StartGateEntity.State.IDLE ? "DONE" : gate.results().replace('\n', ' ');
+			});
+			if ("DONE".equals(r)) {
+				break;
+			}
+			actionbar(server, r);
+			if (!shotMid && i == 10) {
+				context.takeScreenshot("farmings-race-running");
+				shotMid = true;
+			}
+		}
+		String result = server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).results());
+		actionbar(server, result.replace('\n', ' '));
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-race-result");
+		film.stop();
+		System.out.println("[farmings-race] " + result.replace('\n', ';'));
+		// 2. a ridden, timed 402 m: the player rides the Thoroughbred from the gate, steering at the centre line 6 m ahead
+		dev.farmings.entity.HorseEntity[] riddenBox = new dev.farmings.entity.HorseEntity[1];
+		server.runOnServer(srv -> {
+			var h = horse(srv.overworld(), dev.farmings.husbandry.HorseBreed.THOROUGHBRED, Sex.MALE, 2710, 5 * 365);
+			h.setFitnessForTest(0.9);
+			riddenBox[0] = h;
+		});
+		var ridden = riddenBox[0];
+		double[] expect = new double[1];
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			var gate = (dev.farmings.racing.StartGateEntity) level.getBlockEntity(gatePos[0]);
+			for (var h : field) {
+				h.snapTo(cx + field.indexOf(h) * 2, y, cz, 0, 0);     // into the infield
+			}
+			BlockPos st = gate.stalls().get(1);
+			ridden.snapTo(st.getX() + 0.5, y, st.getZ() + 0.5, 180, 0);
+			ridden.setNoAi(false);
+			ridden.setItemSlot(net.minecraft.world.entity.EquipmentSlot.SADDLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SADDLE));
+			var player = level.players().get(0);
+			player.snapTo(ridden.getX(), ridden.getY(), ridden.getZ(), 180, 0);
+			player.startRiding(ridden);
+			expect[0] = ridden.runner().time(402);
+		});
+		context.waitTicks(20);
+		Filming lap = context.computeOnClient(client -> Filming.start(client, "timed-lap"));
+		String started = server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).start(srv.overworld()));
+		System.out.println("[farmings-race] ridden start: " + started + " | vehicle " + server.computeOnServer(srv -> String.valueOf(srv.overworld().players().get(0).getVehicle())));
+		actionbar(server, started);
+		var shape = server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).shape());
+		for (int t = 0; t < 100 && server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).state()
+				!= dev.farmings.racing.StartGateEntity.State.RUNNING); t++) {
+			context.waitTick();
+		}
+		context.getInput().holdKey(o -> o.keyUp);
+		double[] last = {Double.NaN, 0};
+		for (int t = 0; t < 900; t++) {
+			context.runOnClient(client -> {
+				var p = client.player;
+				if (p == null) {
+					return;
+				}
+				double s = shape.project(p.getX(), p.getZ());
+				double[] aim = shape.pointAt(s + 6, -0.5);
+				float yaw = (float) Math.toDegrees(Math.atan2(-(aim[0] - p.getX()), aim[1] - p.getZ()));
+				p.setYRot(yaw);
+				p.setXRot(10);
+			});
+			context.waitTick();
+			if (t % 10 == 0) {
+				boolean done = server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).state()
+						== dev.farmings.racing.StartGateEntity.State.IDLE && ridden.bestTicks(402) > 0);
+				double moved = Double.isNaN(last[0]) ? 0 : (ridden.gallopedM() - last[0]) * 2;
+				last[0] = ridden.gallopedM();
+				System.out.println(String.format(java.util.Locale.ROOT, "[farmings-race] t %d pace %.2f measured %.2f m/s", t, ridden.syncedPace(), moved));
+				actionbar(server, String.format(java.util.Locale.ROOT, "a timed 402 m, ridden: pace %.1f m/s, moving %.1f m/s, galloped %.0f m", ridden.syncedPace(),
+						moved, ridden.gallopedM()));
+				if (t == 300) {
+					context.takeScreenshot("farmings-race-ridden");
+				}
+				if (done) {
+					break;
+				}
+			}
+		}
+		context.getInput().releaseKey(o -> o.keyUp);
+		String lapResult = server.computeOnServer(srv -> ((dev.farmings.racing.StartGateEntity) srv.overworld().getBlockEntity(gatePos[0])).results());
+		int ticks = ridden.bestTicks(402);
+		String line = String.format(java.util.Locale.ROOT, "ridden 402 m in %.2f s; the model's time for this horse %.2f s (%+.1f%%)", ticks / 20.0, expect[0],
+				100 * (ticks / 20.0 - expect[0]) / expect[0]);
+		actionbar(server, line);
+		System.out.println("[farmings-race] " + line + " | " + lapResult.replace('\n', ';'));
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-race-timed-lap");
+		lap.stop();
+		server.runOnServer(srv -> srv.overworld().players().get(0).stopRiding());
+		server.runCommand("tp @p " + cx + " " + (y + 28) + " " + (cz + 34) + " 180 45");
+		actionbar(server, "the race track: a 4-wide oval of " + String.format(java.util.Locale.ROOT, "%.0f m", shape.lap()) + ", start gate east, finish post west");
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-race-track");
+	}
+
 	private static dev.farmings.entity.GoatEntity goat(ServerLevel level, dev.farmings.husbandry.GoatBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.GoatEntity g = FarmingsEntities.GOAT.create(level, EntitySpawnReason.COMMAND);
 		g.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Herd.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
@@ -2621,6 +2931,16 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("pigs".equals(only)) {
 				context.waitTicks(200);
 				pigs(context, server, y);
+				return;
+			}
+			if ("pigbarn".equals(only)) {
+				context.waitTicks(200);
+				pigBarn(context, server, y);
+				return;
+			}
+			if ("race".equals(only)) {
+				context.waitTicks(200);
+				race(context, server, y);
 				return;
 			}
 			if ("horses".equals(only)) {

@@ -76,8 +76,8 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 	private static final EntityDataAccessor<Float> DATA_PACE = SynchedEntityData.defineId(HorseEntity.class, EntityDataSerializers.FLOAT);
 
 	/**
-	 * Blocks a second per point of movement speed on flat ground: the player's 0.1 walks 4.317 m/s (Minecraft Wiki, TO VERIFY), and the
-	 * game test horse_pace_calibrated checks it for a horse.
+	 * Blocks a second per point of movement speed on flat ground: the player's 0.1 walks 4.317 m/s. Checked in the race client scene: a
+	 * ridden horse set to 18.39 m/s moved 18.38 m/s on the straights (horses.md).
 	 */
 	public static final double BLOCKS_PER_SECOND_PER_SPEED = 43.17;
 	/** Vanilla's middle horse: speed 0.225 (0.1125-0.3375), jump 0.7 (0.4-1.0), health 22.5 (15-30) *(proposed: jump stays vanilla's middle)*. */
