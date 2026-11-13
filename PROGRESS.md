@@ -325,6 +325,9 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     (E, A, Cr, D, G, Rn, SB1) with grey by age; one foal a season; stallion straws. 7 game tests (234 in all); client scene `horses`.
   - The stable: stall floor counted in 12-block stalls, the barn's racks and troughs, a paddock by day where horses graze, straw bedding
     and manure as the sheep shed's; the readout lists each horse's fitness; an underfed horse gains no fitness. 3 game tests (237 in all).
+  - The race track: a ring of track blocks with a start gate and finish post; the lap measured along its centre line; races over 402 to
+    2,414 m with AI jockeys or riders, timed to the tick along the centre line; places, wins and best times on each horse; the stud book
+    with race records and grandparents. 4 game tests (241 in all).
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

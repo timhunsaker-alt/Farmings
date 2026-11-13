@@ -181,3 +181,8 @@ Every prompt ends "game item icon, plain white background, no text".
 | bacon / cooked_bacon | Three raw smoked bacon rashers side by side, pink meat and white fat stripes / Three crispy fried bacon rashers, deep reddish brown and wavy |
 | sausage / cooked_sausage | A short chain of three raw fresh pork sausage links in natural casing, pale pink with flecks of herbs / Three grilled pork sausages, browned and glistening with grill marks |
 | lard / rancid_lard | A small glass jar of pure white rendered pork lard, smooth creamy surface, no lid / A small glass jar of rancid lard, yellowed and grey-streaked, dull, with a few dark spots |
+
+## 2026-11-13: horses (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+| file | prompt |
+|---|---|
+| stud_book | A single closed leather-bound stud book, dark brown leather cover with a small gold embossed horseshoe, game item icon, plain white background, no text |

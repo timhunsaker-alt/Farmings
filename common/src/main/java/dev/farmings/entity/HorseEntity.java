@@ -127,6 +127,13 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 	private double lastX = Double.NaN;
 	private double lastZ = Double.NaN;
 	private double halfPace = 8;
+	// race records (race-track.md, "Records"): best time in ticks at each distance, races run, wins
+	private final java.util.TreeMap<Integer, Integer> bestTicks = new java.util.TreeMap<>();
+	private int races;
+	private int wins;
+	/** Held still by a start gate's AI jockey (its own AI off) and what its AI was before. Saved, so a race cut short by a save lets go. */
+	private boolean raceHold;
+	private boolean noAiBeforeRace;
 
 	public HorseEntity(EntityType<? extends HorseEntity> type, Level level) {
 		super(type, level);
@@ -452,6 +459,59 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 	protected float getRiddenSpeed(Player rider) {
 		float pace = syncedPace();
 		return pace > 0 ? (float) (pace / BLOCKS_PER_SECOND_PER_SPEED) : super.getRiddenSpeed(rider);
+	}
+
+	// ---- race records ----
+
+	/** A finished race or timed run: {@code ticks} over {@code metres}; a win if it came first among two or more. */
+	public void recordRace(int metres, int ticks, boolean won) {
+		races++;
+		if (won) {
+			wins++;
+		}
+		Integer best = bestTicks.get(metres);
+		if (best == null || ticks < best) {
+			bestTicks.put(metres, ticks);
+		}
+	}
+
+	/** A start gate's AI jockey takes the horse: its own AI is off until {@link #releaseFromRace}. */
+	public void holdForRace() {
+		if (!raceHold) {
+			noAiBeforeRace = isNoAi();
+			raceHold = true;
+			setNoAi(true);
+		}
+	}
+
+	public void releaseFromRace() {
+		if (raceHold) {
+			raceHold = false;
+			setNoAi(noAiBeforeRace);
+			setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+		}
+	}
+
+	/** Best time at a distance, in ticks, or -1. */
+	public int bestTicks(int metres) {
+		return bestTicks.getOrDefault(metres, -1);
+	}
+
+	public java.util.SortedMap<Integer, Integer> bests() {
+		return java.util.Collections.unmodifiableSortedMap(bestTicks);
+	}
+
+	public int races() {
+		return races;
+	}
+
+	public int wins() {
+		return wins;
+	}
+
+	/** The name a race card shows: the horse's own name, else its herd id and breed. */
+	public String raceName() {
+		return hasCustomName() ? getCustomName().getString() : herdId() + " (" + breedLabel() + ")";
 	}
 
 	// ---- breeding and foaling ----
@@ -814,6 +874,12 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 			}
 		}
 		b.append(String.format(Locale.ROOT, ", fitness %.0f%%", fitness() * 100));
+		if (races > 0) {
+			b.append(String.format(Locale.ROOT, ", %d race%s, %d win%s", races, races == 1 ? "" : "s", wins, wins == 1 ? "" : "s"));
+			for (Map.Entry<Integer, Integer> e : bestTicks.entrySet()) {
+				b.append(String.format(Locale.ROOT, ", best %,d m %.2f s", e.getKey(), e.getValue() / 20.0));
+			}
+		}
 		if (inHeat()) {
 			b.append(", IN HEAT");
 		}
@@ -903,6 +969,12 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 		out.putDouble("Fitness", fitness);
 		out.putLong("LastWork", lastWorkTick);
 		out.putLong("GainDay", gainDay);
+		out.putIntArray("BestDist", bestTicks.keySet().stream().mapToInt(Integer::intValue).toArray());
+		out.putIntArray("BestTicks", bestTicks.values().stream().mapToInt(Integer::intValue).toArray());
+		out.putInt("Races", races);
+		out.putBoolean("RaceHold", raceHold);
+		out.putBoolean("NoAiBeforeRace", noAiBeforeRace);
+		out.putInt("Wins", wins);
 		out.putDouble("GainedToday", gainedToday);
 		place().save(out);
 	}
@@ -948,6 +1020,18 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 		lastWorkTick = in.getLongOr("LastWork", Long.MIN_VALUE);
 		gainDay = in.getLongOr("GainDay", -1L);
 		gainedToday = in.getDoubleOr("GainedToday", 0);
+		int[] dist = in.getIntArray("BestDist").orElse(new int[0]);
+		int[] ticks = in.getIntArray("BestTicks").orElse(new int[0]);
+		bestTicks.clear();
+		for (int i = 0; i < Math.min(dist.length, ticks.length); i++) {
+			bestTicks.put(dist[i], ticks[i]);
+		}
+		races = in.getIntOr("Races", 0);
+		wins = in.getIntOr("Wins", 0);
+		if (in.getBooleanOr("RaceHold", false)) {
+			setNoAi(in.getBooleanOr("NoAiBeforeRace", false));     // the race isn't saved: it ended with the save
+		}
+		raceHold = false;
 		place().load(in);
 		sync(level().getGameTime());
 	}

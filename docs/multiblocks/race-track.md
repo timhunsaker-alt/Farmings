@@ -35,3 +35,30 @@ sold (VISION.md).
 
 ## Not in this pass
 - Turf versus dirt, going (track condition), handicap weights, steeplechase jumps, harness racing.
+
+## Built, 2026-11-13
+- **Code:** shape in `husbandry/racing/TrackShape` (plain Java, `TrackShapeTest`); blocks in `racing/` (`RaceBlocks`, `StartGateBlock`,
+  `StartGateEntity`, `FinishPostBlock`); records on `HorseEntity`; `item/StudBookItem`.
+- **Forming:** the gate stands beside the track (at track level or one above it). From the track block next to it the gate finds every
+  joined `race_track` block at that level (a flat track *(proposed)*). The track must be a **ring around an infield**, an oval or rounded
+  rectangle: its middle is not track, and it is cut into 72 directions out from the middle (5° each), every one of which must cross
+  track. The **centre line** joins the middle of the track in each direction; the lap is its length (an oval's lap comes within 3% of
+  the true perimeter, `TrackShapeTest`). Races run **counter-clockwise seen from above**, as in American racing *(proposed)*.
+- **Stalls** are the track blocks straight across the track from the gate; the track must be at least 3 wide there. A **finish post**
+  must stand beside the track.
+- **Differences from the spec above:**
+  - **The finish is the distance, not the post:** each horse's progress is measured along the centre line from where it started, and
+    it is timed (to the tick, 0.05 s) when it has covered the race distance, wherever on the loop that falls. The post is where you
+    read the result; where it stands doesn't change the timing *(proposed: exact distances without moving the post)*.
+  - **AI jockeys** run a led-in horse along its own lane (its start offset from the centre line) the whole way, at `Gallop.speedAt` for
+    the distance covered; they move the horse directly, a tick at a time, with the horse's own AI held off and handed back after.
+    No move to the rail in the last 400 m. A horse ridden by a player runs as its rider rides it (`horses.md`).
+  - A horse off the track for 2 s is out. A race ends when every horse has finished or is out, or after the distance at 4 m/s.
+  - The race in hand isn't saved: after a save a horse held by a jockey gets its AI back. The last result is saved with the gate.
+  - **Rails** (`track_rail`, a fence) are for the builder; the track forms without them.
+  - A win counts when two or more horses ran; a solo run is a timed run (recorded, no win).
+- **Stud book:** a page a horse (up to 64): its herd ID and name, breed and stage, colour, MSTN, age, SPEED and STAMINA, fitness, races,
+  wins and best times; its sire and dam, each with their own sire and dam when the book has a page for them (grandparents from the
+  book's own records *(proposed)*). Crafted from a book and quill and leather.
+- **Tests:** unit `TrackShapeTest`; game tests track_forms, race_two_horses (a C/C Quarter Horse beats a T/T Arabian over 402 m, each
+  within 5% of the speed model's time), race_ridden_run_timed (a ridden horse carried at 15 m/s is timed at 26.8 s), stud_book_pedigree.

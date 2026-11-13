@@ -1,0 +1,17 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "L",
+  "T",
+  "T"
+ ],
+ "key": {
+  "L": "#minecraft:wool",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:finish_post",
+  "count": 1
+ }
+}

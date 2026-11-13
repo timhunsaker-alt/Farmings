@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "UY",
+  "YU"
+ ],
+ "key": {
+  "U": "minecraft:coarse_dirt",
+  "Y": "minecraft:sand"
+ },
+ "result": {
+  "id": "farmings:race_track",
+  "count": 4
+ }
+}

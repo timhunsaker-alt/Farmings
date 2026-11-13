@@ -305,7 +305,7 @@ final class HorseGameTests {
 		}
 		helper.runAfterDelay(45, () -> {
 			List<HorseEntity> members = st.members(level);
-			helper.assertTrue(members.size() == 2 && extra.place().shedController() == null, Component.literal("two stalls, two horses: " + members.size()));
+			helper.assertTrue(members.size() == 2 && !c.equals(extra.place().shedController()), Component.literal("two stalls, two horses: " + members.size()));
 			helper.assertTrue(a.place().home() != null && b.place().home() != null && !a.place().home().equals(b.place().home()),
 					Component.literal("each its own stall"));
 			// a on the paddock grazes; b in her stall eats from the rack
@@ -343,6 +343,170 @@ final class HorseGameTests {
 		h.recordTending(1, 1);
 		h.work(1000);
 		helper.assertTrue(Math.abs(h.fitness() - 0.02) < 1e-9, Component.literal("fed: 0.02, " + h.fitness()));
+		helper.succeed();
+	}
+
+	// ---- the race track (docs/multiblocks/race-track.md) ----
+
+	static final double OVAL_A = 30;
+	static final double OVAL_B = 14;
+	static final double OVAL_W = 4;
+
+	/** Ramanujan's perimeter of the oval's centre line. */
+	static double ovalLap() {
+		double h = Math.pow(OVAL_A - OVAL_B, 2) / Math.pow(OVAL_A + OVAL_B, 2);
+		return Math.PI * (OVAL_A + OVAL_B) * (1 + 3 * h / (10 + Math.sqrt(4 - 3 * h)));
+	}
+
+	/** An oval track around (0, 0) at y 0 on stone, 4 wide; the start gate beside its east end; a finish post at its west end if asked. */
+	static BlockPos buildTrack(GameTestHelper helper, boolean post) {
+		int ex = (int) (OVAL_A + OVAL_W) + 2;
+		int ez = (int) (OVAL_B + OVAL_W) + 2;
+		int maxX = Integer.MIN_VALUE;
+		for (int x = -ex; x <= ex; x++) {
+			for (int z = -ez; z <= ez; z++) {
+				double cx = x + 0.5;
+				double cz = z + 0.5;
+				double r = Math.hypot(cx / OVAL_A, cz / OVAL_B);
+				double along = Math.hypot(cx, cz);
+				boolean track = Math.abs(along - along / Math.max(1e-9, r)) <= OVAL_W / 2;
+				helper.setBlock(new BlockPos(x, 0, z), track ? dev.farmings.racing.RaceBlocks.RACE_TRACK : net.minecraft.world.level.block.Blocks.STONE);
+				for (int y = 1; y <= 3; y++) {
+					helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.AIR);
+				}
+				if (track && z == 0) {
+					maxX = Math.max(maxX, x);
+				}
+			}
+		}
+		helper.setBlock(new BlockPos(maxX + 1, 0, 0), dev.farmings.racing.RaceBlocks.START_GATE);
+		if (post) {
+			helper.setBlock(new BlockPos(-maxX - 2, 1, 0), dev.farmings.racing.RaceBlocks.FINISH_POST);
+		}
+		return helper.absolutePos(new BlockPos(maxX + 1, 0, 0));
+	}
+
+	static dev.farmings.racing.StartGateEntity gate(GameTestHelper helper, BlockPos g) {
+		return (dev.farmings.racing.StartGateEntity) helper.getLevel().getBlockEntity(g);
+	}
+
+	static HorseEntity inStall(GameTestHelper helper, dev.farmings.racing.StartGateEntity gate, int stall, HorseBreed breed, long seed, int mstnC) {
+		BlockPos c = gate.stalls().get(stall);
+		HorseEntity h = horse(helper, breed, Sex.MALE, seed, 5 * 365, BlockPos.ZERO);
+		h.snapTo(c.getX() + 0.5, c.getY() + 1, c.getZ() + 0.5, 0, 0);
+		h.setNoAi(true);
+		h.setGenesForTest(h.genes().with(HorseLocus.MSTN, mstnC >= 1 ? 1 : 0, mstnC >= 2 ? 1 : 0));
+		h.setScoreForTest(Trait.SPEED, 700);
+		h.setScoreForTest(Trait.STAMINA, 500);
+		h.setFitnessForTest(1);
+		return h;
+	}
+
+	/** The oval forms with its lap the length of its centre line and four stalls; without a finish post it says so. */
+	static void trackForms(GameTestHelper helper) {
+		BlockPos g = buildTrack(helper, false);
+		ServerLevel level = helper.getLevel();
+		var gate = gate(helper, g);
+		gate.refresh(level);
+		helper.assertTrue(gate.problem().contains("finish post"), Component.literal(gate.problem()));
+		int maxX = g.getX() - helper.absolutePos(BlockPos.ZERO).getX() - 1;
+		helper.setBlock(new BlockPos(-maxX - 2, 1, 0), dev.farmings.racing.RaceBlocks.FINISH_POST);
+		helper.runAfterDelay(1, () -> {
+			gate.refresh(level);
+			helper.assertTrue(gate.formed() && gate.stalls().size() == 4, Component.literal("formed with 4 stalls: " + gate.problem() + " " + gate.stalls().size()));
+			helper.assertTrue(Math.abs(gate.shape().lap() - ovalLap()) / ovalLap() < 0.04,
+					Component.literal(String.format("lap %.1f m vs centre line %.1f m", gate.shape().lap(), ovalLap())));
+			helper.assertTrue(gate.nextDistance().contains("1,207 m"), Component.literal("sneak-use steps the distance"));
+			helper.succeed();
+		});
+	}
+
+	/**
+	 * Two AI-run horses over 402 m: the C/C Quarter Horse beats the T/T Arabian; each time is within 5% of what the speed model gives for
+	 * the distance; records and the win are kept.
+	 */
+	static void raceTwoHorses(GameTestHelper helper) {
+		BlockPos g = buildTrack(helper, true);
+		ServerLevel level = helper.getLevel();
+		var gate = gate(helper, g);
+		gate.refresh(level);
+		HorseEntity qh = inStall(helper, gate, 0, HorseBreed.QUARTER_HORSE, 81L, 2);
+		HorseEntity ara = inStall(helper, gate, 2, HorseBreed.ARABIAN, 82L, 0);
+		double expectQh = qh.runner().time(402);
+		double expectAra = ara.runner().time(402);
+		String said = gate.start(level);
+		helper.assertTrue(said.contains("2 runners"), Component.literal(said));
+		helper.succeedWhen(() -> {
+			helper.assertTrue(gate.state() == dev.farmings.racing.StartGateEntity.State.IDLE && !gate.lastResult().isEmpty(), Component.literal("racing"));
+			helper.assertTrue(gate.lastResult().get(1).startsWith("1. " + qh.raceName()), Component.literal(String.join(" | ", gate.lastResult())));
+			double tq = qh.bestTicks(402) / 20.0;
+			double ta = ara.bestTicks(402) / 20.0;
+			helper.assertTrue(Math.abs(tq - expectQh) / expectQh < 0.05 && Math.abs(ta - expectAra) / expectAra < 0.05,
+					Component.literal(String.format("times %.2f vs %.2f s, %.2f vs %.2f s", tq, expectQh, ta, expectAra)));
+			helper.assertTrue(qh.wins() == 1 && qh.races() == 1 && ara.wins() == 0 && ara.races() == 1, Component.literal("records"));
+			helper.assertTrue(qh.isNoAi() && ara.isNoAi(), Component.literal("the jockeys hand back the horses as they were (no AI in this test)"));
+		});
+	}
+
+	/** A ridden horse is timed as its rider runs it: carried round at 15 m/s, 402 m takes 26.8 s. */
+	static void riddenRunTimed(GameTestHelper helper) {
+		BlockPos g = buildTrack(helper, true);
+		ServerLevel level = helper.getLevel();
+		var gate = gate(helper, g);
+		gate.refresh(level);
+		HorseEntity h = inStall(helper, gate, 1, HorseBreed.THOROUGHBRED, 91L, 1);
+		h.setNoGravity(true);
+		var player = helper.makeMockServerPlayerInLevel();
+		player.startRiding(h);
+		var shape = gate.shape();
+		double s0 = shape.project(h.getX(), h.getZ());
+		double off = shape.offset(h.getX(), h.getZ());
+		double y = h.getY();
+		String said = gate.start(level);
+		helper.assertTrue(said.contains("1 runner"), Component.literal(said));
+		int[] t = {0};
+		helper.succeedWhen(() -> {
+			if (gate.state() == dev.farmings.racing.StartGateEntity.State.RUNNING) {
+				t[0]++;
+				double[] p = shape.pointAt(s0 + 0.75 * t[0], off);
+				h.setPos(p[0], y, p[1]);
+			}
+			helper.assertTrue(gate.state() == dev.farmings.racing.StartGateEntity.State.IDLE && h.bestTicks(402) > 0, Component.literal("running"));
+			helper.assertTrue(Math.abs(h.bestTicks(402) - 536) <= 16, Component.literal("timed " + h.bestTicks(402) + " ticks, about 536"));
+			helper.assertTrue(gate.lastResult().get(1).contains("(ridden)") && h.wins() == 0, Component.literal(String.join(" | ", gate.lastResult())));
+			player.stopRiding();
+			player.discard();
+		});
+	}
+
+	/** The stud book records horses with their race records, and gives a foal's grandparents from its dam's page. */
+	static void studBookPedigree(GameTestHelper helper) {
+		FarmingsGameTests.floor(helper);
+		ServerLevel level = helper.getLevel();
+		HorseEntity mare = adult(helper, HorseBreed.ARABIAN, Sex.FEMALE, 101L, new BlockPos(2, 1, 2));
+		HorseEntity stallion = adult(helper, HorseBreed.THOROUGHBRED, Sex.MALE, 102L, new BlockPos(5, 1, 2));
+		mare.setNoAi(true);
+		stallion.setNoAi(true);
+		stallion.recordRace(402, 430, true);
+		mare.forceDayOfYearForTest(150);
+		mare.startHeatForDisplay();
+		mare.sureConceptionForTest();
+		helper.assertTrue(mare.conceive(stallion.genome(), stallion.genes(), level.getGameTime()), Component.literal("in foal"));
+		mare.makeDueNow();
+		mare.settle(level);
+		HorseEntity foal = level.getEntitiesOfClass(HorseEntity.class, new AABB(helper.absolutePos(BlockPos.ZERO)).inflate(12)).stream()
+				.filter(x -> x != mare && x != stallion).findFirst().orElseThrow();
+		ItemStack book = new ItemStack(FarmingsItems.STUD_BOOK);
+		dev.farmings.item.StudBookItem.record(book, stallion);
+		dev.farmings.item.StudBookItem.record(book, mare);
+		dev.farmings.item.StudBookItem.record(book, foal);
+		var entries = dev.farmings.item.StudBookItem.entries(book);
+		helper.assertTrue(entries.size() == 3 && entries.get(0).page().contains("best 402 m 21.50 s") && entries.get(0).page().contains("1 race, 1 win"),
+				Component.literal(entries.get(0).page()));
+		String ped = dev.farmings.item.StudBookItem.pedigree(entries, entries.get(2));
+		helper.assertTrue(ped.contains("Dam " + mare.herdId() + " (by founder out of founder)") && ped.contains("Sire " + stallion.herdId()),
+				Component.literal(ped));
+		helper.assertTrue(book.get(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT).pages().size() == 3, Component.literal("three pages"));
 		helper.succeed();
 	}
 }

@@ -61,6 +61,7 @@ ITEMS = [
     ("cooked_choice_steak", "Cooked Choice Steak", (128, 76, 44), "steak"),
     ("cooked_prime_steak", "Cooked Prime Steak", (136, 82, 48), "steak"),
     ("herd_book", "Herd Book", (60, 110, 60), "book"),
+    ("stud_book", "Stud Book", (110, 60, 40), "book"),
     ("milk_helmet", "Milk Helmet", (246, 246, 240), "armor"),
     ("milk_chestplate", "Milk Chestplate", (246, 246, 240), "armor"),
     ("milk_leggings", "Milk Leggings", (246, 246, 240), "armor"),
@@ -201,6 +202,8 @@ EXTRA_LANG = {
     "message.farmings.goat_wether": "Castrated: he will grow as a wether.",
     "message.farmings.herd_book.recorded": "Recorded %s in the herd book.",
     "message.farmings.herd_book.full": "The herd book is full (64 animals).",
+    "message.farmings.stud_book.recorded": "Recorded %s in the stud book.",
+    "message.farmings.stud_book.full": "The stud book is full (64 horses).",
 }
 CONTROLLER = ("Barn Controller", (200, 110, 40))
 PARLOR_CONTROLLER = ("Parlor Controller", (60, 110, 190))
@@ -415,6 +418,7 @@ def main():
     pig_barn_assets(lang)
     curing_assets(lang)
     stable_assets(lang)
+    race_assets(lang)
     corral_assets(lang)
     coop_assets(lang)
     hatchery_assets(lang)
@@ -437,7 +441,8 @@ KEYS = {"S": "wildcatter:steel_ingot", "I": "minecraft:iron_ingot", "C": "minecr
         "G": "minecraft:glass", "B": "minecraft:bucket", "K": "minecraft:gray_concrete", "W": "#minecraft:planks",
         "N": "minecraft:iron_bars", "L": "#minecraft:wool", "M": "minecraft:milk_bucket", "T": "minecraft:stick",
         "H": "minecraft:hay_block", "F": "#minecraft:wooden_fences", "X": "farmings:wool_cloth",
-        "D": "minecraft:wheat_seeds", "Q": "farmings:down", "P": "farmings:felt", "E": "minecraft:leather"}
+        "D": "minecraft:wheat_seeds", "Q": "farmings:down", "P": "farmings:felt", "E": "minecraft:leather",
+        "U": "minecraft:coarse_dirt", "Y": "minecraft:sand"}
 SHAPED = {
     # barn
     "barn_controller": (["SRS", "CIC", "SSS"], 1),
@@ -493,6 +498,11 @@ SHAPED = {
     # the stable (docs/multiblocks/stable.md): a plank board with leather, plank stall floor over straw-coloured hay
     "stable_controller": (["WRW", "WEW", "WWW"], 1),
     "horse_stall": (["H H", "WWW"], 6),
+    # the race track (docs/multiblocks/race-track.md): dirt and sand, a white rail, a steel gate, a post with a wool flag
+    "race_track": (["UY", "YU"], 4),
+    "track_rail": (["TLT", "T T"], 6),
+    "start_gate": (["SRS", "S S", "SNS"], 1),
+    "finish_post": (["L", "T", "T"], 1),
     # curing (docs/multiblocks/curing-room.md): a plank rack with hooks, a plank smokehouse, an iron kettle, an iron grinder
     "curing_rack": (["WTW", "I I", "WTW"], 1),
     "smokehouse": (["WWW", "W W", "WCW"], 1),
@@ -579,6 +589,7 @@ SHAPED = {
 SHAPELESS = {
     "empty_straw": (["wildcatter:plastic_sheet"], 8),
     "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
+    "stud_book": (["minecraft:writable_book", "minecraft:leather"], 1),
     "cheddar": (["farmings:cheddar_wheel"], 8),
     "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
     "mineral_premix": (["minecraft:bone_meal", "farmings:ground_limestone"], 4),
@@ -1021,6 +1032,62 @@ def stable_assets(lang):
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+
+
+RACE = {"race_track": "Race Track", "track_rail": "Track Rail", "start_gate": "Start Gate", "finish_post": "Finish Post"}
+
+
+def race_assets(lang):
+    """Drawn stand-ins: harrowed dirt, a white rail, a green steel gate with stall bars, a red and white post."""
+    from PIL import Image, ImageDraw
+    m = os.path.join(ASSETS, "models", "block")
+    tex = os.path.join(ASSETS, "textures", "block")
+    rnd = __import__("random").Random(77)
+    out = {}
+    dirt = Image.new("RGBA", (16, 16), (150, 112, 76, 255))
+    px = dirt.load()
+    for x in range(16):
+        for y in range(16):
+            v = rnd.randint(-14, 14) + (8 if y % 4 == 0 else 0)          # harrow lines across
+            c = px[x, y]
+            px[x, y] = (max(0, min(255, c[0] + v)), max(0, min(255, c[1] + v)), max(0, min(255, c[2] + v)), 255)
+    out["race_track"] = dirt
+    rail = Image.new("RGBA", (16, 16), (238, 238, 232, 255))
+    ImageDraw.Draw(rail).rectangle([0, 0, 15, 15], outline=(200, 200, 194, 255))
+    out["track_rail"] = rail
+    gate = Image.new("RGBA", (16, 16), (52, 120, 70, 255))
+    d = ImageDraw.Draw(gate)
+    for x in (2, 6, 10, 14):
+        d.line([(x, 0), (x, 15)], fill=(200, 200, 204, 255))          # stall bars
+    d.rectangle([0, 0, 15, 2], fill=(230, 230, 230, 255))
+    out["start_gate"] = gate
+    post = Image.new("RGBA", (16, 16), (240, 240, 240, 255))
+    d = ImageDraw.Draw(post)
+    for y in range(0, 16, 4):
+        d.rectangle([0, y, 15, y + 1], fill=(200, 40, 40, 255))      # red bands
+    out["finish_post"] = post
+    for name, im in out.items():
+        if not os.path.exists(os.path.join(os.path.dirname(__file__), "..", "art", "final", name + ".png")):
+            im.save(os.path.join(tex, name + ".png"))
+    for name, title in RACE.items():
+        lang["block.farmings." + name] = title
+    for cube in ("race_track", "start_gate"):
+        write(os.path.join(m, cube + ".json"), {"parent": "minecraft:block/cube_all", "textures": {"all": "farmings:block/" + cube}})
+    write(os.path.join(m, "finish_post.json"), {"textures": {"post": "farmings:block/finish_post", "particle": "farmings:block/finish_post"},
+          "elements": [{"from": [5, 0, 5], "to": [11, 16, 11], "faces": {f: {"texture": "#post"} for f in ("north", "south", "east", "west", "up", "down")}}]})
+    for part in ("post", "side", "inventory"):
+        write(os.path.join(m, "track_rail_%s.json" % part), {"parent": "minecraft:block/fence_" + part, "textures": {"texture": "farmings:block/track_rail"}})
+    write(os.path.join(ASSETS, "blockstates", "track_rail.json"), {"multipart": [{"apply": {"model": "farmings:block/track_rail_post"}}] + [
+        {"when": {side: "true"}, "apply": {"model": "farmings:block/track_rail_side", "y": rot, "uvlock": True}}
+        for side, rot in (("north", 0), ("east", 90), ("south", 180), ("west", 270))]})
+    for name in RACE:
+        if name != "track_rail":
+            write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        model = "farmings:block/track_rail_inventory" if name == "track_rail" else "farmings:block/" + name
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": model}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    # the rail is a fence: it joins other fences
+    write(os.path.join(ROOT_DATA, "minecraft", "tags", "block", "wooden_fences.json"), {"replace": False, "values": ["farmings:track_rail"]})
 
 
 CURING = {"curing_rack": "Curing Rack", "smokehouse": "Smokehouse", "lard_kettle": "Lard Kettle", "meat_grinder": "Meat Grinder"}

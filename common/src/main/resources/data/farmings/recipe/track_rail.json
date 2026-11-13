@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "TLT",
+  "T T"
+ ],
+ "key": {
+  "L": "#minecraft:wool",
+  "T": "minecraft:stick"
+ },
+ "result": {
+  "id": "farmings:track_rail",
+  "count": 6
+ }
+}

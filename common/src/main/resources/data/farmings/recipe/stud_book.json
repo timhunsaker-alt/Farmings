@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:writable_book",
+  "minecraft:leather"
+ ],
+ "result": {
+  "id": "farmings:stud_book",
+  "count": 1
+ }
+}
