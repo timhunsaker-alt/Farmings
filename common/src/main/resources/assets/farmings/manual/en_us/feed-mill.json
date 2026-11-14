@@ -1,0 +1,393 @@
+{
+ "id": "feed-mill",
+ "title": "Feed mill and TMR mixer",
+ "chapter": "fields",
+ "order": 50,
+ "icon": "farmings:ration",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Grind grain into meal, then mix a balanced ration. A good ration means more milk, faster growth and more eggs."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Hammer mill"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Put grain, alfalfa hay, calcite or fish into its top; meal comes out of its output face, "
+    },
+    {
+     "t": "1 kg",
+     "b": true
+    },
+    {
+     "t": " in, "
+    },
+    {
+     "t": "1 kg",
+     "b": true
+    },
+    {
+     "t": " out. Its motor is "
+    },
+    {
+     "t": "9.1 kW",
+     "b": true
+    },
+    {
+     "t": " on Wildcatter "
+    },
+    {
+     "t": "480 V",
+     "b": true
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:hammer_mill",
+    "farmings:corn_meal",
+    "farmings:oat_meal",
+    "farmings:barley_meal",
+    "farmings:alfalfa_meal",
+    "farmings:fish_meal",
+    "farmings:ground_limestone"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Mineral premix:",
+     "b": true
+    },
+    {
+     "t": " bone meal + ground limestone, shapeless, makes "
+    },
+    {
+     "t": "4",
+     "b": true
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "TMR mixer"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "2 x 2 x 2",
+      "b": true
+     },
+     {
+      "t": " machine placed from one item, also on "
+     },
+     {
+      "t": "480 V",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Feed it ingredients by belt, auger, hopper or hand."
+     }
+    ],
+    [
+     {
+      "t": "4 minutes",
+      "b": true
+     },
+     {
+      "t": " after the last ingredient, it mixes the batch into "
+     },
+     {
+      "t": "25 kg",
+      "b": true
+     },
+     {
+      "t": " ration items. A batch is about "
+     },
+     {
+      "t": "2.3 t",
+      "b": true
+     },
+     {
+      "t": ", enough for about "
+     },
+     {
+      "t": "40",
+      "b": true
+     },
+     {
+      "t": " cows for a day."
+     }
+    ],
+    [
+     {
+      "t": "A barn hay feeder beside the mixer, or at the end of a belt, takes rations straight in."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:tmr_mixer",
+    "farmings:ration",
+    "farmings:mineral_premix"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "What a ration does"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A ration's tooltip shows its analysis. Each animal scores what it eats from "
+    },
+    {
+     "t": "0",
+     "b": true
+    },
+    {
+     "t": " to "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": ":"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Dairy cows:",
+      "b": true
+     },
+     {
+      "t": " CP "
+     },
+     {
+      "t": "15-18%",
+      "b": true
+     },
+     {
+      "t": ", NDF "
+     },
+     {
+      "t": "25-30%",
+      "b": true
+     },
+     {
+      "t": ", at least "
+     },
+     {
+      "t": "40%",
+      "b": true
+     },
+     {
+      "t": " forage, and premix. Milk is x ("
+     },
+     {
+      "t": "0.67",
+      "b": true
+     },
+     {
+      "t": " + "
+     },
+     {
+      "t": "0.33",
+      "b": true
+     },
+     {
+      "t": " x score), so poor hay alone gives about two thirds of the milk."
+     }
+    ],
+    [
+     {
+      "t": "Growing cattle:",
+      "b": true
+     },
+     {
+      "t": " growth x ("
+     },
+     {
+      "t": "0.29",
+      "b": true
+     },
+     {
+      "t": " + "
+     },
+     {
+      "t": "0.71",
+      "b": true
+     },
+     {
+      "t": " x score), so a poor ration grows them far slower."
+     }
+    ],
+    [
+     {
+      "t": "Ewes and does in milk:",
+      "b": true
+     },
+     {
+      "t": " CP "
+     },
+     {
+      "t": "11.6%",
+      "b": true
+     },
+     {
+      "t": " or more. Milk x ("
+     },
+     {
+      "t": "0.83",
+      "b": true
+     },
+     {
+      "t": " + "
+     },
+     {
+      "t": "0.17",
+      "b": true
+     },
+     {
+      "t": " x score)."
+     }
+    ],
+    [
+     {
+      "t": "Lambs:",
+      "b": true
+     },
+     {
+      "t": " growth x ("
+     },
+     {
+      "t": "0.8",
+      "b": true
+     },
+     {
+      "t": " + "
+     },
+     {
+      "t": "0.2",
+      "b": true
+     },
+     {
+      "t": " x score)."
+     }
+    ],
+    [
+     {
+      "t": "Laying hens:",
+      "b": true
+     },
+     {
+      "t": " CP "
+     },
+     {
+      "t": "16%",
+      "b": true
+     },
+     {
+      "t": " and Ca "
+     },
+     {
+      "t": "3-4%",
+      "b": true
+     },
+     {
+      "t": ". Eggs x ("
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " + "
+     },
+     {
+      "t": "0.25",
+      "b": true
+     },
+     {
+      "t": " x score)."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "See "
+    },
+    {
+     "t": "crops",
+     "link": "crops"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "the silo",
+     "link": "silo"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "the barn",
+     "link": "barn"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

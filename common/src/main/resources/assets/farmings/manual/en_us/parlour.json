@@ -1,0 +1,285 @@
+{
+ "id": "parlour",
+ "title": "The milking parlour",
+ "chapter": "buildings",
+ "order": 30,
+ "icon": "farmings:milking_unit",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Cows walk from the "
+    },
+    {
+     "t": "barn",
+     "link": "barn"
+    },
+    {
+     "t": " to the parlour once a game day, are milked into a cooled bulk tank, and walk back to their stalls."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Floor:",
+      "b": true
+     },
+     {
+      "t": " a vacuum pump at the far end, then a milk line, one block per stall, running under the parlour controller."
+     }
+    ],
+    [
+     {
+      "t": "Above the line:",
+      "b": true
+     },
+     {
+      "t": " a milking unit at each stall, and the controller at the tank end."
+     }
+    ],
+    [
+     {
+      "t": "Stalls:",
+      "b": true
+     },
+     {
+      "t": " a parlour stall ("
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " blocks long) under each unit, from "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " to "
+     },
+     {
+      "t": "12",
+      "b": true
+     },
+     {
+      "t": " stalls. A sheep stall (one block) milks dairy ewes and does instead."
+     }
+    ],
+    [
+     {
+      "t": "The bulk tank",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": ") beside the controller."
+     }
+    ],
+    [
+     {
+      "t": "Holding pen and cow lane:",
+      "b": true
+     },
+     {
+      "t": " holding-pen floor touching the stalls, with room for every stall ("
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " stalls need "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " blocks), and a cow lane of up to "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " blocks to the end of the barn's alley."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "VLLLLTT",
+      ".PPP.TT",
+      ".PPP...",
+      ".HHHHH.",
+      ".N.....",
+      ".N....."
+     ]
+    },
+    {
+     "name": "layer 2",
+     "rows": [
+      ".UUUCTT",
+      ".....TT"
+     ]
+    }
+   ],
+   "key": {
+    "V": "farmings:vacuum_pump",
+    "L": "farmings:milk_line",
+    "T": "farmings:bulk_tank",
+    "P": "farmings:parlor_stall",
+    "H": "farmings:holding_pen",
+    "N": "farmings:cow_lane",
+    "U": "farmings:milking_unit",
+    "C": "farmings:parlor_controller"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Running it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The vacuum pump draws "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " kW and the tank's chiller "
+     },
+     {
+      "t": "2.6",
+      "b": true
+     },
+     {
+      "t": " kW."
+     }
+    ],
+    [
+     {
+      "t": "The tank holds "
+     },
+     {
+      "t": "1,000",
+      "b": true
+     },
+     {
+      "t": " L and cools milk to "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " C. Above "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " C it is WARM and no new milking starts."
+     }
+    ],
+    [
+     {
+      "t": "Faults: NO POWER, TANK FULL, TANK WARM, or NO LANE TO BARN."
+     }
+    ],
+    [
+     {
+      "t": "An empty bucket on the tank takes "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " L as a milk bucket. A milk line from the tank to a "
+     },
+     {
+      "t": "creamery",
+      "link": "creamery"
+     },
+     {
+      "t": " pipes the milk across."
+     }
+    ],
+    [
+     {
+      "t": "A tank holds one kind of milk: cow, sheep or goat."
+     }
+    ],
+    [
+     {
+      "t": "Ewes and does reach the sheep stalls from the "
+     },
+     {
+      "t": "sheep shed",
+      "link": "sheep-shed"
+     },
+     {
+      "t": " pen behind them."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:bulk_tank",
+    "farmings:milking_unit",
+    "minecraft:milk_bucket"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,274 @@
+{
+ "id": "horses",
+ "title": "Horses",
+ "chapter": "animals",
+ "order": 60,
+ "icon": "farmings:stud_book",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Three breeds: "
+    },
+    {
+     "t": "Thoroughbred",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Quarter Horse",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Arabian",
+     "b": true
+    },
+    {
+     "t": ", bred for racing. Wild horses replace vanilla horses in plains and savanna. A wild horse throws its rider: tame it in a "
+    },
+    {
+     "t": "corral",
+     "link": "corral"
+    },
+    {
+     "t": " on hay, in "
+    },
+    {
+     "t": "7",
+     "b": true
+    },
+    {
+     "t": " real days. Then saddle it and ride it as a vanilla horse. House it in a "
+    },
+    {
+     "t": "stable",
+     "link": "stable"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Mares come into heat every "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days, from "
+     },
+     {
+      "t": "15",
+      "b": true
+     },
+     {
+      "t": " Apr to "
+     },
+     {
+      "t": "31",
+      "b": true
+     },
+     {
+      "t": " Oct."
+     }
+    ],
+    [
+     {
+      "t": "A service conceives "
+     },
+     {
+      "t": "60%",
+      "b": true
+     },
+     {
+      "t": " of the time. Stallion "
+     },
+     {
+      "t": "straws",
+      "link": "breeding"
+     },
+     {
+      "t": " keep, as bull straws do."
+     }
+    ],
+    [
+     {
+      "t": "Gestation is "
+     },
+     {
+      "t": "340",
+      "b": true
+     },
+     {
+      "t": " days, for one foal. Foals are weaned at "
+     },
+     {
+      "t": "150",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Horses under "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " years can't be ridden."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Speed"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The speed gene (MSTN):",
+      "b": true
+     },
+     {
+      "t": " C/C horses are sprinters, best at about "
+     },
+     {
+      "t": "1,250",
+      "b": true
+     },
+     {
+      "t": " m; C/T at "
+     },
+     {
+      "t": "1,830",
+      "b": true
+     },
+     {
+      "t": " m; T/T horses are stayers, best at "
+     },
+     {
+      "t": "2,110",
+      "b": true
+     },
+     {
+      "t": " m."
+     }
+    ],
+    [
+     {
+      "t": "SPEED",
+      "b": true
+     },
+     {
+      "t": " and "
+     },
+     {
+      "t": "STAMINA",
+      "b": true
+     },
+     {
+      "t": " traits fine-tune the pace and how it holds over distance."
+     }
+    ],
+    [
+     {
+      "t": "Age:",
+      "b": true
+     },
+     {
+      "t": " a horse peaks at "
+     },
+     {
+      "t": "4.45",
+      "b": true
+     },
+     {
+      "t": " years."
+     }
+    ],
+    [
+     {
+      "t": "Fitness:",
+      "b": true
+     },
+     {
+      "t": " galloping builds it. An unfit horse runs "
+     },
+     {
+      "t": "5%",
+      "b": true
+     },
+     {
+      "t": " slower. A rested horse keeps its fitness "
+     },
+     {
+      "t": "42",
+      "b": true
+     },
+     {
+      "t": " real days, then loses it."
+     }
+    ],
+    [
+     {
+      "t": "Races and riding are real time. Race at "
+     },
+     {
+      "t": "the race track",
+      "link": "race-track"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Horses aren't kept for meat: one that dies drops its saddle and nothing else."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:stud_book",
+    "minecraft:saddle",
+    "farmings:horse_stall"
+   ]
+  }
+ ]
+}

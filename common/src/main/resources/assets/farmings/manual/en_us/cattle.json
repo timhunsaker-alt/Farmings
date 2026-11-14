@@ -1,0 +1,354 @@
+{
+ "id": "cattle",
+ "title": "Cattle",
+ "chapter": "animals",
+ "order": 10,
+ "icon": "farmings:prime_steak",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Six breeds: "
+    },
+    {
+     "t": "Holstein",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Jersey",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Brown Swiss",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Gyr",
+     "b": true
+    },
+    {
+     "t": " for milk, "
+    },
+    {
+     "t": "Angus",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Wagyu",
+     "b": true
+    },
+    {
+     "t": " for beef. They spawn wild, with the breed matched to the biome. Lead them with wheat or a hay block and tame them in a "
+    },
+    {
+     "t": "corral",
+     "link": "corral"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Life"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A heifer is first bred at "
+     },
+     {
+      "t": "15",
+      "b": true
+     },
+     {
+      "t": " months, once she weighs "
+     },
+     {
+      "t": "55%",
+      "b": true
+     },
+     {
+      "t": " of her breed's mature weight."
+     }
+    ],
+    [
+     {
+      "t": "Cows come into heat every "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days. Gestation is "
+     },
+     {
+      "t": "283",
+      "b": true
+     },
+     {
+      "t": " days, about "
+     },
+     {
+      "t": "18.9",
+      "b": true
+     },
+     {
+      "t": " game days."
+     }
+    ],
+    [
+     {
+      "t": "A player's first two calves are heifers, the third a bull, then it's even."
+     }
+    ],
+    [
+     {
+      "t": "Right-click with an empty hand to read an animal. Shears on a bull calf make him a steer."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Feed and milk"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cows eat hay in the "
+     },
+     {
+      "t": "barn",
+      "link": "barn"
+     },
+     {
+      "t": ". A "
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": " kg hay block holds "
+     },
+     {
+      "t": "85",
+      "b": true
+     },
+     {
+      "t": " kg of dry matter; a milking cow eats about a quarter of a block a game day."
+     }
+    ],
+    [
+     {
+      "t": "Water: "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": " L per kg of dry matter, plus "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " L per litre of milk."
+     }
+    ],
+    [
+     {
+      "t": "Dairy cows are milked once a game day in the "
+     },
+     {
+      "t": "parlour",
+      "link": "parlour"
+     },
+     {
+      "t": ". A lactation is "
+     },
+     {
+      "t": "305",
+      "b": true
+     },
+     {
+      "t": " days, then "
+     },
+     {
+      "t": "60",
+      "b": true
+     },
+     {
+      "t": " days dry. A first lactation gives "
+     },
+     {
+      "t": "15%",
+      "b": true
+     },
+     {
+      "t": " less. Beef cows are never milked."
+     }
+    ],
+    [
+     {
+      "t": "Underfed cows give less milk and grow slower, but never die of it."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Beef"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Steaks are graded "
+    },
+    {
+     "t": "Select",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Choice",
+     "b": true
+    },
+    {
+     "t": " or "
+    },
+    {
+     "t": "Prime",
+     "b": true
+    },
+    {
+     "t": " by marbling. A "
+    },
+    {
+     "t": "550",
+     "b": true
+    },
+    {
+     "t": " kg Angus gives "
+    },
+    {
+     "t": "13",
+     "b": true
+    },
+    {
+     "t": " beef and "
+    },
+    {
+     "t": "3",
+     "b": true
+    },
+    {
+     "t": " Choice steaks; a "
+    },
+    {
+     "t": "487",
+     "b": true
+    },
+    {
+     "t": " kg Wagyu gives "
+    },
+    {
+     "t": "10",
+     "b": true
+    },
+    {
+     "t": " beef and "
+    },
+    {
+     "t": "4",
+     "b": true
+    },
+    {
+     "t": " Prime steaks. See "
+    },
+    {
+     "t": "meat and food",
+     "link": "meat"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:select_steak",
+    "farmings:choice_steak",
+    "farmings:prime_steak",
+    "farmings:bottled_milk"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "More: "
+    },
+    {
+     "t": "breeding",
+     "link": "breeding"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "growth",
+     "link": "growth"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "the creamery",
+     "link": "creamery"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

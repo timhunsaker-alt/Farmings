@@ -1,0 +1,262 @@
+{
+ "id": "turkeys",
+ "title": "Turkeys",
+ "chapter": "animals",
+ "order": 80,
+ "icon": "farmings:turkey",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Three breeds: "
+    },
+    {
+     "t": "Broad Breasted White",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Bronze",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Bourbon Red",
+     "b": true
+    },
+    {
+     "t": ". Bronze and Bourbon Red spawn wild in forests, taiga and hills; tame them in a "
+    },
+    {
+     "t": "taming corral",
+     "link": "corral"
+    },
+    {
+     "t": " with grain. The Broad Breasted White never spawns wild."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Turkeys run at the bird clock, "
+    },
+    {
+     "t": "1 game day = 3 real days",
+     "b": true
+    },
+    {
+     "t": " ("
+    },
+    {
+     "t": "time scales",
+     "link": "time-scales"
+    },
+    {
+     "t": ")."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Laying"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "First egg at "
+     },
+     {
+      "t": "31.5",
+      "b": true
+     },
+     {
+      "t": " weeks. A hen lays for "
+     },
+     {
+      "t": "28 weeks",
+      "b": true
+     },
+     {
+      "t": ", then rests until a year from her first egg."
+     }
+    ],
+    [
+     {
+      "t": "Eggs a year: Broad Breasted White "
+     },
+     {
+      "t": "110",
+      "b": true
+     },
+     {
+      "t": ", Bronze about "
+     },
+     {
+      "t": "75",
+      "b": true
+     },
+     {
+      "t": ", Bourbon Red "
+     },
+     {
+      "t": "45",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "One tom serves up to "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " hens; her eggs stay fertile for "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " real days."
+     }
+    ],
+    [
+     {
+      "t": "Eggs hatch after "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "A Broad Breasted White tom can't mate. Collect his semen with an empty straw and use it on a turkey hen. The straw spoils "
+     },
+     {
+      "t": "30 real minutes",
+      "b": true
+     },
+     {
+      "t": " after collection, so use it at once. See "
+     },
+     {
+      "t": "breeding",
+      "link": "breeding"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Keeping"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "In the "
+     },
+     {
+      "t": "coop",
+      "link": "coop"
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " floor block holds "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " turkey, and each needs "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " run blocks."
+     }
+    ],
+    [
+     {
+      "t": "A Bronze tom of "
+     },
+     {
+      "t": "16.6 kg",
+      "b": true
+     },
+     {
+      "t": " gives "
+     },
+     {
+      "t": "26",
+      "b": true
+     },
+     {
+      "t": " turkey items."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:turkey_egg",
+    "farmings:turkey",
+    "farmings:cooked_turkey",
+    "farmings:semen_straw"
+   ]
+  }
+ ]
+}

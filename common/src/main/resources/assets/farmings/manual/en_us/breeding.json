@@ -1,0 +1,288 @@
+{
+ "id": "breeding",
+ "title": "Breeding and straws",
+ "chapter": "genetics",
+ "order": 20,
+ "icon": "farmings:empty_straw",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Only tame herd animals breed. A female breeds while she is in heat, by natural service or by a straw."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Heat"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A cow comes into heat every "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days, for "
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " of a real day. Heart particles show every "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " seconds while she is in heat."
+     }
+    ],
+    [
+     {
+      "t": "After calving she waits "
+     },
+     {
+      "t": "60",
+      "b": true
+     },
+     {
+      "t": " days before her next heat."
+     }
+    ],
+    [
+     {
+      "t": "Sheep, goats and horses only cycle in their season; see each animal's page."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Natural service"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cattle:",
+      "b": true
+     },
+     {
+      "t": " a bull with his own stall in the same "
+     },
+     {
+      "t": "barn",
+      "link": "barn"
+     },
+     {
+      "t": " serves any cow in heat there."
+     }
+    ],
+    [
+     {
+      "t": "Sheep and goats:",
+      "b": true
+     },
+     {
+      "t": " a ram or buck serves in the same pen or pasture. "
+     },
+     {
+      "t": "Horses:",
+      "b": true
+     },
+     {
+      "t": " a stallion in the same stable or paddock."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Straws"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Craft "
+     },
+     {
+      "t": "8",
+      "b": true
+     },
+     {
+      "t": " empty straws from a Wildcatter plastic sheet."
+     }
+    ],
+    [
+     {
+      "t": "Use an empty straw on a tame grown bull, ram, buck, boar, stallion or turkey tom: it becomes a semen straw holding his genes."
+     }
+    ],
+    [
+     {
+      "t": "Use the semen straw on a female of the same species in heat (a hen needs no heat). Any other animal refuses it."
+     }
+    ],
+    [
+     {
+      "t": "Bull, ram, buck and stallion straws keep forever. Boar straws keep "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": " days; turkey straws go stale after "
+     },
+     {
+      "t": "30",
+      "b": true
+     },
+     {
+      "t": " real minutes."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:empty_straw",
+    "farmings:semen_straw"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Conception and birth"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cattle, sheep and goats conceive at every service in heat. Pigs conceive "
+     },
+     {
+      "t": "84%",
+      "b": true
+     },
+     {
+      "t": " of the time, horses "
+     },
+     {
+      "t": "60%",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "A player's first two calves are heifers and the third a bull; after that it's even."
+     }
+    ],
+    [
+     {
+      "t": "Twins come in "
+     },
+     {
+      "t": "5.02%",
+      "b": true
+     },
+     {
+      "t": " of later calvings and "
+     },
+     {
+      "t": "0.68%",
+      "b": true
+     },
+     {
+      "t": " of first ones."
+     }
+    ],
+    [
+     {
+      "t": "Stillbirths: "
+     },
+     {
+      "t": "12.3%",
+      "b": true
+     },
+     {
+      "t": " for heifers, "
+     },
+     {
+      "t": "5.4%",
+      "b": true
+     },
+     {
+      "t": " for cows."
+     }
+    ],
+    [
+     {
+      "t": "A heifer born twin to a bull is a freemartin and can't breed."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Read the parents in the "
+    },
+    {
+     "t": "herd book",
+     "link": "herd-book"
+    },
+    {
+     "t": ". See also "
+    },
+    {
+     "t": "genes and traits",
+     "link": "genes"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "growth",
+     "link": "growth"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

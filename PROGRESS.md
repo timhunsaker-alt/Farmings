@@ -339,6 +339,28 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     lard yield, bacon yield, the 6-week detraining figure.
   - Commits: 45206b0 spec; 6346cec pigs; 87a4b5d pig barn; 482feec pork; a53a96b horses; bc1db31 stable; 415806e race track; then
     evidence.
+- Step 19 (2026-11-14): a sourcing sweep, then the Field Manual (ROADMAP Phase 5). Tim picked the manual from Ideas with a sweep
+  first; popup answers: a custom guide screen, how to play plus key numbers, given on first join and craftable.
+  - Sourcing sweep (872848c): three research passes read the primary source for each of the 231 open marks (177 TO VERIFY, 54 NOT
+    FOUND). About 115 remain, each with a note of what was searched; many sites refused the fetch (AAEP, AQHA, MSD article bodies,
+    NSW DPI, Missouri, Iowa State, FSIS). Corrections Tim approved: Thoroughbred 454 kg and MSTN C 0.56, Winning Brew 19.54 m/s, mare
+    season from 15 April, pig water 9.5 / 17 / 25 L, manure per cow by stage (67 / 39 / 24 kg, ASAE D384.2), dairy intake 3.25%,
+    Nubian litter 1.39, Silkie 1.4 kg and 41 g eggs, guinea first egg 28 weeks, corn silage 125 days and grain 130, the growing-cattle
+    ration floor 0.29, ewe and doe milk x0.83 on low protein (new), the incubator 25 W, quail water 2.3x feed.
+  - Spec (7bd6009): `docs/field-manual.md`.
+  - Code (70eed55): the `field_manual` item (book + wheat; given once on first join, player tag `farmings.manual_given`);
+    `client/manual/ManualScreen` (contents with folding chapters, search, links and Back, sheets, icons with tooltips, multiblock
+    grids with a key, sized to the window); `tools/make_manual.py` and the `checkManual` build task (dead links, unknown items, stale
+    JSON, and any figure not in the page's docs); game tests field_manual_given_once, field_manual_recipe, manual_pages_resolve (244 in
+    all). Found on the way: a yearling could be mounted by right-clicking with any item in hand; fixed.
+  - Pages: 44 in `docs/manual/` over seven chapters. Grids are drawn from each doc's text and checked against the forming code where
+    one exists; spec ids that the built code replaced (pig feeder, nipple drinker, paddock gate) use the shared parts.
+  - Evidence: client scene `manual` (contents, cattle, barn, pigs, pig barn, horses, race track, a search), recording
+    `field-manual.mov`. NeoForge client loads to the title screen with no errors; the screen itself was exercised on Fabric only (the
+    code is common).
+  - Doc conflicts the page writing found (pages use the Built figure): barn scraper 2.2 vs 0.75 kW, parlour chiller 2.2 vs 2.6 kW,
+    creamery heater 9 vs 12 kW and separator 2.2 vs 1.5 kW, curing room 10 vs 4.5 C and 16 vs 32 sausage links, sheep.md "no straws",
+    breeding.md "nothing here is built", goats.md has no Built section.
 
 ## Known gaps
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing

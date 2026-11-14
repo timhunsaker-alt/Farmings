@@ -1,0 +1,333 @@
+{
+ "id": "silo",
+ "title": "Tower silo and grain bin",
+ "chapter": "fields",
+ "order": 30,
+ "icon": "farmings:silo_stave",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The tower silo turns chopped forage into silage. The grain bin stores grain."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Tower silo"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Build a ring of "
+     },
+     {
+      "t": "silo staves",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "3 x 3",
+      "b": true
+     },
+     {
+      "t": " or "
+     },
+     {
+      "t": "5 x 5",
+      "b": true
+     },
+     {
+      "t": " with a hollow middle, up to "
+     },
+     {
+      "t": "24",
+      "b": true
+     },
+     {
+      "t": " blocks high, and cap it with "
+     },
+     {
+      "t": "silo roof",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Set a "
+     },
+     {
+      "t": "forage blower",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "15 kW",
+      "b": true
+     },
+     {
+      "t": ") and a "
+     },
+     {
+      "t": "silo unloader",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "22.4 kW",
+      "b": true
+     },
+     {
+      "t": ") beside the bottom ring. Both run on Wildcatter power."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      ".U.",
+      "SSS",
+      "S.SB",
+      "SSS"
+     ]
+    },
+    {
+     "name": "layer 2 (repeat up to the top)",
+     "rows": [
+      "SSS",
+      "S.S",
+      "SSS"
+     ]
+    },
+    {
+     "name": "layer top",
+     "rows": [
+      "RRR",
+      "RRR",
+      "RRR"
+     ]
+    }
+   ],
+   "key": {
+    "S": "farmings:silo_stave",
+    "R": "farmings:silo_roof",
+    "U": "farmings:silo_unloader",
+    "B": "farmings:forage_blower"
+   }
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Feed chopped corn or chopped alfalfa into the blower by belt or hopper. One kind at a time."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "It holds "
+    },
+    {
+     "t": "240 kg",
+     "b": true
+    },
+    {
+     "t": " of dry matter per m³: a "
+    },
+    {
+     "t": "3 x 3",
+     "b": true
+    },
+    {
+     "t": " silo "
+    },
+    {
+     "t": "20",
+     "b": true
+    },
+    {
+     "t": " blocks high holds "
+    },
+    {
+     "t": "4.8 t",
+     "b": true
+    },
+    {
+     "t": " of dry matter, about "
+    },
+    {
+     "t": "14 t",
+     "b": true
+    },
+    {
+     "t": " of corn silage. After the last fill it ferments for "
+    },
+    {
+     "t": "21",
+     "b": true
+    },
+    {
+     "t": " real days ("
+    },
+    {
+     "t": "1.4",
+     "b": true
+    },
+    {
+     "t": " game days). Then the unloader hands "
+    },
+    {
+     "t": "25 kg",
+     "b": true
+    },
+    {
+     "t": " items of silage to a belt, machine or chest. Some dry matter is lost while it ferments and stands; the readout shows how much."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:chopped_corn",
+    "farmings:chopped_alfalfa",
+    "farmings:corn_silage",
+    "farmings:haylage"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Grain bin"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A ring of "
+     },
+     {
+      "t": "grain bin wall",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "3 x 3",
+      "b": true
+     },
+     {
+      "t": " or "
+     },
+     {
+      "t": "5 x 5",
+      "b": true
+     },
+     {
+      "t": ", up to "
+     },
+     {
+      "t": "16",
+      "b": true
+     },
+     {
+      "t": " high, with a "
+     },
+     {
+      "t": "grain bin roof",
+      "b": true
+     },
+     {
+      "t": ". An auger or belt fills it through the roof."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "grain bin hopper",
+      "b": true
+     },
+     {
+      "t": " beside the foot empties it by gravity, with no power."
+     }
+    ],
+    [
+     {
+      "t": "One grain at a time. It holds "
+     },
+     {
+      "t": "721",
+      "b": true
+     },
+     {
+      "t": " kg of corn per m³, "
+     },
+     {
+      "t": "412",
+      "b": true
+     },
+     {
+      "t": " of oats or "
+     },
+     {
+      "t": "618",
+      "b": true
+     },
+     {
+      "t": " of barley. Grain in a bin doesn't spoil."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "See "
+    },
+    {
+     "t": "conveyors",
+     "link": "conveyors"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "the feed mill",
+     "link": "feed-mill"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

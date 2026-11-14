@@ -1,0 +1,181 @@
+{
+ "id": "genes",
+ "title": "Genes and traits",
+ "chapter": "genetics",
+ "order": 10,
+ "icon": "farmings:semen_straw",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Every Farmings animal carries its own genome. It is stored on the animal and saved with the world, and it decides what the animal is good at and what it looks like."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Traits"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cattle",
+      "b": true
+     },
+     {
+      "t": " have eight core traits: milk yield, butterfat, protein, feed efficiency, health, fertility, longevity and temperament."
+     }
+    ],
+    [
+     {
+      "t": "Sheep",
+      "b": true
+     },
+     {
+      "t": " have wool yield, fleece quality, feed efficiency, health, fertility, longevity, temperament and hardiness, plus milk yield for dairy sheep."
+     }
+    ],
+    [
+     {
+      "t": "Horses",
+      "b": true
+     },
+     {
+      "t": " add SPEED and STAMINA."
+     }
+    ],
+    [
+     {
+      "t": "Each breed starts from baseline scores on a "
+     },
+     {
+      "t": "0-100",
+      "b": true
+     },
+     {
+      "t": " scale. These are game-balance targets, not real breed averages."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Inheritance"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A calf takes half its genes from each parent. Its breed mix is the average of its parents'."
+     }
+    ],
+    [
+     {
+      "t": "Crossing breeds gives "
+     },
+     {
+      "t": "hybrid vigour",
+      "b": true
+     },
+     {
+      "t": " (heterosis). Breeding close relatives costs an "
+     },
+     {
+      "t": "inbreeding",
+      "b": true
+     },
+     {
+      "t": " penalty."
+     }
+    ],
+    [
+     {
+      "t": "The same parents and the same seed always give the same young."
+     }
+    ],
+    [
+     {
+      "t": "Labels follow the mix: purebred, influenced, cross or composite."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Coat genes"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The look comes from real colour genes, kept beside the trait genes:"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cattle: black over red, polled over horned, white patches, dilution, roan and brindle. A cross takes the body shape of each breed family that gives it at least "
+     },
+     {
+      "t": "25%",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Sheep: white over coloured, black heads, horns, wool or hair coat. Coloured lambs turn up now and then."
+     }
+    ],
+    [
+     {
+      "t": "Pigs, goats and horses have their own colour genes."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Two red-carrier parents can throw a red calf, so plan your matings with the "
+    },
+    {
+     "t": "herd book",
+     "link": "herd-book"
+    },
+    {
+     "t": ". See "
+    },
+    {
+     "t": "breeding and straws",
+     "link": "breeding"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

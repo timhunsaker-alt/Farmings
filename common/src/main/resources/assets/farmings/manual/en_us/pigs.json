@@ -1,0 +1,314 @@
+{
+ "id": "pigs",
+ "title": "Pigs",
+ "chapter": "animals",
+ "order": 50,
+ "icon": "farmings:pork_belly",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Three breeds: "
+    },
+    {
+     "t": "Large White",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Duroc",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Berkshire",
+     "b": true
+    },
+    {
+     "t": ". Wild pigs replace vanilla pigs, one boar to a group. They follow grain and are tamed on grain in a "
+    },
+    {
+     "t": "corral",
+     "link": "corral"
+    },
+    {
+     "t": ". House them in a "
+    },
+    {
+     "t": "pig barn",
+     "link": "pig-barn"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A gilt is first bred at "
+     },
+     {
+      "t": "210",
+      "b": true
+     },
+     {
+      "t": " days and "
+     },
+     {
+      "t": "136",
+      "b": true
+     },
+     {
+      "t": " kg. Heat comes every "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Gestation is "
+     },
+     {
+      "t": "114",
+      "b": true
+     },
+     {
+      "t": " days. Litters: Large White "
+     },
+     {
+      "t": "11.6",
+      "b": true
+     },
+     {
+      "t": " at the first, "
+     },
+     {
+      "t": "13.7",
+      "b": true
+     },
+     {
+      "t": " later; Duroc "
+     },
+     {
+      "t": "10.4",
+      "b": true
+     },
+     {
+      "t": "; Berkshire "
+     },
+     {
+      "t": "9.2",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "A service conceives "
+     },
+     {
+      "t": "84%",
+      "b": true
+     },
+     {
+      "t": " of the time. Boar "
+     },
+     {
+      "t": "straws",
+      "link": "breeding"
+     },
+     {
+      "t": " keep "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Piglets weigh "
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": " kg at birth and are weaned at "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days. They need a heat lamp until then."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Growing and feeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A pig reaches "
+     },
+     {
+      "t": "120",
+      "b": true
+     },
+     {
+      "t": " kg at "
+     },
+     {
+      "t": "186",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Pigs eat grain, meal and rations from the feeder: a finisher about "
+     },
+     {
+      "t": "2.2",
+      "b": true
+     },
+     {
+      "t": " kg a day, a nursing sow "
+     },
+     {
+      "t": "6.5",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Out on pasture, pigs root up grass for part of their feed. Indoors they never change blocks."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Pork"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A "
+    },
+    {
+     "t": "120",
+     "b": true
+    },
+    {
+     "t": " kg pig gives "
+    },
+    {
+     "t": "2",
+     "b": true
+    },
+    {
+     "t": " hams, "
+    },
+    {
+     "t": "24",
+     "b": true
+    },
+    {
+     "t": " chops, "
+    },
+    {
+     "t": "5",
+     "b": true
+    },
+    {
+     "t": " bellies, "
+    },
+    {
+     "t": "10",
+     "b": true
+    },
+    {
+     "t": " shoulders and "
+    },
+    {
+     "t": "12",
+     "b": true
+    },
+    {
+     "t": " fat. Piglets under "
+    },
+    {
+     "t": "30",
+     "b": true
+    },
+    {
+     "t": " kg give chops only. Turn them into bacon, country ham, lard and sausage in the "
+    },
+    {
+     "t": "curing room",
+     "link": "curing-room"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:fresh_ham",
+    "farmings:pork_chop",
+    "farmings:pork_belly",
+    "farmings:pork_shoulder",
+    "farmings:pork_fat"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,231 @@
+{
+ "id": "shearing-shed",
+ "title": "The shearing shed",
+ "chapter": "buildings",
+ "order": 50,
+ "icon": "farmings:shearing_stand",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A powered shearing stand built onto your "
+    },
+    {
+     "t": "sheep shed",
+     "link": "sheep-shed"
+    },
+    {
+     "t": ". It calls in each sheep whose fleece is ready and shears it."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "shearing stand",
+      "b": true
+     },
+     {
+      "t": ": the controller, on Wildcatter power ("
+     },
+     {
+      "t": "0.5",
+      "b": true
+     },
+     {
+      "t": " kW)."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "catching pen",
+      "b": true
+     },
+     {
+      "t": " touching the stand and touching the sheep shed's pen. At most "
+     },
+     {
+      "t": "16",
+      "b": true
+     },
+     {
+      "t": " blocks."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "wool table",
+      "b": true
+     },
+     {
+      "t": " touching the stand. It keeps "
+     },
+     {
+      "t": "9",
+      "b": true
+     },
+     {
+      "t": " stacks; a hopper below takes them."
+     }
+    ],
+    [
+     {
+      "t": "Optional: a "
+     },
+     {
+      "t": "wool press",
+      "b": true
+     },
+     {
+      "t": " beside the table."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "CPPPW",
+      "HPPP.",
+      "..K..",
+      "XTS.."
+     ]
+    }
+   ],
+   "key": {
+    "C": "farmings:shed_controller",
+    "P": "farmings:sheep_pen",
+    "W": "farmings:water_trough",
+    "H": "farmings:hay_feeder",
+    "K": "farmings:catching_pen",
+    "S": "farmings:shearing_stand",
+    "T": "farmings:wool_table",
+    "X": "farmings:wool_press"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Shearing"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The stand calls one sheep at a time: one with "
+     },
+     {
+      "t": "300",
+      "b": true
+     },
+     {
+      "t": " days or more of fleece, not nursing, and not within "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": " real days of lambing."
+     }
+    ],
+    [
+     {
+      "t": "Shearing takes "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " seconds."
+     }
+    ],
+    [
+     {
+      "t": "The fleece is split into the body fleece and skirtings ("
+     },
+     {
+      "t": "12%",
+      "b": true
+     },
+     {
+      "t": " of the weight, one grade lower)."
+     }
+    ],
+    [
+     {
+      "t": "The press bales every "
+     },
+     {
+      "t": "8",
+      "b": true
+     },
+     {
+      "t": " fleeces of one grade and colour into a wool bale."
+     }
+    ],
+    [
+     {
+      "t": "Hand shears still work anywhere, but give one grade lower and no skirtings."
+     }
+    ],
+    [
+     {
+      "t": "With no power the stand reads NO POWER and lets the sheep go."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:fleece",
+    "farmings:skirtings",
+    "farmings:wool_bale"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Take the wool to the "
+    },
+    {
+     "t": "wool mill",
+     "link": "wool-mill"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

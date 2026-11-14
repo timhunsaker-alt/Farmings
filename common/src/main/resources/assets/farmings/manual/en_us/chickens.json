@@ -1,0 +1,296 @@
+{
+ "id": "chickens",
+ "title": "Chickens",
+ "chapter": "animals",
+ "order": 70,
+ "icon": "farmings:chicken_egg",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Four breeds: "
+    },
+    {
+     "t": "Leghorn",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Rhode Island Red",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Plymouth Rock",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Silkie",
+     "b": true
+    },
+    {
+     "t": ". Wild chickens replace vanilla ones in plains, hills, badlands and jungles. They follow grain, and you tame them in a "
+    },
+    {
+     "t": "taming corral",
+     "link": "corral"
+    },
+    {
+     "t": " with grain in the bait trough."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Birds run on their own clock: "
+    },
+    {
+     "t": "1 game day = 3 real days",
+     "b": true
+    },
+    {
+     "t": ", and a hen lays one real day's eggs each game day. See "
+    },
+    {
+     "t": "time scales",
+     "link": "time-scales"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Laying"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "First egg at "
+     },
+     {
+      "t": "20 weeks",
+      "b": true
+     },
+     {
+      "t": " (the Leghorn at "
+     },
+     {
+      "t": "143 days",
+      "b": true
+     },
+     {
+      "t": ")."
+     }
+    ],
+    [
+     {
+      "t": "Eggs a year: Leghorn "
+     },
+     {
+      "t": "235",
+      "b": true
+     },
+     {
+      "t": ", Rhode Island Red "
+     },
+     {
+      "t": "250",
+      "b": true
+     },
+     {
+      "t": ", Plymouth Rock about "
+     },
+     {
+      "t": "200",
+      "b": true
+     },
+     {
+      "t": ", Silkie about "
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "A hen retires after "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " laying years."
+     }
+    ],
+    [
+     {
+      "t": "Silkies go broody easily and hatch eggs for you; Leghorns rarely do."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "One rooster serves up to "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " hens. A hen lays fertile eggs for "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": " real days after mating."
+     }
+    ],
+    [
+     {
+      "t": "Eggs hatch after "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days, under a broody hen or in an "
+     },
+     {
+      "t": "incubator",
+      "link": "hatchery"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Keeping"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "One grain item is "
+     },
+     {
+      "t": "100 g",
+      "b": true
+     },
+     {
+      "t": " of feed, about one item a hen each game day."
+     }
+    ],
+    [
+     {
+      "t": "In the "
+     },
+     {
+      "t": "coop",
+      "link": "coop"
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " floor block holds "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " chickens, with a nest box for every "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " hens."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:chicken_egg",
+    "farmings:chicken",
+    "farmings:cooked_chicken",
+    "minecraft:feather"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Eggs go to the "
+    },
+    {
+     "t": "egg grader",
+     "link": "eggs"
+    },
+    {
+     "t": "; litter goes to "
+    },
+    {
+     "t": "compost",
+     "link": "compost"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

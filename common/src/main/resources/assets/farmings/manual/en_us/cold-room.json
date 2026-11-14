@@ -1,0 +1,369 @@
+{
+ "id": "cold-room",
+ "title": "The cold room",
+ "chapter": "food",
+ "order": 40,
+ "icon": "farmings:evaporator",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A walk-in fridge you build to any size. Chests and barrels inside keep food cold, so it lasts its fridge life. See "
+    },
+    {
+     "t": "spoilage",
+     "link": "spoilage"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cold room panels",
+      "b": true
+     },
+     {
+      "t": " for the walls, floor and ceiling. "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " iron, "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " wool (or felt) and "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " iron make "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "At least one "
+     },
+     {
+      "t": "cold room door",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " high."
+     }
+    ],
+    [
+     {
+      "t": "An "
+     },
+     {
+      "t": "evaporator",
+      "b": true
+     },
+     {
+      "t": " set in a wall, facing in. It is the controller: right-click to read it."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "condensing unit",
+      "b": true
+     },
+     {
+      "t": " outside, touching a wall. It runs on Wildcatter three-phase power."
+     }
+    ],
+    [
+     {
+      "t": "The inside must be a box, from "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " to "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": ". Edges and corners don't need panels."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "......",
+      ".PPP..",
+      ".PPP..",
+      ".PPP..",
+      "......"
+     ]
+    },
+    {
+     "name": "layer 2",
+     "rows": [
+      ".PPP..",
+      "P...PU",
+      "D.c.P.",
+      "P...P.",
+      ".PPP.."
+     ]
+    },
+    {
+     "name": "layer 3",
+     "rows": [
+      ".PEP..",
+      "P...P.",
+      "D...P.",
+      "P...P.",
+      ".PPP.."
+     ]
+    },
+    {
+     "name": "layer 4",
+     "rows": [
+      "......",
+      ".PPP..",
+      ".PPP..",
+      ".PPP..",
+      "......"
+     ]
+    }
+   ],
+   "key": {
+    "P": "farmings:cold_room_panel",
+    "D": "farmings:cold_room_door",
+    "E": "farmings:evaporator",
+    "U": "farmings:condensing_unit",
+    "c": "minecraft:chest"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Running it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The room is held at "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " °C. A new room starts at "
+     },
+     {
+      "t": "20",
+      "b": true
+     },
+     {
+      "t": " °C and pulls down within a few minutes. It reads COLD at "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " °C or below."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " room draws about "
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " kW; the largest about "
+     },
+     {
+      "t": "15",
+      "b": true
+     },
+     {
+      "t": " kW."
+     }
+    ],
+    [
+     {
+      "t": "Opening a door lets warm air in. Without power the room warms, from "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " to "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " °C in "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " hours, and then food ages faster."
+     }
+    ],
+    [
+     {
+      "t": "Only food in containers is kept cold, not items lying on the floor."
+     }
+    ],
+    [
+     {
+      "t": "Bottled milk keeps "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " days inside, against "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " day out of the cold."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:cold_room_panel",
+    "farmings:cold_room_door",
+    "farmings:evaporator",
+    "farmings:condensing_unit"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The "
+    },
+    {
+     "t": "curing room",
+     "link": "curing-room"
+    },
+    {
+     "t": " rack works inside a cold room."
+    }
+   ]
+  }
+ ]
+}

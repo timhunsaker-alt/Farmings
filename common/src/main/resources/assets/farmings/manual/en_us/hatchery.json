@@ -1,0 +1,212 @@
+{
+ "id": "hatchery",
+ "title": "Hatchery",
+ "chapter": "buildings",
+ "order": 70,
+ "icon": "farmings:incubator",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Two single blocks that hatch and raise young birds without a broody hen. Both run on Wildcatter low-voltage "
+    },
+    {
+     "t": "power",
+     "link": "power"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:incubator",
+    "farmings:brooder"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Incubator"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Holds "
+     },
+     {
+      "t": "24",
+      "b": true
+     },
+     {
+      "t": " fertile eggs of any species, mixed, put in by hand or hopper. Infertile eggs are refused."
+     }
+    ],
+    [
+     {
+      "t": "It turns the eggs and keeps them warm; the readout shows each egg's day and the next hatch."
+     }
+    ],
+    [
+     {
+      "t": "Draws "
+     },
+     {
+      "t": "0.025 kW",
+      "b": true
+     },
+     {
+      "t": ". With no power the eggs' clocks pause, and nothing is lost."
+     }
+    ],
+    [
+     {
+      "t": "The young bird appears on top of the incubator and needs heat at once."
+     }
+    ],
+    [
+     {
+      "t": "Days to hatch: chicken "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": ", turkey and duck "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": ", Muscovy "
+     },
+     {
+      "t": "35",
+      "b": true
+     },
+     {
+      "t": ", Coturnix "
+     },
+     {
+      "t": "17",
+      "b": true
+     },
+     {
+      "t": ", goose "
+     },
+     {
+      "t": "30",
+      "b": true
+     },
+     {
+      "t": ", guinea fowl "
+     },
+     {
+      "t": "27",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "A fertile egg left cold for over "
+     },
+     {
+      "t": "7 real days",
+      "b": true
+     },
+     {
+      "t": " before it starts won't hatch."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Brooder"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A heat lamp hung over the floor. It warms up to "
+     },
+     {
+      "t": "25",
+      "b": true
+     },
+     {
+      "t": " young birds within "
+     },
+     {
+      "t": "2 blocks",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Draws "
+     },
+     {
+      "t": "0.25 kW",
+      "b": true
+     },
+     {
+      "t": ". With no power, young birds under it are cold: they lose health and don't grow."
+     }
+    ],
+    [
+     {
+      "t": "Put a grain feeder and water trough within "
+     },
+     {
+      "t": "4 blocks",
+      "b": true
+     },
+     {
+      "t": "; the brooder isn't part of a coop."
+     }
+    ],
+    [
+     {
+      "t": "Once feathered, young birds become growers, and a "
+     },
+     {
+      "t": "coop",
+      "link": "coop"
+     },
+     {
+      "t": " within "
+     },
+     {
+      "t": "48 blocks",
+      "b": true
+     },
+     {
+      "t": " takes them in."
+     }
+    ]
+   ]
+  }
+ ]
+}

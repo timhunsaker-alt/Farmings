@@ -1,0 +1,285 @@
+{
+ "id": "sheep",
+ "title": "Sheep",
+ "chapter": "animals",
+ "order": 20,
+ "icon": "farmings:fleece",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Four breeds: "
+    },
+    {
+     "t": "Merino",
+     "b": true
+    },
+    {
+     "t": " (fine wool), "
+    },
+    {
+     "t": "Suffolk",
+     "b": true
+    },
+    {
+     "t": " (meat), "
+    },
+    {
+     "t": "Dorper",
+     "b": true
+    },
+    {
+     "t": " (meat, a hair sheep that sheds) and "
+    },
+    {
+     "t": "East Friesian",
+     "b": true
+    },
+    {
+     "t": " (milk). They spawn wild, follow wheat or hay, and are tamed in a "
+    },
+    {
+     "t": "corral",
+     "link": "corral"
+    },
+    {
+     "t": ". House them in a "
+    },
+    {
+     "t": "sheep shed",
+     "link": "sheep-shed"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A ewe lamb is first bred at "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " months and "
+     },
+     {
+      "t": "65%",
+      "b": true
+     },
+     {
+      "t": " of mature weight ("
+     },
+     {
+      "t": "70%",
+      "b": true
+     },
+     {
+      "t": " for Merino)."
+     }
+    ],
+    [
+     {
+      "t": "Gestation is "
+     },
+     {
+      "t": "147",
+      "b": true
+     },
+     {
+      "t": " days. Lambs per lambing: Merino "
+     },
+     {
+      "t": "1.25",
+      "b": true
+     },
+     {
+      "t": ", Dorper "
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": ", Suffolk "
+     },
+     {
+      "t": "1.8",
+      "b": true
+     },
+     {
+      "t": ", East Friesian "
+     },
+     {
+      "t": "2.2",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Ewes cycle only in their breeding season. Day 0 of a world is "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " October, the middle of the season, so a new flock can breed at once. Out of season a ewe reads ANOESTROUS."
+     }
+    ],
+    [
+     {
+      "t": "A ram serves ewes in heat in the same pen or pasture, or use a ram's "
+     },
+     {
+      "t": "straw",
+      "link": "breeding"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Wool"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A full fleece grows in "
+     },
+     {
+      "t": "365",
+      "b": true
+     },
+     {
+      "t": " days and is ready to shear at "
+     },
+     {
+      "t": "300",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Shear at the "
+     },
+     {
+      "t": "shearing shed",
+      "link": "shearing-shed"
+     },
+     {
+      "t": ", or with shears (one grade lower)."
+     }
+    ],
+    [
+     {
+      "t": "Fineness sets the grade: a Merino fleece is fine, a Suffolk quarter blood. Spin it at the "
+     },
+     {
+      "t": "wool mill",
+      "link": "wool-mill"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Milk and meat"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "East Friesian ewes give "
+     },
+     {
+      "t": "365",
+      "b": true
+     },
+     {
+      "t": " kg of milk over "
+     },
+     {
+      "t": "221",
+      "b": true
+     },
+     {
+      "t": " days, milked in the "
+     },
+     {
+      "t": "parlour's",
+      "link": "parlour"
+     },
+     {
+      "t": " sheep stalls."
+     }
+    ],
+    [
+     {
+      "t": "Sheep under a year give "
+     },
+     {
+      "t": "lamb chops",
+      "b": true
+     },
+     {
+      "t": ", older ones "
+     },
+     {
+      "t": "mutton",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:fleece",
+    "farmings:sheep_milk_bottle",
+    "farmings:lamb_chop",
+    "farmings:mutton_chop"
+   ]
+  }
+ ]
+}

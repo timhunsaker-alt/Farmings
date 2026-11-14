@@ -4,40 +4,87 @@
    "id": "getting_started",
    "title": "Getting started",
    "pages": [
-    "welcome"
+    "welcome",
+    "herd-book",
+    "time-scales",
+    "power",
+    "spoilage"
    ]
   },
   {
    "id": "animals",
    "title": "Animals",
-   "pages": []
+   "pages": [
+    "cattle",
+    "sheep",
+    "sheep-dog",
+    "goats",
+    "pigs",
+    "horses",
+    "chickens",
+    "turkeys",
+    "ducks",
+    "quail",
+    "geese",
+    "guinea-fowl"
+   ]
   },
   {
    "id": "genetics",
    "title": "Genes and breeding",
-   "pages": []
+   "pages": [
+    "genes",
+    "breeding",
+    "growth"
+   ]
   },
   {
    "id": "buildings",
    "title": "Buildings",
    "pages": [
-    "corral"
+    "corral",
+    "barn",
+    "parlour",
+    "sheep-shed",
+    "shearing-shed",
+    "coop",
+    "hatchery",
+    "pig-barn",
+    "stable",
+    "race-track"
    ]
   },
   {
    "id": "fields",
    "title": "Fields and feed",
-   "pages": []
+   "pages": [
+    "crops",
+    "field-gantry",
+    "silo",
+    "conveyors",
+    "feed-mill"
+   ]
   },
   {
    "id": "food",
    "title": "Food and processing",
-   "pages": []
+   "pages": [
+    "creamery",
+    "wool-mill",
+    "curing-room",
+    "cold-room",
+    "eggs",
+    "meat"
+   ]
   },
   {
    "id": "waste",
    "title": "Waste and power",
-   "pages": []
+   "pages": [
+    "manure",
+    "compost",
+    "digester"
+   ]
   }
  ]
 }

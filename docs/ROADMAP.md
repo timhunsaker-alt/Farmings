@@ -1,6 +1,6 @@
 # Farmings — Roadmap
 
-Exactly one phase is marked **CURRENT** while one is under way (Phase 5, the Field Manual; Phases 3 and 4, the loose ends, new animals and pigs and horses are done). A phase is done when `./gradlew build` and the game tests pass with new coverage for
+Exactly one phase is marked **CURRENT** while one is under way (none is: Phases 3, 4 and 5, the loose ends, new animals and pigs and horses are done). A phase is done when `./gradlew build` and the game tests pass with new coverage for
 the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a page for each new system.
 
 ## Phase 0 — Set up — done
@@ -54,7 +54,7 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 The Known gaps from Phases 2-4 (PROGRESS.md Step 16): poultry, straws, sheep, coats, the cold room, compost, Phase 3 built at full
 size, the NeoForge client and a sourcing sweep over every doc.
 
-## Phase 5 — The Field Manual — CURRENT (Step 19, Tim 2026-11-14)
+## Phase 5 — The Field Manual — done 2026-11-14 (Step 19, Tim 2026-11-14)
 - A sourcing sweep over every TO VERIFY and NOT FOUND figure first.
 - An in-game guide (`docs/field-manual.md`): a custom screen with chapters, contents, search, links, item icons and multiblock grids;
   how to play plus the key figures, each checked against its doc at build time; given on first join and crafted from a book and wheat.

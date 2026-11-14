@@ -1,0 +1,247 @@
+{
+ "id": "power",
+ "title": "Power from Wildcatter",
+ "chapter": "getting_started",
+ "order": 40,
+ "icon": "farmings:condensing_unit",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Farmings has no grid, wire or pipe of its own. "
+    },
+    {
+     "t": "Wildcatter",
+     "b": true
+    },
+    {
+     "t": " is required, and every machine with a motor or heater is a real load on your Wildcatter grid."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Hooking up"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Motors take Wildcatter's three-phase supply: "
+     },
+     {
+      "t": "480",
+      "b": true
+     },
+     {
+      "t": " V in a North American world, "
+     },
+     {
+      "t": "400",
+      "b": true
+     },
+     {
+      "t": " V in an IEC world."
+     }
+    ],
+    [
+     {
+      "t": "Power reaches a machine through Wildcatter's usual motor box and receptacles."
+     }
+    ],
+    [
+     {
+      "t": "Water troughs can be fed by a Wildcatter water pump and pipe, as well as by bucket."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Some loads"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Barn",
+      "link": "barn"
+     },
+     {
+      "t": " scraper drive: "
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " kW."
+     }
+    ],
+    [
+     {
+      "t": "Parlour",
+      "link": "parlour"
+     },
+     {
+      "t": " vacuum pump: "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " kW; bulk tank chiller: "
+     },
+     {
+      "t": "2.6",
+      "b": true
+     },
+     {
+      "t": " kW."
+     }
+    ],
+    [
+     {
+      "t": "Creamery",
+      "link": "creamery"
+     },
+     {
+      "t": " pasteurizer heater: "
+     },
+     {
+      "t": "12",
+      "b": true
+     },
+     {
+      "t": " kW."
+     }
+    ],
+    [
+     {
+      "t": "Cold room",
+      "link": "cold-room"
+     },
+     {
+      "t": ": sized to the room. A "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " x "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " room draws about "
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " kW."
+     }
+    ],
+    [
+     {
+      "t": "Digester",
+      "link": "digester"
+     },
+     {
+      "t": " mixer: "
+     },
+     {
+      "t": "6.5",
+      "b": true
+     },
+     {
+      "t": " kW. "
+     },
+     {
+      "t": "Conveyor",
+      "link": "conveyors"
+     },
+     {
+      "t": " drives are rated by run length."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "No power"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A machine without power stops its step and its readout says "
+    },
+    {
+     "t": "NO POWER",
+     "b": true
+    },
+    {
+     "t": ". Work waits and picks up again when power returns. Animals are never harmed by it."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Making power"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The "
+    },
+    {
+     "t": "digester",
+     "link": "digester"
+    },
+    {
+     "t": " turns manure into biogas. Its gas holder offers the gas on Wildcatter steel pipe, and a Wildcatter gas set burns it, at up to "
+    },
+    {
+     "t": "850",
+     "b": true
+    },
+    {
+     "t": " kW."
+    }
+   ]
+  }
+ ]
+}

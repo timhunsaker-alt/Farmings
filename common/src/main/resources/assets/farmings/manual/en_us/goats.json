@@ -1,0 +1,292 @@
+{
+ "id": "goats",
+ "title": "Goats",
+ "chapter": "animals",
+ "order": 40,
+ "icon": "farmings:chevre",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Three breeds: "
+    },
+    {
+     "t": "Saanen",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Nubian",
+     "b": true
+    },
+    {
+     "t": " for milk, "
+    },
+    {
+     "t": "Boer",
+     "b": true
+    },
+    {
+     "t": " for meat. Wild goats replace vanilla goats in snowy slopes, jagged peaks and frozen peaks, in groups of 2-4. Wild goats ram; tame ones don't. Tame them in a "
+    },
+    {
+     "t": "corral",
+     "link": "corral"
+    },
+    {
+     "t": " on hay or wheat, in "
+    },
+    {
+     "t": "7",
+     "b": true
+    },
+    {
+     "t": " real days."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A doeling is first bred at "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " months and "
+     },
+     {
+      "t": "60%",
+      "b": true
+     },
+     {
+      "t": " of mature weight. Gestation is "
+     },
+     {
+      "t": "150",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Seasons: Saanen "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " Sep to "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": " Feb, Nubian "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " Aug to "
+     },
+     {
+      "t": "31",
+      "b": true
+     },
+     {
+      "t": " Mar, Boer all year."
+     }
+    ],
+    [
+     {
+      "t": "Careful with polled goats: a doe with two polled genes is intersex and can't breed, and half of such bucks are sterile. The "
+     },
+     {
+      "t": "herd book",
+      "link": "herd-book"
+     },
+     {
+      "t": " shows the genes."
+     }
+    ],
+    [
+     {
+      "t": "Bucks fill "
+     },
+     {
+      "t": "straws",
+      "link": "breeding"
+     },
+     {
+      "t": " as bulls and rams do."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Milk"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A lactation is "
+     },
+     {
+      "t": "284",
+      "b": true
+     },
+     {
+      "t": " days. Saanen give "
+     },
+     {
+      "t": "1,154",
+      "b": true
+     },
+     {
+      "t": " kg at "
+     },
+     {
+      "t": "3.2%",
+      "b": true
+     },
+     {
+      "t": " fat; Nubian "
+     },
+     {
+      "t": "832",
+      "b": true
+     },
+     {
+      "t": " kg at "
+     },
+     {
+      "t": "4.6%",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Does are milked in the "
+     },
+     {
+      "t": "parlour's",
+      "link": "parlour"
+     },
+     {
+      "t": " small stalls into a goat tank. The "
+     },
+     {
+      "t": "creamery",
+      "link": "creamery"
+     },
+     {
+      "t": " bottles goat milk and makes chèvre."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Housing and meat"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Goats live in the "
+     },
+     {
+      "t": "sheep shed",
+      "link": "sheep-shed"
+     },
+     {
+      "t": ", in their own pen run: one goat to "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " pen blocks."
+     }
+    ],
+    [
+     {
+      "t": "A goat on pasture beside leaves browses them, so it wears the grass half as fast."
+     }
+    ],
+    [
+     {
+      "t": "Goats under "
+     },
+     {
+      "t": "9",
+      "b": true
+     },
+     {
+      "t": " months give "
+     },
+     {
+      "t": "kid",
+      "b": true
+     },
+     {
+      "t": " chops, older ones "
+     },
+     {
+      "t": "chevon",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:goat_milk_bottle",
+    "farmings:chevre",
+    "farmings:kid_chop",
+    "farmings:chevon_chop"
+   ]
+  }
+ ]
+}

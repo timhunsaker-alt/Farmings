@@ -61,4 +61,5 @@ conflict and ask before doing anything.
 
 ## Definition of done
 - `./gradlew build` and the game tests pass and cover the new feature, with screenshots (and a recording for motion) shown to Tim.
-- PROGRESS.md updated. Field Manual page added or updated once the Field Manual exists.
+- PROGRESS.md updated. The system's Field Manual page added or updated in `docs/manual/` (`docs/field-manual.md`), rebuilt with
+  `python3 tools/make_manual.py`; `checkManual` fails the build if a figure on a page isn't in the docs it names.

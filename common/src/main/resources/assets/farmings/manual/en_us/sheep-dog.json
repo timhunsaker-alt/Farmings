@@ -1,0 +1,243 @@
+{
+ "id": "sheep-dog",
+ "title": "The sheep dog",
+ "chapter": "animals",
+ "order": 30,
+ "icon": "farmings:shepherds_whistle",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A working Border Collie that gathers and drives your flock."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Taming"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Dogs spawn wild in pairs in plains, meadows and windswept hills."
+     }
+    ],
+    [
+     {
+      "t": "A wild dog keeps "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": " blocks from empty hands, and follows raw meat."
+     }
+    ],
+    [
+     {
+      "t": "In a "
+     },
+     {
+      "t": "corral",
+      "link": "corral"
+     },
+     {
+      "t": " it settles on raw meat in the bait trough: one meat item ("
+     },
+     {
+      "t": "0.5",
+      "b": true
+     },
+     {
+      "t": " kg) a day. The trough holds "
+     },
+     {
+      "t": "16",
+      "b": true
+     },
+     {
+      "t": " meat items."
+     }
+    ],
+    [
+     {
+      "t": "After "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " real days settled it is yours."
+     }
+    ],
+    [
+     {
+      "t": "Dogs don't breed, and don't age past adult."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The whistle"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Craft a "
+    },
+    {
+     "t": "shepherd's whistle",
+     "b": true
+    },
+    {
+     "t": " from "
+    },
+    {
+     "t": "2",
+     "b": true
+    },
+    {
+     "t": " iron nuggets and "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " string."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:shepherds_whistle"
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Sneak-use on a block",
+      "b": true
+     },
+     {
+      "t": " to set the target: a sheep shed controller sends the flock to its pen, a pasture gate to the pasture, any other block to that spot."
+     }
+    ],
+    [
+     {
+      "t": "Sneak-use in the air",
+      "b": true
+     },
+     {
+      "t": " to pick a command."
+     }
+    ],
+    [
+     {
+      "t": "Use in the air",
+      "b": true
+     },
+     {
+      "t": " to blow it. Your tame dogs within "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " blocks hear it."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Commands"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Come bye:",
+      "b": true
+     },
+     {
+      "t": " the dog runs round every tame sheep within "
+     },
+     {
+      "t": "32",
+      "b": true
+     },
+     {
+      "t": " blocks and brings them to you."
+     }
+    ],
+    [
+     {
+      "t": "Walk up:",
+      "b": true
+     },
+     {
+      "t": " it drives them to the target."
+     }
+    ],
+    [
+     {
+      "t": "Lie down:",
+      "b": true
+     },
+     {
+      "t": " it stops, and the sheep stand."
+     }
+    ],
+    [
+     {
+      "t": "That'll do:",
+      "b": true
+     },
+     {
+      "t": " it stops working and comes back to heel."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Only tame sheep are herded. A shed's sheep driven into its pen go back under the "
+    },
+    {
+     "t": "shed's",
+     "link": "sheep-shed"
+    },
+    {
+     "t": " rules."
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,309 @@
+{
+ "id": "wool-mill",
+ "title": "Wool mill and clothing",
+ "chapter": "food",
+ "order": 20,
+ "icon": "farmings:spinning_frame",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The wool mill is a line of separate machines on Wildcatter power. Each takes wool in at the top or sides and gives its output below, so hoppers can chain them. Right-click with an empty hand to take the output or read the machine. A batch takes "
+    },
+    {
+     "t": "5",
+     "b": true
+    },
+    {
+     "t": " seconds."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The machines"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Scouring bowl",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " kW): fleece, skirtings, bales or loose wool, plus water, become clean wool and lanolin. It uses "
+     },
+     {
+      "t": "15",
+      "b": true
+     },
+     {
+      "t": " L of water per kg and holds "
+     },
+     {
+      "t": "1,000",
+      "b": true
+     },
+     {
+      "t": " L, filled by bucket or pipe."
+     }
+    ],
+    [
+     {
+      "t": "Carding machine",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": " kW): clean wool to sliver."
+     }
+    ],
+    [
+     {
+      "t": "Spinning frame",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " kW): sliver to yarn in the wool's natural colour, "
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": " g a skein. Finer wool gives more yarn."
+     }
+    ],
+    [
+     {
+      "t": "Power loom",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " kW): "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " yarn of one colour make "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " wool cloth."
+     }
+    ],
+    [
+     {
+      "t": "Felting table",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "0.5",
+      "b": true
+     },
+     {
+      "t": " kW): "
+     },
+     {
+      "t": "0.25",
+      "b": true
+     },
+     {
+      "t": " kg of clean wool makes "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " felt."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:scouring_bowl",
+    "farmings:carding_machine",
+    "farmings:spinning_frame",
+    "farmings:loom_frame",
+    "farmings:felting_table"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "What wool is for"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Wool blocks:",
+      "b": true
+     },
+     {
+      "t": " "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " yarn of one colour make a vanilla wool block. White yarn plus a vanilla dye gives dyed yarn."
+     }
+    ],
+    [
+     {
+      "t": "Clothing:",
+      "b": true
+     },
+     {
+      "t": " a knitted cap, sweater, trousers and socks from wool cloth, in the armour shapes. They protect like leather, and any one piece keeps powder snow's freezing off."
+     }
+    ],
+    [
+     {
+      "t": "Felt",
+      "b": true
+     },
+     {
+      "t": " insulates "
+     },
+     {
+      "t": "cold room",
+      "link": "cold-room"
+     },
+     {
+      "t": " panels: "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " iron, "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " felt and "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " iron make "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Udder balm:",
+      "b": true
+     },
+     {
+      "t": " "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " lanolin make one. It heals a hurt cow or sheep by "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " health."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:yarn_white",
+    "farmings:wool_cloth",
+    "farmings:wool_cap",
+    "farmings:wool_sweater",
+    "farmings:wool_trousers",
+    "farmings:wool_socks",
+    "farmings:felt",
+    "farmings:udder_balm"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Wool comes from the "
+    },
+    {
+     "t": "shearing shed",
+     "link": "shearing-shed"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

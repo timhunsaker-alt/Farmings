@@ -1504,7 +1504,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	}
 
 	/** Pages the manual scene shows, in order. */
-	private static final String[] MANUAL_SCENE_PAGES = {"welcome", "corral"};
+	private static final String[] MANUAL_SCENE_PAGES = {"welcome", "cattle", "barn", "pigs", "pig-barn", "horses", "race-track"};
 
 	/** An Angus steer and a Wagyu steer killed side by side: their beef, graded steaks and leather on the ground. */
 	private static void beef(ClientGameTestContext context, TestServerContext server, int y) {

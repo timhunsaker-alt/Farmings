@@ -29,9 +29,10 @@ import net.minecraft.world.item.Items;
  * split into sheets. Drawn as filled shapes, no texture.
  */
 public class ManualScreen extends Screen {
-	static final int BOOK_W = 300;
-	static final int BOOK_H = 196;
-	static final int PAGE_W = 128;
+	/** The book fits the window: 300 x 196 at least, 440 x 260 at most. */
+	private int bookW = 300;
+	private int bookH = 196;
+	private int pageW = 128;
 	static final int MARGIN = 10;
 	static final int TEXT_TOP = 30;
 	static final int TEXT_BOTTOM = 26;
@@ -94,15 +95,21 @@ public class ManualScreen extends Screen {
 
 	@Override
 	protected void init() {
+		bookW = Math.max(300, Math.min(440, width - 40));
+		bookH = Math.max(196, Math.min(260, height - 30));
+		pageW = bookW / 2 - 2 * MARGIN - 2;
 		if (manual == null) {
 			manual = ManualPages.load(minecraft.getResourceManager());
 			String start = lastPage != null && manual.pages.containsKey(lastPage) ? lastPage : firstPage();
 			open(start, lastPage != null && lastPage.equals(start) ? lastSheet : 0, false);
 		}
-		left = (width - BOOK_W) / 2;
-		top = (height - BOOK_H) / 2;
+		bookW = Math.max(300, Math.min(440, width - 40));
+		bookH = Math.max(196, Math.min(260, height - 30));
+		pageW = bookW / 2 - 2 * MARGIN - 2;
+		left = (width - bookW) / 2;
+		top = (height - bookH) / 2;
 		String query = search == null ? "" : search.getValue();
-		search = new EditBox(font, left + MARGIN, top + MARGIN, PAGE_W, 14, Component.translatable("gui.farmings.manual.search"));
+		search = new EditBox(font, left + MARGIN, top + MARGIN, pageW, 14, Component.translatable("gui.farmings.manual.search"));
 		search.setHint(Component.translatable("gui.farmings.manual.search"));
 		search.setMaxLength(40);
 		search.setValue(query);
@@ -183,7 +190,7 @@ public class ManualScreen extends Screen {
 				lines.add(new Line(4, List.of()));
 			}
 		}
-		int room = BOOK_H - TEXT_TOP - TEXT_BOTTOM;
+		int room = bookH - TEXT_TOP - TEXT_BOTTOM;
 		List<List<Line>> out = new ArrayList<>();
 		List<Line> cur = new ArrayList<>();
 		int used = 0;
@@ -229,7 +236,7 @@ public class ManualScreen extends Screen {
 		}
 		for (Run r : runs) {
 			if (r.icon() != null) {
-				if (x + 16 > PAGE_W && x > indent) {
+				if (x + 16 > pageW && x > indent) {
 					lines.add(new Line(tall ? 18 : 10, els));
 					els = new ArrayList<>();
 					tall = false;
@@ -247,7 +254,7 @@ public class ManualScreen extends Screen {
 			for (String word : r.text().split("(?<= )")) {
 				Component c = Component.literal(word).withStyle(style);
 				int w = font.width(c);
-				if (x + font.width(word.stripTrailing()) > PAGE_W && x > indent) {
+				if (x + font.width(word.stripTrailing()) > pageW && x > indent) {
 					lines.add(new Line(tall ? 18 : 10, els));
 					els = new ArrayList<>();
 					tall = false;
@@ -269,7 +276,7 @@ public class ManualScreen extends Screen {
 		List<El> els = new ArrayList<>();
 		int x = 0;
 		for (String id : icons) {
-			if (x + 16 > PAGE_W) {
+			if (x + 16 > pageW) {
 				lines.add(new Line(18, els));
 				els = new ArrayList<>();
 				x = 0;
@@ -290,7 +297,7 @@ public class ManualScreen extends Screen {
 				cols = Math.max(cols, row.length());
 			}
 		}
-		int cell = Math.min(16, PAGE_W / cols);
+		int cell = Math.min(16, pageW / cols);
 		for (Layer l : b.layers()) {
 			int group = ++groups;
 			lines.add(new Line(10, List.of(new El(0, Component.literal(l.name()).withStyle(Style.EMPTY.withItalic(true).withColor(FAINT)), null, null, 0)), group));
@@ -309,9 +316,15 @@ public class ManualScreen extends Screen {
 				}
 			}
 		}
-		if (cell < 8) {
-			b.key().forEach((ch, id) -> lines.add(new Line(10, List.of(new El(0, Component.literal(ch + " ").append(stack(id).getHoverName()), null, null, 0)))));
-		}
+		// the key: each block's icon (or letter, for a text grid) and its name
+		lines.add(new Line(3, List.of()));
+		b.key().forEach((ch, id) -> {
+			ItemStack st = stack(id);
+			Component name = fit(st.getHoverName().copy().withStyle(Style.EMPTY.withColor(FAINT)), pageW - 14);
+			lines.add(new Line(12, cell < 8
+					? List.of(new El(0, Component.literal(ch + " ").append(name), null, null, 0))
+					: List.of(new El(0, null, null, st, 11), new El(14, name, null, null, 0))));
+		});
 	}
 
 	static ItemStack stack(String id) {
@@ -325,9 +338,9 @@ public class ManualScreen extends Screen {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mx, int my, float partial) {
 		hits.clear();
-		g.fill(left - 4, top - 4, left + BOOK_W + 4, top + BOOK_H + 4, EDGE);
-		g.fill(left, top, left + BOOK_W, top + BOOK_H, PAPER);
-		g.fill(left + BOOK_W / 2 - 2, top, left + BOOK_W / 2 + 2, top + BOOK_H, SPINE);
+		g.fill(left - 4, top - 4, left + bookW + 4, top + bookH + 4, EDGE);
+		g.fill(left, top, left + bookW, top + bookH, PAPER);
+		g.fill(left + bookW / 2 - 2, top, left + bookW / 2 + 2, top + bookH, SPINE);
 		contents(g, mx, my);
 		rightPage(g, mx, my);
 		super.extractRenderState(g, mx, my, partial);
@@ -336,7 +349,7 @@ public class ManualScreen extends Screen {
 	private void contents(GuiGraphicsExtractor g, int mx, int my) {
 		int x = left + MARGIN;
 		int y0 = top + TEXT_TOP;
-		int rows = (BOOK_H - TEXT_TOP - TEXT_BOTTOM) / 10;
+		int rows = (bookH - TEXT_TOP - TEXT_BOTTOM) / 10;
 		List<Object[]> entries = new ArrayList<>();
 		String query = search.getValue().trim();
 		if (!query.isEmpty()) {
@@ -366,13 +379,13 @@ public class ManualScreen extends Screen {
 			String target = (String) e[1];
 			int indent = (int) e[2];
 			if (target != null && target.equals(pageId)) {
-				g.fill(x - 2, y - 1, x + PAGE_W + 2, y + 9, MARK);
+				g.fill(x - 2, y - 1, x + pageW + 2, y + 9, MARK);
 			}
-			Component label = (Component) e[0];
-			boolean hover = target != null && mx >= x && mx < x + PAGE_W && my >= y - 1 && my < y + 9;
+			Component label = fit((Component) e[0], pageW - indent);
+			boolean hover = target != null && mx >= x && mx < x + pageW && my >= y - 1 && my < y + 9;
 			g.text(font, label, x + indent, y, hover ? LINK : INK, false);
 			if (target != null) {
-				hits.add(new Hit(x, y - 1, PAGE_W, 10, () -> {
+				hits.add(new Hit(x, y - 1, pageW, 10, () -> {
 					if (target.startsWith("#")) {
 						String chapter = target.substring(1);
 						if (!OPEN.remove(chapter)) {
@@ -385,22 +398,22 @@ public class ManualScreen extends Screen {
 			}
 		}
 		if (sheetsOfContents > 1) {
-			int by = top + BOOK_H - 18;
+			int by = top + bookH - 18;
 			arrow(g, mx, my, x, by, "‹", contentsSheet > 0, () -> contentsSheet--);
-			g.centeredText(font, (contentsSheet + 1) + " / " + sheetsOfContents, x + PAGE_W / 2, by, FAINT);
-			arrow(g, mx, my, x + PAGE_W - 8, by, "›", contentsSheet < sheetsOfContents - 1, () -> contentsSheet++);
+			g.centeredText(font, (contentsSheet + 1) + " / " + sheetsOfContents, x + pageW / 2, by, FAINT);
+			arrow(g, mx, my, x + pageW - 8, by, "›", contentsSheet < sheetsOfContents - 1, () -> contentsSheet++);
 		}
 	}
 
 	private void rightPage(GuiGraphicsExtractor g, int mx, int my) {
-		int x0 = left + BOOK_W / 2 + MARGIN;
+		int x0 = left + bookW / 2 + MARGIN;
 		Page page = pageId == null ? null : manual.pages.get(pageId);
 		if (page == null) {
 			g.text(font, Component.translatable("gui.farmings.manual.empty"), x0, top + MARGIN + 4, FAINT, false);
 			return;
 		}
 		if (!page.icon().isEmpty()) {
-			g.item(stack(page.icon()), x0 + PAGE_W - 16, top + MARGIN);
+			g.item(stack(page.icon()), x0 + pageW - 16, top + MARGIN);
 		}
 		g.text(font, Component.literal(page.title()).withStyle(Style.EMPTY.withBold(true)), x0, top + MARGIN + 4, HEAD, false);
 		int y = top + TEXT_TOP;
@@ -428,11 +441,11 @@ public class ManualScreen extends Screen {
 			}
 			y += line.height();
 		}
-		int by = top + BOOK_H - 18;
+		int by = top + bookH - 18;
 		if (sheets.size() > 1) {
-			arrow(g, mx, my, x0 + PAGE_W - 58, by, "‹", sheet > 0, () -> turn(-1));
-			g.centeredText(font, (sheet + 1) + " / " + sheets.size(), x0 + PAGE_W - 29, by, FAINT);
-			arrow(g, mx, my, x0 + PAGE_W - 6, by, "›", sheet < sheets.size() - 1, () -> turn(1));
+			arrow(g, mx, my, x0 + pageW - 58, by, "‹", sheet > 0, () -> turn(-1));
+			g.centeredText(font, (sheet + 1) + " / " + sheets.size(), x0 + pageW - 29, by, FAINT);
+			arrow(g, mx, my, x0 + pageW - 6, by, "›", sheet < sheets.size() - 1, () -> turn(1));
 		}
 		if (!back.isEmpty()) {
 			Component label = Component.literal("‹ ").append(Component.translatable("gui.farmings.manual.back"));
@@ -442,6 +455,21 @@ public class ManualScreen extends Screen {
 			g.text(font, label, bx, bY, hover ? LINK : FAINT, false);
 			hits.add(new Hit(bx, bY - 1, font.width(label), 10, () -> open(back.pop(), 0, false)));
 		}
+	}
+
+	/** The label, cut with an ellipsis to fit {@code w}. */
+	private Component fit(Component label, int w) {
+		if (font.width(label) <= w) {
+			return label;
+		}
+		String text = label.getString();
+		for (int n = text.length() - 1; n > 0; n--) {
+			Component c = Component.literal(text.substring(0, n).stripTrailing() + "…").withStyle(label.getStyle());
+			if (font.width(c) <= w) {
+				return c;
+			}
+		}
+		return label;
 	}
 
 	private void arrow(GuiGraphicsExtractor g, int mx, int my, int x, int y, String glyph, boolean active, Runnable action) {
@@ -491,7 +519,7 @@ public class ManualScreen extends Screen {
 
 	@Override
 	public boolean mouseScrolled(double mx, double my, double dx, double dy) {
-		if (mx > left + BOOK_W / 2) {
+		if (mx > left + bookW / 2) {
 			turn(dy < 0 ? 1 : -1);
 		} else {
 			contentsSheet = Math.max(0, contentsSheet + (dy < 0 ? 1 : -1));

@@ -1,0 +1,304 @@
+{
+ "id": "growth",
+ "title": "Growth",
+ "chapter": "genetics",
+ "order": 30,
+ "icon": "farmings:hay_feeder",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Young animals grow on a curve toward their breed's mature weight, so a herd renews itself."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Cattle"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A calf is born at "
+     },
+     {
+      "t": "6%",
+      "b": true
+     },
+     {
+      "t": " of its breed's mature weight."
+     }
+    ],
+    [
+     {
+      "t": "At "
+     },
+     {
+      "t": "15",
+      "b": true
+     },
+     {
+      "t": " months it is about "
+     },
+     {
+      "t": "60%",
+      "b": true
+     },
+     {
+      "t": ": a Holstein "
+     },
+     {
+      "t": "425",
+      "b": true
+     },
+     {
+      "t": " kg, a Brown Swiss "
+     },
+     {
+      "t": "379",
+      "b": true
+     },
+     {
+      "t": " kg, a Jersey "
+     },
+     {
+      "t": "297",
+      "b": true
+     },
+     {
+      "t": " kg."
+     }
+    ],
+    [
+     {
+      "t": "At "
+     },
+     {
+      "t": "48",
+      "b": true
+     },
+     {
+      "t": " months it is fully grown. A grown cow stops growing; a bull keeps growing the same way."
+     }
+    ],
+    [
+     {
+      "t": "Mature cows weigh about "
+     },
+     {
+      "t": "710",
+      "b": true
+     },
+     {
+      "t": " kg (Holstein), "
+     },
+     {
+      "t": "470",
+      "b": true
+     },
+     {
+      "t": " kg (Jersey) and "
+     },
+     {
+      "t": "487",
+      "b": true
+     },
+     {
+      "t": " kg (Wagyu)."
+     }
+    ],
+    [
+     {
+      "t": "Calves need no feed. Housed heifers and bulls grow by how well they are fed; animals outside the barn grow at full rate."
+     }
+    ],
+    [
+     {
+      "t": "An underfed heifer just grows slower, and reaches her breeding weight later. Nothing dies of it."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Other animals"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Sheep:",
+      "b": true
+     },
+     {
+      "t": " lambs are weaned at "
+     },
+     {
+      "t": "84",
+      "b": true
+     },
+     {
+      "t": " days. A ewe lamb is first bred at "
+     },
+     {
+      "t": "65%",
+      "b": true
+     },
+     {
+      "t": " of mature weight."
+     }
+    ],
+    [
+     {
+      "t": "Pigs:",
+      "b": true
+     },
+     {
+      "t": " "
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": " kg at birth, "
+     },
+     {
+      "t": "5.7",
+      "b": true
+     },
+     {
+      "t": " kg at "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days, "
+     },
+     {
+      "t": "120",
+      "b": true
+     },
+     {
+      "t": " kg at "
+     },
+     {
+      "t": "186",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Horses:",
+      "b": true
+     },
+     {
+      "t": " "
+     },
+     {
+      "t": "43%",
+      "b": true
+     },
+     {
+      "t": " of mature weight at "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": " months, "
+     },
+     {
+      "t": "64%",
+      "b": true
+     },
+     {
+      "t": " at "
+     },
+     {
+      "t": "12",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "77%",
+      "b": true
+     },
+     {
+      "t": " at "
+     },
+     {
+      "t": "18",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "86%",
+      "b": true
+     },
+     {
+      "t": " at "
+     },
+     {
+      "t": "24",
+      "b": true
+     },
+     {
+      "t": ", mature at "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " years."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Read an animal's weight with an empty-hand right-click. Weight decides when it can be "
+    },
+    {
+     "t": "bred",
+     "link": "breeding"
+    },
+    {
+     "t": ", and a beef animal's "
+    },
+    {
+     "t": "meat",
+     "link": "meat"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

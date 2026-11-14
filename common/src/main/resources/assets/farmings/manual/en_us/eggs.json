@@ -1,0 +1,265 @@
+{
+ "id": "eggs",
+ "title": "Eggs and grading",
+ "chapter": "food",
+ "order": 50,
+ "icon": "farmings:egg_carton",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Every Farmings egg carries its weight, shell colour, the day it was laid, and whether it is fertile. Eggs of the same size and grade stack well; ungraded eggs stack poorly, so pack them in cartons."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:chicken_egg",
+    "farmings:turkey_egg",
+    "farmings:duck_egg",
+    "farmings:quail_egg",
+    "farmings:goose_egg",
+    "farmings:guinea_egg"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The egg grading table"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A hand-worked table with no power. Put chicken eggs in by hand or hopper; it packs "
+    },
+    {
+     "t": "12",
+     "b": true
+    },
+    {
+     "t": " eggs of one size and grade into an egg carton. A carton opens back into its eggs. Turkey, duck, quail, goose and guinea eggs are packed "
+    },
+    {
+     "t": "12",
+     "b": true
+    },
+    {
+     "t": " to a carton by species, with no size."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Sizes",
+     "b": true
+    },
+    {
+     "t": ", by the egg's least weight:"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Jumbo "
+     },
+     {
+      "t": "70.9 g",
+      "b": true
+     },
+     {
+      "t": ", Extra Large "
+     },
+     {
+      "t": "63.8 g",
+      "b": true
+     },
+     {
+      "t": ", Large "
+     },
+     {
+      "t": "56.7 g",
+      "b": true
+     }
+    ],
+    [
+     {
+      "t": "Medium "
+     },
+     {
+      "t": "49.6 g",
+      "b": true
+     },
+     {
+      "t": ", Small "
+     },
+     {
+      "t": "42.5 g",
+      "b": true
+     },
+     {
+      "t": ", Peewee "
+     },
+     {
+      "t": "35.4 g",
+      "b": true
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Grades",
+     "b": true
+    },
+    {
+     "t": ", by age:"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "AA:",
+      "b": true
+     },
+     {
+      "t": " laid less than "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " days ago, and clean."
+     }
+    ],
+    [
+     {
+      "t": "A:",
+      "b": true
+     },
+     {
+      "t": " less than "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "B:",
+      "b": true
+     },
+     {
+      "t": " older, or a dirty floor egg."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Keeping eggs"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "In a powered "
+     },
+     {
+      "t": "cold room",
+      "link": "cold-room"
+     },
+     {
+      "t": " an egg keeps "
+     },
+     {
+      "t": "35 days",
+      "b": true
+     },
+     {
+      "t": "; out of the cold, "
+     },
+     {
+      "t": "7 days",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "A spoiled egg becomes a "
+     },
+     {
+      "t": "rotten egg",
+      "b": true
+     },
+     {
+      "t": ". It isn't food, but you can throw it: a hit gives Nausea for "
+     },
+     {
+      "t": "5 seconds",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Any Farmings egg works in cake and pumpkin pie, and fries into a fried egg."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:egg_carton",
+    "farmings:fried_egg",
+    "farmings:rotten_egg"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "See "
+    },
+    {
+     "t": "spoilage",
+     "link": "spoilage"
+    },
+    {
+     "t": " for how food keeps."
+    }
+   ]
+  }
+ ]
+}

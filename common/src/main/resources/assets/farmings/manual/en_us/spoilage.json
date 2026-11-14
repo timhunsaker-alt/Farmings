@@ -1,0 +1,244 @@
+{
+ "id": "spoilage",
+ "title": "Spoilage and keeping food cold",
+ "chapter": "getting_started",
+ "order": 50,
+ "icon": "farmings:spoiled_bottle",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Farmings food goes off. Vanilla beef and milk buckets don't."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The clock"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Shelf lives are real days played as game days."
+     }
+    ],
+    [
+     {
+      "t": "Most fresh food keeps "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " game day out of the cold."
+     }
+    ],
+    [
+     {
+      "t": "The clock starts when food leaves the cold: when it is bottled or taken at the creamery, taken by a hopper, dropped by an animal, or first carried."
+     }
+    ],
+    [
+     {
+      "t": "The "
+     },
+     {
+      "t": "bar",
+      "b": true
+     },
+     {
+      "t": " under the icon shows the life left: green when fresh, through yellow, to red."
+     }
+    ],
+    [
+     {
+      "t": "Food in a chest outside a fridge isn't checked until you take it. Then it turns at once if its time has passed."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "In a cold room"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A powered "
+    },
+    {
+     "t": "cold room",
+     "link": "cold-room"
+    },
+    {
+     "t": " holds food at about "
+    },
+    {
+     "t": "2",
+     "b": true
+    },
+    {
+     "t": " °C, and food in its chests and barrels lasts its fridge life:"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "bottled milk "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " days, cream "
+     },
+     {
+      "t": "3.5",
+      "b": true
+     },
+     {
+      "t": ", butter "
+     },
+     {
+      "t": "45",
+      "b": true
+     },
+     {
+      "t": ";"
+     }
+    ],
+    [
+     {
+      "t": "a cheddar wheel "
+     },
+     {
+      "t": "180",
+      "b": true
+     },
+     {
+      "t": " days;"
+     }
+    ],
+    [
+     {
+      "t": "raw steak and chops "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " days, bacon "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": ", raw sausage "
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The parlour bulk tank and the creamery count as cold too."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Spoiled food"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Food that runs out turns into a spoiled item: a spoiled bottle, rancid butter, moldy cheese, spoiled steak, spoiled mutton, spoiled pork or spoiled poultry. You can eat it for "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " hunger, but it gives Hunger for "
+    },
+    {
+     "t": "30",
+     "b": true
+    },
+    {
+     "t": " s and Nausea for "
+    },
+    {
+     "t": "15",
+     "b": true
+    },
+    {
+     "t": " s."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:spoiled_bottle",
+    "farmings:rancid_butter",
+    "farmings:moldy_cheese",
+    "farmings:spoiled_steak"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A whole country ham keeps "
+    },
+    {
+     "t": "365",
+     "b": true
+    },
+    {
+     "t": " days even out of the cold. See "
+    },
+    {
+     "t": "the curing room",
+     "link": "curing-room"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

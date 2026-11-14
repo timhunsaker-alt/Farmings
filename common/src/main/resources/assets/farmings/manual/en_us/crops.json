@@ -1,0 +1,267 @@
+{
+ "id": "crops",
+ "title": "Field crops",
+ "chapter": "fields",
+ "order": 10,
+ "icon": "farmings:alfalfa_seeds",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Farmings adds forage and grain crops to feed your herd. Vanilla crops are unchanged."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:alfalfa_seeds",
+    "farmings:timothy_seeds",
+    "farmings:orchardgrass_seeds",
+    "farmings:corn_seeds",
+    "farmings:oats_seeds",
+    "farmings:barley_seeds"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Seeds"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Break grass by hand to find seeds. Which ones you get depends on the biome:"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "plains: corn, alfalfa and oats;"
+     }
+    ],
+    [
+     {
+      "t": "savanna: corn and alfalfa;"
+     }
+    ],
+    [
+     {
+      "t": "meadow, forest and birch forest: timothy and orchardgrass;"
+     }
+    ],
+    [
+     {
+      "t": "taiga: oats and barley."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A harvested block gives back 1-2 seeds."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Growing"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Crops grow on the "
+    },
+    {
+     "t": "15:1",
+     "b": true
+    },
+    {
+     "t": " clock, with no random ticks, so a field grows the same whether you watch it or not. Each crop has 8 stages."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Alfalfa, timothy and orchardgrass",
+      "b": true
+     },
+     {
+      "t": " are perennials: cut them and they grow back. Alfalfa is ready again every "
+     },
+     {
+      "t": "32.5",
+      "b": true
+     },
+     {
+      "t": " real days ("
+     },
+     {
+      "t": "2.2",
+      "b": true
+     },
+     {
+      "t": " game days) and lasts "
+     },
+     {
+      "t": "22",
+      "b": true
+     },
+     {
+      "t": " cuts."
+     }
+    ],
+    [
+     {
+      "t": "Corn",
+      "b": true
+     },
+     {
+      "t": " is 2 blocks tall. Chop it from "
+     },
+     {
+      "t": "125",
+      "b": true
+     },
+     {
+      "t": " days for silage; combine it at "
+     },
+     {
+      "t": "130",
+      "b": true
+     },
+     {
+      "t": " days or later for grain."
+     }
+    ],
+    [
+     {
+      "t": "Oats and barley",
+      "b": true
+     },
+     {
+      "t": " give grain and leave straw."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Yields are scaled up ten times, so "
+    },
+    {
+     "t": "1 t/ha",
+     "b": true
+    },
+    {
+     "t": " in real life gives "
+    },
+    {
+     "t": "1 kg",
+     "b": true
+    },
+    {
+     "t": " per block."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Compost, liquid digestate and bone meal all work as bone meal. See "
+    },
+    {
+     "t": "compost",
+     "link": "compost"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "the digester",
+     "link": "digester"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Harvest"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Work big fields with the "
+    },
+    {
+     "t": "field gantry",
+     "link": "field-gantry"
+    },
+    {
+     "t": ". By hand, a ripe block drops loose hay or straw in "
+    },
+    {
+     "t": "10 kg",
+     "b": true
+    },
+    {
+     "t": " items. A round bale weighs "
+    },
+    {
+     "t": "454 kg",
+     "b": true
+    },
+    {
+     "t": " and crafts into "
+    },
+    {
+     "t": "4",
+     "b": true
+    },
+    {
+     "t": " vanilla hay blocks."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:alfalfa_hay",
+    "farmings:grass_hay",
+    "farmings:alfalfa_bale",
+    "farmings:corn_grain",
+    "farmings:oat_grain",
+    "farmings:barley_grain",
+    "farmings:straw"
+   ]
+  }
+ ]
+}

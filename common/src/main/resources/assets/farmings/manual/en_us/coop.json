@@ -1,0 +1,319 @@
+{
+ "id": "coop",
+ "title": "Coop and run",
+ "chapter": "buildings",
+ "order": 60,
+ "icon": "farmings:nest_box",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The coop houses your tame birds: "
+    },
+    {
+     "t": "chickens",
+     "link": "chickens"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "turkeys",
+     "link": "turkeys"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "ducks",
+     "link": "ducks"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "quail",
+     "link": "quail"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "geese",
+     "link": "geese"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "guinea fowl",
+     "link": "guinea-fowl"
+    },
+    {
+     "t": ". It feeds and waters them, collects eggs and litter, and lets them out on a fenced run by day."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Coop floor",
+      "b": true
+     },
+     {
+      "t": " cells, joined side to side, at most "
+     },
+     {
+      "t": "256",
+      "b": true
+     },
+     {
+      "t": " cells."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "coop controller",
+      "b": true
+     },
+     {
+      "t": " on the floor level, touching the floor. Right-click it to read the coop."
+     }
+    ],
+    [
+     {
+      "t": "At least one "
+     },
+     {
+      "t": "nest box",
+      "b": true
+     },
+     {
+      "t": ", one "
+     },
+     {
+      "t": "grain feeder",
+      "b": true
+     },
+     {
+      "t": " and one "
+     },
+     {
+      "t": "water trough",
+      "b": true
+     },
+     {
+      "t": " touching a floor cell."
+     }
+    ],
+    [
+     {
+      "t": "Perches",
+      "b": true
+     },
+     {
+      "t": " for chickens, turkeys and guinea fowl to roost on."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "pop hole",
+      "b": true
+     },
+     {
+      "t": " in the run fence, touching the floor. The fenced run beyond it may be up to "
+     },
+     {
+      "t": "1,024",
+      "b": true
+     },
+     {
+      "t": " cells."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "FFFFFF",
+      "F....F",
+      "F....F",
+      "FFHFFF",
+      "NCCCCK",
+      "NCCCCW",
+      ".PGP.."
+     ]
+    }
+   ],
+   "key": {
+    "F": "minecraft:oak_fence",
+    "H": "farmings:pop_hole",
+    "C": "farmings:coop_floor",
+    "K": "farmings:coop_controller",
+    "N": "farmings:nest_box",
+    "W": "farmings:water_trough",
+    "G": "farmings:grain_feeder",
+    "P": "farmings:perch"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Using it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The controller takes in tame birds within "
+     },
+     {
+      "t": "48 blocks",
+      "b": true
+     },
+     {
+      "t": " until the coop is full. It never takes wild birds."
+     }
+    ],
+    [
+     {
+      "t": "A nest box holds "
+     },
+     {
+      "t": "16",
+      "b": true
+     },
+     {
+      "t": " eggs; a hopper under it pulls them out. If every nest is full, hens lay dirty floor eggs."
+     }
+    ],
+    [
+     {
+      "t": "The grain feeder holds "
+     },
+     {
+      "t": "256",
+      "b": true
+     },
+     {
+      "t": " grain items, by hand or hopper."
+     }
+    ],
+    [
+     {
+      "t": "Birds go out on the run from morning to dusk in clear weather, and come in at night."
+     }
+    ],
+    [
+     {
+      "t": "Litter piles up as "
+     },
+     {
+      "t": "poultry litter",
+      "b": true
+     },
+     {
+      "t": " items of "
+     },
+     {
+      "t": "10 kg",
+      "b": true
+     },
+     {
+      "t": ", up to "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": ". Pull them with a hopper under the controller; a full store costs the birds "
+     },
+     {
+      "t": "2%",
+      "b": true
+     },
+     {
+      "t": " health a day. Litter goes to "
+     },
+     {
+      "t": "compost",
+      "link": "compost"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Broody hens"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A hen whose nest holds at least "
+    },
+    {
+     "t": "6",
+     "b": true
+    },
+    {
+     "t": " eggs may go broody. She sits on up to "
+    },
+    {
+     "t": "12",
+     "b": true
+    },
+    {
+     "t": " fertile eggs until they hatch, then keeps her young warm. Or use the "
+    },
+    {
+     "t": "hatchery",
+     "link": "hatchery"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:chicken_egg",
+    "farmings:poultry_litter"
+   ]
+  }
+ ]
+}

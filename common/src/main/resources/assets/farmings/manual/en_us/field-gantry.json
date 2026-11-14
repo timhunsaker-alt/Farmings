@@ -1,0 +1,356 @@
+{
+ "id": "field-gantry",
+ "title": "The field gantry",
+ "chapter": "fields",
+ "order": 20,
+ "icon": "farmings:gantry_cab",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "No tractors here: a gantry on two rails carries a tool across the field."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Two straight, parallel lines of "
+     },
+     {
+      "t": "field rail",
+      "b": true
+     },
+     {
+      "t": ", up to "
+     },
+     {
+      "t": "256",
+      "b": true
+     },
+     {
+      "t": " blocks long."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "gantry truck",
+      "b": true
+     },
+     {
+      "t": " on each rail, and "
+     },
+     {
+      "t": "gantry beam",
+      "b": true
+     },
+     {
+      "t": " from truck to truck, with "
+     },
+     {
+      "t": "4-12",
+      "b": true
+     },
+     {
+      "t": " blocks of field between the trucks."
+     }
+    ],
+    [
+     {
+      "t": "The "
+     },
+     {
+      "t": "gantry cab",
+      "b": true
+     },
+     {
+      "t": " on the beam, above one truck. It is the controller."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "field junction",
+      "b": true
+     },
+     {
+      "t": " beside the home end of a rail, wired to Wildcatter "
+     },
+     {
+      "t": "480 V",
+      "b": true
+     },
+     {
+      "t": " power."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "headland stop",
+      "b": true
+     },
+     {
+      "t": " at the far end of a rail. Put a belt, auger, hopper or chest against it."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "J.....",
+      "R....R",
+      "R....R",
+      "R....R",
+      "R....R",
+      "H....."
+     ]
+    },
+    {
+     "name": "layer 2",
+     "rows": [
+      "......",
+      "T....T"
+     ]
+    },
+    {
+     "name": "layer 3",
+     "rows": [
+      "......",
+      "BBBBBB"
+     ]
+    },
+    {
+     "name": "layer 4",
+     "rows": [
+      "......",
+      "C....."
+     ]
+    }
+   ],
+   "key": {
+    "R": "farmings:field_rail",
+    "J": "farmings:field_junction",
+    "H": "farmings:headland_stop",
+    "T": "farmings:gantry_truck",
+    "B": "farmings:gantry_beam",
+    "C": "farmings:gantry_cab"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Tools"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Fit one tool head at a time: park the gantry at the cab end and sneak-right-click the cab with the head."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Seed drill",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "8.0 km/h",
+      "b": true
+     },
+     {
+      "t": "): tills and sows one seed a block."
+     }
+    ],
+    [
+     {
+      "t": "Harvester",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "5.0 km/h",
+      "b": true
+     },
+     {
+      "t": "): grain to the bin and straw left in a swath, or chopped forage."
+     }
+    ],
+    [
+     {
+      "t": "Mower",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "11 km/h",
+      "b": true
+     },
+     {
+      "t": "): cuts hay into a swath."
+     }
+    ],
+    [
+     {
+      "t": "Rake",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "10 km/h",
+      "b": true
+     },
+     {
+      "t": "): rakes a swath once it has dried "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " real day."
+     }
+    ],
+    [
+     {
+      "t": "Baler",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "8 km/h",
+      "b": true
+     },
+     {
+      "t": "): bales hay "
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": " real days after mowing."
+     }
+    ],
+    [
+     {
+      "t": "Spreader",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "11 km/h",
+      "b": true
+     },
+     {
+      "t": "): spreads compost, liquid digestate or bone meal."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:tool_seed_drill",
+    "farmings:tool_harvester",
+    "farmings:tool_mower",
+    "farmings:tool_rake",
+    "farmings:tool_baler",
+    "farmings:tool_spreader"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Running it"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Sneak-right-click the cab to start or stop. It works every row to the far stop and comes back. Its bin holds "
+    },
+    {
+     "t": "4,000 kg",
+     "b": true
+    },
+    {
+     "t": "; when full it unloads at the stop as "
+    },
+    {
+     "t": "454 kg",
+     "b": true
+    },
+    {
+     "t": " round bales, "
+    },
+    {
+     "t": "1 kg",
+     "b": true
+    },
+    {
+     "t": " grain items and "
+    },
+    {
+     "t": "25 kg",
+     "b": true
+    },
+    {
+     "t": " chopped forage. A hoe rakes a dry swath by hand. See "
+    },
+    {
+     "t": "crops",
+     "link": "crops"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

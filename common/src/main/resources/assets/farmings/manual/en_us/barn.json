@@ -1,0 +1,280 @@
+{
+ "id": "barn",
+ "title": "The barn",
+ "chapter": "buildings",
+ "order": 20,
+ "icon": "farmings:barn_controller",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A freestall barn houses your "
+    },
+    {
+     "t": "cattle",
+     "link": "cattle"
+    },
+    {
+     "t": ": stalls to lie in, hay to eat, water, and a powered scraper that pushes manure into a pit."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Two rows of stalls facing a "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": "-wide alley, from "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " to "
+     },
+     {
+      "t": "12",
+      "b": true
+     },
+     {
+      "t": " stalls a side. A stall is a bed ("
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " blocks long) with a divider ("
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " high) on each side, so beds and dividers alternate."
+     }
+    ],
+    [
+     {
+      "t": "A feed bunk with a hay feeder above it in line with every stall."
+     }
+    ],
+    [
+     {
+      "t": "The alley: alley floor with a scraper rail down the middle, a manure scraper on the rail, the scraper drive at the far end, and the collection pit dug in at the near end, under and beside the barn controller."
+     }
+    ],
+    [
+     {
+      "t": "The alley is twice as long as a stall row: "
+     },
+     {
+      "t": "18",
+      "b": true
+     },
+     {
+      "t": " for "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " stalls a side. The extra length goes at both ends."
+     }
+    ],
+    [
+     {
+      "t": "At least one water trough in each bed row. Right-click the controller to form it; it names any missing part."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "..........PP",
+      "..........PP",
+      "..........PP"
+     ]
+    },
+    {
+     "name": "layer 2",
+     "rows": [
+      "...F.F......",
+      "..DBDBD.....",
+      "..DBDBD.....",
+      "..DBDBD.WW..",
+      "AAAAAAAAAAPP",
+      "RRRRRRRRRRPP",
+      "AAAAAAAAAAPP",
+      "..DBDBD.WW..",
+      "..DBDBD.....",
+      "..DBDBD.....",
+      "...F.F......"
+     ]
+    },
+    {
+     "name": "layer 3",
+     "rows": [
+      "...H.H......",
+      "..D.D.D.....",
+      "..D.D.D.....",
+      "..D.D.D.....",
+      ".M..........",
+      "SM........C.",
+      ".M..........",
+      "..D.D.D.....",
+      "..D.D.D.....",
+      "..D.D.D.....",
+      "...H.H......"
+     ]
+    }
+   ],
+   "key": {
+    "P": "farmings:collection_pit",
+    "F": "farmings:feed_bunk",
+    "D": "farmings:stall_divider",
+    "B": "farmings:stall_bed",
+    "W": "farmings:water_trough",
+    "A": "farmings:alley_floor",
+    "R": "farmings:scraper_rail",
+    "H": "farmings:hay_feeder",
+    "M": "farmings:manure_scraper",
+    "S": "farmings:scraper_drive",
+    "C": "farmings:barn_controller"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Running it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "One cow per stall. A feeder holds up to "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " hay blocks; a milking cow eats about a quarter of a "
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": " kg hay block a day."
+     }
+    ],
+    [
+     {
+      "t": "A trough holds "
+     },
+     {
+      "t": "1,000",
+      "b": true
+     },
+     {
+      "t": " L, filled by bucket or by a Wildcatter pump's pipe."
+     }
+    ],
+    [
+     {
+      "t": "The scraper ("
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " kW) makes one pass a game day, or on a redstone signal. The pit holds "
+     },
+     {
+      "t": "384",
+      "b": true
+     },
+     {
+      "t": " manure items of "
+     },
+     {
+      "t": "50",
+      "b": true
+     },
+     {
+      "t": " kg."
+     }
+    ],
+    [
+     {
+      "t": "Manure in front of a stall makes it dirty: five items is fully dirty and costs "
+     },
+     {
+      "t": "10%",
+      "b": true
+     },
+     {
+      "t": " of her milk. Clear it by hand with a manure fork."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:manure",
+    "farmings:manure_fork"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Next: "
+    },
+    {
+     "t": "the parlour",
+     "link": "parlour"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "manure",
+     "link": "manure"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

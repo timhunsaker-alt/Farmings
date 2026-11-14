@@ -1,0 +1,209 @@
+{
+ "id": "guinea-fowl",
+ "title": "Guinea fowl",
+ "chapter": "animals",
+ "order": 120,
+ "icon": "farmings:guinea_egg",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The "
+    },
+    {
+     "t": "Helmeted",
+     "b": true
+    },
+    {
+     "t": " guinea fowl comes in pearl, lavender or white, set by its genes. Wild guinea fowl spawn in savannas; tame them in a "
+    },
+    {
+     "t": "taming corral",
+     "link": "corral"
+    },
+    {
+     "t": " with grain. They run at the bird clock ("
+    },
+    {
+     "t": "time scales",
+     "link": "time-scales"
+    },
+    {
+     "t": ")."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Laying"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "First egg at "
+     },
+     {
+      "t": "28 weeks",
+      "b": true
+     },
+     {
+      "t": ". They lay in season, "
+     },
+     {
+      "t": "1 Apr - 31 Oct",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "About "
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": " eggs a year, at "
+     },
+     {
+      "t": "40 g",
+      "b": true
+     },
+     {
+      "t": " each."
+     }
+    ],
+    [
+     {
+      "t": "A guinea hen goes broody only once her nest holds "
+     },
+     {
+      "t": "30",
+      "b": true
+     },
+     {
+      "t": " eggs."
+     }
+    ],
+    [
+     {
+      "t": "One male serves "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " hens. Eggs hatch after "
+     },
+     {
+      "t": "27 days",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The alarm call"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A tame guinea fowl that sees a hostile mob within "
+    },
+    {
+     "t": "16 blocks",
+     "b": true
+    },
+    {
+     "t": " calls out, at most once every "
+    },
+    {
+     "t": "10 s",
+     "b": true
+    },
+    {
+     "t": ". Every bird of its "
+    },
+    {
+     "t": "coop",
+     "link": "coop"
+    },
+    {
+     "t": " out on the run goes inside for a minute, and the coop readout shows `ALARM` and the mob. Wild guinea fowl call too, and flee."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Keeping"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "In the coop, "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " floor block holds "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " guinea fowl, and they roost on perches."
+     }
+    ],
+    [
+     {
+      "t": "On a grassy run they find "
+     },
+     {
+      "t": "20%",
+      "b": true
+     },
+     {
+      "t": " of their feed themselves."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:guinea_egg",
+    "farmings:guinea_fowl",
+    "farmings:cooked_guinea_fowl"
+   ]
+  }
+ ]
+}

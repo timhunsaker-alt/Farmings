@@ -1,0 +1,252 @@
+{
+ "id": "stable",
+ "title": "The stable",
+ "chapter": "buildings",
+ "order": 90,
+ "icon": "farmings:stable_controller",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Stalls, hay, water and bedding for your "
+    },
+    {
+     "t": "horses",
+     "link": "horses"
+    },
+    {
+     "t": ", with an optional paddock to graze by day."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "stable controller",
+      "b": true
+     },
+     {
+      "t": " touching the stall floor."
+     }
+    ],
+    [
+     {
+      "t": "Horse stall",
+      "b": true
+     },
+     {
+      "t": " floor: every "
+     },
+     {
+      "t": "12",
+      "b": true
+     },
+     {
+      "t": " blocks of it is one stall, so "
+     },
+     {
+      "t": "24",
+      "b": true
+     },
+     {
+      "t": " blocks make "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " stalls. Fences between stalls are up to you."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "hay feeder",
+      "b": true
+     },
+     {
+      "t": " and a "
+     },
+     {
+      "t": "water trough",
+      "b": true
+     },
+     {
+      "t": " touching the floor."
+     }
+    ],
+    [
+     {
+      "t": "Optional: a "
+     },
+     {
+      "t": "pasture gate",
+      "b": true
+     },
+     {
+      "t": " onto a fenced paddock."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      ".H....W",
+      "CSSSSSS",
+      ".SSSSSS",
+      ".SSSSSS",
+      ".SSSSSS",
+      "...G..."
+     ]
+    }
+   ],
+   "key": {
+    "C": "farmings:stable_controller",
+    "S": "farmings:horse_stall",
+    "H": "farmings:hay_feeder",
+    "W": "farmings:water_trough",
+    "G": "farmings:pasture_gate"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The day"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The controller takes in tame horses within "
+     },
+     {
+      "t": "48",
+      "b": true
+     },
+     {
+      "t": " blocks. Each gets the middle block of its stall as home."
+     }
+    ],
+    [
+     {
+      "t": "By night horses go to their stalls; by day out to the paddock, if there is one."
+     }
+    ],
+    [
+     {
+      "t": "Each eats "
+     },
+     {
+      "t": "2.25%",
+      "b": true
+     },
+     {
+      "t": " of its body weight in dry matter a day and drinks "
+     },
+     {
+      "t": "0.05",
+      "b": true
+     },
+     {
+      "t": " L per kg. Foals nurse until weaning."
+     }
+    ],
+    [
+     {
+      "t": "A horse being ridden is out working and is skipped."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Bedding and fitness"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Straw goes in by hand or hopper. Manure comes out of a hopper under the controller, at "
+     },
+     {
+      "t": "5.1%",
+      "b": true
+     },
+     {
+      "t": " of body weight a day."
+     }
+    ],
+    [
+     {
+      "t": "Dirty bedding costs health."
+     }
+    ],
+    [
+     {
+      "t": "Training is riding. A horse fed under "
+     },
+     {
+      "t": "95%",
+      "b": true
+     },
+     {
+      "t": " of its need gains no fitness. The readout lists every horse's fitness."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:straw_bale",
+    "farmings:hay_feeder",
+    "minecraft:saddle"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Race them at "
+    },
+    {
+     "t": "the race track",
+     "link": "race-track"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

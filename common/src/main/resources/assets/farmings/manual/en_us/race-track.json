@@ -1,0 +1,245 @@
+{
+ "id": "race-track",
+ "title": "The race track",
+ "chapter": "buildings",
+ "order": 100,
+ "icon": "farmings:start_gate",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Build a track and race your "
+    },
+    {
+     "t": "horses",
+     "link": "horses"
+    },
+    {
+     "t": ". There is no betting and no prize: the records are the prize."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Lay "
+     },
+     {
+      "t": "race track",
+      "b": true
+     },
+     {
+      "t": " blocks in a flat ring around an infield: an oval or a rounded rectangle."
+     }
+    ],
+    [
+     {
+      "t": "Set a "
+     },
+     {
+      "t": "start gate",
+      "b": true
+     },
+     {
+      "t": " beside the track. The track must be at least "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " wide there; each block across is one stall."
+     }
+    ],
+    [
+     {
+      "t": "Put a "
+     },
+     {
+      "t": "finish post",
+      "b": true
+     },
+     {
+      "t": " beside the track. You read results there."
+     }
+    ],
+    [
+     {
+      "t": "Rails are optional; the track forms without them."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      ".....S.....",
+      "TTTTTTTTTTT",
+      "TTTTTTTTTTT",
+      "TTTTTTTTTTT",
+      "TTT.....TTT",
+      "TTT.....TTT",
+      "TTT.....TTT",
+      "TTTTTTTTTTT",
+      "TTTTTTTTTTT",
+      "TTTTTTTTTTT",
+      "........F.."
+     ]
+    }
+   ],
+   "key": {
+    "T": "farmings:race_track",
+    "S": "farmings:start_gate",
+    "F": "farmings:finish_post"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Racing"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Sneak-use",
+      "b": true
+     },
+     {
+      "t": " the gate to set the distance: "
+     },
+     {
+      "t": "402",
+      "b": true
+     },
+     {
+      "t": " m, "
+     },
+     {
+      "t": "1,207",
+      "b": true
+     },
+     {
+      "t": " m, "
+     },
+     {
+      "t": "1,609",
+      "b": true
+     },
+     {
+      "t": " m (a mile), "
+     },
+     {
+      "t": "2,012",
+      "b": true
+     },
+     {
+      "t": " m or "
+     },
+     {
+      "t": "2,414",
+      "b": true
+     },
+     {
+      "t": " m."
+     }
+    ],
+    [
+     {
+      "t": "Ride a horse into a stall, or lead a tame one in: an AI jockey rides it."
+     }
+    ],
+    [
+     {
+      "t": "Use",
+      "b": true
+     },
+     {
+      "t": " the gate: a three-second count, then it opens. Races run counter-clockwise."
+     }
+    ],
+    [
+     {
+      "t": "Each horse is timed to "
+     },
+     {
+      "t": "0.05",
+      "b": true
+     },
+     {
+      "t": " s when it has covered the distance, wherever that falls on the loop."
+     }
+    ],
+    [
+     {
+      "t": "A horse off the track for "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " s is out."
+     }
+    ],
+    [
+     {
+      "t": "A win counts when two or more horses ran. A solo run is a timed run."
+     }
+    ],
+    [
+     {
+      "t": "Each horse keeps its best time at each distance, races run and wins, and a race counts as training."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Record them in the "
+    },
+    {
+     "t": "stud book",
+     "b": true
+    },
+    {
+     "t": ": see "
+    },
+    {
+     "t": "the herd book",
+     "link": "herd-book"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:stud_book",
+    "farmings:track_rail"
+   ]
+  }
+ ]
+}

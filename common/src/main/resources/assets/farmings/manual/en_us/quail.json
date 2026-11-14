@@ -1,0 +1,238 @@
+{
+ "id": "quail",
+ "title": "Quail",
+ "chapter": "animals",
+ "order": 100,
+ "icon": "farmings:quail_egg",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Two breeds: the "
+    },
+    {
+     "t": "Coturnix",
+     "b": true
+    },
+    {
+     "t": " (Japanese quail), wild in savannas, and the "
+    },
+    {
+     "t": "Northern Bobwhite",
+     "b": true
+    },
+    {
+     "t": ", wild in plains. Tame them in a "
+    },
+    {
+     "t": "taming corral",
+     "link": "corral"
+    },
+    {
+     "t": " with grain."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Quail run at the bird clock, "
+    },
+    {
+     "t": "1 game day = 3 real days",
+     "b": true
+    },
+    {
+     "t": " ("
+    },
+    {
+     "t": "time scales",
+     "link": "time-scales"
+    },
+    {
+     "t": ")."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Laying"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Coturnix: first egg at "
+     },
+     {
+      "t": "7 weeks",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "250",
+      "b": true
+     },
+     {
+      "t": " eggs a year. Hens rarely go broody."
+     }
+    ],
+    [
+     {
+      "t": "Bobwhite: first egg at about "
+     },
+     {
+      "t": "22 weeks",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "125",
+      "b": true
+     },
+     {
+      "t": " eggs a year. Hens are broody."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "One cock serves up to "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " hens; eggs stay fertile for "
+     },
+     {
+      "t": "11",
+      "b": true
+     },
+     {
+      "t": " real days."
+     }
+    ],
+    [
+     {
+      "t": "The two breeds don't cross: a cock serves only hens of his own kind."
+     }
+    ],
+    [
+     {
+      "t": "Eggs hatch after "
+     },
+     {
+      "t": "17",
+      "b": true
+     },
+     {
+      "t": " days (Coturnix) or "
+     },
+     {
+      "t": "23.5",
+      "b": true
+     },
+     {
+      "t": " (Bobwhite)."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Keeping"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A quail eats about "
+     },
+     {
+      "t": "16 g",
+      "b": true
+     },
+     {
+      "t": " of feed a day."
+     }
+    ],
+    [
+     {
+      "t": "In the "
+     },
+     {
+      "t": "coop",
+      "link": "coop"
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " floor block holds "
+     },
+     {
+      "t": "16",
+      "b": true
+     },
+     {
+      "t": " quail, with a nest box for every "
+     },
+     {
+      "t": "8",
+      "b": true
+     },
+     {
+      "t": " hens. Quail are ground birds and don't use perches."
+     }
+    ],
+    [
+     {
+      "t": "A killed quail always drops at least one quail item."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:quail_egg",
+    "farmings:quail",
+    "farmings:cooked_quail"
+   ]
+  }
+ ]
+}

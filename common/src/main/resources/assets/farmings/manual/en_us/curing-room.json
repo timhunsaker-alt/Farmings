@@ -1,0 +1,335 @@
+{
+ "id": "curing-room",
+ "title": "The curing room",
+ "chapter": "food",
+ "order": 30,
+ "icon": "farmings:country_ham",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Turn "
+    },
+    {
+     "t": "pork",
+     "link": "pigs"
+    },
+    {
+     "t": " into country ham, bacon, lard and sausage. These are separate blocks; the curing rack needs a cold room."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Salt and cure"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Craft "
+     },
+     {
+      "t": "salt",
+      "b": true
+     },
+     {
+      "t": " from a water bucket and coal. The bucket comes back."
+     }
+    ],
+    [
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " salt and "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " sugar make "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " cure."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The curing rack and smokehouse"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The rack holds up to "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " pieces of fresh ham or pork belly, each with its cure."
+     }
+    ],
+    [
+     {
+      "t": "It must stand in a powered "
+     },
+     {
+      "t": "cold room",
+      "link": "cold-room"
+     },
+     {
+      "t": ". Above "
+     },
+     {
+      "t": "4.5",
+      "b": true
+     },
+     {
+      "t": " °C the cure stops, and a piece warm for "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " real day spoils."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "smokehouse",
+      "b": true
+     },
+     {
+      "t": " beside the rack smokes each piece when its turn comes. One log, charcoal or coal burns for "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " game hours."
+     }
+    ],
+    [
+     {
+      "t": "Country ham:",
+      "b": true
+     },
+     {
+      "t": " cure "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " days per lb, rest "
+     },
+     {
+      "t": "14",
+      "b": true
+     },
+     {
+      "t": " days, smoke "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " days, then age "
+     },
+     {
+      "t": "90",
+      "b": true
+     },
+     {
+      "t": " days on the rack, no cold needed. It ends at "
+     },
+     {
+      "t": "77.5%",
+      "b": true
+     },
+     {
+      "t": " of its fresh weight and keeps "
+     },
+     {
+      "t": "365",
+      "b": true
+     },
+     {
+      "t": " days even out of the cold. Slice it at a crafting table."
+     }
+    ],
+    [
+     {
+      "t": "Bacon:",
+      "b": true
+     },
+     {
+      "t": " cure "
+     },
+     {
+      "t": "7",
+      "b": true
+     },
+     {
+      "t": " days, then hot smoke "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " hours."
+     }
+    ],
+    [
+     {
+      "t": "Times run 15:1: a "
+     },
+     {
+      "t": "60",
+      "b": true
+     },
+     {
+      "t": "-day cure takes "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " game days."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Lard and sausage"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "lard kettle",
+      "b": true
+     },
+     {
+      "t": " over a lit campfire or fire renders pork fat: "
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " kg of lard per kg of fat, "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " real hours a batch."
+     }
+    ],
+    [
+     {
+      "t": "A hand-cranked "
+     },
+     {
+      "t": "meat grinder",
+      "b": true
+     },
+     {
+      "t": ": "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " pork shoulders, "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " pork fat and "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " salt give "
+     },
+     {
+      "t": "32",
+      "b": true
+     },
+     {
+      "t": " sausage links. Cook them in a furnace, smoker or campfire."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:curing_rack",
+    "farmings:smokehouse",
+    "farmings:lard_kettle",
+    "farmings:meat_grinder"
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:salt",
+    "farmings:cure",
+    "farmings:country_ham",
+    "farmings:ham_slice",
+    "farmings:bacon",
+    "farmings:lard",
+    "farmings:sausage"
+   ]
+  }
+ ]
+}

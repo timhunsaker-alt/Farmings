@@ -1,0 +1,282 @@
+{
+ "id": "manure",
+ "title": "Manure",
+ "chapter": "waste",
+ "order": 10,
+ "icon": "farmings:manure",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Every animal makes manure, and you have to collect it. Left lying, it makes stalls dirty: the animals lose health and milk, but never die from it."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:manure",
+    "farmings:manure_fork",
+    "farmings:poultry_litter"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "In the barn"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A milking cow makes about "
+     },
+     {
+      "t": "67 kg",
+      "b": true
+     },
+     {
+      "t": " of manure a day, a dry cow "
+     },
+     {
+      "t": "39 kg",
+      "b": true
+     },
+     {
+      "t": ", a heifer "
+     },
+     {
+      "t": "24 kg",
+      "b": true
+     },
+     {
+      "t": ". One manure item is "
+     },
+     {
+      "t": "50 kg",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Clear stalls and the alley by hand with a "
+     },
+     {
+      "t": "manure fork",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "250",
+      "b": true
+     },
+     {
+      "t": " uses)."
+     }
+    ],
+    [
+     {
+      "t": "Or let the "
+     },
+     {
+      "t": "powered scraper",
+      "b": true
+     },
+     {
+      "t": " do it: on "
+     },
+     {
+      "t": "0.75 kW",
+      "b": true
+     },
+     {
+      "t": " Wildcatter power it makes one pass per game day, or on a redstone signal, and pushes the alley's manure into the "
+     },
+     {
+      "t": "collection pit",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "The pit holds "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " items per cell, "
+     },
+     {
+      "t": "384",
+      "b": true
+     },
+     {
+      "t": " in all. When it is full the scraper stops and reads PIT FULL."
+     }
+    ],
+    [
+     {
+      "t": "One item in front of a stall is normal. Each extra item makes it dirtier; "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " items is fully dirty and costs "
+     },
+     {
+      "t": "10%",
+      "b": true
+     },
+     {
+      "t": " of her milk."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "See "
+    },
+    {
+     "t": "the barn",
+     "link": "barn"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Other animals"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Pigs:",
+      "b": true
+     },
+     {
+      "t": " manure falls through the slatted floor into the pit. A "
+     },
+     {
+      "t": "slurry pump",
+      "b": true
+     },
+     {
+      "t": " moves it along slurry pipe to a digester feed pit or a slurry store. See "
+     },
+     {
+      "t": "the pig barn",
+      "link": "pig-barn"
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Horses:",
+      "b": true
+     },
+     {
+      "t": " about "
+     },
+     {
+      "t": "5.1%",
+      "b": true
+     },
+     {
+      "t": " of body weight a day goes into each stall's straw bedding. A hopper under the controller takes the manure. See "
+     },
+     {
+      "t": "the stable",
+      "link": "stable"
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Poultry:",
+      "b": true
+     },
+     {
+      "t": " the coop collects litter in "
+     },
+     {
+      "t": "10 kg",
+      "b": true
+     },
+     {
+      "t": " items. See "
+     },
+     {
+      "t": "the coop",
+      "link": "coop"
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Where it goes"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Compost",
+      "link": "compost"
+     },
+     {
+      "t": ": manure and straw become fertilizer."
+     }
+    ],
+    [
+     {
+      "t": "The digester",
+      "link": "digester"
+     },
+     {
+      "t": ": manure becomes biogas for power, then fertilizer."
+     }
+    ]
+   ]
+  }
+ ]
+}

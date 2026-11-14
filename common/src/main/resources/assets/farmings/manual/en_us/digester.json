@@ -1,0 +1,370 @@
+{
+ "id": "digester",
+ "title": "Digester and biogas",
+ "chapter": "waste",
+ "order": 30,
+ "icon": "farmings:gas_holder",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A digester turns manure into biogas for a Wildcatter gas set, plus fertilizer."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "digester tank",
+      "b": true
+     },
+     {
+      "t": ", a "
+     },
+     {
+      "t": "3 x 3 x 3",
+      "b": true
+     },
+     {
+      "t": " tank placed from one item on clear ground."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "gas holder",
+      "b": true
+     },
+     {
+      "t": " on its roof centre ("
+     },
+     {
+      "t": "200 m³",
+      "b": true
+     },
+     {
+      "t": ")."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "digester feed pit",
+      "b": true
+     },
+     {
+      "t": " against one side, and a "
+     },
+     {
+      "t": "digestate tank",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "50 t",
+      "b": true
+     },
+     {
+      "t": ") against another."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "screw press",
+      "b": true
+     },
+     {
+      "t": " beside the digestate tank."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      ".KKK..",
+      "FKKKDS",
+      ".KKK.."
+     ]
+    },
+    {
+     "name": "layer 2",
+     "rows": [
+      ".KKK",
+      ".KKK",
+      ".KKK"
+     ]
+    },
+    {
+     "name": "layer 3",
+     "rows": [
+      ".KKK",
+      ".KKK",
+      ".KKK"
+     ]
+    },
+    {
+     "name": "layer 4",
+     "rows": [
+      "....",
+      "..G."
+     ]
+    }
+   ],
+   "key": {
+    "K": "farmings:digester_tank",
+    "F": "farmings:digester_feed_pit",
+    "D": "farmings:digestate_tank",
+    "S": "farmings:screw_press",
+    "G": "farmings:gas_holder"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Running it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Feed manure or poultry litter into the pit by hand, belt or hopper. A pit touching a barn's collection pit pulls up to "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " manure items a second. Pig slurry counts as "
+     },
+     {
+      "t": "2.14 kg",
+      "b": true
+     },
+     {
+      "t": " of dairy manure per kg."
+     }
+    ],
+    [
+     {
+      "t": "The tank's mixer ("
+     },
+     {
+      "t": "6.5 kW",
+      "b": true
+     },
+     {
+      "t": ") needs Wildcatter "
+     },
+     {
+      "t": "480 V",
+      "b": true
+     },
+     {
+      "t": ". With no power it makes no gas."
+     }
+    ],
+    [
+     {
+      "t": "Each "
+     },
+     {
+      "t": "50 kg",
+      "b": true
+     },
+     {
+      "t": " of manure gives "
+     },
+     {
+      "t": "1.15 m³",
+      "b": true
+     },
+     {
+      "t": " of biogas over "
+     },
+     {
+      "t": "20",
+      "b": true
+     },
+     {
+      "t": " real days ("
+     },
+     {
+      "t": "1.3",
+      "b": true
+     },
+     {
+      "t": " game days). The tank burns half to stay warm; the other half goes to the holder. The gas is "
+     },
+     {
+      "t": "60%",
+      "b": true
+     },
+     {
+      "t": " methane."
+     }
+    ],
+    [
+     {
+      "t": "Run a steel pipe from the holder to a Wildcatter gas set. It burns biogas at up to "
+     },
+     {
+      "t": "850 kW",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:manure",
+    "farmings:poultry_litter",
+    "farmings:separated_solids",
+    "farmings:liquid_digestate"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Fertilizer"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The screw press ("
+    },
+    {
+     "t": "5.5 kW",
+     "b": true
+    },
+    {
+     "t": ") splits digestate: "
+    },
+    {
+     "t": "10%",
+     "b": true
+    },
+    {
+     "t": " comes out as "
+    },
+    {
+     "t": "10 kg",
+     "b": true
+    },
+    {
+     "t": " separated solids for "
+    },
+    {
+     "t": "compost",
+     "link": "compost"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "90%",
+     "b": true
+    },
+    {
+     "t": " as "
+    },
+    {
+     "t": "100 L",
+     "b": true
+    },
+    {
+     "t": " liquid digestate. One liquid digestate is one use of bone meal, by hand or with the "
+    },
+    {
+     "t": "field gantry",
+     "link": "field-gantry"
+    },
+    {
+     "t": "'s spreader."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "How much power?"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "About "
+    },
+    {
+     "t": "100",
+     "b": true
+    },
+    {
+     "t": " cows give "
+    },
+    {
+     "t": "57.5 m³",
+     "b": true
+    },
+    {
+     "t": " to the holder each game day: "
+    },
+    {
+     "t": "8.5",
+     "b": true
+    },
+    {
+     "t": " minutes of a "
+    },
+    {
+     "t": "1 MW",
+     "b": true
+    },
+    {
+     "t": " set. Enough for lights and fans, not a grid."
+    }
+   ]
+  }
+ ]
+}

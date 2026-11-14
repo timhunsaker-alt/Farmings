@@ -1,0 +1,358 @@
+{
+ "id": "creamery",
+ "title": "The creamery",
+ "chapter": "food",
+ "order": 10,
+ "icon": "farmings:creamery_controller",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The creamery pasteurizes milk and turns it into bottled milk, cream, butter, cheddar or chèvre."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The "
+    },
+    {
+     "t": "creamery controller",
+     "b": true
+    },
+    {
+     "t": " at one end, then every other part once, in one straight row on the same level, in any order, with no gaps: receiving tank, batch pasteurizer, cream separator, butter churn, cheese vat, cheese press, aging shelf and bottler."
+    }
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "CRRBSUVVPAO",
+      ".RR........"
+     ]
+    },
+    {
+     "name": "layer 2",
+     "rows": [
+      ".RRB.....A.",
+      ".RR........"
+     ]
+    }
+   ],
+   "key": {
+    "C": "farmings:creamery_controller",
+    "R": "farmings:receiving_tank",
+    "B": "farmings:batch_pasteurizer",
+    "S": "farmings:cream_separator",
+    "U": "farmings:butter_churn",
+    "V": "farmings:cheese_vat",
+    "P": "farmings:cheese_press",
+    "A": "farmings:aging_shelf",
+    "O": "farmings:bottler"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Milk in"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A milk bucket pours "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " L into the receiving tank ("
+     },
+     {
+      "t": "1,000",
+      "b": true
+     },
+     {
+      "t": " L)."
+     }
+    ],
+    [
+     {
+      "t": "Or run "
+     },
+     {
+      "t": "milk line",
+      "b": true
+     },
+     {
+      "t": " from a "
+     },
+     {
+      "t": "parlour",
+      "link": "parlour"
+     },
+     {
+      "t": " bulk tank, up to "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " blocks."
+     }
+    ],
+    [
+     {
+      "t": "The creamery works one kind of milk at a time: cow, sheep or goat."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Modes"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Sneak-right-click the controller to pick a mode; right-click to read it. Every batch of up to "
+    },
+    {
+     "t": "200",
+     "b": true
+    },
+    {
+     "t": " L is first held at "
+    },
+    {
+     "t": "63",
+     "b": true
+    },
+    {
+     "t": " C for "
+    },
+    {
+     "t": "30",
+     "b": true
+    },
+    {
+     "t": " minutes."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "BOTTLE:",
+      "b": true
+     },
+     {
+      "t": " pasteurized milk."
+     }
+    ],
+    [
+     {
+      "t": "CREAM:",
+      "b": true
+     },
+     {
+      "t": " cream at "
+     },
+     {
+      "t": "36%",
+      "b": true
+     },
+     {
+      "t": " fat and skim."
+     }
+    ],
+    [
+     {
+      "t": "BUTTER:",
+      "b": true
+     },
+     {
+      "t": " butter at "
+     },
+     {
+      "t": "80%",
+      "b": true
+     },
+     {
+      "t": " fat, in "
+     },
+     {
+      "t": "0.5",
+      "b": true
+     },
+     {
+      "t": " kg blocks, plus buttermilk."
+     }
+    ],
+    [
+     {
+      "t": "CHEESE:",
+      "b": true
+     },
+     {
+      "t": " cheddar pressed into "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " kg wheels, aged "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " game days. A wheel crafts into "
+     },
+     {
+      "t": "8",
+      "b": true
+     },
+     {
+      "t": " slices."
+     }
+    ],
+    [
+     {
+      "t": "CHEVRE:",
+      "b": true
+     },
+     {
+      "t": " goat milk only, "
+     },
+     {
+      "t": "17",
+      "b": true
+     },
+     {
+      "t": " kg of chèvre per "
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": " kg of milk."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "200",
+     "b": true
+    },
+    {
+     "t": " L of Holstein milk gives about "
+    },
+    {
+     "t": "9.1",
+     "b": true
+    },
+    {
+     "t": " kg of butter, or about "
+    },
+    {
+     "t": "20.5",
+     "b": true
+    },
+    {
+     "t": " kg of cheddar. Cheese leaves whey, which is bottled too."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Taking products"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Right-click the bottler with glass bottles. Butter comes off the churn, wheels and chèvre off the aging shelf, by hand or by hopper."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:bottled_milk",
+    "farmings:cream_bottle",
+    "farmings:butter",
+    "farmings:cheddar_wheel",
+    "farmings:chevre",
+    "farmings:whey_bottle"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The parts draw power: the heater "
+    },
+    {
+     "t": "12",
+     "b": true
+    },
+    {
+     "t": " kW, separator and churn "
+    },
+    {
+     "t": "1.5",
+     "b": true
+    },
+    {
+     "t": " kW each. Keep products in a "
+    },
+    {
+     "t": "cold room",
+     "link": "cold-room"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

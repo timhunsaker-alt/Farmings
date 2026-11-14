@@ -1,0 +1,255 @@
+{
+ "id": "geese",
+ "title": "Geese",
+ "chapter": "animals",
+ "order": 110,
+ "icon": "farmings:goose_egg",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Three breeds: "
+    },
+    {
+     "t": "Embden",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Toulouse",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Chinese",
+     "b": true
+    },
+    {
+     "t": ". Embden and Toulouse spawn wild by rivers and swamps, Chinese geese on the plains. Tame them in a "
+    },
+    {
+     "t": "taming corral",
+     "link": "corral"
+    },
+    {
+     "t": " with grain. Geese run at the bird clock ("
+    },
+    {
+     "t": "time scales",
+     "link": "time-scales"
+    },
+    {
+     "t": ")."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Laying"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Geese lay in a season, from their first year on. A new world starts on "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " October, so the first eggs come about "
+    },
+    {
+     "t": "46",
+     "b": true
+    },
+    {
+     "t": " game days in."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Embden and Toulouse: "
+     },
+     {
+      "t": "15 Feb - 15 Jun",
+      "b": true
+     },
+     {
+      "t": ". Chinese: "
+     },
+     {
+      "t": "1 Feb - 30 Jun",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Eggs a year: Embden "
+     },
+     {
+      "t": "40",
+      "b": true
+     },
+     {
+      "t": ", Toulouse "
+     },
+     {
+      "t": "27.5",
+      "b": true
+     },
+     {
+      "t": ", Chinese "
+     },
+     {
+      "t": "55",
+      "b": true
+     },
+     {
+      "t": ". Eggs weigh "
+     },
+     {
+      "t": "170 g",
+      "b": true
+     },
+     {
+      "t": " (Chinese "
+     },
+     {
+      "t": "120 g",
+      "b": true
+     },
+     {
+      "t": ")."
+     }
+    ],
+    [
+     {
+      "t": "One gander serves "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " geese. Eggs hatch after "
+     },
+     {
+      "t": "30 days",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Grazing"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "On a grassy run a goose gets "
+    },
+    {
+     "t": "two-thirds",
+     "b": true
+    },
+    {
+     "t": " of its feed from grass, so it wears a run much faster than a hen. A goose needs "
+    },
+    {
+     "t": "320 g",
+     "b": true
+    },
+    {
+     "t": " a day in all; the grain feeder tops up the rest. In the "
+    },
+    {
+     "t": "coop",
+     "link": "coop"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " floor block holds "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " goose."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Guard geese"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A tame goose honks and charges a hostile mob, or a player who isn't the coop's owner, on its run or within "
+    },
+    {
+     "t": "4 blocks",
+     "b": true
+    },
+    {
+     "t": " of it. It bites for "
+    },
+    {
+     "t": "1 damage",
+     "b": true
+    },
+    {
+     "t": " a second. Chinese geese guard at twice the range."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:goose_egg",
+    "farmings:goose",
+    "farmings:cooked_goose",
+    "farmings:down"
+   ]
+  }
+ ]
+}

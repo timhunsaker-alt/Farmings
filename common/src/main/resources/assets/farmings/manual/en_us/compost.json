@@ -1,0 +1,303 @@
+{
+ "id": "compost",
+ "title": "Compost windrow",
+ "chapter": "waste",
+ "order": 20,
+ "icon": "farmings:compost",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A compost windrow turns manure, litter and straw into fertilizer."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A straight row of "
+     },
+     {
+      "t": "compost pad",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "4-64",
+      "b": true
+     },
+     {
+      "t": " cells long."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "compost controller",
+      "b": true
+     },
+     {
+      "t": " at one end. It takes inputs by belt, hopper or hand."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "windrow turner",
+      "b": true
+     },
+     {
+      "t": " at the other end. It runs on Wildcatter power ("
+     },
+     {
+      "t": "41 kW",
+      "b": true
+     },
+     {
+      "t": ")."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "CPPPPPPT"
+     ]
+    }
+   ],
+   "key": {
+    "C": "farmings:compost_controller",
+    "P": "farmings:compost_pad",
+    "T": "farmings:windrow_turner"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The pile"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Put in manure ("
+    },
+    {
+     "t": "50 kg",
+     "b": true
+    },
+    {
+     "t": " items), poultry litter, separated digestate solids, straw, water ("
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " bucket is "
+    },
+    {
+     "t": "1,000 kg",
+     "b": true
+    },
+    {
+     "t": ") and spoiled food. The pile needs a carbon-to-nitrogen ratio of "
+    },
+    {
+     "t": "20-40",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "40-65%",
+     "b": true
+    },
+    {
+     "t": " moisture. Manure alone is too wet; straw adds carbon, litter brings both into range."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A working mix: "
+    },
+    {
+     "t": "500 kg",
+     "b": true
+    },
+    {
+     "t": " of manure, "
+    },
+    {
+     "t": "200 kg",
+     "b": true
+    },
+    {
+     "t": " of barley straw and "
+    },
+    {
+     "t": "100 kg",
+     "b": true
+    },
+    {
+     "t": " of litter is C:N "
+    },
+    {
+     "t": "26",
+     "b": true
+    },
+    {
+     "t": " at "
+    },
+    {
+     "t": "61%",
+     "b": true
+    },
+    {
+     "t": " moisture."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Sneak-right-click the controller to start. The readout names any fault: TOO WET, TOO DRY, NEEDS CARBON or NEEDS NITROGEN."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Turning and finishing"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The turner turns the pile every "
+     },
+     {
+      "t": "11.2",
+      "b": true
+     },
+     {
+      "t": " real days, about "
+     },
+     {
+      "t": "0.75",
+      "b": true
+     },
+     {
+      "t": " game days. Without power the pile waits."
+     }
+    ],
+    [
+     {
+      "t": "After "
+     },
+     {
+      "t": "56",
+      "b": true
+     },
+     {
+      "t": " real days ("
+     },
+     {
+      "t": "3.7",
+      "b": true
+     },
+     {
+      "t": " game days) and "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " turns, it is compost."
+     }
+    ],
+    [
+     {
+      "t": "Finished compost weighs "
+     },
+     {
+      "t": "42.5%",
+      "b": true
+     },
+     {
+      "t": " of what went in, as "
+     },
+     {
+      "t": "10 kg",
+      "b": true
+     },
+     {
+      "t": " items."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:compost"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "One compost item is one use of bone meal on a crop, sapling or grass. Use it by hand or load it into the gantry's spreader. See "
+    },
+    {
+     "t": "the field gantry",
+     "link": "field-gantry"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "manure",
+     "link": "manure"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

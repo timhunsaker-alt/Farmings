@@ -1,0 +1,328 @@
+{
+ "id": "sheep-shed",
+ "title": "The sheep shed",
+ "chapter": "buildings",
+ "order": 40,
+ "icon": "farmings:shed_controller",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Home for your "
+    },
+    {
+     "t": "sheep",
+     "link": "sheep"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "goats",
+     "link": "goats"
+    },
+    {
+     "t": ": a bedded pen, hay, water, and a fenced pasture to graze by day."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "shed controller",
+      "b": true
+     },
+     {
+      "t": " on the floor, touching the pen."
+     }
+    ],
+    [
+     {
+      "t": "Sheep pen",
+      "b": true
+     },
+     {
+      "t": " floor joined to it: at least "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " blocks, at most "
+     },
+     {
+      "t": "256",
+      "b": true
+     },
+     {
+      "t": ". Add "
+     },
+     {
+      "t": "lambing pens",
+      "b": true
+     },
+     {
+      "t": " for ewes about to lamb."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "hay feeder",
+      "b": true
+     },
+     {
+      "t": " and a "
+     },
+     {
+      "t": "water trough",
+      "b": true
+     },
+     {
+      "t": " touching the pen."
+     }
+    ],
+    [
+     {
+      "t": "Optional: a "
+     },
+     {
+      "t": "pasture gate",
+      "b": true
+     },
+     {
+      "t": " touching the pen, opening onto fenced grass of up to "
+     },
+     {
+      "t": "4,096",
+      "b": true
+     },
+     {
+      "t": " blocks."
+     }
+    ],
+    [
+     {
+      "t": "Walls and fences are up to you; the shed doesn't check them."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      ".H..W.",
+      "CPPPPL",
+      ".PPPPL",
+      "..G..."
+     ]
+    }
+   ],
+   "key": {
+    "C": "farmings:shed_controller",
+    "P": "farmings:sheep_pen",
+    "L": "farmings:lambing_pen",
+    "G": "farmings:pasture_gate",
+    "H": "farmings:hay_feeder",
+    "W": "farmings:water_trough"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The day"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " pen blocks hold "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " sheep; a goat takes "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " blocks. Each pen run holds one species."
+     }
+    ],
+    [
+     {
+      "t": "The controller takes in tame sheep within "
+     },
+     {
+      "t": "48",
+      "b": true
+     },
+     {
+      "t": " blocks until it is full."
+     }
+    ],
+    [
+     {
+      "t": "In clear weather the flock goes out by day. A grazed grass block gives "
+     },
+     {
+      "t": "1.5",
+      "b": true
+     },
+     {
+      "t": " kg of dry matter and turns to dirt; grass spreads back."
+     }
+    ],
+    [
+     {
+      "t": "At dusk or in rain they come home to hay ("
+     },
+     {
+      "t": "85",
+      "b": true
+     },
+     {
+      "t": " kg of dry matter a block) and water."
+     }
+    ],
+    [
+     {
+      "t": "A ewe due within "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " real days goes to a free lambing pen and stays "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " real days after lambing."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Bedding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Put straw in by hand or hopper: loose straw or a straw bale, up to "
+     },
+     {
+      "t": "1,000",
+      "b": true
+     },
+     {
+      "t": " kg. Each housed sheep uses "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " kg a day."
+     }
+    ],
+    [
+     {
+      "t": "A hopper under the controller pulls out manure items of "
+     },
+     {
+      "t": "50",
+      "b": true
+     },
+     {
+      "t": " kg. The store holds "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " items."
+     }
+    ],
+    [
+     {
+      "t": "A full store or no clean straw makes the bedding dirty, which costs health."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:straw",
+    "farmings:straw_bale",
+    "farmings:manure"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Add a "
+    },
+    {
+     "t": "shearing shed",
+     "link": "shearing-shed"
+    },
+    {
+     "t": " and a "
+    },
+    {
+     "t": "sheep dog",
+     "link": "sheep-dog"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

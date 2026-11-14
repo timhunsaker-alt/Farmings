@@ -1,0 +1,294 @@
+{
+ "id": "conveyors",
+ "title": "Belts and augers",
+ "chapter": "fields",
+ "order": 40,
+ "icon": "farmings:farm_belt",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Belts and augers carry crops, feed and manure between your machines."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:farm_belt",
+    "farmings:farm_belt_drive",
+    "farmings:grain_auger",
+    "farmings:grain_auger_drive"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Belt conveyor"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Lay "
+     },
+     {
+      "t": "farm belt",
+      "b": true
+     },
+     {
+      "t": " cells in a line. Place a cell one block higher or lower to make a slope, at most "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " in "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": ". Two slopes closer than "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " cells read TOO STEEP."
+     }
+    ],
+    [
+     {
+      "t": "Every run needs a "
+     },
+     {
+      "t": "belt drive",
+      "b": true
+     },
+     {
+      "t": " on Wildcatter power: "
+     },
+     {
+      "t": "7.5 kW",
+      "b": true
+     },
+     {
+      "t": " at "
+     },
+     {
+      "t": "480 V",
+      "b": true
+     },
+     {
+      "t": " for each "
+     },
+     {
+      "t": "30 m",
+      "b": true
+     },
+     {
+      "t": " of run."
+     }
+    ],
+    [
+     {
+      "t": "Items ride at "
+     },
+     {
+      "t": "2 m/s",
+      "b": true
+     },
+     {
+      "t": ", so a "
+     },
+     {
+      "t": "20",
+      "b": true
+     },
+     {
+      "t": "-block run takes "
+     },
+     {
+      "t": "10 s",
+      "b": true
+     },
+     {
+      "t": ". You can see them on the belt."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Grain auger"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "For grain, meal and seed only. It runs straight in any direction, up to "
+     },
+     {
+      "t": "45°",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "It moves "
+     },
+     {
+      "t": "2,700 bu/h",
+      "b": true
+     },
+     {
+      "t": " of corn, about "
+     },
+     {
+      "t": "19 kg/s",
+      "b": true
+     },
+     {
+      "t": ", however long it is."
+     }
+    ],
+    [
+     {
+      "t": "An "
+     },
+     {
+      "t": "auger drive",
+      "b": true
+     },
+     {
+      "t": " ("
+     },
+     {
+      "t": "3.7 kW",
+      "b": true
+     },
+     {
+      "t": ") powers up to "
+     },
+     {
+      "t": "9",
+      "b": true
+     },
+     {
+      "t": " blocks of auger. Longer runs need a second drive."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Loading and unloading"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A run picks up what drops on its tail: a hopper, a machine's output or the gantry's headland stop."
+     }
+    ],
+    [
+     {
+      "t": "It delivers into whatever its head touches: the "
+     },
+     {
+      "t": "silo",
+      "link": "silo"
+     },
+     {
+      "t": " blower, a grain bin, the "
+     },
+     {
+      "t": "feed mill",
+      "link": "feed-mill"
+     },
+     {
+      "t": ", a barn feeder, another belt, a hopper or a chest."
+     }
+    ],
+    [
+     {
+      "t": "If the head is full, the run stops and keeps its load. With no power the drive reads NO POWER."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Recipes"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Belt: "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " leather over "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " iron makes "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Auger: iron, stick, iron makes "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,275 @@
+{
+ "id": "ducks",
+ "title": "Ducks",
+ "chapter": "animals",
+ "order": 90,
+ "icon": "farmings:duck_egg",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Four breeds: "
+    },
+    {
+     "t": "Pekin",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Khaki Campbell",
+     "b": true
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "Mallard",
+     "b": true
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "Muscovy",
+     "b": true
+    },
+    {
+     "t": ". Wild ducks spawn near water in swamps, rivers and mangrove swamps. They follow grain, and you tame them in a "
+    },
+    {
+     "t": "taming corral",
+     "link": "corral"
+    },
+    {
+     "t": ". Ducks swim, and go out on the run even in rain."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Ducks run at the bird clock, "
+    },
+    {
+     "t": "1 game day = 3 real days",
+     "b": true
+    },
+    {
+     "t": " ("
+    },
+    {
+     "t": "time scales",
+     "link": "time-scales"
+    },
+    {
+     "t": ")."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Laying and breeding"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "First egg at "
+     },
+     {
+      "t": "26 weeks",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Eggs a year: Pekin "
+     },
+     {
+      "t": "140",
+      "b": true
+     },
+     {
+      "t": ", Khaki Campbell "
+     },
+     {
+      "t": "250",
+      "b": true
+     },
+     {
+      "t": ", Mallard "
+     },
+     {
+      "t": "35",
+      "b": true
+     },
+     {
+      "t": ", Muscovy "
+     },
+     {
+      "t": "90",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "One drake serves up to "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " ducks; eggs stay fertile for "
+     },
+     {
+      "t": "21",
+      "b": true
+     },
+     {
+      "t": " real days."
+     }
+    ],
+    [
+     {
+      "t": "Eggs hatch after "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": " days; Muscovy eggs take "
+     },
+     {
+      "t": "35",
+      "b": true
+     },
+     {
+      "t": ". Muscovies are good sitters; Pekins seldom sit."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The pond"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Ducks need "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " water block per "
+    },
+    {
+     "t": "4",
+     "b": true
+    },
+    {
+     "t": " ducks, in or touching the "
+    },
+    {
+     "t": "coop",
+     "link": "coop"
+    },
+    {
+     "t": "'s run. A duck short of water loses "
+    },
+    {
+     "t": "5%",
+     "b": true
+    },
+    {
+     "t": " of its health a game day, but never dies of it."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Keeping"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "In the coop, "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " floor block holds "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " ducks, and each needs "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " run blocks."
+     }
+    ],
+    [
+     {
+      "t": "A killed duck drops "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " down item as well as meat."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:duck_egg",
+    "farmings:duck",
+    "farmings:cooked_duck",
+    "farmings:down",
+    "farmings:down_jacket"
+   ]
+  }
+ ]
+}

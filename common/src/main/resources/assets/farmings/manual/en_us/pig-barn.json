@@ -1,0 +1,314 @@
+{
+ "id": "pig-barn",
+ "title": "The pig barn",
+ "chapter": "buildings",
+ "order": 80,
+ "icon": "farmings:pig_barn_controller",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Slatted pens for your "
+    },
+    {
+     "t": "pigs",
+     "link": "pigs"
+    },
+    {
+     "t": ", with farrowing crates, heat lamps for the piglets and a manure pit under the floor."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "pig barn controller",
+      "b": true
+     },
+     {
+      "t": " touching the pen floor."
+     }
+    ],
+    [
+     {
+      "t": "Slatted floor:",
+      "b": true
+     },
+     {
+      "t": " at least "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " blocks. Each joined run of it is one pen, for one group: sows, growers or a boar."
+     }
+    ],
+    [
+     {
+      "t": "Farrowing crates",
+      "b": true
+     },
+     {
+      "t": ", one block each, for sows and their litters, part of the pen."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "hay feeder",
+      "b": true
+     },
+     {
+      "t": " (the pig feeder) and a "
+     },
+     {
+      "t": "water trough",
+      "b": true
+     },
+     {
+      "t": " (the drinker) touching the pen."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "heat lamp",
+      "b": true
+     },
+     {
+      "t": " within "
+     },
+     {
+      "t": "3",
+      "b": true
+     },
+     {
+      "t": " blocks above each crate, on Wildcatter power ("
+     },
+     {
+      "t": "250",
+      "b": true
+     },
+     {
+      "t": " W)."
+     }
+    ],
+    [
+     {
+      "t": "Optional: a "
+     },
+     {
+      "t": "pasture gate",
+      "b": true
+     },
+     {
+      "t": " onto fenced grass, where pigs root by day."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      ".H..W.",
+      "CSSSSX",
+      ".SSSSX",
+      "..G..."
+     ]
+    },
+    {
+     "name": "layer 3",
+     "rows": [
+      ".....L",
+      ".....L"
+     ]
+    }
+   ],
+   "key": {
+    "C": "farmings:pig_barn_controller",
+    "S": "farmings:slatted_floor",
+    "X": "farmings:farrowing_crate",
+    "H": "farmings:hay_feeder",
+    "W": "farmings:water_trough",
+    "G": "farmings:pasture_gate",
+    "L": "farmings:heat_lamp"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Running it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The controller takes in tame pigs within "
+     },
+     {
+      "t": "48",
+      "b": true
+     },
+     {
+      "t": " blocks."
+     }
+    ],
+    [
+     {
+      "t": "One block holds one pig of "
+     },
+     {
+      "t": "45",
+      "b": true
+     },
+     {
+      "t": " kg or more, or two smaller ones. Sows and boars take "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " blocks."
+     }
+    ],
+    [
+     {
+      "t": "A feeder serves "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " pigs and a drinker "
+     },
+     {
+      "t": "12",
+      "b": true
+     },
+     {
+      "t": "; the readout shows the room."
+     }
+    ],
+    [
+     {
+      "t": "A sow due within "
+     },
+     {
+      "t": "5",
+      "b": true
+     },
+     {
+      "t": " days moves to a free crate and stays until weaning. Piglets without a powered lamp get cold and lose health."
+     }
+    ],
+    [
+     {
+      "t": "Manure falls through the slats into the pit: "
+     },
+     {
+      "t": "0.5",
+      "b": true
+     },
+     {
+      "t": " m³ of pit per pen block. A full pit makes the barn dirty."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Slurry"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A "
+    },
+    {
+     "t": "slurry pump",
+     "b": true
+    },
+    {
+     "t": " ("
+    },
+    {
+     "t": "1.5",
+     "b": true
+    },
+    {
+     "t": " kW) moves the slurry along "
+    },
+    {
+     "t": "slurry pipe",
+     "b": true
+    },
+    {
+     "t": " to a "
+    },
+    {
+     "t": "digester",
+     "link": "digester"
+    },
+    {
+     "t": " feed pit or a "
+    },
+    {
+     "t": "slurry store",
+     "b": true
+    },
+    {
+     "t": " of "
+    },
+    {
+     "t": "100",
+     "b": true
+    },
+    {
+     "t": " m³."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:slurry_pump",
+    "farmings:slurry_pipe",
+    "farmings:slurry_store"
+   ]
+  }
+ ]
+}

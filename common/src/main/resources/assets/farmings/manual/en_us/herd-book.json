@@ -1,0 +1,188 @@
+{
+ "id": "herd-book",
+ "title": "The herd book",
+ "chapter": "getting_started",
+ "order": 20,
+ "icon": "farmings:herd_book",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "The herd book keeps your breeding records. Craft it from a book and quill and a wheat, with no grid shape needed."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:herd_book",
+    "minecraft:writable_book",
+    "minecraft:wheat"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Using it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Right-click an animal",
+      "b": true
+     },
+     {
+      "t": " with the book to record it. Recording the same animal again replaces its page."
+     }
+    ],
+    [
+     {
+      "t": "Use it in the air",
+      "b": true
+     },
+     {
+      "t": " to read it as a book."
+     }
+    ],
+    [
+     {
+      "t": "It holds "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " animals, one page each."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "What a page shows"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Each page is keyed by the animal's herd ID, the first "
+    },
+    {
+     "t": "8",
+     "b": true
+    },
+    {
+     "t": " characters of its genome code. It lists:"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "breed or cross, sex and birth day;"
+     }
+    ],
+    [
+     {
+      "t": "dam and sire IDs (founders say \"founder\");"
+     }
+    ],
+    [
+     {
+      "t": "calves, and whether a heifer is a freemartin;"
+     }
+    ],
+    [
+     {
+      "t": "the eight trait scores, dressing % and marbling grade."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Use it to pick sires and dams and to spot close relatives before you "
+    },
+    {
+     "t": "breed",
+     "link": "breeding"
+    },
+    {
+     "t": ". The scores are explained under "
+    },
+    {
+     "t": "genes and traits",
+     "link": "genes"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The stud book"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Horses have their own "
+    },
+    {
+     "t": "stud book",
+     "b": true
+    },
+    {
+     "t": ", crafted from a book and quill and leather. It holds up to "
+    },
+    {
+     "t": "64",
+     "b": true
+    },
+    {
+     "t": " horses, with breed, colour, speed gene, fitness, races, wins and best times, plus sire, dam and grandparents. See "
+    },
+    {
+     "t": "horses",
+     "link": "horses"
+    },
+    {
+     "t": " and "
+    },
+    {
+     "t": "the race track",
+     "link": "race-track"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:stud_book"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,322 @@
+{
+ "id": "meat",
+ "title": "Meat and food",
+ "chapter": "food",
+ "order": 60,
+ "icon": "farmings:cooked_prime_steak",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Meat drops from an animal when it dies. Nothing is sold: food is for eating and for making other food."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Beef"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "The carcass is "
+     },
+     {
+      "t": "63%",
+      "b": true
+     },
+     {
+      "t": " of live weight for beef breeds, "
+     },
+     {
+      "t": "58%",
+      "b": true
+     },
+     {
+      "t": " for dairy. One item stands for "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " kg."
+     }
+    ],
+    [
+     {
+      "t": "Steaks are graded by marbling: "
+     },
+     {
+      "t": "Select",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "Choice",
+      "b": true
+     },
+     {
+      "t": " or "
+     },
+     {
+      "t": "Prime",
+      "b": true
+     },
+     {
+      "t": ". Wagyu give more steaks."
+     }
+    ],
+    [
+     {
+      "t": "The rest drops as vanilla beef, plus "
+     },
+     {
+      "t": "1-3",
+      "b": true
+     },
+     {
+      "t": " leather."
+     }
+    ],
+    [
+     {
+      "t": "Cooked Select steak is vanilla steak ("
+     },
+     {
+      "t": "8",
+      "b": true
+     },
+     {
+      "t": " hunger); Choice gives "
+     },
+     {
+      "t": "9",
+      "b": true
+     },
+     {
+      "t": ", Prime "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:select_steak",
+    "farmings:choice_steak",
+    "farmings:prime_steak",
+    "farmings:cooked_prime_steak"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Lamb, mutton, kid and chevon"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Sheep under a year give lamb chops, older ones mutton chops. One item per "
+     },
+     {
+      "t": "2.5",
+      "b": true
+     },
+     {
+      "t": " kg of meat."
+     }
+    ],
+    [
+     {
+      "t": "Goats under "
+     },
+     {
+      "t": "9",
+      "b": true
+     },
+     {
+      "t": " months give kid chops, older ones chevon chops."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:lamb_chop",
+    "farmings:mutton_chop",
+    "farmings:kid_chop",
+    "farmings:chevon_chop"
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Pork"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Pigs dress out at "
+    },
+    {
+     "t": "70%",
+     "b": true
+    },
+    {
+     "t": ", giving hams, chops, bellies, shoulders and fat. See "
+    },
+    {
+     "t": "pigs",
+     "link": "pigs"
+    },
+    {
+     "t": " and the "
+    },
+    {
+     "t": "curing room",
+     "link": "curing-room"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Poultry and eggs"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "See the bird pages, such as "
+    },
+    {
+     "t": "chickens",
+     "link": "chickens"
+    },
+    {
+     "t": ", and "
+    },
+    {
+     "t": "eggs",
+     "link": "eggs"
+    },
+    {
+     "t": "."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Cooking and keeping"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Cook raw meat in a furnace ("
+     },
+     {
+      "t": "200",
+      "b": true
+     },
+     {
+      "t": " ticks), smoker ("
+     },
+     {
+      "t": "100",
+      "b": true
+     },
+     {
+      "t": ") or campfire ("
+     },
+     {
+      "t": "600",
+      "b": true
+     },
+     {
+      "t": ")."
+     }
+    ],
+    [
+     {
+      "t": "Raw steak keeps "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " days in a "
+     },
+     {
+      "t": "cold room",
+      "link": "cold-room"
+     },
+     {
+      "t": " and "
+     },
+     {
+      "t": "1",
+      "b": true
+     },
+     {
+      "t": " day out. Cooked steak keeps "
+     },
+     {
+      "t": "3.5",
+      "b": true
+     },
+     {
+      "t": " days cold."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Horses are not kept for meat."
+    }
+   ]
+  }
+ ]
+}
