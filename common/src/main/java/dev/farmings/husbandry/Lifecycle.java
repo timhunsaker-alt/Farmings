@@ -9,7 +9,7 @@ import java.util.OptionalDouble;
 public final class Lifecycle {
 	/** Heat cycle, about 21 days (range 17-24): LSU AgCenter. */
 	public static final double HEAT_CYCLE_DAYS = 21;
-	/** Standard lactation record, 305 days (Feedipedia; TO VERIFY in that file). */
+	/** Standard lactation record, 305 days (ICAR glossary, "Standard lactation": https://wiki.icar.org/index.php/Glossary:_Standard_lactation). */
 	public static final double LACTATION_DAYS = 305;
 	/** Conventional dry period, 60 days (Dairy Herd, Farmtario). */
 	public static final double DRY_DAYS = 60;

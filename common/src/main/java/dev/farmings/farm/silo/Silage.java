@@ -15,7 +15,7 @@ public final class Silage {
 	public static final double FILL_LOSS = 0.015 + 0.01;
 	/** Spread evenly over the 21 days of fermenting: 2.5% (Muck: 1-4%). */
 	public static final double FERMENT_LOSS = 0.025;
-	/** After fermenting, a day: about 4.3% over 2 years in an oxygen-limiting tower (Muck, ARS; TO VERIFY), *derived*. */
+	/** After fermenting, a day: about 4.3% over 2 years in an oxygen-limiting tower (Muck, ARS, as quoted by a news article), *derived*. */
 	public static final double STORAGE_LOSS_PER_DAY = 0.043 / 730;
 
 	/** Share of the dry matter now in the silo lost between {@code fromDays} and {@code toDays} after the last fill. */
@@ -36,7 +36,7 @@ public final class Silage {
 	public static final double CHOPPED_CORN_DM = 0.35;
 	public static final double CORN_SILAGE_DM = 0.34;
 	public static final double HAYLAGE_DM = 0.375;
-	/** Unloader rate: 400 lb/min of haylage (Harvestore XL, TO VERIFY), kg as-fed a second. */
+	/** Unloader rate: 400 lb/min of haylage (Harvestore XL), kg as-fed a second. */
 	public static final double UNLOAD_KG_PER_S = 400 * 0.45359237 / 60;
 	/** Bulk density of grain, kg/m3: 56, 32 and 48 lb per 1.2445 ft3 bushel (Ohio State AGF-503). */
 	public static final double CORN_DENSITY = 56 * 0.45359237 / (1.2445 * 0.0283168);

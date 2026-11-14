@@ -56,7 +56,7 @@ Values in brackets are what the game uses (the middle of the range).
 - **Merino:** ewe weight 50 kg from fine-woolled and control Merino ewes at Grootfontein (50.45 and 51.01 kg,
   [S. Afr. J. Anim. Sci. 37(1)](https://scielo.org.za/pdf/sajas/v37n1/05.pdf)), close to the CSIRO Temora trial (S.A. Merino
   49.0 kg, [CSIRO EA9800288](https://publish.csiro.au/AN/EA9800288)). Fleece, micron, staple and lambing from the
-  [Canadian Co-operative Wool Growers breed page](https://www.wool.ca/breeders-directory/sheep/merino) (**TO VERIFY**: its ewe
+  [Canadian Co-operative Wool Growers breed page](https://www.wool.ca/breeders-directory/sheep/merino) (confirmed 2026-11-14; its ewe
   weight, 90-115 kg, is far above the research figures and is not used). Micron 20-22 also from
   [Wool measurement](https://en.wikipedia.org/wiki/Wool_measurement) listings. Yield 65-75% (was 45-55%, a Rambouillet range):
   [NMSU Guide B-409](https://pubs.nmsu.edu/_b/B409/), Table 4, "Merino (Medium)", 21-22 µm, clean wool yield "65-75". The
@@ -237,7 +237,7 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
 ### Sheep dog (Border Collie)
 - **The animal:** a working Border Collie, `farmings:sheep_dog`.
   - Height 53 cm at the withers for males, females slightly less ([Kennel Club standard](https://www.kusa.co.za/images/HERDING%20GROUP%202025/Border%20Collie%20-%20KC%20%5B02-2017%5D.pdf)).
-  - Weight 14-25 kg for males and 12-19 kg for females (**TO VERIFY**: Wikipedia only). The model is drawn to that size.
+  - Weight 14-25 kg for males and 12-19 kg for females (**TO VERIFY**: Wikipedia only; searched for a breed-standard weight again 2026-11-14, the pages did not load). The model is drawn to that size.
 - **Wild and taming (taming.md):**
   - Dogs spawn wild in pairs in plains, meadows and windswept hills, the sheep biomes, at weight 2 *(proposed)*.
   - A wild dog keeps 6 blocks from a player with empty hands, and follows raw meat (beef, mutton, chicken, Farmings meats).
@@ -267,7 +267,7 @@ Sheep are short-day breeders. Ewes "will typically begin cycling when daylight h
 - **Range:** open trials work the dog 300-500 yards out (was 200-600, from a snippet). [USBCHA](https://usbcha.com/resources/sheepdog-trials-explained/):
   "working 350 or 500 yards apart", and a dog that "lies down or flanks right when 300 yards away". The game uses 32 blocks for the gather and 64 for hearing the whistle *(proposed: shrunk to Minecraft's
   scale)*.
-- **Speed:** a vanilla wolf's speed (NOT FOUND for a working collie).
+- **Speed:** a vanilla wolf's speed (NOT FOUND for a working collie; searched for working Border Collie running speed again 2026-11-14, the pages did not load).
 - **Not in this pass:** dogs breeding, guarding against wolves, and herding cattle or fowl.
 
 ### Built, 2026-11-11 (loose ends)

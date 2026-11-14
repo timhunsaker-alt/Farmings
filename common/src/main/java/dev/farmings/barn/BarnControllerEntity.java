@@ -369,7 +369,7 @@ public class BarnControllerEntity extends BlockEntity {
 		TroughEntity trough = troughFor(level, s);
 		double hay = feeder == null ? 0 : feeder.dryMatterKg();
 		double water = trough == null ? 0 : trough.litres();
-		Intake.Result r = Intake.step(dmi, 0, ticks, hay, water);
+		Intake.Result r = Intake.step(dmi, 0, ticks, hay, water, Intake.manureKgPerDay(cow.stage()).orElse(-1));
 		if (feeder != null) {
 			if (r.eatenKg() > 0) {
 				cow.recordRation(feeder.analysis());

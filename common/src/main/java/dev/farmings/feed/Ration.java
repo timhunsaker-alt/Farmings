@@ -47,7 +47,7 @@ public final class Ration {
 		return Math.max(0, Math.min(1, v));
 	}
 
-	/** Premix counts as fed at 1% of DM or more: 0.3 kg in a cow's 22 kg of DM is 1.4% (derived). */
+	/** Premix counts as fed at 1% of DM or more: 0.265 kg in a cow's 22 kg of DM is 1.2% (derived). */
 	public static final double PREMIX_SHARE = 0.01;
 
 	/** Cow in milk: CP 15-18%, NDF 25-30%, forage 40% or more, premix fed. */
@@ -66,20 +66,45 @@ public final class Ration {
 		return (clamp((a.cp - 8) / (15 - 8)) + clamp((a.tdn - 50) / (66 - 50))) / 2;
 	}
 
+	/**
+	 * Ewes and does in milk: CP 11.6% or more, the low end of NRC 2007's 11.6-15.5% for early lactation (Penn State). The score falls
+	 * straight to 0 at CP 8% *(proposed shape, as the lamb's)*.
+	 */
+	public static double eweScore(Analysis a) {
+		return clamp((a.cp - 8) / (11.6 - 8));
+	}
+
 	/** Laying hens: CP 16% or more, Ca 3-4% (Alabama ANR-2913). */
 	public static double layerScore(Analysis a) {
 		return (clamp((a.cp - 9) / (16 - 9)) + clamp(a.ca / 3.0)) / 2;
 	}
 
-	/** Milk x (0.67 + 0.33 x score): a TMR gives about 49% more milk than poor forage alone (Kolver & Muller 1998, TO VERIFY). */
+	/** Milk x (0.67 + 0.33 x score): "milk production (29.6 vs. 44.1 kg/d)" on pasture and TMR, 29.6 / 44.1 = 0.67 (Kolver & Muller 1998). */
 	public static double milkFactor(Analysis a) {
 		return 0.67 + 0.33 * dairyScore(a);
 	}
 
-	/** Growth x (0.6 + 0.4 x score) (proposed floor; Penn State backgrounding range, TO VERIFY). */
+	/**
+	 * Growth x (0.29 + 0.71 x score): Penn State backgrounding, "Expected daily gain (pounds) 0.5 0.5 0.75 1.0 1.0 1.0 1.25 1.75", so the
+	 * worst ration gains 0.5 / 1.75 = 0.29 of the best *(derived)*.
+	 */
 	public static double growthFactor(Analysis a) {
-		return 0.6 + 0.4 * growingScore(a);
+		return GROWTH_FLOOR + (1 - GROWTH_FLOOR) * growingScore(a);
 	}
+
+	/** The growth factor at a score of 0: 0.5 / 1.75 lb a day (Penn State backgrounding) *(derived)*. */
+	public static final double GROWTH_FLOOR = 0.5 / 1.75;
+
+	/**
+	 * Ewe and doe milk x (0.83 + 0.17 x score): a low-protein diet gave "a decrease (P< 0·01) in daily milk yield of 0·53 kg (17%)"
+	 * (Robinson et al. 1979, Anim. Prod.), so 0.83 at worst *(derived)*.
+	 */
+	public static double eweMilkFactor(Analysis a) {
+		return EWE_MILK_FLOOR + (1 - EWE_MILK_FLOOR) * eweScore(a);
+	}
+
+	/** The ewe and doe milk factor at a score of 0: 17% less milk (Robinson et al. 1979) *(derived)*. */
+	public static final double EWE_MILK_FLOOR = 0.83;
 
 	/** Lamb growth x (0.8 + 0.2 x score): grain- and creep-fed lambs gain 20-30% more (UMN). */
 	public static double lambFactor(Analysis a) {

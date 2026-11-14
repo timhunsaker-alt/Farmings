@@ -37,15 +37,16 @@ import net.minecraft.world.level.storage.ValueOutput;
  *   <li><b>Mill</b> (9.1 kW, 0.53 kg/s: Mississippi State's 4.8 kWh/t at 1.9 t/h): grain to meal 1 kg for 1 kg; loose alfalfa hay (10 kg)
  *       or an alfalfa bale (454 kg) to alfalfa meal; calcite to 16 kg of ground limestone (proposed); 4 cod or salmon to 1 kg of fish meal
  *       (proposed).</li>
- *   <li><b>Mixer</b> (56 kW, TO VERIFY): holds up to 2 t as fed (7.1 m3 x 80% at 350 kg/m3, proposed); one minute of real time (4 s of play
- *       at 15:1) after the last ingredient it mixes the batch into 25 kg ration items with the batch's analysis.</li>
+ *   <li><b>Mixer</b> (56 kW, 75 hp, TO VERIFY: Alltech, not found again 2026-11-14): holds up to 2.3 t as fed (7.1 m3 x 80% at 400 kg/m3;
+ *       Ag Proud: fill 75-95% of struck capacity, densities "25 to 32 pounds per cubic foot"); four minutes of real time (16 s of play at
+ *       15:1) after the last ingredient it mixes the batch into 25 kg ration items with the batch's analysis.</li>
  * </ul>
  */
 public class FeedMachineEntity extends BlockEntity implements ItemSink, WorldlyContainer, CircuitPart, Inspectable {
 	public static final double MILL_WATTS = 9100;
 	public static final double MIXER_WATTS = 56_000;
 	public static final int MILL_TICKS_PER_KG = (int) Math.round(20 / 0.53);
-	public static final double MIXER_KG = 2300;     // 7.1 m3 x 80% at 400 kg/m3 (TO VERIFY, Ag Proud; sourcing pass 2026-11-12)
+	public static final double MIXER_KG = 2300;     // 7.1 m3 x 80% at 400 kg/m3 (Ag Proud 2023, a trade article)
 	public static final int MIX_AFTER_TICKS = 320;     // 4 min after the last ingredient (Saskatchewan Agriculture), 16 s at 15:1
 	private static final int[] SLOTS = {0};
 

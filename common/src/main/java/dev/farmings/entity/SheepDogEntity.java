@@ -51,7 +51,10 @@ public class SheepDogEntity extends PathfinderMob implements Wild.Animal {
 	public static final double BEHIND = 6;
 	public static final double PRESSURE = 8;
 	public static final double ARRIVED = 2;
-	/** One raw meat item a day, 0.5 kg *(proposed; NOT FOUND)*; water about 1 L a day *(proposed: 50 mL/kg for a 20 kg dog)*. */
+	/**
+	 * One raw meat item a day, 0.5 kg: "dogs should consume 2-3% of their body weight in raw food each day" (Royal Kennel Club, sheep.md),
+	 * 2.5% of a 20 kg dog. Water about 1 L a day *(proposed: 50 mL/kg for a 20 kg dog)*.
+	 */
 	public static final double MEAT_KG_PER_DAY = 0.5;
 	public static final double WATER_L_PER_DAY = 1.0;
 

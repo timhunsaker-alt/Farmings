@@ -851,7 +851,7 @@ public class FarmingsGameTests {
 		helper.succeed();
 	}
 
-	/** Manure follows what she ate (2.23 kg per kg of dry matter): the first day is short of an item, the second makes one in the alley. */
+	/** A heifer makes 24 kg of manure a day on a full ration (ASAE D384.2): two days are short of an item, the third makes one in the alley. */
 	private static void cowMakesManure(GameTestHelper helper) {
 		ServerLevel level = helper.getLevel();
 		BlockPos c = helper.absolutePos(C);
@@ -865,9 +865,10 @@ public class FarmingsGameTests {
 			feeder.addBlock();
 		}
 		ctl.tend(level, 24_000);
-		helper.assertTrue(manureOnFloor(level, c) == 0, Component.literal("34 kg is not yet an item"));
 		ctl.tend(level, 24_000);
-		helper.assertTrue(manureOnFloor(level, c) == 1, Component.literal("69 kg makes one 50 kg item, found " + manureOnFloor(level, c)));
+		helper.assertTrue(manureOnFloor(level, c) == 0, Component.literal("48 kg is not yet an item"));
+		ctl.tend(level, 24_000);
+		helper.assertTrue(manureOnFloor(level, c) == 1, Component.literal("72 kg makes one 50 kg item, found " + manureOnFloor(level, c)));
 		helper.succeed();
 	}
 

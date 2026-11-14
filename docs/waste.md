@@ -25,8 +25,12 @@ become fertilizer. This follows how real farms use a digester and a solids separ
   ([MWPS-18 manure characteristics](https://dcr.am.virginia.gov/soil-and-water/document/manure-characteristics-mwps-18-1.pdf)).
   Its own note says real values vary by 30% or more. Milk yield predicts manure output better than body weight does for lactating
   cows, and dry cows, heifers and bulls need their own values ([Nennich et al., ASAE 2003](https://core.ac.uk/download/188063935.pdf)).
-  Game design values should come from the ASAE D384 table. **TO VERIFY.** (D384.2 is sold by ASABE and was not found free. MWPS-18
-  Table 6 says some of its values are "calculated or interpreted using diet based formulas being considered for the ASAE Standards D384".)
+  Game values come from ASAE D384.2, as reprinted by USDA NRCS, Table 4-5 "Dairy manure characterization—as excreted"
+  ([USDA NRCS reprint of ASAE D384.2](https://directives.nrcs.usda.gov/sites/default/files2/1712930943/17165.pdf)). A lactating cow
+  makes 60, 67, 74 and 81 kg a day at 50, 75, 100 and 125 lb of milk. A dry cow makes 39 kg and a heifer 24 kg.
+  Game: **67 kg a day** for a lactating cow (the 75 lb row), **39 kg** for a dry cow and **24 kg** for a heifer, on a full ration;
+  an underfed cow makes less in step. Bulls, steers and retired cows have no row, so they keep the Florida rate of 2.23 kg per kg of
+  dry matter eaten *(proposed)*. One manure item stays 50 kg (`Intake.java`).
 - Collection is by hand or by machine, not magic. A scraper (a real barn alley scraper) pushes it to a pit. Both are in Phase 1:
   hand-shoveling and a powered scraper on Wildcatter power (decided with Tim, 2026-11-07).
 - **If it is not collected**, the stall gets dirty. Dirty stalls lower the cow's health and milk quality, as on a real farm.
@@ -50,9 +54,11 @@ become fertilizer. This follows how real farms use a digester and a solids separ
 - Figures found (operating temperature, methane share and retention time are now sourced in `docs/multiblocks/digester.md`):
   - dairy manure is about **23 m3 biogas per wet tonne**, worth about **48 kWh of electricity per tonne**: "Dairy manure 23 48 62"
     ([Ontario OMAFA energy yields table](https://www.ontario.ca/files/2025-09/omafa-energy-yields-farm-based-anaerobic-digestion-system-25-015-en-2025-06-04.pdf), Table 1);
-  - **TO VERIFY** (pages would not load): methane yield 165-191 L per kg of volatile solids in a 21-day on-farm cycle ([Tropical Animal Science Journal 2020](https://doaj.org/article/5e6b6618f469415aa0b09149d1b5d9cd));
+  - methane yield **146 L per kg of volatile solids** in a laboratory digester at 25 days' retention (was quoted as 165-191 L in a 21-day
+    on-farm cycle; [Tropical Animal Science Journal 2020](https://doaj.org/article/5e6b6618f469415aa0b09149d1b5d9cd)). The game's digester uses
+    Ontario's figure above, not this one;
   - retention time 5 to 28 days, depending on the system ([Newfoundland biodigestion fact sheet](https://www.gov.nl.ca/ffa/files/1-Biodigestion-Fact-sheet.pdf)).
-- **A check on the numbers:** 50 kg of manure a day at 48 kWh/tonne is about 2.4 kWh of electricity per cow per day. That is small
+- **A check on the numbers:** 67 kg of manure a day at 48 kWh/tonne is about 3.2 kWh of electricity per lactating cow per day. That is small
   next to what a real parlor needs, so one barn's digester feeds a few lights and fans, not a grid. Do not inflate it.
 - **Biogas into Wildcatter:** biogas burns in a gas engine-generator. Wildcatter already has gas gensets at 480 V three-phase. Whether a
   Wildcatter genset can burn a Farmings fuel, or Wildcatter needs a small change (as Tailings needed one for slurry on the pipe),

@@ -5,7 +5,7 @@
 ## Parts
 | Part | Block | What it does |
 |---|---|---|
-| Shearing stand | `shearing_stand` | The shearing machine (an overhead motor and handpiece) and the controller. Runs on Wildcatter low-voltage power, **0.5 kW** *(proposed)*. **TO VERIFY** against a maker's sheet: a retailer lists the Lister Nexus overhead motor at "Motor power 250 W (1/3 HP)" ([Fane Valley Stores](https://www.fanevalleystores.com/product/127006/lister-nexus-motor-flexi-drive)); search snippets give 300 W for the Heiniger ONE and 700 W for the Lister Nexus Elite. Right-click reads it. |
+| Shearing stand | `shearing_stand` | The shearing machine (an overhead motor and handpiece) and the controller. Runs on Wildcatter low-voltage power, **0.5 kW** *(proposed)*, between the two Lister motors: the maker's booklet gives 250 W for the Lister Nexus and 700 W for the Lister Nexus Pro (confirmed 2026-11-14; a retailer also lists the Nexus at "Motor power 250 W (1/3 HP)", [Fane Valley Stores](https://www.fanevalleystores.com/product/127006/lister-nexus-motor-flexi-drive)). **TO VERIFY**: search snippets give 300 W for the Heiniger ONE (no maker's sheet found; searched again 2026-11-14; the page did not load). Right-click reads it. |
 | Catching pen | `catching_pen` | Slatted floor beside the stand that opens onto a sheep shed's pen. Sheep wait here to be caught. |
 | Wool table | `wool_table` | Beside the stand. Fleeces are skirted on it and kept (9 stacks). A hopper below takes them. |
 | Wool press | `wool_press` | Beside the table (optional). Bales every **8 fleeces** of one grade and colour *(proposed)*. A hopper below takes the bales. |

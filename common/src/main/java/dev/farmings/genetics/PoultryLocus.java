@@ -39,11 +39,11 @@ public enum PoultryLocus {
 	MUSCOVY_LAVENDER("muscovy_lavender", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "lav"}),
 	/** Muscovy chocolate: 0 +, 1 choc, sex-linked recessive (TO VERIFY: breeders). */
 	MUSCOVY_CHOCOLATE("muscovy_chocolate", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, true, new String[] {"+", "choc"}),
-	/** Coturnix fawn (Y, ASIP): 0 +, 1 Y; incomplete: one is Italian, two are Golden. */
+	/** Coturnix fawn (Y, ASIP): 0 +, 1 Y; incomplete: one is Italian, two are Golden ("Y*F2 > Y*Y > Y*N > Y*RB", Hiragaki et al. 2008). */
 	QUAIL_FAWN("quail_fawn", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, false, new String[] {"+", "Y"}),
 	/** Coturnix extended brown (E, MC1R): 0 +, 1 E; incomplete: one is Rosetta, two are Tibetan. */
 	QUAIL_BROWN("quail_brown", VisualLocus.Mode.DOMINANT_HIGH, 0, 1, false, false, new String[] {"+", "E"}),
-	/** Coturnix dotted white (S, EDNRB2): 0 +, 1 s, recessive; s/s is English White. */
+	/** Coturnix dotted white (S, EDNRB2): 0 +, 1 s, recessive ("Autosomal recessive", OMIA; Miwa et al. 2007); s/s is English White. */
 	QUAIL_WHITE("quail_white", VisualLocus.Mode.DOMINANT_LOW, 0, 1, false, false, new String[] {"+", "s"}),
 	// Geese (poultry.md, "Plumage genes"), 2026-11-13, appended so older birds' alleles and draws stay as they were.
 	/** Goose sex-linked dilution Sd (MLANA; Ollila et al. 2026, preprint): 0 sd+, 1 Sd, dominant, Z-linked. Two copies white, one pale. */

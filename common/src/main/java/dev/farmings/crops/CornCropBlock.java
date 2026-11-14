@@ -15,8 +15,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Corn (docs/crops.md): two blocks tall when grown (drawn tall from one block). At stage 7 (100 days) it is ready to chop for silage; 14
- * days later it is ripe for grain (114-day relative maturity) and turns dry.
+ * Corn (docs/crops.md): two blocks tall when grown (drawn tall from one block). At stage 7 (125 days) it is ready to chop for silage; 5
+ * days later it is ripe for grain (R6, 130 days) and turns dry.
  */
 public class CornCropBlock extends FieldCropBlock {
 	public static final BooleanProperty RIPE = BooleanProperty.create("ripe");

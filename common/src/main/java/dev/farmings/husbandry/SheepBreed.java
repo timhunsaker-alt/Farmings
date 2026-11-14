@@ -8,12 +8,13 @@ import java.util.Locale;
  */
 public enum SheepBreed {
 	// Ewe 50 kg (Grootfontein, S. Afr. J. Anim. Sci. 37); 1.25 lambs, 4-6 kg greasy, under 24 micron, 6-10 cm (Canadian Co-operative
-	// Wool Growers); yield 45-55% (SDSU, Rambouillet range, TO VERIFY). Ewe lambs bred at 70% for fine-wool breeds (Montana State).
-	MERINO("MER", Use.FINE_WOOL, 50, 1.25, 5.0, 21, 8, 0.70, 0.70),     // yield 65-75% (NMSU B409; sourcing pass 2026-11-12)
-	// Ewe 80-100 kg (Farmers Weekly, TO VERIFY); 1.8 lambs, 2.2-2.7 kg, 28-33 micron, 8-10 cm (Canadian Co-operative Wool Growers);
+	// Wool Growers); yield 65-75%, "Merino (Medium) 21-22 … 65-75" (NMSU B409, Table 4). Ewe lambs bred at 70% for fine-wool breeds (Montana State).
+	MERINO("MER", Use.FINE_WOOL, 50, 1.25, 5.0, 21, 8, 0.70, 0.70),
+	// Ewe 104 kg, "104.4 kg (230 lb) — Suffolk" (OMAFRA, choosing breeds); 1.8 lambs, 2.2-2.7 kg, 28-33 micron, 8-10 cm (Canadian Co-operative Wool Growers);
 	// yield 50-62% (Kentucky ASC-127).
 	SUFFOLK("SUF", Use.MEAT, 104, 1.8, 2.45, 30, 9, 0.56, 0.65),
-	// Ewe 70-100 kg, 1.5 lambs, 0.5-1 kg of shed wool (Canadian Co-operative Wool Growers, TO VERIFY). A hair sheep: no micron or yield.
+	// Ewe 77 kg, "77.1 kg (170 lb) — … Dorper" (OMAFRA); the wool growers give "70 - 100 kg- Ewes" and "150 %- Lamb/Ewe Percentage",
+	// with 0.5-1 kg of shed wool (Canadian Co-operative Wool Growers). A hair sheep: no micron or yield.
 	DORPER("DOR", Use.HAIR, 77, 1.5, 0.75, 0, 0, 0, 0.65),
 	// Ewe 73-82 kg, 4-5.5 kg, 29-33 micron, 10-15 cm, 55-65% (ASI via apparelsearch); 2.2 lambs (UW-Extension dairy sheep guide).
 	EAST_FRIESIAN("EFR", Use.DAIRY, 77, 2.2, 4.75, 31, 12.5, 0.60, 0.65);

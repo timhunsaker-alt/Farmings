@@ -125,15 +125,18 @@ public final class Swine {
 		return 2.2 * Math.pow(weightKg / 80.0, 0.75);
 	}
 
-	/** Water, L a day: finishers 7 at 80 kg, gestating sows and boars 17, lactating sows 28 (extension snippets, TO VERIFY). */
+	/**
+	 * Water, L a day (NDSU, livestock water requirements, gal/head/day): finishers "Finishing (100-250 lbs.)" "2 to 3", 9.5 L at 80 kg;
+	 * "Pregnant sows" "3 to 6", 17 L (also boars, *proposed*); "Lactating sows" "5 to 8", 25 L.
+	 */
 	public static double waterLPerDay(double weightKg, boolean adultBreeder, boolean lactating) {
 		if (lactating) {
-			return 28;
+			return 25;
 		}
 		if (adultBreeder) {
 			return 17;
 		}
-		return 7 * Math.pow(weightKg / 80.0, 0.75);
+		return 9.5 * Math.pow(weightKg / 80.0, 0.75);
 	}
 
 	/** Manure as excreted, kg a day (MWPS-18 Table 6): growing 4.9 at 100 kg by weight^0.75 (1.4 at 18 kg); sow 4.1; lactating 10.6; boar 2.8. */

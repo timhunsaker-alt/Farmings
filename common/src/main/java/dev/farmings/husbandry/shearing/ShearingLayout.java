@@ -19,7 +19,7 @@ public final class ShearingLayout {
 	public static final double SKIRTING_SHARE = 0.12;
 	/** Fleeces of one grade and colour in a bale *(proposed)*. */
 	public static final int BALE_FLEECES = 8;
-	/** The shearing machine's motor, watts *(proposed; no rating found)*. */
+	/** The shearing machine's motor, watts *(proposed)*: between the Lister Nexus (250 W) and Nexus Pro (700 W), from the maker's booklet. */
 	public static final double MOTOR_WATTS = 500;
 
 	public enum Cell { STAND, CATCHING_PEN, SHED_FLOOR, WOOL_TABLE, WOOL_PRESS, OTHER }

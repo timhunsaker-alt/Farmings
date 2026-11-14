@@ -48,6 +48,7 @@ class FowlTest {
 		assertEquals(0.218, Fowl.feedKgPerDay(Species.DUCK, 3.9), 1e-9);
 		assertEquals(0.200, Fowl.waterLPerDay(Species.CHICKEN, 2.0), 1e-9);
 		assertEquals(0.654, Fowl.waterLPerDay(Species.DUCK, 3.9), 1e-9);
+		assertEquals(0.016 * 2.3, Fowl.waterLPerDay(Species.QUAIL, 0.14), 1e-9, "quail drink about 2.3x their feed");
 		double turkeyHen = Fowl.feedKgPerDay(Species.TURKEY, 8.2);
 		assertTrue(turkeyHen > 0.28 && turkeyHen < 0.30, "about 290 g for an 8.2 kg hen: " + turkeyHen);
 	}

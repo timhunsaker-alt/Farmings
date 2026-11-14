@@ -2,12 +2,13 @@ package dev.farmings.husbandry;
 
 /** The three horse breeds (docs/animals/horses.md, Tim 2026-11-13); every figure is the "game uses" value there, with its source. */
 public enum HorseBreed {
-	// "15.2 to 17 hands", "1,000 to 1,300 pounds" (Mad Barn, TO VERIFY): 1,150 lb. MSTN C at 45% (proposed: not in Hill et al. 2010).
-	THOROUGHBRED("TB", "Thoroughbred", 522, 163, 0.45),
-	// "14.3 to 16 hands", "Approximately 1000 pounds" (Horse Illustrated, TO VERIFY). "C/C, 0.83; C/T, 0.14; T/T, 0.03" (Hill et al. 2010):
+	// "stands a little over 16 hands" and "weighs approximately 1,000 pounds" (America's Best Racing, The Jockey Club): 454 kg, 163 cm.
+	// MSTN C at 0.56: 1 minus the elite Thoroughbreds' T frequency, 0.443 (Hill et al. 2010, Table 1; derived).
+	THOROUGHBRED("TB", "Thoroughbred", 454, 163, 0.56),
+	// "14.3–16.2 hands" (Horse Illustrated): 159 cm; weight "Approximately 1000 pounds" NOT FOUND in a primary source (TO VERIFY). "C/C, 0.83; C/T, 0.14; T/T, 0.03" (Hill et al. 2010):
 	// C at 0.90.
-	QUARTER_HORSE("QH", "Quarter Horse", 454, 155, 0.90),
-	// "between 14.2 and 15.2 hands", "between 800 and 1,000 pounds" (Oklahoma State, TO VERIFY). Egyptian Arabians "T/T (0.90)" (Hill et al.
+	QUARTER_HORSE("QH", "Quarter Horse", 454, 159, 0.90),
+	// "averages 14.1 to 15.1 hands" (Arabian Horse Association): 150 cm; "between 800 and 1,000 pounds" (Oklahoma State, TO VERIFY). Egyptian Arabians "T/T (0.90)" (Hill et al.
 	// 2010); the rest C/T *(proposed)*: C at 0.05.
 	ARABIAN("ARA", "Arabian", 408, 150, 0.05);
 

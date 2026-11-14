@@ -13,7 +13,7 @@ public final class Digester {
 	public static final double RETENTION_DAYS = 20;
 	/** 23 m3 of biogas a wet tonne of dairy manure (Ontario OMAFA; Wildcatter's genset is calibrated on it). */
 	public static final double M3_PER_KG = 0.023;
-	/** Half the biogas heats the tank when there is no engine heat (MU Extension, TO VERIFY). */
+	/** Half the biogas heats the tank when there is no engine heat (MU Extension: 50%). */
 	public static final double HEATING_SHARE = 0.5;
 	/** Biogas, 60% CH4, about 1.2 kg/m3 (derived). */
 	public static final double KG_PER_M3 = 1.2;

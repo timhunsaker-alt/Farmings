@@ -32,7 +32,7 @@ the span as the working width.
 | Tool | Block | Work on each strip it passes | Speed | Power |
 |---|---|---|---|---|
 | Seed drill | `tool_seed_drill` | turns grass and dirt into farmland and sows one seed a block from its seed hopper | 8.0 km/h | draft 300 N a row *(2.4-3.7 m drills)*, rows at 0.19 m *(proposed: a 7.5 in drill)*, so about 3.5 kW per m of span at 8 km/h *(derived)* |
-| Combine / forage chopper | `tool_harvester` | grain crops: grain to the bin, straw left as a swath. Corn before 114 days and wilted alfalfa: chopped forage to the bin | 5.0 km/h | 6.0 kW + 3.3 kWh/t corn silage, 4.0 wilted alfalfa (forage harvester) |
+| Combine / forage chopper | `tool_harvester` | grain crops: grain to the bin, straw left as a swath. Corn before 130 days and wilted alfalfa: chopped forage to the bin | 5.0 km/h | 6.0 kW + 3.3 kWh/t corn silage, 4.0 wilted alfalfa (forage harvester) |
 | Mower | `tool_mower` | cuts mature alfalfa or grass into a swath on the ground; the plant drops to its regrowth stage | 11 km/h | 8.0 kW per m (disk mower-conditioner) |
 | Rake | `tool_rake` | rakes a dried swath (1 real day after mowing) into a windrow | 10 km/h (was 8): "Side delivery rake", typical 10.0 km/h | 2.0 kW per m: "Rake, rotary", 2.0 kW/m (a side delivery rake is 0.4) |
 | Round baler | `tool_baler` | takes a windrow that has dried (1.5 real days) into round bales of 454 kg | 8 km/h | 4.0 kW + 1.1 kWh/t (variable chamber) |

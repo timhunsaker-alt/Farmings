@@ -11,10 +11,10 @@ public final class Hay {
 	public static final double BLOCK_FRESH_KG = 100;
 	/** Hay bales are 85% dry matter (Victoria feed table), so a block holds 85 kg of dry matter. */
 	public static final double DRY_MATTER_FRACTION = 0.85;
-	/** Forage-based planning figure: dry matter eaten per day as a share of body weight, lactating cow (TO VERIFY against NRC). */
-	public static final double LACTATING_INTAKE_FRACTION = 0.027;
-	/** Same, dry cow (TO VERIFY against NRC). */
-	public static final double DRY_INTAKE_FRACTION = 0.0195;     // 1.8-2.1% of body weight, the middle (UC Davis; sourcing pass 2026-11-12)
+	/** Dry matter eaten per day as a share of body weight, lactating dairy cow: "in the region of 3 to 3.5% of their body weight in dry matter", the middle (FAS Scotland). */
+	public static final double LACTATING_INTAKE_FRACTION = 0.0325;
+	/** Same, dry cow: "average between 1.8 and 2.1% of body weight (BW)", the middle (UC Davis, Robinson). */
+	public static final double DRY_INTAKE_FRACTION = 0.0195;
 
 	private Hay() {
 	}

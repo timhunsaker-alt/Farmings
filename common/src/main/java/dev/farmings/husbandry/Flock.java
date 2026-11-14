@@ -166,7 +166,7 @@ public final class Flock {
 		}
 	}
 
-	/** US blood grades by micron (sheep.md, TO VERIFY the boundaries against the ASI table). 0 microns means hair. */
+	/** US blood grades by micron (sheep.md): SDSU Wool Evaluation 101, Table 1, "Requirements for wool grades". 0 microns means hair. */
 	public static Grade grade(double micron) {
 		if (micron <= 0) {
 			return Grade.HAIR;

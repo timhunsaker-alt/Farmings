@@ -8,10 +8,10 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
 | Part | Block | What it does |
 |---|---|---|
 | Feed pit | `digester_feed_pit` | Takes manure items by belt, hopper or hand, or straight from a barn collection pit it touches |
-| Digester tank | `digester_tank` (3 x 3 x 3 ring with a roof) | A sealed, heated, stirred complete-mix tank. Its mixer is a **6.5 kW** submersible agitator (**TO VERIFY**: [a trade example](https://processengineering.co.uk/article/2002256/biogas-in-the-mixbio), "two low-speed submersible agitators", each "with a power rating of 6.5kW"; the tank size is not given); it needs heat (below) |
+| Digester tank | `digester_tank` (3 x 3 x 3 ring with a roof) | A sealed, heated, stirred complete-mix tank. Its mixer is a **6.5 kW** submersible agitator (a trade example, confirmed 2026-11-14: [Process Engineering](https://processengineering.co.uk/article/2002256/biogas-in-the-mixbio), "two low-speed submersible agitators", each "with a power rating of 6.5kW"; the tank size is not given); it needs heat (below) |
 | Gas holder | `gas_holder` | A membrane dome on the tank: **200 m³** *(proposed)*. It offers biogas on any face with a steel pipe |
 | Digestate tank | `digestate_tank` | Holds what leaves the digester: **50 t** *(proposed)* |
-| Screw-press separator | `screw_press` | Splits digestate into separated solids and liquid. **5.5 kW** (**TO VERIFY**: a dealer's page for a press screw separator (PSS 3.2-780): "5.5 kW geared motor", "Cattle manure throughput is 15–35 m³/h", [Zorg Biogas](https://zorg-biogas.com/equipment/separators-en/separator-pss-32-780)) |
+| Screw-press separator | `screw_press` | Splits digestate into separated solids and liquid. **5.5 kW** (a dealer's page, confirmed 2026-11-14, for a press screw separator (PSS 3.2-780): "5.5 kW geared motor", "Cattle manure throughput is 15–35 m³/h", [Zorg Biogas](https://zorg-biogas.com/equipment/separators-en/separator-pss-32-780)) |
 
 ## The process
 | Quantity | Value | Source |

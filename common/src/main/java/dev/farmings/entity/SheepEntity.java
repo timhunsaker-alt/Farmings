@@ -684,7 +684,8 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 		if (day != lastMilkDay) {
 			lastMilkDay = day;
 			int dim = (int) Math.floor(TimeScale.ticksToRealDays(now - lambedTick)) + 1;
-			milkKg = Flock.milkKg(composition(), dim, score(Trait.MILK_YIELD)) * Math.min(lastFed, lastWatered);
+			milkKg = Flock.milkKg(composition(), dim, score(Trait.MILK_YIELD)) * Math.min(lastFed, lastWatered)
+					* dev.farmings.feed.Ration.eweMilkFactor(ration);
 		}
 	}
 

@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * The digester tank (docs/multiblocks/digester.md): a heated, stirred complete-mix tank whose 6.5 kW mixer (TO VERIFY) runs on Wildcatter
+ * The digester tank (docs/multiblocks/digester.md): a heated, stirred complete-mix tank whose 6.5 kW mixer ("a power rating of 6.5kW", a trade example) runs on Wildcatter
  * 480 V. Fed from its feed pit, it fills the gas holder on top and the digestate tank beside it, on the 15:1 clock.
  */
 public class DigesterEntity extends BlockEntity implements CircuitPart, Inspectable {

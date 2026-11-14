@@ -13,8 +13,8 @@ import java.util.Map;
 public final class Gallop {
 	/** Below this the record curve is flat: 402 m, the Quarter Horse's quarter mile. */
 	public static final double SHORTEST_M = 402;
-	/** Thoroughbred record paces: 402 m at 19.66 m/s (Winning Brew, TO VERIFY); 2,012 m at 16.85 and 2,414 m at 16.76 (Secretariat). */
-	private static final double[][] TB = {{402, 19.66}, {2012, 16.85}, {2414, 16.76}};
+	/** Thoroughbred record paces: 402 m at 19.54 m/s (Winning Brew, "70.35 km/h", Guinness); 2,012 m at 16.85 and 2,414 m at 16.76 (Secretariat). */
+	private static final double[][] TB = {{402, 19.54}, {2012, 16.85}, {2414, 16.76}};
 	/** Beyond 2,414 m the Thoroughbred curve falls 1% a doubling *(proposed)*. */
 	private static final double FALL_PER_DOUBLING = 0.01;
 	/** Quarter Horse: 402 m at 19.84 m/s (First Moonflash 2009, TO VERIFY); its curve falls 25% faster than the Thoroughbred's *(proposed)*. */
@@ -137,7 +137,7 @@ public final class Gallop {
 	/** Each kilometre run at over half the horse's pace adds 0.02 fitness, at most 0.06 a real day *(proposed)*. */
 	public static final double FITNESS_PER_KM = 0.02;
 	public static final double FITNESS_PER_DAY = 0.06;
-	/** Rest keeps fitness 42 real days, then it falls to nothing over the next 42 ("6 wk", TO VERIFY). */
+	/** Rest keeps fitness 42 real days, then it falls to nothing over the next 42 ("until after 6 wk detraining", Tyler et al. 1996). */
 	public static final double HELD_DAYS = 42;
 	public static final double LOST_OVER_DAYS = 42;
 	/** Walking this long resets the distance galloped *(proposed)*. */

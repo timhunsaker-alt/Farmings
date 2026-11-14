@@ -37,8 +37,8 @@ import org.jspecify.annotations.Nullable;
  */
 public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspectable, WorldlyContainer {
 	public static final int SIZE = 24;
-	/** Power drawn (proposed: no rating looked up). */
-	public static final double WATTS = 100;
+	/** Power drawn, 0.025 kW: "110 Volt 25 Watt Square Heat Element" (GQF Hova-Bator 1602N manual). */
+	public static final double WATTS = 25;
 	private static final int[] SLOTS = java.util.stream.IntStream.range(0, SIZE).toArray();
 	private final NonNullList<ItemStack> eggs = NonNullList.withSize(SIZE, ItemStack.EMPTY);
 	private final Motor heater = new Motor(false, Voltage.LOW, WATTS);

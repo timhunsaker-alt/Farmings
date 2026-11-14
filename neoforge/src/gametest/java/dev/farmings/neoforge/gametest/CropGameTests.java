@@ -62,7 +62,7 @@ final class CropGameTests {
 		helper.succeed();
 	}
 
-	/** Corn at stage 7 is ready to chop; 14 days later it is ripe for grain. */
+	/** Corn at stage 7 (125 days) is ready to chop; 5 days later (130, R6) it is ripe for grain. */
 	static void cornRipensForGrain(GameTestHelper helper) {
 		FarmingsGameTests.floor(helper);
 		ServerLevel level = helper.getLevel();

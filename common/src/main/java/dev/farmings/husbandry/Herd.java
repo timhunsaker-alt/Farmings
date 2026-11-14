@@ -141,7 +141,7 @@ public final class Herd {
 		return litterFor(mean);
 	}
 
-	/** Chance a kid is stillborn: 6% (German dairy goat farms 6.4%, TO VERIFY), a single 0.8x and a twin or triplet 1.2x *(proposed)*. */
+	/** Chance a kid is stillborn: 6% (German dairy goat farms, "a mean stillbirth rate of 6.4%"), a single 0.8x and a twin or triplet 1.2x *(proposed)*. */
 	public static double stillbirthRate(int litter) {
 		return 0.06 * (litter <= 1 ? 0.8 : 1.2);
 	}
@@ -216,7 +216,7 @@ public final class Herd {
 
 	// ---- feed, water, housing ----
 
-	/** Dry matter share of body weight: 5% lactating (Shur-Gain, TO VERIFY), 2.75% otherwise (Penn State 2.5-3.0, TO VERIFY). */
+	/** Dry matter share of body weight: 5% lactating (Shur-Gain, a feed company), 2.75% otherwise (Penn State, 2.5-3.0% for market goats). */
 	public static double intakeKgDm(double weightKg, boolean lactating) {
 		return weightKg * (lactating ? 0.05 : 0.0275);
 	}
@@ -242,7 +242,7 @@ public final class Herd {
 
 	// ---- meat ----
 
-	/** Kid meat from goats under 9 months (Texas A&M, TO VERIFY), chevon after. */
+	/** Kid meat from goats under 9 months ("kid under 9 months", Texas A&M), chevon after. */
 	public static final double KID_MEAT_DAYS = 270;
 
 	/** Meat items: live weight x the breed dressing (kid or mature) x 70% retail cuts / 2.5 kg an item (as sheep). */

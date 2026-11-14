@@ -55,7 +55,7 @@ final class HorseGameTests {
 				Component.literal("a spawned horse is an adult with a horse genome"));
 		HorseEntity mare = adult(helper, HorseBreed.ARABIAN, Sex.FEMALE, 1L, new BlockPos(3, 1, 3));
 		HorseEntity stallion = adult(helper, HorseBreed.THOROUGHBRED, Sex.MALE, 2L, new BlockPos(6, 1, 3));
-		helper.assertTrue(mare.weightKg() == 408 && stallion.weightKg() == 522, Component.literal("mature weights 408 and 522 kg"));
+		helper.assertTrue(mare.weightKg() == 408 && stallion.weightKg() == 454, Component.literal("mature weights 408 and 454 kg"));
 		mare.setFitnessForTest(0.6);
 		mare.startHeatForDisplay();
 		mare.sureConceptionForTest();
@@ -118,7 +118,7 @@ final class HorseGameTests {
 				.filter(h -> h != mare && h != stallion).toList();
 		helper.assertTrue(foals.size() == 1, Component.literal("one foal, got " + foals.size()));
 		HorseEntity f = foals.get(0);
-		helper.assertTrue(f.stage() == HorseStage.FOAL && Math.abs(f.weightKg() - 52.2) < 1e-6, Component.literal("a foal of 52.2 kg: " + f.weightKg()));
+		helper.assertTrue(f.stage() == HorseStage.FOAL && Math.abs(f.weightKg() - 45.4) < 1e-6, Component.literal("a foal of 45.4 kg: " + f.weightKg()));
 		helper.assertTrue(f.composition().equals(java.util.Map.of("TB", 5000, "ARA", 5000)) && f.damId().equals(mare.herdId()),
 				Component.literal("a half-bred foal out of her"));
 		helper.assertTrue(mare.nursing() && mare.stage() == HorseStage.MARE, Component.literal("a mare with foal at foot"));

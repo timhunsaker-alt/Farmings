@@ -88,7 +88,7 @@ since laying *(proposed thresholds)*:
 
 ## Feathers and down
 - **Feathers:** 1-2 vanilla feathers per chicken, turkey or duck (the vanilla chicken drop) *(proposed)*. Quail drop 0-1.
-- **Down:** a duck gives **1 down item** (about 30 g of down a bird, Farrell review, TO VERIFY).
+- **Down:** a duck gives **1 down item** (about 30 g of down a bird, Farrell review; confirmed 2026-11-14, still secondary).
 - **Down jacket:** a chest piece made from 8 down and 1 felt panel *(proposed recipe)*.
   - It is in the freeze-immune wearables tag, like the wool clothing (`docs/wool.md`).
   - Its armor is leather's, as for the wool pieces *(proposed)*.
@@ -151,7 +151,7 @@ since laying *(proposed thresholds)*:
 - **Egg items:** `goose_egg` (Embden and Toulouse 170 g, Chinese 120 g) and `guinea_egg` (40 g); weights in poultry.md. Graded by
   species only, as turkey and duck eggs. A goose egg is "1 egg" = 144.0 g in USDA FoodData Central
   ([FDC 172190](https://fdc.nal.usda.gov/food-details/172190)), inside the breed range.
-- **Keeping:** as hen eggs (5 weeks cold). Goose and guinea egg figures are NOT FOUND in FSIS or FoodSafety.gov; the hen figure ("Raw
+- **Keeping:** as hen eggs (5 weeks cold). Goose and guinea egg figures are NOT FOUND in FSIS or FoodSafety.gov (searched again 2026-11-14; the pages did not load); the hen figure ("Raw
   eggs in shell | 3 to 5 weeks") stands in. Guinea eggs have a "longer shelf life, in comparison to chicken eggs"
   ([SciELO review](https://www.scielo.br/j/rbca/a/KwspKmHJXdMGhypFbRX4dpC/)); not used *(no number)*.
 - **Fried egg:** both fry, as the other eggs.

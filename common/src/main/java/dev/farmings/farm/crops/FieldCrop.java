@@ -10,16 +10,19 @@ public enum FieldCrop {
 	// UMaine 2245 / Ohio State: first cut 65 days (60-70), 32.5-day regrowth (30-35), 5.5-year stand (3-8) at 4 cuts a year;
 	// 4 t hay/ac a year at 89% DM = 7.97 t DM/ha, split over 4 cuts.
 	ALFALFA("alfalfa", Kind.PERENNIAL, 65, 32.5, 22, 2.0, 0.89),
-	// UMaine 2265: 2 t hay/ac a year in 2 cuts at 88% DM. First cut, regrowth and stand life NOT FOUND (proposed).
+	// UMaine 2265: 2 t hay/ac a year in 2 cuts at 88% DM (confirmed). First cut, regrowth and stand life NOT FOUND (proposed).
 	TIMOTHY("timothy", Kind.PERENNIAL, 60, 42, 10, 1.97, 0.88),
-	// UMaine 2266: 3.5 t DM/ac (2-5, TO VERIFY) in 4 cuts, 35-day regrowth (4-6 weeks). First cut and stand life proposed.
+	// Arkansas FSA3154: 2-4 t hay/ac a year (3) at 88% DM, in 4 cuts (WSU: 3-4); UMaine 2266's "2 to 5 tons of dry matter" is per harvest, not
+	// used. 35-day regrowth (UMaine 2266: 4-6 weeks). First cut and stand life proposed.
 	ORCHARDGRASS("orchardgrass", Kind.PERENNIAL, 60, 35, 20, 1.48, 0.88),
-	// Kentucky ID-275: 22.5 t as-fed/ac at 35% DM = 17.6 t DM/ha. Silage at 100 days (proposed); grain at 114 (relative maturity);
-	// grain 179.3 bu/ac x 56 lb = 11.25 t/ha (USDA NASS 2024, TO VERIFY).
-	CORN("corn", Kind.CORN, 100, 0, 1, 17.6, 0.35),
-	// Wisconsin trials: 61 bu/ac x 32 lb = 2.19 t/ha; straw 2.03 t/ac (Iowa State) = 4.55 t/ha. 100 days TO VERIFY.
+	// Kentucky ID-275: 22.5 t as-fed/ac at 35% DM = 17.6 t DM/ha. Silage at 125 days (derived: slightly before R6; UW corn: R6 "130 days
+	// after emergence", "Silage harvest would be slightly earlier than R6"); grain at R6, 130 days; grain 179.3 bu/ac x 56 lb = 11.25 t/ha
+	// (USDA NASS 2024).
+	CORN("corn", Kind.CORN, 125, 0, 1, 17.6, 0.35),
+	// Wisconsin trials: 61 bu/ac x 32 lb = 2.19 t/ha; straw 2.03 t/ac (Iowa State) = 4.55 t/ha. 100 days (WSU EM4918E).
 	OATS("oats", Kind.GRAIN, 100, 0, 1, 2.19, 0.89),
-	// USDA NASS 2024: 76.7 bu/ac x 48 lb = 4.13 t/ha; straw 1.01 t/ac (Ohio State) = 2.26 t/ha; 85 days (Alaska, TO VERIFY).
+	// USDA NASS 2024: 76.7 bu/ac x 48 lb = 4.13 t/ha; straw 1.01 t/ac (Ohio State) = 2.26 t/ha; 87 days (Montana State Havre 2020 trial;
+	// UAF MP 2014-06 gives 80-100 and 85).
 	BARLEY("barley", Kind.GRAIN, 87, 0, 1, 4.13, 0.89);
 
 	public enum Kind {
@@ -27,7 +30,7 @@ public enum FieldCrop {
 		PERENNIAL,
 		/** Combined for grain and straw (oats, barley). */
 		GRAIN,
-		/** Chopped for silage at 100 days, or combined for grain at 114. */
+		/** Chopped for silage at 125 days, or combined for grain at 130. */
 		CORN
 	}
 
@@ -35,8 +38,11 @@ public enum FieldCrop {
 	public static final int MAX_STAGE = 7;
 	/** A cut perennial drops back to this stage (proposed). */
 	public static final int REGROWTH_STAGE = 3;
-	/** Corn is ripe for grain at this many days (Kentucky: 114-day relative maturity). */
-	public static final double CORN_GRAIN_DAYS = 114;
+	/**
+	 * Corn is ripe for grain at this many days: R6, "130 days after emergence or 50-60 days after silking" (UW corn, CriticalStages). Was 114,
+	 * Kentucky's relative maturity, which fell before the 125-day silage harvest.
+	 */
+	public static final double CORN_GRAIN_DAYS = 130;
 	/** Corn grain a block, kg (179.3 bu/ac x 56 lb = 11.25 t/ha, x10). */
 	public static final double CORN_GRAIN_KG = 11.25;
 	/** Straw a block, kg, for the small grains (oats 4.55, barley 2.26 t/ha, x10). */

@@ -86,7 +86,7 @@ public final class Fowl {
 			case QUAIL -> new double[] {16, 0.14};      // NSW DPI, 14-18 g
 			case DUCK -> new double[] {218, 3.9};       // breeder ducks, 48 lb per 100 a day
 			case GOOSE -> new double[] {320, 6.75};     // FAO: 320 g a day for breeder geese of 6.5-7.0 kg
-			case GUINEA -> new double[] {85, 1.5};      // "about 84.5 g per bird per day" (TO VERIFY: a Nigerian field study, snippet)
+			case GUINEA -> new double[] {85, 1.5};      // "(84.5g/fowl/day)" (Konlan et al. 2011, J. World's Poult. Res. 1(1):1-3, Ghana)
 			default -> new double[] {100, 2.0};          // laying hen (Hy-Line 99.6 g); turkeys use it too (proposed)
 		};
 	}
@@ -97,10 +97,21 @@ public final class Fowl {
 		return a[0] / 1000.0 * Math.pow(weightKg / a[1], FEED_EXPONENT);
 	}
 
-	/** One real day's water in litres: 2× the feed (3× for ducks, and geese: proposed, adult goose water NOT FOUND). */
+	/**
+	 * One real day's water in litres: 2× the feed, 2.3× for quail (water "59.67 ± 7.17 ml/bird/day" against feed "26.32 ± 0.05 g/bird/day",
+	 * Arch Razi Inst 2024), and 3× for ducks and geese (proposed for geese: adult goose water NOT FOUND).
+	 */
 	public static double waterLPerDay(Species s, double weightKg) {
-		return feedKgPerDay(s, weightKg) * (s == Species.DUCK || s == Species.GOOSE ? 3.0 : 2.0);
+		double ratio = switch (s) {
+			case DUCK, GOOSE -> 3.0;
+			case QUAIL -> QUAIL_WATER_RATIO;
+			default -> 2.0;
+		};
+		return feedKgPerDay(s, weightKg) * ratio;
 	}
+
+	/** Quail drink about 2.3× their feed: 59.67 / 26.32 = 2.27, rounded (Arch Razi Inst 2024). */
+	public static final double QUAIL_WATER_RATIO = 2.3;
 
 	/** Females one adult male serves in a coop. */
 	/**
@@ -119,7 +130,11 @@ public final class Fowl {
 	public static double forageShare(Species s) {
 		return s == Species.GOOSE ? GOOSE_FORAGE_SHARE : FORAGE_SHARE;
 	}
-	/** Forage a run's grass block regrows a day, kg DM: 50 hens an acre for good x 25 g / 4,047 m² *(derived; the 50 is TO VERIFY)*. */
+	/**
+	 * Forage a run's grass block regrows a day, kg DM: 50 hens an acre for good x 25 g / 4,047 m². The 50 is *(derived: half Dryden's 100,
+	 * for a run grazed all year without rest)*: Dryden 1916 gives "Maximum number of fowls per acre : 100 laying hens" only with night
+	 * droppings put elsewhere, two yards cropped in turn and at least 6 months' rest a year.
+	 */
 	public static final double RUN_REGROWTH_KG_PER_BLOCK_DAY = 50 * 0.025 / 4047.0;
 
 	/**
@@ -130,7 +145,7 @@ public final class Fowl {
 		return Math.max(0, drawn + eatenKg - grassBlocks * RUN_REGROWTH_KG_PER_BLOCK_DAY * dayShare);
 	}
 
-	/** Males serve at most this many hens at once (poultry.md, "Hens per male"): chicken 10 (UC ANR), quail 3 (NSW DPI), duck 5 (TO VERIFY), turkey 10 (proposed). */
+	/** Males serve at most this many hens at once (poultry.md, "Hens per male"): chicken 10 (UC ANR), quail 3 (NSW DPI), duck 5 (1 to 5-8 for meat ducks, Narushin 2026 quoting "Poultry 2024"), turkey 10 (proposed). */
 	public static int hensPerMale(Species s) {
 		return switch (s) {
 			case QUAIL -> 3;

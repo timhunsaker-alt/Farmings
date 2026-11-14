@@ -10,9 +10,9 @@ public enum GoatBreed {
 	// Doe 61, buck 77 kg: the breed minimums, 135 and 170 lb (MSU P4120). Birth 2.7 kg (KnE Life Sciences, TO VERIFY). ADGA 2010:
 	// 2,545 lb (1,154 kg), 3.2% fat, 2.8% protein (Purdue). Strongly seasonal, Sep-Feb (NC State).
 	SAANEN("SAA", Use.DAIRY, 61, 77, 2.7, 1.56, 1154, 3.2, 2.8, 0.475, 0.475, 243, 58),
-	// Doe 61, buck 77 kg (MSU P4120). Birth 3.25 kg (AGRIS, TO VERIFY). ADGA 2010: 1,835 lb (832 kg), 4.6% fat, 3.7% protein (Purdue).
-	// The least seasonal dairy goat (NC State): 1 Aug - 31 Mar (proposed dates). Litter as Saanen (Nubian NOT FOUND).
-	NUBIAN("NUB", Use.DAIRY, 61, 77, 3.25, 1.56, 832, 4.6, 3.7, 0.475, 0.475, 212, 89),
+	// Doe 61, buck 77 kg (MSU P4120). Birth "3.25 kg" (AGRIS, Trinidad). ADGA 2010: 1,835 lb (832 kg), 4.6% fat, 3.7% protein (Purdue).
+	// The least seasonal dairy goat (NC State): 1 Aug - 31 Mar (proposed dates). Litter 1.39: "1.40 in Sudan; 1.38 in Egypt" (FAO).
+	NUBIAN("NUB", Use.DAIRY, 61, 77, 3.25, 1.39, 832, 4.6, 3.7, 0.475, 0.475, 212, 89),
 	// Doe 80, buck 130 kg: the middles of FAO's 70-90 and 120-140. Birth 3.5 kg (FAO; Đuričić 2012). Litter 1.64 (FAO: 43/50/7).
 	// Dressing 48% at 8-10 months, 58% mature (FAO, 56-60). Breeds all year (proposed: a 265-day kidding interval, Đuričić 2012).
 	BOER("BOE", Use.MEAT, 80, 130, 3.5, 1.64, 0, 0, 0, 0.48, 0.58, -1, -1);

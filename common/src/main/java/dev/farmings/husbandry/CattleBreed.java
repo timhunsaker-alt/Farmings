@@ -9,12 +9,12 @@ public enum CattleBreed {
 	HOLSTEIN("HOL", Use.DAIRY, 710, 283),
 	// Same source: about 470.
 	JERSEY("JER", Use.DAIRY, 470, 283),
-	// Stand-in: breed lists say about 600-612 kg (secondary, TO VERIFY); the midpoint is used.
+	// "On average, Brown Swiss cows weigh about 1300-1400 pounds" (590-635 kg; Brown Swiss Association). 606 kg sits in that range.
 	BROWN_SWISS("BSW", Use.DAIRY, 606, 283),
 	// Stand-in: 385 kg from the Oklahoma State breed profile (Indian figures; Brazilian dairy strain TO VERIFY). Gyr gestation
 	// was not found, so 283 is used as a stand-in.
 	GYR("GYR", Use.DAIRY, 385, 286),
-	// Stand-in: about 550 kg from breed lists (TO VERIFY). Gestation about 280 days (USDA ARS Lincoln, 10,000+ records).
+	// Angus cows "averaged 1,222 pounds" (554 kg; Texas A&M Beef Skillathon), so about 550. Gestation about 280 days (USDA ARS Lincoln, 10,000+ records).
 	ANGUS("ANG", Use.BEEF, 550, 280),
 	// Motoyama et al. 2014: about 487 kg. Gestation 283.8 days in a Brazilian herd (286 for Wagyu-sired calves); 284 rounded.
 	WAGYU("WAG", Use.BEEF, 487, 284);

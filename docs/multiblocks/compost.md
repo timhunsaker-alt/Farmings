@@ -8,7 +8,7 @@
 |---|---|---|
 | Compost pad | `compost_pad` | Concrete floor cells in a straight row: the windrow lies on them. **4-64 cells** *(proposed)* |
 | Windrow controller | `compost_controller` | At one end of the pad. Takes inputs by belt, hopper or hand, reads the pile, and puts out finished compost at its output face. |
-| Windrow turner | `windrow_turner` | A powered straddle turner on the pad's end. It runs down the windrow when the pile cools. **41 kW** (**TO VERIFY**: the [BioCycle](https://www.biocycle.net/windrow-turner-equipment-review/) review gives no figure for tractor turners, checked 2026-11-12. Snippet: Vermeer CT612 pull-type turner, "Min horsepower: 80 hp (59.7 kW)", [listing](https://www.agriculture-xprt.com/products/vermeer-compost-turner-107674)) |
+| Windrow turner | `windrow_turner` | A powered straddle turner on the pad's end. It runs down the windrow when the pile cools. **41 kW**: a three-point turner needs 50-60 hp (Australian Eggs fact sheet, confirmed 2026-11-14); the middle, 55 hp, is 41 kW. The [BioCycle](https://www.biocycle.net/windrow-turner-equipment-review/) review gives no figure for tractor turners; a pull-type Vermeer CT612 needs "Min horsepower: 80 hp (59.7 kW)" ([listing](https://www.agriculture-xprt.com/products/vermeer-compost-turner-107674)) |
 
 ## The pile
 | Input | Item mass | C:N | Moisture | Source |
@@ -68,7 +68,7 @@ Spoiled Farmings food goes into the windrow as a nitrogen-rich input.
 | Input | Item mass | C:N | Moisture | Source |
 |---|---|---|---|---|
 | Spoiled steak, mutton or poultry | 0.25 kg *(proposed)* | 5 | 70% *(proposed)* | "Animal Carcass … 5:1" ([Cornell CWMI 2014](https://cwmi.css.cornell.edu/Composting_Animal_Mortalities.pdf), Table 6-2) |
-| Spoiled milk (a bottle) | 1 kg *(proposed)* | 15 *(proposed: food waste's; dairy NOT FOUND)* | 87% *(proposed)* | food waste 15:1 ([Cornell](https://www.compost.css.cornell.edu/Factsheets/FS2.html)) |
+| Spoiled milk (a bottle) | 1 kg *(proposed)* | 15 *(proposed: food waste's; dairy NOT FOUND, searched again 2026-11-14, the pages did not load)* | 87% *(proposed)* | food waste 15:1 ([Cornell](https://www.compost.css.cornell.edu/Factsheets/FS2.html)) |
 | Rancid butter, mouldy cheese | 0.25 kg *(proposed)* | 15 *(as food waste)* | 40% *(proposed)* | as above |
 | Rotten egg | 0.06 kg *(the egg's)* | 15 *(as food waste)* | 75% *(proposed)* | eggshells "will break down in the compost pile" ([Nebraska](https://lancaster.unl.edu/6-common-composting-questions)) |
 

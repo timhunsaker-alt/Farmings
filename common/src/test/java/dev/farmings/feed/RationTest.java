@@ -39,6 +39,21 @@ class RationTest {
 	}
 
 	@Test
+	void growingCattleOnThePoorestRationGainAboutAThirdAsFast() {
+		assertEquals(0.5 / 1.75, Ration.growthFactor(new Ration.Analysis(5, 70, 40, 1, 0, 0)), 1e-9, "Penn State: 0.5 against 1.75 lb a day");
+		assertEquals(1.0, Ration.growthFactor(Ration.Analysis.BALANCED), 1e-9);
+	}
+
+	@Test
+	void ewesAndDoesOnLowProteinGiveLessMilk() {
+		assertEquals(0.83, Ration.eweMilkFactor(Feedstuff.STRAW.analysis()), 1e-9, "Robinson et al. 1979: 17% less milk on low protein");
+		assertEquals(1.0, Ration.eweMilkFactor(Ration.Analysis.BALANCED), 1e-9);
+		assertEquals(1.0, Ration.eweMilkFactor(Feedstuff.ALFALFA_HAY.analysis()), 1e-9, "17% CP is above the 11.6% target");
+		// grass hay or pasture, CP 10.5: (10.5 - 8) / 3.6 of the way
+		assertEquals(0.83 + 0.17 * 2.5 / 3.6, Ration.eweMilkFactor(Feedstuff.PASTURE.analysis()), 1e-9);
+	}
+
+	@Test
 	void runningAverageMovesTowardWhatIsEaten() {
 		Ration.Analysis a = Ration.Analysis.BALANCED.toward(Feedstuff.STRAW.analysis(), 0.5);
 		assertEquals((16.5 + 4) / 2, a.cp(), 1e-9);

@@ -61,7 +61,7 @@ containers are kept cold).
 ## Loose ends, 2026-11-11 (spec): the room's temperature
 The cold room now holds a temperature, and food ages by it.
 - **Set point:** **2 °C** *(proposed)*. **TO VERIFY**: a vendor guide puts walk-ins at "34°F and 38°F (1°C – 3°C)"
-  ([Operandio](https://operandio.com/walk-in-cooler-temperature/), snippet only). A fridge should be at most 40 °F, 4 °C (USDA, via
+  ([Operandio](https://operandio.com/walk-in-cooler-temperature/), snippet only; searched again 2026-11-14; the page did not load). A fridge should be at most 40 °F, 4 °C (USDA, via
   [Virginia Tech FST-518](https://accomack.ext.vt.edu/content/dam/pubs_ext_vt_edu/FST/fst-518/FST-518.pdf)).
   - The room starts at **20 °C**, the room temperature *(proposed)*, and that is the outside air too.
 - **Heat in through the walls:**
@@ -70,7 +70,7 @@ The cold room now holds a temperature, and food ages by it.
   - The gain is U x area x (20 - T).
 - **Heat in through the door:**
   - Each time a cold-room door is opened, one room's volume of air is swapped for outside air: 1.2 kJ/m³K x volume x (20 - T)
-    *(proposed: door infiltration was NOT FOUND as a figure)*.
+    *(proposed: door infiltration was NOT FOUND as a figure; searched again 2026-11-14, the pages did not load)*.
 - **Thermal mass:** the room's thermal mass C is set so that, with no power and the door shut, it warms from 2 °C to 5 °C in
   **4 hours**.
   - FST-518 says a home fridge "lasts ~4 hours" with the power off. That stands in for a walk-in, *derived* from that figure.

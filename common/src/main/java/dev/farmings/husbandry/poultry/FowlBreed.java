@@ -13,8 +13,9 @@ public enum FowlBreed {
 	LEGHORN("LEG", Species.CHICKEN, 2.72, 2.04, 235, 58.5, 143, 21, 18, 42, 0.68),
 	RHODE_ISLAND_RED("RIR", Species.CHICKEN, 3.86, 2.95, 250, 60, 140, 21, 18, 42, 0.68),
 	PLYMOUTH_ROCK("PLR", Species.CHICKEN, 4.31, 3.40, 200, 60, 140, 21, 18, 42, 0.68),
-	// Silkie egg weight NOT FOUND: 40 g proposed. Weights from the European standard (Wikipedia, TO VERIFY).
-	SILKIE("SLK", Species.CHICKEN, 1.55, 1.25, 100, 40, 140, 21, 18, 42, 0.68),
+	// Silkie: hen "1.4 kg for Silkie" and egg 41 g ("Egg weight [g] … Silkie … 41.15 ±0.97"; Tyc et al. 2023, Pol J Vet Sci 26(3)).
+	// Cock 1.55 kg, the middle of the European standard's 1.4-1.7 (Wikipedia citing BDRG).
+	SILKIE("SLK", Species.CHICKEN, 1.55, 1.4, 100, 41, 140, 21, 18, 42, 0.68),
 	// UAF / Livestock Conservancy weights; first egg at 31.5 weeks (The Poultry Site); USU incubation 28 days, stop turning day 25;
 	// UMaine heat 6-8 weeks (7); UW-Madison turkey dressing 80.5%.
 	BROAD_BREASTED_WHITE("BBW", Species.TURKEY, 14.5, 8.16, 110, 75, 220.5, 28, 25, 49, 0.805),
@@ -26,21 +27,22 @@ public enum FowlBreed {
 	BOBWHITE("BOB", Species.QUAIL, 0.17, 0.17, 125, 9.5, 154, 23.5, 20, 24.5, 0.60),
 	// Kentucky ASC-198 weights and eggs; first egg about 6 months (the Khaki Campbell figure, used for all ducks: proposed for the
 	// others); duck eggs 32-34 oz a dozen (78 g); MSU 28 days, stop day 25 (Muscovy 35, day 31); heat 4 weeks; UMaine and UW-Madison
-	// dressing (Pekin 67.5%, Muscovy 72%, others 65%). Mallard egg weight NOT FOUND: 55 g proposed.
+	// dressing (Pekin 67.5%, Muscovy 72%, others 65%). Mallard egg 54 g, egg mass "54g" (BTO BirdFacts).
 	PEKIN("PEK", Species.DUCK, 4.31, 3.86, 140, 78, 182, 28, 25, 28, 0.675),
 	KHAKI_CAMPBELL("KHC", Species.DUCK, 1.93, 1.70, 250, 78, 182, 28, 25, 28, 0.65),
 	MALLARD("MAL", Species.DUCK, 1.08, 0.94, 35, 54, 182, 28, 25, 28, 0.65),
 	MUSCOVY("MUS", Species.DUCK, 4.99, 2.95, 90, 78, 182, 35, 31, 28, 0.72),
-	// Geese (poultry.md, "Geese and guinea fowl"), appended so saved ordinals hold. MSU weights (TO VERIFY: 1977); FAO eggs and egg weights
-	// (Toulouse: TLC's 20-35, egg weight NOT FOUND, the Embden's); first egg at a year (MSU); FAO 30-day incubation, the hatcher from day 27;
-	// goslings kept warm 4 weeks (the duck figure, proposed); FAO dressing 70%. Laying seasons FAO: 15 Feb - 15 Jun, Chinese 1 Feb - 30 Jun.
+	// Geese (poultry.md, "Geese and guinea fowl"), appended so saved ordinals hold. MSU E-1050 weights (1977: "Toulouse 26 20 … Embden 26 20 …
+	// Chinese 12 10" lb); FAO eggs and egg weights (Toulouse: TLC's 20-35, egg weight NOT FOUND, the Embden's); first egg at a year (MSU);
+	// FAO 30-day incubation, the hatcher from day 27; goslings kept warm 4 weeks (the duck figure, proposed); FAO dressing 70%. Laying seasons FAO: 15 Feb - 15 Jun, Chinese 1 Feb - 30 Jun.
 	EMBDEN("EMB", Species.GOOSE, 11.8, 9.1, 40, 170, 365, 30, 27, 28, 0.70, 45, 165),
 	TOULOUSE("TOU", Species.GOOSE, 11.8, 9.1, 27.5, 170, 365, 30, 27, 28, 0.70, 45, 165),
 	CHINESE("CHI", Species.GOOSE, 5.4, 4.5, 55, 120, 365, 30, 27, 28, 0.70, 31, 180),
 	// Helmeted guinea fowl (poultry.md): UKY ASC-209 weights (1.5 kg both sexes), "more than 100 eggs", 40 g eggs, incubation 26-28 days
-	// (27), stop turning day 25 (TO VERIFY: NC State 4-H chart); first egg at 30 weeks (28-32, TO VERIFY: Farm Radio); keets kept warm
-	// 6 weeks (the chicken figure, proposed); UMaine dressing 70%; laying season 1 Apr - 31 Oct (extension.org: March or April to October).
-	HELMETED("GUI", Species.GUINEA, 1.5, 1.5, 100, 40, 210, 27, 25, 42, 0.70, 90, 303);
+	// (27), stop turning day 25 (TO VERIFY: NC State 4-H chart); first egg at 28 weeks ("Sexual maturity guinea hens appears to occur
+	// around 27-28 weeks of age with the onset of egg production", eXtension); keets kept warm 6 weeks (the chicken figure, proposed);
+	// UMaine dressing 70%; laying season 1 Apr - 31 Oct (extension.org: March or April to October).
+	HELMETED("GUI", Species.GUINEA, 1.5, 1.5, 100, 40, 196, 27, 25, 42, 0.70, 90, 303);
 
 	public final String code;
 	public final Species species;

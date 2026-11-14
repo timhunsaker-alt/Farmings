@@ -22,11 +22,11 @@ public enum Feedstuff {
 	/** Vanilla seeds and wheat as a grain (proposed: barley's analysis). */
 	MIXED_GRAIN(89, 12, 20, 84, 0, false),
 	ALFALFA_MEAL(89, 17, 47, 58, 0, true),
-	/** TO VERIFY: textbook-typical, no source looked up. */
-	FISH_MEAL(90, 66, 12, 74, 0, false),     // Auburn 2014 feed table (sourcing pass 2026-11-12)
-	/** TO VERIFY: Ca 38%. */
-	LIMESTONE(98, 0, 0, 0, 34, false),     // Auburn 2014 feed table
-	/** Fed at 0.3 kg a cow a day (TO VERIFY, a product label). */
+	/** Auburn 2014 feed table: "Fish meal 90 74 78 49 76 66 60 1 2 12" (DM 90, TDN 74, CP 66, NDF 12). */
+	FISH_MEAL(90, 66, 12, 74, 0, false),
+	/** Auburn 2014 feed table: "Limestone ground", DM 98, Ca 34.00. */
+	LIMESTONE(98, 0, 0, 0, 34, false),
+	/** Fed at 0.265 kg a cow a day: "typically at 265 grams/head/day" (Masterfeeds, a product label). */
 	PREMIX(100, 0, 0, 0, 0, false);
 
 	public final double dm;

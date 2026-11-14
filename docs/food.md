@@ -18,7 +18,7 @@ The walk-in fridge that keeps food cold is [multiblocks/cold-room.md](multiblock
 | buttermilk | 10.5 days (1-2 weeks) | 1 day *(proposed)* | spoiled bottle |
 | whey | 7 days *(proposed: no FoodKeeper entry; milk's)* | 1 day *(proposed)* | spoiled bottle |
 | butter | 45 days (1-2 months) | 1.5 days (1-2 days on the counter) | rancid butter |
-| cheddar wheel | 180 days (hard cheese, 6 months) | 14 days *(proposed)*. **TO VERIFY**: FSIS mail-order table, hard cheese "safe at room temperature, but refrigeration prolongs quality" ([archived FSIS](https://webarchive.library.unt.edu/web/20090115174930/http:/www.fsis.usda.gov/PDF/Mail_Order_Food_Safety.pdf), snippet only; gives no days) | moldy cheese |
+| cheddar wheel | 180 days (hard cheese, 6 months) | 14 days *(proposed)*. **TO VERIFY**: FSIS mail-order table, hard cheese "safe at room temperature, but refrigeration prolongs quality" ([archived FSIS](https://webarchive.library.unt.edu/web/20090115174930/http:/www.fsis.usda.gov/PDF/Mail_Order_Food_Safety.pdf), snippet only; gives no days; searched again 2026-11-14; the page did not load) | moldy cheese |
 | cheddar (cut) | 24.5 days (3-4 weeks after opening) | 1 day *(proposed)* | moldy cheese |
 | steak, raw (any grade) | 4 days (3-5) | 1 day *(proposed)* | spoiled steak |
 | steak, cooked | 3.5 days (cooked beef 3-4) | 1 day *(proposed)* | spoiled steak |
@@ -77,7 +77,7 @@ Spoiled chops become **spoiled mutton** (Hunger and Nausea, as the other spoiled
 | Item | Fridge | Room | Turns into | Source |
 |---|---|---|---|---|
 | Goat milk | 7 days | 1 day | spoiled bottle | cow milk's figure *(proposed: no FSIS or extension figure for goat milk; searched, only blogs)* |
-| Chèvre | **14 days** (1-3 weeks) | 1 day | moldy cheese | soft cheeses "will keep from one to three weeks after opening" ([Clemson HGIC](https://hgic.clemson.edu/factsheet/handling-of-cheese-for-safety-quality/)). A sealed commercial log keeps 45 days (**TO VERIFY**, snippet: Masotti et al. 2012, J. Dairy Sci.); farm chèvre is not sealed |
+| Chèvre | **14 days** (1-3 weeks) | 1 day | moldy cheese | soft cheeses "will keep from one to three weeks after opening" ([Clemson HGIC](https://hgic.clemson.edu/factsheet/handling-of-cheese-for-safety-quality/)). A sealed commercial log keeps 45 days (Masotti et al. 2012, J. Dairy Sci., [doi 10.3168/jds.2011-5039](https://doi.org/10.3168/jds.2011-5039)); farm chèvre is not sealed |
 | Kid and chevon chops, raw | **4 days** (3-5) | 1 day | spoiled mutton | "use within 3 to 5 days" (FSIS *Goat from Farm to Table*, as reproduced by [ABGA](https://www.abga.org/goat-from-farm-to-table)) |
 | Kid and chevon chops, cooked | 3.5 days (3-4) | 1 day | spoiled mutton | "Cooked meat or poultry \| 3 to 4 days" ([FoodSafety.gov chart](https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts)) |
 | Goose, raw | **1.5 days** (1-2) | 1 day | spoiled poultry | "Fresh Duck or Goose 1 to 2 days" ([FSIS, Duck and goose](https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/duck-and-goose-farm-table)) |

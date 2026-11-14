@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The screw-press separator (digester.md): beside a digestate tank, it presses the digester's digestate into separated solids (10%, as 10 kg
- * items) and liquid fertilizer (90%, as 100 L items), 100 kg a second while powered. 5.5 kW (proposed).
+ * items) and liquid fertilizer (90%, as 100 L items), 100 kg a second while powered. 5.5 kW (a dealer's PSS 3.2-780: "5.5 kW geared motor").
  */
 public class PressEntity extends BlockEntity implements CircuitPart, Inspectable {
 	public static final double WATTS = 5500;

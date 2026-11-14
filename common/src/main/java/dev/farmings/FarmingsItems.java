@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 
 /** Items that are not blocks: manure and the fork that collects it. */
 public final class FarmingsItems {
-	/** One manure item stands for 50 kg, about one cow-day (docs/multiblocks/barn.md; approved by Tim 2026-11-07). */
+	/** One manure item stands for 50 kg (docs/multiblocks/barn.md; approved by Tim 2026-11-07). A lactating cow makes 67 kg a day (ASAE D384.2). */
 	public static final Item MANURE = item("manure", Item::new);
 	/**
 	 * A tool for clearing manure by hand (a new tool, decided with Tim 2026-11-07). Its durability is the ordinary 250 of an iron tool
@@ -279,7 +279,7 @@ public final class FarmingsItems {
 	public static final Item FRIED_EGG = item("fried_egg", p -> new Item(p.food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(3).saturationModifier(0.6F).build())));
 	/** A spoiled table egg; not food. */
 	public static final Item ROTTEN_EGG = item("rotten_egg", p -> new dev.farmings.item.RottenEggItem(p.stacksTo(16)));
-	/** Duck down: about 30 g a duck (Farrell review, TO VERIFY). */
+	/** Duck down: about 30 g a duck (Farrell review; confirmed 2026-11-14, still secondary). */
 	public static final Item DOWN = item("down", Item::new);
 	/** A down jacket: warm like the wool clothing, leather's protection (proposed). */
 	public static final Item DOWN_JACKET = item("down_jacket", p -> new dev.farmings.item.WoolClothingItem(p, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));

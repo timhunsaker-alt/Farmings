@@ -82,16 +82,18 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
 - **Weights:** UW-Madison, *Chicken breeds and varieties*
   ([A2880](https://livestock.extension.wisc.edu/articles/chicken-breeds-varieties-a2880)): Leghorn "Cock—6 pounds, hen—4½",
   Rhode Island Red 8½ / 6½, Plymouth Rock 9½ / 7½. Silkie: the European standard 1.4-1.7 / 1.1-1.4 kg
-  ([Wikipedia](https://en.wikipedia.org/wiki/Silkie_(chicken_breed)), **TO VERIFY**; the article also gives a smaller US
-  figure). Poultry Hub gives other figures, cock "1.8 Kg" and hen "1.4 Kg", with no standard named
-  ([Poultry Hub, Silkie](https://www.poultryhub.org/all-about-poultry/species/fancy-chicken-breeds/silkie)). The game keeps the
-  European standard's middles, 1.55 / 1.25 kg and 100 eggs a year (Tim, 2026-11-12: pick one).
+  ([Wikipedia](https://en.wikipedia.org/wiki/Silkie_(chicken_breed)), citing the BDRG standard; the article also gives a smaller US
+  figure). A measured flock: "1.6 kg for Sultan and 1.4 kg for Silkie" hens (Tyc et al. 2023, Pol J Vet Sci 26(3),
+  [PDF](https://www.czasopisma.pan.pl//Content/128544/PDF/11%20_%20Tyc.pdf)). Poultry Hub gives cock "1.8 Kg" and hen "1.4 Kg", with no standard named
+  ([Poultry Hub, Silkie](https://www.poultryhub.org/all-about-poultry/species/fancy-chicken-breeds/silkie)). The game uses a
+  **1.55 kg** cock (the European middle) and a **1.4 kg** hen (was 1.25; Tyc et al.), and 100 eggs a year.
 - **Eggs a year:**
   - Leghorn, Rhode Island Red and Plymouth Rock from the Livestock Conservancy breed pages
     ([Leghorn](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/leghorn-chicken/),
     [Rhode Island Red](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/rhode-island-red-chicken/),
     [Plymouth Rock](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/plymouth-rock-chicken/)).
-  - Silkie: "A Silkie hen can produce 100 eggs in an ideal year" (Wikipedia, **TO VERIFY**). Poultry Hub says "approximately
+  - Silkie: "A Silkie hen can produce 100 eggs in an ideal year" (Wikipedia, **TO VERIFY**; searched for a primary laying figure
+    again 2026-11-14, the pages did not load). Poultry Hub says "approximately
     120 eggs per year" (same page as above, unsourced).
 - **Egg weight:**
   - Leghorn: 58.5 g at 32 weeks, from the Hy-Line W-36 standard
@@ -99,7 +101,7 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
     commercial Leghorn strain).
   - Rhode Island Red and Plymouth Rock are "Large" (Livestock Conservancy). USDA Large is 24-27 oz a dozen, about 56.7-63.8 g an
     egg. The game uses 60 g *(proposed, inside the class)*.
-  - Silkie: NOT FOUND, so 40 g *(proposed: a small egg)*.
+  - Silkie: **41 g** (was 40, proposed): "Egg weight [g] … Silkie … 41.15 ±0.97" (Tyc et al. 2023, Table 2, above).
 - **Broodiness:**
   - UW-Madison A2880: Leghorns "rarely go broody"; most Reds "show broodiness"; Plymouth Rocks "normally will show broodiness".
   - Silkies are "champions at going broody" ([Oregon State PNW-565](https://extension.oregonstate.edu/catalog/pnw-565-why-did-my-chickens-stop-laying)).
@@ -120,7 +122,7 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
 - **Broad Breasted White mating:** broad-breasted selection "nearly eliminated their ability to mate naturally" (Livestock
   Conservancy, Bronze page). So a BBW tom does not mate in the game. BBW hens lay fertile eggs only from a standard tom
   *(proposed; artificial insemination is not in this pass)*.
-- **Bourbon Red broodiness:** NOT FOUND, so the game gives it the heritage Bronze's "good mothers" *(proposed)*.
+- **Bourbon Red broodiness:** NOT FOUND (searched again 2026-11-14; the pages did not load), so the game gives it the heritage Bronze's "good mothers" *(proposed)*.
 
 **Quail:**
 - **Coturnix:**
@@ -134,8 +136,8 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
   - Eggs: "50-200+ eggs a year" ([USDA APHIS via The Poultry Site](https://www.thepoultrysite.com/articles/bobwhite-quail-production)).
   - Egg weight: 9.3-9.8 g ([Wilson Bulletin 74(1)](https://sora.unm.edu/sites/default/files/journals/wilson/v074n01/p0005-p0027.pdf));
     eggs are white ([Texas A&M](https://wildlife.tamu.edu/quail/northern-bobwhite-kids-reverse-quail-decline-initiative)).
-  - Weight: 170-173 g for northern birds ([Wikipedia](https://en.wikipedia.org/wiki/Northern_bobwhite), **TO VERIFY**).
-  - Broodiness: NOT FOUND for a farmed line. The game calls it broody *(proposed: a wild-type bird)*.
+  - Weight: 170-173 g for northern birds ([Wikipedia](https://en.wikipedia.org/wiki/Northern_bobwhite), citing Nelson & Martin 1953).
+  - Broodiness: NOT FOUND for a farmed line (searched again 2026-11-14; the pages did not load). The game calls it broody *(proposed: a wild-type bird)*.
 
 **Ducks:**
 - **Weights and eggs a year:** University of Kentucky, *Raising ducks*
@@ -156,7 +158,7 @@ Values in brackets are what the game uses (the middle of the range, the sheep ru
   - Khaki Campbells "seldom become broody" (ASC-198).
   - Pekins "are poor setters and seldom raise a brood"; Muscovies "make good setters" (Minnesota Extension, *Raising ducks*
     WW-01189, [archived](https://webarchive.library.unt.edu/eot2008/20090115161252/http://www.extension.umn.edu/distribution/livestocksystems/DI1189.html)).
-  - Mallard broodiness: NOT FOUND from an extension source. The game calls it broody *(proposed)*.
+  - Mallard broodiness: NOT FOUND from an extension source (searched again 2026-11-14; the pages did not load). The game calls it broody *(proposed)*.
 
 **Baselines:** trait scores (0-100) per breed are FarmChain-style game targets *(proposed)*, as for cattle and sheep. They are set
 in `Breeds`, pinned by a test.
@@ -179,9 +181,9 @@ in `Breeds`, pinned by a test.
   - chickens: 20 weeks (140 days), except Leghorn at 143 days;
   - turkeys: 31.5 weeks;
   - Coturnix: 7 weeks; Bobwhite: 22 weeks;
-  - ducks: 26 weeks (6 months). Pekin, Mallard and Muscovy are NOT FOUND, so they take the Khaki Campbell figure *(proposed)*.
+  - ducks: 26 weeks (6 months). Pekin, Mallard and Muscovy are NOT FOUND (searched again 2026-11-14; the pages did not load), so they take the Khaki Campbell figure *(proposed)*.
     Pekin: **TO VERIFY**: snippet, "Pekins start laying eggs when they are about 26–28 weeks of age"
-    ([NSW DPI, egg production](https://www.dpi.nsw.gov.au/animals-and-livestock/poultry-and-birds/species/duck-raising/egg-production); the page refused the fetch).
+    ([NSW DPI, egg production](https://www.dpi.nsw.gov.au/animals-and-livestock/poultry-and-birds/species/duck-raising/egg-production); the page refused the fetch, again on 2026-11-14).
 - **Curve shape:** the Hy-Line Leghorn curve, measured in weeks from the first egg, is the shape for every bird *(proposed)*. It is
   scaled so one laying year gives the breed's eggs a year.
 - **Turkeys:** they lay for **28 weeks**, then rest until a year from their first egg *(proposed: real turkeys lay in spring;
@@ -214,7 +216,8 @@ in `Breeds`, pinned by a test.
   - Quail: 11 days (was 21). Japanese quail "can store sperm for up to 11 days"
     ([Adkins-Regan 2015, PLoS ONE](https://pmc.ncbi.nlm.nih.gov/articles/PMC4519265/)).
   - Duck: 21 days is *proposed*. **TO VERIFY**: snippet, isolated Mallard hens' "fertility persisted for 6 to 14 days" (Elder &
-    Weller 1954, [J. Wildl. Manage. 18:495](https://doi.org/10.2307/3797084); the abstract refused the fetch).
+    Weller 1954, [J. Wildl. Manage. 18:495](https://doi.org/10.2307/3797084); the abstract refused the fetch, 403 again on 2026-11-14;
+    other snippets give "fertility lasted 6-14 days"). The game keeps 21.
 - **What a fertile egg carries:** the parents' genome, so the chick's genes are set at laying, as a calf's are set at conception.
 - **Crosses:** they work only within a species. Muscovy × other ducks gives a sterile "mule" in reality; that cross is **not**
   allowed in this pass *(proposed)*.
@@ -260,7 +263,7 @@ The humidity is raised for the last 3 days (USU: wet bulb 90 °F). Incubators ar
 | Laying hen | 100-150 g feed a day; Leghorn W-36 99.6 g | [Alabama ACES](https://www.aces.edu/blog/topics/farming/backyard-small-poultry-flock-management-series-feeding-the-laying-hen/); Hy-Line |
 | Coturnix | 14-18 g a day | NSW DPI |
 | Breeder duck | 48 lb per 100 ducks a day, about 218 g | [The Poultry Site, breeder ducks](https://www.thepoultrysite.com/articles/management-programme-for-raising-breeder-duck-flocks) |
-| Adult turkey | NOT FOUND (only totals to 26 weeks). **TO VERIFY**: snippet, breeder hens ate "252 grams" a day (Broad Breasted Bronze) and "137 grams" (Beltsville Small White) | [MSU thesis, 1963](https://d.lib.msu.edu/etd/41098) (the repository refused the fetch) |
+| Adult turkey | NOT FOUND (only totals to 26 weeks). **TO VERIFY**: snippet, breeder hens ate "252 grams" a day (Broad Breasted Bronze) and "137 grams" (Beltsville Small White) | [MSU thesis, 1963](https://d.lib.msu.edu/etd/41098) (the repository refused the fetch, again on 2026-11-14) |
 | Water, chicken and turkey | about 2× the feed weight (UAF gives 2.5× for turkeys) | ACES; [The Poultry Site](https://www.thepoultrysite.com/articles/turkey-feeding-and-nutrition/p2); UAF |
 | Water, ducks | 3.3:1 summer, 2.7:1 winter | [The Poultry Site, Farrell review](https://thepoultrysite.com/articles/recent-advances-in-the-production-management-and-nutrition-of-intensivelyfarmed-domestic-ducks) |
 
@@ -273,10 +276,12 @@ The humidity is raised for the last 3 days (USU: wet bulb 90 °F). Incubators ar
   - duck: 218 g at 3.9 kg (Pekin);
   - turkey: the chicken anchor *(proposed)*, which gives about 290 g for an 8.2 kg hen.
 - **Young birds** eat by their weight on the same rule.
-- **Water:** 2× the feed weight (chicken, turkey, quail; the quail figure is NOT FOUND, so it is *proposed*), and 3× for ducks
-  (the middle of 2.7-3.3).
-  - Quail: **TO VERIFY**: snippet, laying Japanese quail drank "73.67 g" to "129.45 g" a bird a day (Penkov 2010,
-    [Agricultural Sciences, Plovdiv](https://agrarninauki.au-plovdiv.bg/2010/8-investigation-on-the-water-consumption-by-laying-japanese-quails-coturnix-coturnix-japonica/)).
+- **Water:** 2× the feed weight (chicken, turkey), **2.3×** for quail (was 2×, proposed), and 3× for ducks (the middle of 2.7-3.3).
+  - Quail: water "59.67 ± 7.17 ml/bird/day" against feed "26.32 ± 0.05 g/bird/day", so about 2.3× (Arch Razi Inst 2024,
+    [PMC11345484](https://pmc.ncbi.nlm.nih.gov/articles/PMC11345484/)).
+  - Quail, a second figure: **TO VERIFY**: snippet, laying Japanese quail drank "73.67 g" to "129.45 g" a bird a day (Penkov 2010,
+    [Agricultural Sciences, Plovdiv](https://agrarninauki.au-plovdiv.bg/2010/8-investigation-on-the-water-consumption-by-laying-japanese-quails-coturnix-coturnix-japonica/);
+    the page gave a certificate error on 2026-11-14).
     That is far above 2× 16 g.
 - **Grain:** one wheat or seed item is **100 g of feed** *(proposed)*. So a hen eats about one item each game day.
   - Wheat seeds, beetroot seeds, melon seeds, pumpkin seeds, torchflower seeds, pitcher pods and wheat all count. Wheat is the vanilla
@@ -395,7 +400,7 @@ Sex-linked loci (barring, duck brown) follow the bird rule: a hen has one Z, fro
 | Muscovy | 69-75% | same |
 | Quail | 58-62% | same |
 | Ducks, general | about 65% | UW-Madison |
-| Duck feathers and down | about 100 g of feathers a bird, about 30 g of it down | Farrell review (**TO VERIFY**: the review cites no source) |
+| Duck feathers and down | about 100 g of feathers a bird, about 30 g of it down | Farrell review (confirmed 2026-11-14; still secondary: the review cites no source) |
 
 **Game:** whole birds, cuts and feathers are in `docs/eggs.md` (products). Meat items are **one item per 0.5 kg** of dressed bird
 *(proposed; sheep use 2.5 kg)*.
@@ -416,7 +421,7 @@ As excreted (MWPS-18, ±30%, [PDF](https://dcr.am.virginia.gov/soil-and-water/do
   day).
   - Ducks use their own row: 0.20 kg / 1.81 kg = **0.11 kg per kg a day** (was the layer rate, 0.05). MWPS-18 Table 6 lists
     "Duck 4 0.44" (lb, lb a day).
-  - Quail have no figure (NOT FOUND), so they use the layer rate *(proposed)*.
+  - Quail have no figure (NOT FOUND; searched again 2026-11-14; the pages did not load), so they use the layer rate *(proposed)*.
 - **What happens to it:** litter goes into the existing compost chain (`docs/waste.md`).
 
 ## Economy
@@ -424,7 +429,7 @@ Nothing is sold (cattle rule, 2026-11-07).
 
 ## Open points
 - Seasons, if ever added: turkeys and wild birds lay in spring.
-- Better sources for the TO VERIFY rows; the turkey's daily feed; the Silkie's egg weight.
+- Better sources for the TO VERIFY rows; the turkey's daily feed.
 - Poultry artificial insemination, for Broad Breasted White.
 - Geese and guinea fowl: specced 2026-11-13 (below).
 
@@ -448,13 +453,13 @@ frees his place when her fertile window ends.
 |---|---|---|
 | Chicken | 10 | "a ratio of about 1:10, m:f, if breeding" ([UC ANR](https://ucanr.edu/site/small-acreage-landowners/poultry)) |
 | Quail | 3 | "one male to three females is sufficient" (NSW DPI, [The Poultry Site](https://www.thepoultrysite.com/articles/raising-japanese-quail-1)) |
-| Duck | 5 | 1 male to 5-8 females for meat-type ducks (**TO VERIFY**: snippet, [Narushin 2026](https://kar.kent.ac.uk/115666/)) |
+| Duck | 5 | 1 male to 5-8 females for meat-type ducks ([Narushin 2026](https://kar.kent.ac.uk/115666/), quoting "Poultry 2024"; still secondary) |
 | Turkey | 10 | the middle of "varies from 8-12" ([Kentucky](https://afs.mgcafe.uky.edu/extension/poultry/breeding)); UC ANR adds that most domestic breeds "can no longer breed naturally" |
 
 ### The two quail don't cross
 Coturnix (Old World quail, Phasianidae) and Bobwhite (New World quail, Odontophoridae) are in different families. No record of a
-hybrid was found (NOT FOUND: searched Coturnix x Colinus hybrid). Even within *Colinus*, a crested x northern bobwhite cross was
-"nearly 70%" infertile (**TO VERIFY**: snippet, [Auk 92](https://sora.unm.edu/sites/default/files/journals/auk/v092n04/p0803-p0805.pdf)).
+hybrid was found (NOT FOUND: searched Coturnix x Colinus hybrid, again 2026-11-14). Even within *Colinus*, a crested x northern bobwhite cross was
+"nearly 70%" infertile (**TO VERIFY**: snippet, [Auk 92](https://sora.unm.edu/sites/default/files/journals/auk/v092n04/p0803-p0805.pdf); the PDF did not load on 2026-11-14).
 - **Game rule:** a quail male serves only hens of his own genus, judged by the top breed of each bird. A mixed bird counts as the genus
   of its larger share.
 
@@ -482,8 +487,10 @@ hybrid was found (NOT FOUND: searched Coturnix x Colinus hybrid). Even within *C
   80%.
 - **Grass wears slowly:**
   - Each grass block on the run holds 1.5 kg DM of forage, as for sheep.
-  - It regrows 0.31 g DM a day. That is what lets a run carry 50 hens an acre for good (Dryden 1916, **TO VERIFY**: snippet,
-    [Plamondon](https://www.plamondon.com/wp/how-many-chickens-per-acre/)): 50 x 25 g / 4,047 m² *(derived)*.
+  - It regrows 0.31 g DM a day. That is what lets a run carry 50 hens an acre for good: 50 x 25 g / 4,047 m² *(derived)*.
+    The 50 is *(derived: half Dryden's 100, for a run grazed all year without rest)*. Dryden 1916, p. 192, gives "1. Maximum number of
+    fowls per acre : 100 laying hens", but only if night droppings go on other land, the ground is split into two yards cropped in
+    turn, and it rests at least 6 months a year ([Dryden, *Poultry Breeding and Management*](https://distantreader.org/stacks/trust/uc2/uc2_ark+=13960=t4dn41478.txt)).
   - Birds eat from the run's blocks evenly. A block drawn down to nothing turns to dirt, and vanilla grass can spread back onto it.
   - Example: 10 hens on an 8 x 6 run draw 235 g a day more than it regrows, so the run starts to go bare after about 300 game days.
 
@@ -493,12 +500,12 @@ is given.
 
 | Species | Locus | Alleles and what shows | Source |
 |---|---|---|---|
-| Muscovy | blue | + / Bl, incomplete: one Bl is blue, two are silver (splash) | **TO VERIFY**: breeder snippet ([waterfowl.org.uk](https://www.waterfowl.org.uk/domestic-waterfowl/muscovy-ducks/)) |
+| Muscovy | blue | + / Bl, incomplete: one Bl is blue, two are silver (splash) | **TO VERIFY**: breeder snippet ([waterfowl.org.uk](https://www.waterfowl.org.uk/domestic-waterfowl/muscovy-ducks/); searched again 2026-11-14; the pages did not load) |
 | Muscovy | lavender | + / lav, autosomal recessive | [OMIA 002249](https://omia.org/OMIA002249/8855/) (Hollander & Walther 1962) |
-| Muscovy | chocolate | + / choc, sex-linked recessive | **TO VERIFY**: breeder snippet |
-| Coturnix | fawn (Y, ASIP) | + / Y, incomplete: one is Italian, two are Golden | [Southwest Gamebirds](https://southwestgamebirds.com/pages/genetics); order Y*F2 &gt; Y*Y &gt; Y*N (**TO VERIFY**, [PubMed 17313575](https://pubmed.ncbi.nlm.nih.gov/17313575/)) |
+| Muscovy | chocolate | + / choc, sex-linked recessive | **TO VERIFY**: breeder snippet (searched again 2026-11-14; the pages did not load) |
+| Coturnix | fawn (Y, ASIP) | + / Y, incomplete: one is Italian, two are Golden | [Southwest Gamebirds](https://southwestgamebirds.com/pages/genetics); order Y*F2 &gt; Y*Y &gt; Y*N: "the dominance relationship was Y*F2 &gt; Y*Y &gt; Y*N &gt; Y*RB" (Hiragaki et al. 2008, Genetics, [PMC2248368](https://pmc.ncbi.nlm.nih.gov/articles/PMC2248368)) |
 | Coturnix | extended brown (E, MC1R) | + / E, incomplete: one is Rosetta, two are Tibetan | Southwest Gamebirds |
-| Coturnix | dotted white (S, EDNRB2) | + / s, recessive: s/s is English White; carriers can show Tuxedo *(not drawn)* | Southwest Gamebirds; EDNRB2 recessive (**TO VERIFY**, [PMC2248368](https://pmc.ncbi.nlm.nih.gov/articles/PMC2248368)) |
+| Coturnix | dotted white (S, EDNRB2) | + / s, recessive: s/s is English White; carriers can show Tuxedo *(not drawn)* | Southwest Gamebirds; EDNRB2 recessive (Miwa et al. 2007, [PubMed 17313575](https://pubmed.ncbi.nlm.nih.gov/17313575/); [OMIA](https://omia.org/OMIA000375/93934/): "Autosomal recessive") |
 
 - **Founders:** wild founders carry the wild type. Herd founders carry each mutant at **5%** *(proposed)*, so mutants turn up in
   breeding.
@@ -532,7 +539,7 @@ Sources used throughout:
   [ch. 8 incubation](https://www.fao.org/4/y4359e/y4359e0a.htm), [ch. 9 meat](https://www.fao.org/4/y4359e/y4359e0b.htm),
   [ch. 10 down](https://www.fao.org/4/y4359e/y4359e0c.htm), [ch. 13 killing](https://www.fao.org/4/y4359e/y4359e0f.htm).
 - **MSU E-1050** ([archived 1977 bulletin](https://archive.lib.msu.edu/DMC/extension_publications/e1050/e1050_77.pdf); it is marked
-  "do not use for current recommendations", so its figures are **TO VERIFY**).
+  "do not use for current recommendations"; its goose weights are confirmed from the scan, 2026-11-14).
 - **TLC**: Livestock Conservancy pages for [Toulouse](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/toulouse-goose/) and
   [Chinese](https://livestockconservancy.org/heritage-breeds/heritage-breeds-list/chinese-goose/).
 - **UKY ASC-209** [Raising guinea fowl](https://publications.mgcafe.uky.edu/sites/publications.ca.uky.edu/files/ASC209.pdf); **EXT-GF**
@@ -546,14 +553,14 @@ Sources used throughout:
 | Goose | Chinese | CHI | eggs, guard | 5.4 / 4.5 | 50-60 (55) | 120 | white | yes *(proposed)* |
 | Guinea fowl | Helmeted | GUI | meat, eggs, alarm | 1.5 / 1.5 | 100 | 40 | brown, speckled *(proposed)* | late in the season |
 
-- **Weights:** MSU's table, "Toulouse 26 20 … Embden 26 20 … Chinese 12 10" lb (**TO VERIFY**: 1977); TLC agrees for Toulouse
+- **Weights:** MSU's table, "Toulouse 26 20 … Embden 26 20 … Chinese 12 10" lb (MSU E-1050, 1977); TLC agrees for Toulouse
   ("Males – 20-26 lbs. / Females – 16-20 lbs.") and Chinese ("Mature ganders average 12 lbs. while mature geese average 10 lbs.").
   FAO gives lighter Embden ("up to 10.0 kg … up to 9.0 kg") and Chinese ("5.0 kg and females 4.0 kg"). Guinea fowl: "Both male and
   female adult guineas weigh 3.0 to 3.5 lb (~1.5 kg)" (UKY).
 - **Eggs:** Embden "40 eggs per year", "egg size of 170 g" (FAO); Toulouse "moderate egg-layers of 20-35 eggs annually" (TLC); Chinese
-  "50-60 eggs is the average", "Egg weight, at 120 g" (FAO). The Toulouse egg weight is NOT FOUND (TLC says only "extra large"), so it
+  "50-60 eggs is the average", "Egg weight, at 120 g" (FAO). The Toulouse egg weight is NOT FOUND (TLC says only "extra large"; searched again 2026-11-14; the pages did not load), so it
   takes the Embden's. Guinea: "Hens can lay more than 100 eggs per year"; "about 1.4 oz (40 g)" (UKY).
-- **Broody:** the geese's broodiness is NOT FOUND in these sources; all three sit *(proposed)*. Guinea hens "do not go broody until the
+- **Broody:** the geese's broodiness is NOT FOUND in these sources (searched again 2026-11-14; the pages did not load); all three sit *(proposed)*. Guinea hens "do not go broody until the
   nest has around thirty eggs" (UKY): a guinea hen turns broody only with 30 eggs in her nest *(the game rule)*.
 
 ### Laying season and first egg
@@ -564,7 +571,7 @@ Geese and guinea fowl lay in a season. The poultry year is the sheep calendar at
 |---|---|---|---|---|
 | Goose (Embden, Toulouse) | **1 year** old | **15 Feb - 15 Jun** | the year's eggs spread over the season | "geese begin to lay about mid-February and continue until early or mid-June" (FAO ch. 6); "Young females (approximately one year old) will lay eggs" (MSU) |
 | Goose (Chinese) | 1 year | **1 Feb - 30 Jun** | as above | "a breeding season of approximately five months (February to the end of June)" (FAO ch. 1) |
-| Guinea fowl | **30 weeks** (28-32) | **1 Apr - 31 Oct** | up to one a day, to the year's total | "start laying in March or April and may continue to lay until October" (EXT-GF); "an egg a day is common" (UKY); 28-32 weeks (**TO VERIFY**: [Farm Radio](https://scripts.farmradio.fm/radio-script/13-backgrounder-raising-guinea-fowl-for-food-and-income/), secondary) |
+| Guinea fowl | **28 weeks** (was 30) | **1 Apr - 31 Oct** | up to one a day, to the year's total | "start laying in March or April and may continue to lay until October" (EXT-GF); "an egg a day is common" (UKY); "Sexual maturity guinea hens appears to occur around 27-28 weeks of age with the onset of egg production" ([eXtension](https://ask.extension.org/kb/faq.php?id=753900)); Farm Radio gives 28-32 weeks ([Farm Radio](https://scripts.farmradio.fm/radio-script/13-backgrounder-raising-guinea-fowl-for-food-and-income/), secondary) |
 
 - A new world starts on 1 October, so geese first lay about 46 game days in *(derived)* and guinea fowl about 61. Out of season they
   lay nothing. The coop readout shows the date and IN LAY or OUT OF SEASON.
@@ -574,10 +581,10 @@ Geese and guinea fowl lay in a season. The poultry year is the sheep calendar at
 | Quantity | Goose | Guinea fowl | Source |
 |---|---|---|---|
 | Females per male | **4** | **5** (4-5) | "select one male for every four females" (FAO ch. 6); "one male for each four to five females" (UKY) |
-| Fertile days after mating | **14** *(proposed)* | 21 *(proposed: the default)* | NOT FOUND for geese (searched FAO, extension, AI literature; only forum figures of 10-14 days) |
+| Fertile days after mating | **14** *(proposed)* | 21 *(proposed: the default)* | NOT FOUND for geese (searched FAO, extension, AI literature; only forum figures of 10-14 days; searched again 2026-11-14; the pages did not load) |
 | Incubation | **30 days** | **27 days** (26-28) | "The incubation period for goose eggs is 30 days" (FAO ch. 8); "26 to 28 days" (UKY, EXT-GF) |
-| Stop turning after day | **27** | **25** | goose: the hatcher takes the eggs for "days 27-30" and they are no longer turned (FAO ch. 8, *derived*); guinea: "Stop turning on day 25" (**TO VERIFY**: NC State 4-H egg chart, snippet) |
-| Setter | 37.7 C, 50-55% RH, turned every 2 h | 37.7 C, 55% RH | FAO ch. 8; Onagbesan & Tona 2021 (**TO VERIFY**, snippet) |
+| Stop turning after day | **27** | **25** | goose: the hatcher takes the eggs for "days 27-30" and they are no longer turned (FAO ch. 8, *derived*); guinea: "Stop turning on day 25" (**TO VERIFY**: NC State 4-H egg chart, snippet; searched again 2026-11-14; the pages did not load) |
+| Setter | 37.7 C, 50-55% RH, turned every 2 h | 37.7 C, 55% RH | FAO ch. 8; guinea "at a temperature of 37.7°C, relative humidity of 55%" (Kouame, Voemesse, Lin, Onagbesan & Tona 2021, Poultry Sci 100:101428, [PMC8531856](https://pmc.ncbi.nlm.nih.gov/articles/PMC8531856)) |
 
 - Goose pairs: "In flocks larger than twenty this bond does not exist" (FAO ch. 2); the game uses the ratio only.
 - Embden goslings can be sexed by down colour until 2-3 weeks (FAO ch. 1); not modelled.
@@ -596,8 +603,8 @@ Geese and guinea fowl lay in a season. The poultry year is the sheep calendar at
 ### Feed, water and housing
 | Quantity | Goose | Guinea fowl | Source |
 |---|---|---|---|
-| Full ration | **320 g a day** | **85 g a day** | FAO ch. 6; guinea "about 84.5 g per bird per day" (**TO VERIFY**, snippet, a Nigerian field study) |
-| Water | 3x feed *(proposed: the duck rule; NOT FOUND for adult geese)* | 2x feed *(proposed: NOT FOUND)* | |
+| Full ration | **320 g a day** | **85 g a day** | FAO ch. 6; guinea "(84.5g/fowl/day)" (Konlan et al. 2011, J. World's Poult. Res. 1(1):1-3, a field study in Ghana) |
+| Water | 3x feed *(proposed: the duck rule; NOT FOUND for adult geese)* | 2x feed *(proposed: NOT FOUND)* | searched again 2026-11-14; the pages did not load |
 | House floor | **1 block holds 1** (1.0 m² on deep litter) | **1 block holds 4** (2-3 sq ft, 0.19-0.28 m²) | "each bird be given approximately 1.0 m 2 of floor space" (FAO ch. 6); "2 to 3 square feet per guinea" (UKY) |
 | Run | **1 block a bird** (at least 1.0 m²) | 1 block a bird *(proposed: as hens)* | "a minimum of 1.0 m 2 per bird in a yard or run" (FAO ch. 6) |
 | Nests | 4 birds a nest *(proposed: as ducks)* | 4 *(proposed)* | |
@@ -634,11 +641,11 @@ Geese and guinea fowl lay in a season. The poultry year is the sheep calendar at
 ### Plumage genes (new loci, appended after the Coturnix mutants)
 | Locus | Species | Alleles | Source |
 |---|---|---|---|
-| `GOOSE_DILUTION` | goose | sex-linked dilution Sd > sd+ (Z-linked); two copies pale the bird to white, one copy to pale grey | "an allele for sex-linked dilution and white spotting, together producing white plumage"; Sd "was confirmed to cause sex-linked dilution, and thus autosexing" (Ollila et al. 2026, [bioRxiv preprint](https://www.biorxiv.org/content/10.64898/2026.01.19.700295v1.full), **TO VERIFY**: not peer reviewed). The one-copy and two-copy looks follow the Pilgrim, "the males being white and the females grey" (FAO ch. 1) |
+| `GOOSE_DILUTION` | goose | sex-linked dilution Sd > sd+ (Z-linked); two copies pale the bird to white, one copy to pale grey | "an allele for sex-linked dilution and white spotting, together producing white plumage"; Sd "was confirmed to cause sex-linked dilution, and thus autosexing" (Ollila et al. 2026, [bioRxiv preprint](https://www.biorxiv.org/content/10.64898/2026.01.19.700295v1.full), confirmed 2026-11-14; still a preprint, not peer reviewed). The one-copy and two-copy looks follow the Pilgrim, "the males being white and the females grey" (FAO ch. 1) |
 | `GOOSE_SPOTTING` | goose | white spotting S, recessive to plain *(proposed mode)*; with dilution it makes the white Embden, alone the saddleback | "Saddleback pattern is caused by white spotting" (Ollila et al.) |
-| `GOOSE_WHITE` | goose (Chinese) | Chinese white, recessive | "the white plumage phenotype in Chinese geese should be recessive" ([Xi et al. 2020, BMC Genomics](https://pmc.ncbi.nlm.nih.gov/articles/PMC7027040)); OMIA lists it as co-dominant in one breed, so **TO VERIFY** |
-| `GUINEA_LAVENDER` | guinea | lavender, recessive | "recessive to pearl grey" (**TO VERIFY**, breeder source); "all of these loci are autosomal with three being recessive and the fourth incompletely dominant" ([Soara et al. 2022, PeerJ](https://pmc.ncbi.nlm.nih.gov/articles/PMC8784013)) |
-| `GUINEA_WHITE` | guinea | white, recessive *(proposed: one of the three recessive loci; which one is NOT FOUND)*. White keets hatch white | "the only solid white bird that hatches solid white and not yellow" (UKY) |
+| `GOOSE_WHITE` | goose (Chinese) | Chinese white, recessive | "the white plumage phenotype in Chinese geese should be recessive" ([Xi et al. 2020, BMC Genomics](https://pmc.ncbi.nlm.nih.gov/articles/PMC7027040)); OMIA lists it as co-dominant (Yang 2024, Wugang Copper geese). Both readings are confirmed (2026-11-14): recessive in Gang geese (Xi 2020), co-dominant in Wugang Copper geese. The game keeps recessive |
+| `GUINEA_LAVENDER` | guinea | lavender, recessive | "recessive to pearl grey" (**TO VERIFY**, breeder source; searched again 2026-11-14; the pages did not load); "all of these loci are autosomal with three being recessive and the fourth incompletely dominant" ([Soara et al. 2022, PeerJ](https://pmc.ncbi.nlm.nih.gov/articles/PMC8784013)) |
+| `GUINEA_WHITE` | guinea | white, recessive *(proposed: one of the three recessive loci; which one is NOT FOUND; searched again 2026-11-14; the pages did not load)*. White keets hatch white | "the only solid white bird that hatches solid white and not yellow" (UKY) |
 
 - **Looks:** goose grey (Toulouse, wild type), pale grey, white, saddleback, Chinese brown (the swan goose's wild type) and Chinese
   white; guinea pearl, lavender, white (white over lavender). The Chinese goose has the bill knob on the model.

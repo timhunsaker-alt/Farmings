@@ -18,11 +18,11 @@ class GallopTest {
 
 	@Test
 	void recordsHitTheSourcedPaces() {
-		assertEquals(19.66, Gallop.record(HorseBreed.THOROUGHBRED, 402), 1e-9);
+		assertEquals(19.54, Gallop.record(HorseBreed.THOROUGHBRED, 402), 1e-9);
 		assertEquals(16.85, Gallop.record(HorseBreed.THOROUGHBRED, 2012), 1e-9);
 		assertEquals(16.76, Gallop.record(HorseBreed.THOROUGHBRED, 2414), 1e-9);
 		assertEquals(19.84, Gallop.record(HorseBreed.QUARTER_HORSE, 402), 1e-9);
-		assertEquals(0.92 * 19.66, Gallop.record(HorseBreed.ARABIAN, 402), 1e-9);
+		assertEquals(0.92 * 19.54, Gallop.record(HorseBreed.ARABIAN, 402), 1e-9);
 		assertTrue(Gallop.record(HorseBreed.THOROUGHBRED, 4828) < 16.76 * 0.991);
 	}
 
@@ -81,11 +81,11 @@ class GallopTest {
 	@Test
 	void growthAndSeason() {
 		Map<String, Integer> c = pure(HorseBreed.THOROUGHBRED);
-		assertEquals(52.2, Equine.targetKg(c, 0), 1e-9);
-		assertEquals(0.64 * 522, Equine.targetKg(c, 365), 1e-9);
-		assertEquals(522, Equine.targetKg(c, 2000), 1e-9);
-		assertTrue(Equine.inSeason(90) && Equine.inSeason(303));
-		assertTrue(!Equine.inSeason(89) && !Equine.inSeason(304));
+		assertEquals(45.4, Equine.targetKg(c, 0), 1e-9);
+		assertEquals(0.64 * 454, Equine.targetKg(c, 365), 1e-9);
+		assertEquals(454, Equine.targetKg(c, 2000), 1e-9);
+		assertTrue(Equine.inSeason(105) && Equine.inSeason(303));
+		assertTrue(!Equine.inSeason(104) && !Equine.inSeason(304));
 		assertEquals(HorseStage.STALLION, HorseStage.male(3 * 365, false));
 		assertEquals(HorseStage.COLT, HorseStage.male(2 * 365, false));
 		assertEquals(HorseStage.FOAL, HorseStage.female(100, false));

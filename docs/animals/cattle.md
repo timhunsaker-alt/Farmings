@@ -44,7 +44,7 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
 
 ## Milk
 - Yield follows a lactation curve (rises to a peak at 6-8 weeks, then declines). The totals are now confirmed against the CDCB
-  tables (see "Decided with Tim, 2026-11-08" below). The curve shape and each breed's peak are still **TO VERIFY**.
+  tables (see "Decided with Tim, 2026-11-08" below). The curve shape and each breed's peak are still **TO VERIFY** (searched again for per-breed lactation curves 2026-11-14; the pages did not load).
 - Components by breed (older USDA AIPL columns; superseded by the CDCB 2019 figures below, whose milk and fat were confirmed in the
   [CDCB tables](https://queries.uscdcb.com/publish/dhi/current/lasum.html): Holstein "27,686" lb, "3.90" fat):
 
@@ -56,8 +56,8 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
 
   Source: [AIPL Tables 8A-8F](https://aipl.arsusda.gov/publish/dhi/dhi13/lasum.html). Brown Swiss milk is about 22,700 lb (about 10,300 kg)
   per standardized lactation for 2015 calvings, from the same tables.
-- **Gyr** (the dairy-strain Gir): 1,225-2,268 kg per lactation in India, 240-380 days, fat 4.5-4.6% ([Indian Journal of Animal Sciences review](https://epubs.icar.org.in/index.php/IJAnS/article/download/119832/46085/337986)). A Tamil Nadu herd in hot, humid conditions gave 1,507 kg and 5.05% fat with a 447-day calving interval. Brazilian averages are quoted higher (about 3,500 kg) but only by a popular article. **TO VERIFY**: snippet, 305-day means of 2,652 kg (Martinez 2005, PNMGL progeny tests) and 3,233 kg (Leão 2013), quoted by an [IFMG abstract](https://bambui.ifmg.edu.br/jornada_cientifica/2015/resumos/jornada/ZOOTECNIA/01.pdf).
-- **Lactation curve:** yield peaks about 4-8 weeks after calving. One Colombian Holstein herd averaged 5,830 kg per 305 days with a peak near 27.7 kg/day at 4.7 weeks ([Fitting lactation curves in a Colombian Holstein herd](https://agris.fao.org/search/en/records/6759909bc7a957febdfc71f9)); Wood's model is the practical curve ([Revista Facultad Nacional de Agronomia Medellin](https://revistas.unal.edu.co/index.php/refame/article/download/67424/65883/381784)). Per-breed peaks are **TO VERIFY**.
+- **Gyr** (the dairy-strain Gir): 1,225-2,268 kg per lactation in India, 240-380 days, fat 4.5-4.6% ([Indian Journal of Animal Sciences review](https://epubs.icar.org.in/index.php/IJAnS/article/download/119832/46085/337986)). A Tamil Nadu herd in hot, humid conditions gave 1,507 kg and 5.05% fat with a 447-day calving interval. Brazilian averages are quoted higher (about 3,500 kg) but only by a popular article. **TO VERIFY**: snippet, 305-day means of 2,652 kg (Martinez 2005, PNMGL progeny tests) and 3,233 kg (Leão 2013), quoted by an [IFMG abstract](https://bambui.ifmg.edu.br/jornada_cientifica/2015/resumos/jornada/ZOOTECNIA/01.pdf). Searched for Martinez 2005 and Leão 2013 again 2026-11-14; the pages did not load.
+- **Lactation curve:** yield peaks about 4-8 weeks after calving. One Colombian Holstein herd averaged 5,830 kg per 305 days with a peak near 27.7 kg/day at 4.7 weeks ([Fitting lactation curves in a Colombian Holstein herd](https://agris.fao.org/search/en/records/6759909bc7a957febdfc71f9)); Wood's model is the practical curve ([Revista Facultad Nacional de Agronomia Medellin](https://revistas.unal.edu.co/index.php/refame/article/download/67424/65883/381784)). Per-breed peaks are **TO VERIFY** (searched again 2026-11-14; the pages did not load).
 - **Wood's curve research, 2026-11-08 (all *(unverified)*, from a conference abstract):** yield on day t is `a * t^b * e^(-c*t)` kg/day.
   [ADSA 2019 abstract M128](https://m.adsa.org/2019/abs/t/78869), Wisconsin test-day data. First lactation: Holstein a 16.13, b 0.235, c 0.0019;
   Jersey a 14.07, b 0.186, c 0.0021. Later lactations: Holstein a about 23.7, b 0.23-0.24, c 0.0032-0.0036; Jersey a about 19.2, b 0.17-0.19,
@@ -79,9 +79,9 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
 
 ## Feed and water
 - **Hay:** a cow eats hay blocks (the vanilla hay block) from a feeder. Cattle eat nothing else in Phase 1.
-- **Intake** (kept as it is, Tim 2026-11-12): a forage-based planning figure is about 2.7% of body weight per day as dry matter for a lactating cow (a regional
-  extension source). **TO VERIFY**: whole-ration guidance is higher, "3 to 3.5% of their body weight in dry matter" ([FAS Scotland](https://fas.scot/?p=45035)),
-  and a hay-only figure is still missing. Dry cow: **1.8-2.1%**, the game uses the middle, 1.95% (was 2.2%), [UC Davis, Robinson](https://animalscience.ucdavis.edu/sites/g/files/dgvnsk446/files/inline-files/dc1.pdf):
+- **Intake:** a lactating dairy cow eats **3.25%** of body weight per day as dry matter (was 2.7%, a beef-cow figure; Tim approved
+  2026-11-14). Dairy cows eat "in the region of 3 to 3.5% of their body weight in dry matter" ([FAS Scotland](https://fas.scot/?p=45035));
+  the game uses the middle. A hay-only figure is still missing. Dry cow: **1.8-2.1%**, the game uses the middle, 1.95% (was 2.2%), [UC Davis, Robinson](https://animalscience.ucdavis.edu/sites/g/files/dgvnsk446/files/inline-files/dc1.pdf):
   "average between 1.8 and 2.1% of body weight (BW)". **One hay block = 100 kg** (decided with Tim, 2026-11-07; a real square bale is 15-25 kg and a
   round bale about 500 kg, so 100 kg is a game size). Recommended: **100 kg is fresh weight**, and the dry matter in it is the hay's dry-matter
   share (85% is used; grass hay is "79-91 percent" dry matter, [UT Extension SP 774](https://soillab.tennessee.edu/wp-content/uploads/sites/129/2020/06/SP774.pdf)). It sets how fast a herd empties the feeder.
@@ -91,10 +91,11 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
   Heat raises need a lot (120-200% in one source). Sources: [NMSU D107](https://pubs.nmsu.edu/_d/D107.pdf),
   [UC Davis](https://epakag.ucdavis.edu/livestock/factsheets/fs-live-AIP12-CowBuffaloWaterNeeds.pdf),
   [NDSU](https://www.ag.ndsu.edu/publications/livestock/water-needs-and-quality-guidelines-for-dairy-cattle/water-needs-and-quality-guidelines-for-dairy.pdf/@@download/file/Water%20Needs%20and%20Quality%20Guidelines%20for%20Dairy%20Cattle.pdf).
-  The two sources disagree by a wide margin for the same cow; the UC Davis rule is chosen. The heat term is **TO VERIFY**.
+  The two sources disagree by a wide margin for the same cow; the UC Davis rule is chosen. The NRC equation and its heat term are
+  confirmed in [NMSU D107](https://pubs.nmsu.edu/_d/D107/index.html).
 - **Hay dry matter:** the Victorian government's feed table assumes **85% dry matter** for hay bales ([Victoria: weight of hay bales](https://feedinglivestock.vic.gov.au/?p=197)),
-  so one 100 kg hay block holds **85 kg of dry matter**. A cow at about 20 kg of dry matter a day eats about a quarter of a hay block
-  each game day. (Hay alone is a forage ration; see the intake caveat above.)
+  so one 100 kg hay block holds **85 kg of dry matter**. A 710 kg Holstein at about 23 kg of dry matter a day eats about 0.27 of a hay
+  block each game day. (Hay alone is a forage ration; see the intake caveat above.)
 - **Underfeeding:** a cow that eats less than she needs gives less milk, grows slower and loses health. **She never dies from a
   missed day.** (The same rule FarmChain uses.)
 
@@ -106,7 +107,7 @@ does; a well-fed one is never bred earlier than 15 months. Growth comes from the
 - **Alley: 3 m** (decided with Tim, 2026-11-07). The powered scraper runs along it. The scraper's own width is set in its spec.
 - **Water trough:** "3.5 linear inches (9 cm) of accessible waterer perimeter per cow" and "at least two watering locations per group"
   ([Dairyland Initiative: water space](https://thedairylandinitiative.vetmed.wisc.edu/adult-cow-housing/water-space/)).
-- Pasture area per animal: **TO VERIFY**.
+- Pasture area per animal: **TO VERIFY** (searched for extension stocking-rate guides again 2026-11-14; the pages did not load).
 
 ## Breeds (decided with Tim, 2026-11-07)
 Six cattle breeds to start. The first four are dairy and come from FarmChain's 30-breed registry
@@ -154,8 +155,8 @@ beef traits, which are all **DECISIONS** to approve:
 | Holstein | about 710 | Duplessis et al. 2014, via [Better Farming](https://betterfarming.com/flippingbook/betterfarming/2024/june-july/50) |
 | Jersey | about 470 | same |
 | Brown Swiss | about 600-612 | [Brown Swiss Association](https://www.brownswissusa.com/about-us/brown-swiss-breed): "cows weigh about 1300-1400 pounds" (590-635 kg) |
-| Gyr | about 313 (study) to 385 (breed profile) | [Animal Genetic Resources](https://www.cambridge.org/core/journals/animal-genetic-resources-resources-genetiques-animales-recursos-geneticos-animales/article/gir-cattle-breed-of-india-characteristics-and-present-status/A689843E8FCF994B31C3AF552CA0F356); [Oklahoma State](https://breeds.okstate.edu/cattle/gir-cattle). Indian figures; Brazilian dairy strain **TO VERIFY**. Game: use 385 until verified. |
-| Angus | about 550 | breed lists; secondary, **TO VERIFY** |
+| Gyr | about 313 (study) to 385 (breed profile) | [Animal Genetic Resources](https://www.cambridge.org/core/journals/animal-genetic-resources-resources-genetiques-animales-recursos-geneticos-animales/article/gir-cattle-breed-of-india-characteristics-and-present-status/A689843E8FCF994B31C3AF552CA0F356); [Oklahoma State](https://breeds.okstate.edu/cattle/gir-cattle). Indian figures; Brazilian dairy strain **TO VERIFY** (searched for Gir Leiteiro mature cow weight again 2026-11-14; the pages did not load). Game: use 385 until verified. |
+| Angus | about 550 | [Texas A&M Beef Skillathon](https://beefskillathon.tamu.edu/frame-score-frame-size-and-weight/): cows "averaged 1,222 pounds" (554 kg) |
 | Wagyu (Japanese Black) | about 487 | Motoyama et al. 2014, via [Australian Wagyu Association](https://www.wagyu.org.au/wp-content/uploads/2021/03/Australian-Wagyu-Update-Ten-year-trends-PART-2.pdf) |
 
 Breeding weights follow as 55% of these (Holstein about 390 kg, Jersey about 260 kg; the Gyr, Angus, Wagyu and Brown Swiss ones are computed, not sourced).

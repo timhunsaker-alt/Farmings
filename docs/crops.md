@@ -23,11 +23,11 @@ Tim's choices:
 | Crop | Kind | Seed to first harvest | Regrowth / cuttings | Stand life | Real yield | Game yield per block per harvest |
 |---|---|---|---|---|---|---|
 | Alfalfa | perennial legume | 65 days (60-70 after emergence) | 32.5 days (30-35); up to 5 cuts a year (4 used for the yield split) | 5.5 years (3-8) | 3-5 t hay/ac a year (4: 8.96 t/ha, 89% DM, so 7.97 t DM/ha) | 2.0 kg DM (2.24 kg hay) |
-| Timothy | perennial grass | 60 days *(proposed; NOT FOUND)* | 42 days *(proposed; NOT FOUND; a secondary report says about 6 weeks)*; 1-2 cuts a year (2 used) | 5 years *(proposed; NOT FOUND)* | 2 t hay/ac a year (4.48 t/ha, 88% DM) | 1.97 kg DM |
+| Timothy | perennial grass | 60 days *(proposed; NOT FOUND)* | 42 days *(proposed; NOT FOUND; a secondary report says about 6 weeks)*; 1-2 cuts a year (2 used) | 5 years *(proposed; NOT FOUND; the day counts were searched again 2026-11-14, the pages did not load)* | 2 t hay/ac a year in 2 cuts (4.48 t/ha, 88% DM; confirmed, UMaine 2265e) | 1.97 kg DM |
 | Orchardgrass | perennial grass | 60 days *(proposed)* | 35 days (4-6 weeks); 4 cuts (3-4, WSU) | 5 years *(proposed)* | 2-4 t hay/ac a year (3: 6.72 t/ha, 88% DM, so 5.92 t DM/ha) (was 3.5 t DM/ac, 7.84 t DM/ha, from a "per harvest" figure) | 1.48 kg DM (was 1.96) |
-| Corn, silage | annual, 2 blocks tall | 100 days *(proposed: before black layer; planting to silking NOT FOUND)* | none | one harvest | 20-25 t as-fed/ac at 35% DM (22.5: 7.9 t DM/ac, 17.6 t DM/ha) | 17.6 kg DM (50.3 kg chopped as-fed) |
-| Corn, grain | annual, 2 blocks tall | 114 days (relative maturity at 2,700 GDD) | none | one harvest | 179.3 bu/ac, US 2024 (11.25 t/ha) | 11.25 kg grain |
-| Oats | annual | 100 days **TO VERIFY** (a seed catalogue gives 100-120; milk stage is 55-65 days; snippet: South Dakota State, a midseason oat "requires about 90 days from planting until maturity", [core.ac.uk](https://core.ac.uk/download/215574937.pdf)) | none | one harvest | 61 bu/ac (2.19 t/ha); straw 2.03 t/ac (4.55 t/ha) | 2.19 kg grain + 4.55 kg straw |
+| Corn, silage | annual, 2 blocks tall | **125 days** (was 100, proposed) *(derived: slightly before R6)*. Silking "69-75 days after emergence (1250 GDU)"; R6 "130 days after emergence or 50-60 days after silking"; "Silage harvest would be slightly earlier than R6" ([UW corn, critical stages](https://corn.aae.wisc.edu/Management/pdfs/CriticalStages.pdf)) | none | one harvest | 20-25 t as-fed/ac at 35% DM (22.5: 7.9 t DM/ac, 17.6 t DM/ha) | 17.6 kg DM (50.3 kg chopped as-fed) |
+| Corn, grain | annual, 2 blocks tall | **130 days**, R6 (UW corn, above; was 114, Kentucky's relative maturity at 2,700 GDD, which fell before the new silage day) | none | one harvest | 179.3 bu/ac, US 2024 (11.25 t/ha) | 11.25 kg grain |
+| Oats | annual | 100 days (confirmed, WSU EM4918E; a seed catalogue gives 100-120; milk stage is 55-65 days; South Dakota State, a midseason oat "requires about 90 days from planting until maturity", [core.ac.uk](https://core.ac.uk/download/215574937.pdf)) | none | one harvest | 61 bu/ac (2.19 t/ha); straw 2.03 t/ac (4.55 t/ha) | 2.19 kg grain + 4.55 kg straw |
 | Barley | annual | 87 days (was 85; Alaska gives 80-100) | none | one harvest | 76.7 bu/ac, US 2024 (4.13 t/ha); straw 1.01 t/ac (2.26 t/ha) | 4.13 kg grain + 2.26 kg straw |
 
 **Sources:**
@@ -63,9 +63,9 @@ Tim's choices:
   - A cut perennial drops back to its regrowth stage and grows to harvest again in its regrowth days.
   - It dies after its stand life, counted in cuts at 4 a year for alfalfa (22 cuts), 2 for timothy (10) and 4 for orchardgrass (20)
     *(proposed: real stands thin, they don't end on a date)*.
-- **Grain or silage:** a corn plant is "silage" if it is cut by the forage chopper before 114 days, and "grain" if the combine takes it
-  at 114 or later.
-- **Combining corn too early:** a combine on corn under 114 days takes nothing and leaves the plant *(proposed)*.
+- **Grain or silage:** a corn plant is "silage" if it is cut by the forage chopper from 125 days, and "grain" if the combine takes it
+  at 130 or later.
+- **Combining corn too early:** a combine on corn under 130 days takes nothing and leaves the plant *(proposed)*.
 
 ## Growth stages and the clock
 - **Stages:** each crop has 8 visible stages (0 to 7, as vanilla wheat), spread evenly over its days to harvest *(proposed)*.

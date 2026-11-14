@@ -594,7 +594,8 @@ public class GoatEntity extends Animal implements Wild.Animal, SmallRuminant {
 		if (day != lastMilkDay) {
 			lastMilkDay = day;
 			int dim = (int) Math.floor(TimeScale.ticksToRealDays(now - kiddedTick)) + 1;
-			milkKg = Herd.milkKg(composition(), dim, score(Trait.MILK_YIELD), firstLactation) * Math.min(lastFed, lastWatered);
+			milkKg = Herd.milkKg(composition(), dim, score(Trait.MILK_YIELD), firstLactation) * Math.min(lastFed, lastWatered)
+					* dev.farmings.feed.Ration.eweMilkFactor(ration);
 		}
 	}
 

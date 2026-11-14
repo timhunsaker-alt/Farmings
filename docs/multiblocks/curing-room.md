@@ -30,7 +30,7 @@ the cure stops and the meat ages as fresh meat (it can spoil) *(proposed: the co
 | **Bacon** (from pork belly) | cure **7 days**, then hot smoke **3 hours** in the smokehouse; no aging | "Cure in refrigerator for five to seven days" (OSU); "approximately three hours" at 225-250 °F (OSU); "Bacon does not require aging" (MSU) |
 
 - **Weight:** a country ham ends at **77.5%** of its fresh weight: "reduces ham weight by at least 18% — but typically 20 to 25%"
-  (FSIS-Ham). Bacon yield is NOT FOUND (searched OSU, MSU, USDA78); **90%** *(proposed)*.
+  (FSIS-Ham). Bacon yield is NOT FOUND (searched OSU, MSU, USDA78; the FSIS cured-meat PDF would not load, 2026-11-14); **90%** *(proposed)*.
 - **Items:** a whole `country_ham` (its weight carried in the item), sliced at a crafting table into 0.5 kg `ham_slice`s *(proposed)*;
   bacon as 0.5 kg `bacon` *(proposed)*.
 
@@ -41,7 +41,7 @@ the smokehouse sets its own heat)*. One log burns 2 game hours of smoking *(prop
 ## Lard
 - A **lard kettle** over a lit campfire or fire takes pork fat and renders it: "should remain about 212° F... Do not allow it to go above
   255° F"; done "When boiling (evaporation of water) ceases" (USDA78). **3 real hours** a batch *(proposed)*.
-- **Yield:** 0.75 kg of lard a kg of fat *(proposed: no authoritative figure; a homestead blog gives about a pint a pound, **TO VERIFY**)*.
+- **Yield:** 0.75 kg of lard a kg of fat *(proposed: no authoritative figure; a homestead blog gives about a pint a pound, **TO VERIFY**; a search snippet credits University of Minnesota Extension with "Leaf fat will yield 90 to 91 percent of leaf lard", but the PDF would not load, 2026-11-14)*.
   Out comes `lard`, 1 kg an item, as butter's blocks *(proposed)*.
 - Lard is a cooking fat: it stands in for butter in recipes that take Farmings butter *(proposed)*.
 

@@ -33,9 +33,9 @@ Pigs live on the livestock scale, **1 game day = 15 real days**.
 | Berkshire | BRK | sire, prized pork | 220 / 280 | 9.2 | 15.1% | black with six white points, erect ears |
 
 - **Weights:** Large White "Sows weight around 260-300kg and boars, 350-380kg"; Berkshire "sows weigh around 220kg and boars 280kg"
-  (**TO VERIFY**: [Rare Breeds Trust of Australia](https://rarebreedstrust.com.au/public/pages/sp-large-white)); Duroc "The weight of a
-  mature boar is about 882 pounds, and the sow is about 772 pounds" (**TO VERIFY**: Wikipedia citing Briggs, *Modern Breeds of
-  Livestock*).
+  ([Rare Breeds Trust of Australia, Large White](https://rarebreedstrust.com.au/public/pages/sp-large-white),
+  [Berkshire](https://rarebreedstrust.com.au/public/pages/sp-berkshire)); Duroc "The weight of a mature boar is about 882 pounds, and the
+  sow is about 772 pounds" (**TO VERIFY**: Wikipedia citing Briggs, *Modern Breeds of Livestock*; no primary source found, 2026-11-14).
 - **Litters:** Large White by parity, "An increase in litter size was observed until parity 5" ([KLI20], Table 2: 11.6 total born at the
   first, 13.7 at the third); Duroc 10.39 and Berkshire 9.16 total born, stillborn 8.92% and 15.09%, Polish Large White 8.80% ([NOW20],
   Table 3; small purebred herds). Duroc and Berkshire first litters take the Large White's first-to-later ratio, 0.85 *(derived)*.
@@ -59,12 +59,13 @@ Pigs live on the livestock scale, **1 game day = 15 real days**.
 
 ## Growth, feed and water
 - **Growth** (a straight line between points): birth 1.5 kg; **5.7 kg at 21 days** ("Weaning weight (kg/pig) … 5.7", [KH13]); 24 kg at
-  66 days and **120 kg at 186 days** (finishing "ADG (kg) … 0.80"; the exit weight printed "264" reads as lb, 120 kg, **TO VERIFY** the
-  unit); then to the breed's mature weight at 2 years *(proposed)*.
+  66 days and **120 kg at 186 days** (finishing "ADG (kg) … 0.80"; the exit weight printed "264" is lb, 120 kg: the paper's methods give
+  finishing as "22.7 to 118.2" kg, so the "kg" label on 264 is a typo); then to the breed's mature weight at 2 years *(proposed)*.
 - **Feed** (as fed, kg a day): finishers **2.2 at 80 kg** (0.80 ADG / 0.36 G:F, [KH13], *derived*), scaled by body weight to the 0.75
   power *(proposed)*; gestating sows **2.34** ("Gestation-feed intake (kg/day) … 2.34"); lactating sows **6.5** ([KH13]).
-- **Water** (L a day): finishers **7** (1.5-2 gal, **TO VERIFY**, snippet: extension.org); gestating sows **17** (3-6 gal, **TO VERIFY**,
-  snippet: MSU); lactating sows **28** (5-10 gal, **TO VERIFY**, snippet: Alabama).
+- **Water** (L a day; [NDSU, livestock water requirements](https://www.ndsu.edu/agriculture/extension/publications/livestock-water-requirements),
+  gal/head/day): finishers **9.5** at 80 kg ("Finishing (100-250 lbs.)" "2 to 3"); gestating sows **17** ("Pregnant sows" "3 to 6");
+  lactating sows **25** ("Lactating sows" "5 to 8"). Corrected 2026-11-14 from 7 and 28.
 - **Rations:** the feed mill's rations feed pigs (`feed-mill.md`); growth takes the lamb ration factor *(proposed)*.
 
 ## Pasture and rooting (Tim: only outdoors)

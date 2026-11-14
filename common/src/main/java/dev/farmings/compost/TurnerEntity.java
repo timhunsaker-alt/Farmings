@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** The windrow turner (compost.md): 41 kW on Wildcatter 480 V (TO VERIFY: the middle of 50-60 hp three-point turners). */
+/** The windrow turner (compost.md): 41 kW on Wildcatter 480 V (the middle of 50-60 hp three-point turners; Australian Eggs fact sheet). */
 public class TurnerEntity extends BlockEntity implements CircuitPart, Inspectable {
 	public static final double WATTS = 41_000;
 	private final Motor motor = new Motor(true, Voltage.INDUSTRIAL, WATTS);

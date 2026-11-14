@@ -111,10 +111,10 @@ the pit.
 - **Cattle:** a cow in the barn picks a free stall to lie in, eats from the nearest `hay_feeder` with hay, and drinks from the
   trough. Stall count is the herd limit: one cow per stall.
 - **Feeding:** each cow takes the dry matter her stage needs (cattle.md). A 100 kg hay block holds 85 kg of dry matter, so one lactating
-  cow eats about a quarter of a block a day. A feeder holds up to 4 hay blocks per cell *(proposed, so 8 cows have 16 blocks, about 8 game days)*.
+  Holstein eats about 0.27 of a block a day. A feeder holds up to 4 hay blocks per cell *(proposed, so 8 cows have 16 blocks, about 7 game days)*.
 - **Water:** from the UC Davis rule (cattle.md): 6 L per kg of dry matter eaten plus 1 L per litre of milk.
-- **Manure:** each cow adds manure to the alley or her bed over the day. A cow makes about 45-50 kg a day (waste.md). One manure item
-  stands for **50 kg**, about one cow-day *(proposed)*.
+- **Manure:** each cow adds manure to the alley or her bed over the day. A lactating cow makes 67 kg a day, a dry cow 39 kg and a heifer
+  24 kg (ASAE D384.2, waste.md). One manure item stands for **50 kg** *(proposed)*.
 - **Dirty stall rule:** uncollected manure in a cow's stall or in front of it lowers her health and milk quality. She never dies
   from it. The size of the effect is *(unverified)* (waste.md).
 - **Hand collection:** a player can clear manure from a stall or the alley with a manure fork *(a tool item; proposed)*.

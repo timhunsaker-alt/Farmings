@@ -11,18 +11,21 @@ public final class Equine {
 	public static final double HEAT_DAYS = 5.5;
 	/** "338 to 343 days" (AAEP, TO VERIFY): 340. */
 	public static final double GESTATION_DAYS = 340;
-	/** "mean per-cycle pregnancy rate of 59.9%" (Newmarket Thoroughbreds, TO VERIFY). */
+	/** "An overall mean per cycle pregnancy rate of 59.9%" (Morris and Allen 2002, Equine Vet. J. 34:51). */
 	public static final double CONCEPTION = 0.60;
-	/** The foal heat, "seven to nine days after foaling" (Univ. of Missouri G2790, TO VERIFY): 8. */
+	/** The foal heat, "six to nine days after foaling" (eXtension, horses): 8. */
 	public static final double FOAL_HEAT_DAYS = 8;
 	/** First breeding at 3 years *(proposed: NOT FOUND as a sourced age)*; a colt is a stallion from then. */
 	public static final double FIRST_BREEDING_DAYS = 3 * 365;
-	/** "foals typically wean between four-to-six months of age" (Michigan State, TO VERIFY): 150 days. */
+	/** "the usual age for weaning is between 4 and 6 months" (eXtension, weaning): 150 days. */
 	public static final double WEANING_DAYS = 150;
-	/** A foal weighs "about 10% of the mare's weight" (Horse Canada, TO VERIFY). */
+	/** A foal weighs "about 10% of the mare's weight" (Horse Canada). */
 	public static final double BIRTH_SHARE = 0.10;
-	/** The breeding season, 1 April to 31 October ("April–October", Reprod. Biol. Endocrinol., TO VERIFY), as days of the year (0 = 1 Jan). */
-	public static final int SEASON_FIRST = 90;
+	/**
+	 * The breeding season as days of the year (0 = 1 Jan): from 15 April, "The natural breeding season typically begins around mid-April"
+	 * (eXtension, mare seasonality); to 31 October *(proposed: the end is NOT FOUND in a primary source)*.
+	 */
+	public static final int SEASON_FIRST = 105;
 	public static final int SEASON_LAST = 303;
 	/** A stallion serves a mare this far away: the same paddock or stable *(proposed, as sheep)*. */
 	public static final double SERVICE_RANGE = 8.0;
@@ -106,7 +109,7 @@ public final class Equine {
 		return MANURE_SHARE * kg;
 	}
 
-	/** A mare cycles from 1 April to 31 October. */
+	/** A mare cycles from 15 April to 31 October. */
 	public static boolean inSeason(int dayOfYear) {
 		return dayOfYear >= SEASON_FIRST && dayOfYear <= SEASON_LAST;
 	}

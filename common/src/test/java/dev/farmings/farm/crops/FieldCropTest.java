@@ -11,7 +11,7 @@ class FieldCropTest {
 		// alfalfa: 65 days to first cut is 4.33 game days; 32.5 days of regrowth 2.17
 		assertEquals(65.0 / 15, TimeScale.ticksToRealDays(FieldCrop.ALFALFA.stageTicks() * FieldCrop.MAX_STAGE) / 15, 0.001);
 		assertEquals(32.5, TimeScale.ticksToRealDays(FieldCrop.ALFALFA.regrowthStageTicks() * 4), 0.01);
-		assertEquals(14.0, TimeScale.ticksToRealDays(FieldCrop.cornRipeningTicks()), 1e-9);
+		assertEquals(5.0, TimeScale.ticksToRealDays(FieldCrop.cornRipeningTicks()), 1e-9, "silage at 125 days, grain at R6, 130");
 	}
 
 	@Test

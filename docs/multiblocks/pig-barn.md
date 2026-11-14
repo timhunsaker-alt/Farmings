@@ -7,8 +7,8 @@
 |---|---|---|
 | Controller | `pig_barn_controller` | Checks the layout, houses tame pigs within 48 blocks, reads out. |
 | Pen floor | `slatted_floor` | Pen floor over the pit: manure falls through. Each joined run is a pen (`PenRuns`). |
-| Farrowing crate | `farrowing_crate` (1 x 2) | One sow and her litter. 5 x 7 ft (1.5 x 2.1 m) with "an 18in. creep area on both sides of a 24in. sow stall" (**TO VERIFY**, snippet: [extension.org](https://swine.extension.org/?p=1085)). |
-| Heat lamp | `heat_lamp` | Over a crate's creep: **250 W** on Wildcatter power ("250 watt heat lamps are placed over the creep areas", **TO VERIFY**, snippet: Iowa State). Piglets under it are warm. |
+| Farrowing crate | `farrowing_crate` (1 x 2) | One sow and her litter. 5 x 7 ft (1.5 x 2.1 m) with "an 18in. creep area on both sides of a 24in. sow stall" (snippet: extension.org, which would not load 2026-11-14; confirmed in substance by NCSU: "Overall stall dimensions were 5 × 7 ft., with a 2 × 7 ft. sow crate", [NCSU swine](https://swine.ces.ncsu.edu/2021/08/effect-of-stall-size-number-of-heat-lamps-during-farrowing-part-1)). |
+| Heat lamp | `heat_lamp` | Over a crate's creep: **250 W** on Wildcatter power ("250 watt heat lamps are placed over the creep areas", **TO VERIFY**, snippet: Iowa State, behind a bot wall 2026-11-14; NCSU's trial used "175 W HL"). Piglets under it are warm. |
 | Feeder | `pig_feeder` | Takes grain, meal and rations; **5 pigs** a feeder ("120–280 5", [WI] citing PIH #32). |
 | Drinker | `nipple_drinker` | Water from a trough block behind it; **12 pigs** a drinker ("1 drinker/10-12 pigs", PIC; "100–finish 12–15", [WI]). |
 | Slurry pump | `slurry_pump` | Beside the pit: on Wildcatter power (**1.5 kW**, *proposed*) it moves slurry along `slurry_pipe` blocks to a digester feed pit or a `slurry_store`. |

@@ -79,8 +79,8 @@ Pipes for the products, other cheeses, yogurt, ice cream.
 
 ## Whey (built 2026-11-09)
 - **How much:** a cheese make leaves whey: the milk's mass less the cheese's. This is the mass balance used in cheddar yield work
-  ([SDSU](https://openprairie.sdstate.edu/etd/1291)), at the milk's 1.03 kg a litre *(proposed: whey is a little lighter)*. **TO VERIFY**: a paneer-whey study gives about
-  1,015 kg/m³ at 20 °C ([AGRIS](https://agris.fao.org/search/en/records/65df41a163b8185d9cabc400), search snippet only; acid whey, not cheddar whey). 200 L of
+  ([SDSU](https://openprairie.sdstate.edu/etd/1291)), at the milk's 1.03 kg a litre *(proposed: whey is a little lighter)*. A paneer-whey study gives about
+  1,015 kg/m³ at 20 °C ([AGRIS](https://agris.fao.org/search/en/records/65df41a163b8185d9cabc400), confirmed 2026-11-14; acid whey, not cheddar whey). 200 L of
   Holstein milk gives about 20.5 kg of cheddar and **about 180 L of whey**, about 9 kg of whey per kg of cheese at a 10% yield.
 - **Where it goes:** whey goes to the bottler's store like the other liquids (store 1,000 L; a full store stops the vat with BOTTLER FULL). It
   bottles after buttermilk, as `whey_bottle`: 1 hunger *(proposed)*. It is kept as a future pig feed.

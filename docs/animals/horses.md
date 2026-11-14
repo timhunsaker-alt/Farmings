@@ -23,34 +23,39 @@ a horse that runs 402 m in 20 s does so in 20 seconds of play.
 ## Breeds
 | Breed | Code | Height | Mare / stallion kg | MSTN founders | Coat founders |
 |---|---|---|---|---|---|
-| Thoroughbred | TB | 15.2-17 hh (16.1, 163 cm) | 522 | C at 45% *(proposed)* | bay and brown mostly, some chestnut, a few grey |
-| Quarter Horse | QH | 14.3-16 hh (15.1, 155 cm) | 454 | C/C 83%, C/T 14%, T/T 3% | chestnut (sorrel) common, bay, some dun and palomino |
+| Thoroughbred | TB | about 16 hh (163 cm) | 454 | C at 56% *(derived)* | bay and brown mostly, some chestnut, a few grey |
+| Quarter Horse | QH | 14.3-16.2 hh (15.2, 159 cm) | 454 | C/C 83%, C/T 14%, T/T 3% | chestnut (sorrel) common, bay, some dun and palomino |
 | Arabian | ARA | 14.1-15.1 hh (14.3, 150 cm) | 408 | T/T 90%, C/T 10% *(the other 10% proposed)* | bay, grey common, chestnut, black |
 
-- **Sizes:** Thoroughbred "15.2 to 17 hands", "1,000 to 1,300 pounds" (**TO VERIFY**, snippet: [Mad Barn](https://madbarn.com/thoroughbred-horse-breed-profile));
-  Quarter Horse "14.3 to 16 hands", "Approximately 1000 pounds" (**TO VERIFY**, snippet: [Horse Illustrated](https://www.horseillustrated.com/horse-breeds-horse-height-explained));
-  Arabian "between 14.2 and 15.2 hands", "between 800 and 1,000 pounds" (**TO VERIFY**, snippet: [Oklahoma State](https://breeds.okstate.edu/horses/arabian-horses.html)).
-  The game uses the middles: 1,150 lb (522 kg), 1,000 lb (454 kg), 900 lb (408 kg), for both sexes *(proposed)*.
+- **Sizes:** Thoroughbred "stands a little over 16 hands" and "weighs approximately 1,000 pounds" ([America's Best Racing, The Jockey
+  Club](https://www.americasbestracing.net/learn/2026-born-run); corrected 2026-11-14 from Mad Barn's "1,000 to 1,300 pounds");
+  Quarter Horse "14.3–16.2 hands" ([Horse Illustrated](https://www.horseillustrated.com/horse-breeds-horse-height-explained)), weight
+  "Approximately 1000 pounds" (**TO VERIFY**: no primary source found; AQHA's pages would not load);
+  Arabian "averages 14.1 to 15.1 hands" ([Arabian Horse Association](https://www.arabianhorses.org/export/content.export/aha-docs/toolkit/MTK_Promo_Breed_Standard_Flyer.pdf)),
+  "between 800 and 1,000 pounds" (**TO VERIFY**, snippet: [Oklahoma State](https://breeds.okstate.edu/horses/arabian-horses.html)).
+  The game uses 1,000 lb (454 kg), 1,000 lb (454 kg) and 900 lb (408 kg), for both sexes *(proposed)*.
 - **MSTN founders:** Quarter Horses "an excess of C alleles (0.90; C/C, 0.83; C/T, 0.14; T/T, 0.03)"; Egyptian Arabians "an excess of T/T
-  (0.90) genotypes" ([Hill et al. 2010, PLoS ONE](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0008645)). The
-  Thoroughbred population frequency is NOT FOUND in the paper's quoted results; 45% C is *(proposed)*, between its sprinters and stayers.
+  (0.90) genotypes" ([Hill et al. 2010, PLoS ONE](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0008645)). For
+  Thoroughbreds the paper gives the T allele at "0.443" in elite and 0.425 in other Thoroughbreds (Table 1;
+  [PMC2808334](https://pmc.ncbi.nlm.nih.gov/articles/PMC2808334/)): **C at 56%** *(derived from the elite figure)*.
 - **Coat founders:** shares are *(proposed)*. "Nearly 90 percent of all Thoroughbreds registered with The Jockey Club are a variation of
-  brown" (**TO VERIFY**, a fan site); Arabian grey and Quarter Horse dun are NOT FOUND as frequencies.
+  brown" (**TO VERIFY**, a fan site; The Jockey Club's own pages give no colour breakdown); Arabian grey and Quarter Horse dun are NOT
+  FOUND as frequencies (searched AQHA colour statistics; only a secondary site's 2006 table).
 
 ## Reproduction
 | Quantity | Value | Source |
 |---|---|---|
 | Oestrous cycle | **21 days** | "a mare will have a 21-day estrous cycle" ([extension.org, mare reproduction](https://horses.extension.org/mare-reproduction/)) |
 | Heat | **5.5 days** (4-7) | "usually 4 to 7 days" (same) |
-| Breeding season | **1 Apr - 31 Oct** (long-day breeders) | "breeding season lasting from April–October in the Northern Hemisphere" (**TO VERIFY**, snippet: [Reprod. Biol. Endocrinol.](https://rbej.biomedcentral.com/track/pdf/10.1186/1477-7827-9-130)). The sheep calendar (day 0 = 1 October) |
-| Gestation | **340 days** (338-343) | "average length of pregnancy in the mare is 338 to 343 days" (**TO VERIFY**, snippet: [AAEP](https://aaep.org/horsehealth/expectant-mare-assuring-health-and-well-being-pregnant-mare)) |
-| Conception | **60%** a service | "mean per-cycle pregnancy rate of 59.9%" (**TO VERIFY**, snippet: Newmarket Thoroughbreds via [Mad Barn](https://madbarn.com/research/reproductive-efficiency-of-intensively-managed-thoroughbred-mares-in-newmarket)) |
-| Foal heat | **8 days** after foaling (7-9) | "usually occurs seven to nine days after foaling" (**TO VERIFY**, snippet: [Univ. of Missouri G2790](https://extension.missouri.edu/g2790)) |
-| Puberty | 18 months | "mares reach puberty at about 18 months of age" (**TO VERIFY**, snippet: MSD Vet Manual) |
-| First breeding | **3 years** *(proposed: NOT FOUND as a sourced age)* | |
+| Breeding season | **15 Apr - 31 Oct** (long-day breeders) | "The natural breeding season typically begins around mid-April" ([eXtension, mare seasonality](https://horses.extension.org/mare-seasonality/)); the 31 October end is *(proposed)*: NOT FOUND (the RBEJ paper cited before has no "April–October" sentence). The sheep calendar (day 0 = 1 October) |
+| Gestation | **340 days** (338-343) | "average length of pregnancy in the mare is 338 to 343 days" (**TO VERIFY**, snippet: [AAEP](https://aaep.org/horsehealth/expectant-mare-assuring-health-and-well-being-pregnant-mare); the page would not load, 2026-11-14) |
+| Conception | **60%** a service | "An overall mean per cycle pregnancy rate of 59.9% at 15 days after ovulation" (Morris & Allen 2002, Equine Vet. J. 34:51, [PMID 11822372](https://europepmc.org/article/MED/11822372)) |
+| Foal heat | **8 days** after foaling (6-9) | "Foal heat typically occurs six to nine days after foaling" ([eXtension, horses](https://horses.extension.org/?p=51)) |
+| Puberty | 18 months | "mares reach puberty at about 18 months of age" (**TO VERIFY**, snippet: MSD Vet Manual; the article body would not load, 2026-11-14) |
+| First breeding | **3 years** *(proposed: NOT FOUND as a sourced age; extension searches found only forums giving 3-4 years)* | |
 | Foal | **one**; twins not modelled (born early and rarely survive: AAEP) | |
-| Birth weight | **10%** of the dam's weight | "about 10% of the mare's weight" (**TO VERIFY**, [Horse Canada](https://horse-canada.com/breeds/foal/)) |
-| Weaning | **150 days** (4-6 months) | "foals typically wean between four-to-six months of age" (**TO VERIFY**, snippet: [Michigan State](https://cvm.msu.edu/hospital/services/equine-services/for-owners/general-conditions-and-seeing-your-vet/breeding/caring-for-a-new-foal/weaning)) |
+| Birth weight | **10%** of the dam's weight | "about 10% of the mare's weight" ([Horse Canada](https://horse-canada.com/breeds/foal/)) |
+| Weaning | **150 days** (4-6 months) | "the usual age for weaning is between 4 and 6 months" ([eXtension, weaning](https://horses.extension.org/weaning-and-management-of-weanling-horses/)) |
 | Growth | 43% of mature at 6 months, 64% at 12, 77% at 18, 86% at 24, mature at 5 years *(the last proposed)* | MSD Vet Manual growth table ([nutritional requirements of horses](https://www.msdvetmanual.com/management-and-nutrition/nutrition-horses/nutritional-requirements-of-horses-and-other-equids)), percentages *derived* |
 
 - **Stages:** foal (to weaning), filly / colt, mare (has foaled), stallion (colt of 3 years), gelding (castrated with shears as a colt, as
@@ -72,12 +77,12 @@ a horse that runs 402 m in 20 s does so in 20 seconds of play.
 
 | Breed | Sourced pace | Source |
 |---|---|---|
-| Thoroughbred | 402 m at 70.76 km/h (19.66 m/s); 2,012 m in 1:59.40 (16.85 m/s); 2,414 m in 2:24 (16.76 m/s) | Winning Brew, "fastest speed for a race horse" (**TO VERIFY**, snippet: [Guinness](https://www.guinnessworldrecords.com/world-records/fastest-speed-for-a-race-horse)); Secretariat's Derby and Belmont records ([America's Best Racing](https://www.americasbestracing.net/the-sport/2023-the-numbers-1973-triple-crown-winner-secretariat)), paces *derived* |
-| Quarter Horse | 402 m in 20.27 s (19.84 m/s) | First Moonflash, 2009 (**TO VERIFY**: [horseracingsense](https://horseracingsense.com/quarter-horse-racing-distance-history-records/), not AQHA); AQHA's 2005 record :20.686 cited via [eBarrelRacing](https://www.ebarrelracing.com/articles/industry/a-long-goodbye-sets-440-world-record-in-mbna-new-mexico-challenge) |
+| Thoroughbred | 402 m at 70.35 km/h (19.54 m/s); 2,012 m in 1:59.40 (16.85 m/s); 2,414 m in 2:24 (16.76 m/s) | Winning Brew, "70.35 km/h (43.71 mph)" over "the quarter-mile (402 m, 2 furlongs)" ([Guinness](https://www.guinnessworldrecords.com/world-records/fastest-speed-for-a-race-horse); corrected 2026-11-14 from 70.76); Secretariat's Derby and Belmont records ([America's Best Racing](https://www.americasbestracing.net/the-sport/2023-the-numbers-1973-triple-crown-winner-secretariat)), paces *derived* |
+| Quarter Horse | 402 m in 20.27 s (19.84 m/s) | First Moonflash, 2009 (**TO VERIFY**, not found at AQHA, whose site would not load: [horseracingsense](https://horseracingsense.com/quarter-horse-racing-distance-history-records/), not AQHA); AQHA's 2005 record :20.686 cited via [eBarrelRacing](https://www.ebarrelracing.com/articles/industry/a-long-goodbye-sets-440-world-record-in-mbna-new-mexico-challenge) |
 | Arabian | **92%** of the Thoroughbred pace *(proposed)*; Quarter Horses and Thoroughbreds "were substantially faster than Arabians" ([Nielsen et al. 2006, PMID 17402407](https://pubmed.ncbi.nlm.nih.gov/17402407/), abstract; no speeds given). Endurance: 160 km in 15 h 37 m (Tevis Cup, [teviscup.org](https://teviscup.org/70th-tevis-cup-100-mile-ride-anniversary-celebrates-successful-event/)) |
 
 - **The distance curve** *(proposed shape through the sourced points)*: a breed's record pace at distance d falls with distance: for the
-  Thoroughbred 19.66 m/s to 402 m, 16.85 at 2,012 m and 16.76 at 2,414 m, joined by straight lines in log distance, then 1% less per
+  Thoroughbred 19.54 m/s to 402 m, 16.85 at 2,012 m and 16.76 at 2,414 m, joined by straight lines in log distance, then 1% less per
   doubling beyond. The Quarter Horse curve starts at 19.84 and falls 25% faster *(proposed: a sprinter)*; the Arabian curve is 92% of
   the Thoroughbred's and falls 40% slower *(proposed: a stayer)*, down to the Tevis pace (2.85 m/s) at 160 km.
 - **MSTN, the speed gene:** each genotype has a best distance, "C/C mean = 6.2±0.8 f; C/T mean = 9.1±2.4 f; and T/T mean = 10.5±2.7 f"
@@ -87,22 +92,23 @@ a horse that runs 402 m in 20 s does so in 20 seconds of play.
 - **Traits:** SPEED moves pace by up to ±3% and STAMINA flattens or steepens the distance fall by up to ±20% *(proposed swings)*. Racing
   speed is weakly heritable: "sprint (h2 = 0.124), middle-distance (h2 = 0.122) and long-distance races (h2 = 0.074)" ([Sharman & Wilson
   2023, Heredity](https://www.nature.com/articles/s41437-023-00623-8.pdf)); the founders' trait spread is set so a sire's score passes
-  on weakly *(proposed: the genome's own inheritance)*. Best race distance is highly heritable (0.61, Velie et al. 2015, **TO VERIFY**),
+  on weakly *(proposed: the genome's own inheritance)*. Best race distance is highly heritable ("best race distance (0.61 ± 0.03)", Velie, Hamilton & Wade 2015, Anim. Genet., [PMID 25393770](https://europepmc.org/article/MED/25393770)),
   which the MSTN gene carries.
 - **Age:** **peak at 4.45 years**: "peak racing age is 4.45 years"; "At age 2 a horse is predicted to be 26 points slower than at peak
   age"; "A horse beaten by two lengths in a 6 furlong sprint will receive a speed figure 5 points lower"; after the peak "the typical
   decline is 6 lengths for sprints and 9 1/2 lengths for routes" over five years ([Gramm & Marksteiner 2010, J. Equine Sci.](https://www.chrb.ca.gov/rule_law/Scientific_Material/Effect_of_Age_TR_Perf_Journal_of_Equine_Science_RM.pdf)).
   At 2.4 m a length *(proposed)*, 26 points is 10.4 lengths over 1,207 m: **2.1% slower at 2 years** *(derived)*, straight to 0 at 4.45,
   then **0.25% slower a year** *(derived from 6 lengths in 5 years over 6 f)*. Foals and yearlings can't be ridden (under 2 years).
-- **Fitness (conditioning), 0 to 1:** an untrained horse runs **5% slower** than a fit one *(proposed: NOT FOUND as a percentage)*.
+- **Fitness (conditioning), 0 to 1:** an untrained horse runs **5% slower** than a fit one *(proposed: NOT FOUND as a percentage; detraining studies give VO2max and muscle markers, not speed)*.
   - Work builds it: each kilometre run at over half its pace adds 0.02, at most 0.06 a real day *(proposed)*.
-  - Rest keeps it 6 weeks, then it falls to nothing over the next 6: "no significant reduction in VO2max until after 6 wk detraining"
-    (Standardbreds, **TO VERIFY**, snippet: J. Appl. Physiol. 1996); Thoroughbred gains "almost disappeared after detraining for 6 week"
-    (**TO VERIFY**, snippet). The game holds 42 real days, then loses it linearly over 42 *(proposed shape)*.
+  - Rest keeps it 6 weeks, then it falls to nothing over the next 6: "There was no significant reduction in VO2max until after 6 wk detraining"
+    (Standardbreds, Tyler et al. 1996, J. Appl. Physiol. 81:2244, [PMID 8941551](https://europepmc.org/article/MED/8941551)); in
+    Thoroughbreds "After 6 weeks of detraining, all these indexes returned to the pretraining levels" (Kitaoka et al. 2011, Exp.
+    Physiol., muscle markers; the earlier "almost disappeared" quote is NOT FOUND as worded). The game holds 42 real days, then loses it linearly over 42 *(proposed shape)*.
   - An underfed horse (stable fed share under 1) gains no fitness *(proposed)*.
 - **Within a run:** a horse runs at its pace for the distance it has galloped since it last rested *(proposed)*: fresh, it sprints;
   after 1,600 m without a breather it is at its mile pace. Walking for 30 s resets it.
-- **Rider weight** is not modelled (the "pound per length" rule and jockey weights are NOT FOUND).
+- **Rider weight** is not modelled (the "pound per length" rule and jockey weights are NOT FOUND: only blogs, which disagree).
 
 **In Minecraft:** 1 block = 1 m. A ridden or AI-run horse's movement is set so it covers its pace in blocks a second *(calibrated by a game
 test)*. Elite founders run near the records; an ordinary horse runs at 90-97% of them *(proposed founder spread)*. Jump strength stays
@@ -155,7 +161,7 @@ colour, sire and dam, the grandparents, fitness, and race records (best time at 
 - **Differences from the spec above:**
   - **SPEED** is 1.0 at a score of 1000, 0.97 at 500 and 0.94 at 0 (the ±3% swing around the middle), so only an elite horse at its
     best distance runs the record; **STAMINA** flattens the fall with distance by 20% at 1000 and steepens it 20% at 0.
-  - **MSTN founders** draw each allele by the breed's C share (Hardy-Weinberg, *derived*): Quarter Horse C 0.90, Thoroughbred 0.45,
+  - **MSTN founders** draw each allele by the breed's C share (Hardy-Weinberg, *derived*): Quarter Horse C 0.90, Thoroughbred 0.56,
     Arabian 0.05. Coat founders by allele share *(proposed, derived from the phenotype shares above)*: TB e 0.387, A 0.70, G 0.025; QH
     e 0.632, A 0.60, Cr 0.05, D 0.05, Rn 0.03, SB1 0.03; ARA e 0.45, A 0.65, G 0.163, SB1 0.05. Roan and sabino are in the QH and Arabian
     founders at these small shares *(proposed)* so the loci show up.

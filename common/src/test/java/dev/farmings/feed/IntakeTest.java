@@ -32,6 +32,18 @@ class IntakeTest {
 	}
 
 	@Test
+	void manureFollowsTheD384TableByStage() {
+		assertEquals(67, Intake.manureKgPerDay(Stage.LACTATING_COW).getAsDouble(), 1e-9, "D384.2: 67 kg at 75 lb of milk");
+		assertEquals(39, Intake.manureKgPerDay(Stage.DRY_COW).getAsDouble(), 1e-9);
+		assertEquals(24, Intake.manureKgPerDay(Stage.HEIFER).getAsDouble(), 1e-9);
+		assertTrue(Intake.manureKgPerDay(Stage.BULL).isEmpty());
+		Intake.Result r = Intake.step(20, 0, Intake.TICKS_PER_DAY, 1000, 1000, 67);
+		assertEquals(67, r.manureKg(), 1e-9);
+		Intake.Result half = Intake.step(20, 0, Intake.TICKS_PER_DAY, 10, 1000, 67);
+		assertEquals(33.5, half.manureKg(), 1e-9, "half fed, half the manure");
+	}
+
+	@Test
 	void aShortfallIsReportedAndNeverFatal() {
 		Intake.Result r = Intake.step(20, 0, Intake.TICKS_PER_DAY, 0, 0);
 		assertEquals(0, r.eatenKg());
@@ -58,7 +70,7 @@ class IntakeTest {
 	void everyStageButCalvesHasAnIntake() {
 		assertTrue(Hay.dryMatterIntakeOrStandIn(Stage.CALF, 100).isEmpty());
 		assertTrue(Hay.dryMatterIntakeOrStandIn(Stage.BULL_CALF, 100).isEmpty());
-		assertEquals(0.027 * 650, Hay.dryMatterIntakeOrStandIn(Stage.LACTATING_COW, 650).getAsDouble(), 1e-9);
+		assertEquals(0.0325 * 650, Hay.dryMatterIntakeOrStandIn(Stage.LACTATING_COW, 650).getAsDouble(), 1e-9);
 		assertEquals(Hay.DRY_INTAKE_FRACTION * 650, Hay.dryMatterIntakeOrStandIn(Stage.DRY_COW, 650).getAsDouble(), 1e-9);
 		assertEquals(Hay.DRY_INTAKE_FRACTION * 800, Hay.dryMatterIntakeOrStandIn(Stage.BULL, 800).getAsDouble(), 1e-9, "stand-in: the dry cow's rate");
 		assertEquals(Hay.DRY_INTAKE_FRACTION * 400, Hay.dryMatterIntakeOrStandIn(Stage.HEIFER, 400).getAsDouble(), 1e-9);
