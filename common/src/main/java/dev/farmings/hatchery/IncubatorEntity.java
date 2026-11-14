@@ -10,7 +10,7 @@ import dev.farmings.husbandry.poultry.FowlBreed;
 import dev.wildcatter.circuit.Circuit;
 import dev.wildcatter.circuit.CircuitPart;
 import dev.wildcatter.circuit.Conductor;
-import dev.wildcatter.circuit.Motor;
+import dev.farmings.power.ElectricHeater;
 import dev.wildcatter.energy.Inspectable;
 import dev.wildcatter.energy.Voltage;
 import java.util.Locale;
@@ -41,7 +41,7 @@ public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspect
 	public static final double WATTS = 25;
 	private static final int[] SLOTS = java.util.stream.IntStream.range(0, SIZE).toArray();
 	private final NonNullList<ItemStack> eggs = NonNullList.withSize(SIZE, ItemStack.EMPTY);
-	private final Motor heater = new Motor(false, Voltage.LOW, WATTS);
+	private final ElectricHeater heater = new ElectricHeater(false, Voltage.LOW, WATTS);
 	private boolean forced;
 	private int hatched;
 	private @Nullable UUID owner;

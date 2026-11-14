@@ -8,7 +8,7 @@ import dev.farmings.husbandry.poultry.Fowl;
 import dev.wildcatter.circuit.Circuit;
 import dev.wildcatter.circuit.CircuitPart;
 import dev.wildcatter.circuit.Conductor;
-import dev.wildcatter.circuit.Motor;
+import dev.farmings.power.ElectricHeater;
 import dev.wildcatter.energy.Inspectable;
 import dev.wildcatter.energy.Voltage;
 import dev.wildcatter.multiblock.BigParts;
@@ -33,7 +33,7 @@ public class BrooderEntity extends BlockEntity implements CircuitPart, Inspectab
 	public static final int MAX_BIRDS = 25;
 	public static final double REACH = 2.0;
 	public static final int FEED_REACH = 4;
-	private final Motor lamp = new Motor(false, Voltage.LOW, WATTS);
+	private final ElectricHeater lamp = new ElectricHeater(false, Voltage.LOW, WATTS);
 	private boolean forced;
 	private int under;
 

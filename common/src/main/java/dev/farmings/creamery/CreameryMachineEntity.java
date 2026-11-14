@@ -1,6 +1,7 @@
 package dev.farmings.creamery;
 
 import dev.farmings.FarmingsBlocks;
+import dev.farmings.power.ElectricHeater;
 import dev.wildcatter.circuit.Circuit;
 import dev.wildcatter.circuit.CircuitPart;
 import dev.wildcatter.circuit.Conductor;
@@ -16,10 +17,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-/** A powered creamery part (pasteurizer heater, separator, churn, vat agitator): one three-phase load on Wildcatter's industrial voltage. */
+/**
+ * A powered creamery part on Wildcatter's industrial voltage, three-phase: the pasteurizer's electric heater is a resistive load, the
+ * separator, churn and vat agitator are motors.
+ */
 public class CreameryMachineEntity extends BlockEntity implements CircuitPart, Inspectable, BigPartEntity, net.minecraft.world.WorldlyContainer {
 	private final CreameryParts kind;
-	private final Motor motor;
+	private final Motor motor;   // null for the pasteurizer
+	private final ElectricHeater heater;   // the pasteurizer's only
 	private boolean demand;
 	private boolean forced;
 	private final CreameryOutlet outlet;
@@ -28,7 +33,9 @@ public class CreameryMachineEntity extends BlockEntity implements CircuitPart, I
 	public CreameryMachineEntity(BlockPos pos, BlockState state) {
 		super(FarmingsBlocks.CREAMERY_MACHINE_ENTITY, pos, state);
 		this.kind = state.getBlock() instanceof CreameryPartBlock b ? b.kind() : CreameryParts.CREAM_SEPARATOR;
-		this.motor = new Motor(true, Voltage.INDUSTRIAL, Math.max(1, kind.watts));
+		boolean heats = kind == CreameryParts.BATCH_PASTEURIZER;
+		this.motor = heats ? null : new Motor(true, Voltage.INDUSTRIAL, Math.max(1, kind.watts));
+		this.heater = heats ? new ElectricHeater(true, Voltage.INDUSTRIAL, Math.max(1, kind.watts)) : null;
 		this.outlet = new CreameryOutlet(kind);
 	}
 
@@ -37,7 +44,7 @@ public class CreameryMachineEntity extends BlockEntity implements CircuitPart, I
 	}
 
 	public boolean powered() {
-		return forced || motor.output() > 0;
+		return forced || (motor != null ? motor.output() : heater.output()) > 0;
 	}
 
 	public void setDemand(boolean demand) {
@@ -56,17 +63,25 @@ public class CreameryMachineEntity extends BlockEntity implements CircuitPart, I
 
 	@Override
 	public void build(Circuit circuit) {
-		motor.build(circuit, worldPosition);
+		if (motor != null) {
+			motor.build(circuit, worldPosition);
+		} else {
+			heater.build(circuit, worldPosition);
+		}
 	}
 
 	@Override
 	public void apply(Circuit circuit, int ticks) {
-		motor.apply(circuit, ticks, demand);
+		if (motor != null) {
+			motor.apply(circuit, ticks, demand);
+		} else {
+			heater.apply(circuit, ticks, demand);
+		}
 	}
 
 	@Override
 	public Component inspect() {
-		return Component.literal(String.format("%s (%.2f kW): %s", kind.id.replace('_', ' '), kind.watts / 1000.0, motor.describe()));
+		return Component.literal(String.format("%s (%.2f kW): %s", kind.id.replace('_', ' '), kind.watts / 1000.0, motor != null ? motor.describe() : heater.describe()));
 	}
 
 	@Override

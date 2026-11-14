@@ -3,7 +3,7 @@ package dev.farmings.piggery;
 import dev.wildcatter.circuit.Circuit;
 import dev.wildcatter.circuit.CircuitPart;
 import dev.wildcatter.circuit.Conductor;
-import dev.wildcatter.circuit.Motor;
+import dev.farmings.power.ElectricHeater;
 import dev.wildcatter.energy.Inspectable;
 import dev.wildcatter.energy.Voltage;
 import java.util.Locale;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /** A creep heat lamp: "250 watt heat lamps are placed over the creep areas" (TO VERIFY, Iowa State; pig-barn.md). */
 public class HeatLampEntity extends BlockEntity implements CircuitPart, Inspectable {
 	public static final double WATTS = 250;
-	private final Motor lamp = new Motor(false, Voltage.LOW, WATTS);
+	private final ElectricHeater lamp = new ElectricHeater(false, Voltage.LOW, WATTS);
 	private boolean forced;
 
 	public HeatLampEntity(BlockPos pos, BlockState state) {

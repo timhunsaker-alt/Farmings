@@ -1,6 +1,6 @@
 # Progress
 
-Phase 0 is current. The docs and the loader skeleton exist; the mod loads and does nothing yet. No art.
+Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires Wildcatter 0.7.0.
 
 ## Phase 0
 
@@ -362,7 +362,23 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     creamery heater 9 vs 12 kW and separator 2.2 vs 1.5 kW, curing room 10 vs 4.5 C and 16 vs 32 sausage links, sheep.md "no straws",
     breeding.md "nothing here is built", goats.md has no Built section.
 
+- Step 20 (2026-11-14): fixes from the review of Farmings' link to Wildcatter (Tim: "Let's make the fixes").
+  - Heaters are resistive loads: the pig heat lamp (250 W), the brooder lamp (250 W), the incubator element (25 W) and the batch
+    pasteurizer's heater (12 kW, three-phase) were Wildcatter `Motor`s, so they drew at power factor 0.8, took six times their current
+    on each start and could stall on a lost phase. They are now `power/ElectricHeater`: P = V^2 / R at power factor 1, as Wildcatter's
+    own lamps and heaters (its `LoadBlockEntity`). The separator, churn and vat agitator stay motors. Game test
+    `heat_lamp_is_resistive`: a heat lamp on Wildcatter's campfire boiler and turbine reads W = V x A and P = V^2 / R from 250 W.
+  - Fertilizer: anything in the convention tag `c:fertilizers` is one fertilizer use in the gantry's spreader; Wildcatter 0.7.0 puts its
+    TSP, DAP and MOP bags in it. One bag is one use, as every fertilizer item is (waste.md); see Known gaps.
+  - Wildcatter 0.7.0 is required (was 0.6.1): the build and all game tests pass on the released 0.7.0. README, this file's head and
+    waste.md's biogas line brought up to date.
+
 ## Known gaps
+- **Wildcatter fertilizer bags:** a 1 t bag of TSP, DAP or MOP is one use in the spreader, like a 10 kg compost item; at a real
+  rate (about 200 kg/ha) a tonne would cover about 5 ha. They do nothing by hand (Wildcatter gives them no crop use, and Farmings has no
+  hook on another mod's item yet). For Tim.
+- **Time scale:** Farmings' waits use their own fixed speed-ups (15:1 creamery batches, 3 real days per game day for poultry) and do not
+  follow Wildcatter 0.7.0's world time scale. A question for Tim.
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing
   rotten eggs, Farmings chicken that spoils, foraging on the run, Muscovy and quail colour mutants, hens per male, no quail cross.
 - **Poultry proposals with no source:**

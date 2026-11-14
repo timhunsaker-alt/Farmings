@@ -60,9 +60,8 @@ become fertilizer. This follows how real farms use a digester and a solids separ
   - retention time 5 to 28 days, depending on the system ([Newfoundland biodigestion fact sheet](https://www.gov.nl.ca/ffa/files/1-Biodigestion-Fact-sheet.pdf)).
 - **A check on the numbers:** 67 kg of manure a day at 48 kWh/tonne is about 3.2 kWh of electricity per lactating cow per day. That is small
   next to what a real parlor needs, so one barn's digester feeds a few lights and fans, not a grid. Do not inflate it.
-- **Biogas into Wildcatter:** biogas burns in a gas engine-generator. Wildcatter already has gas gensets at 480 V three-phase. Whether a
-  Wildcatter genset can burn a Farmings fuel, or Wildcatter needs a small change (as Tailings needed one for slurry on the pipe),
-  is **proposed under Wildcatter's ROADMAP Ideas** (2026-11-07). No Wildcatter code changes without Tim's go-ahead.
+- **Biogas into Wildcatter:** biogas burns in a gas engine-generator. Wildcatter already has gas gensets at 480 V three-phase. Wildcatter 0.6.0
+  added the pipe product for it (see "Biogas fuel" below); the gas holder offers it and a Wildcatter gas set burns it (built, Phase 3).
 - Digester parts as a multiblock of real parts (spec first): feed pit and pump, digester tank with heating and mixer, gas holder,
   gas conditioning, engine-generator. The spec file is `docs/multiblocks/digester.md` and does not exist yet.
 
