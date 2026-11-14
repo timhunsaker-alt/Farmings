@@ -348,7 +348,7 @@ Phase 0 is current. The docs and the loader skeleton exist; the mod loads and do
     Nubian litter 1.39, Silkie 1.4 kg and 41 g eggs, guinea first egg 28 weeks, corn silage 125 days and grain 130, the growing-cattle
     ration floor 0.29, ewe and doe milk x0.83 on low protein (new), the incubator 25 W, quail water 2.3x feed.
   - Spec (7bd6009): `docs/field-manual.md`.
-  - Code (70eed55): the `field_manual` item (book + wheat; given once on first join, player tag `farmings.manual_given`);
+  - Code (70eed55); pages and evidence (d2374a1): the `field_manual` item (book + wheat; given once on first join, player tag `farmings.manual_given`);
     `client/manual/ManualScreen` (contents with folding chapters, search, links and Back, sheets, icons with tooltips, multiblock
     grids with a key, sized to the window); `tools/make_manual.py` and the `checkManual` build task (dead links, unknown items, stale
     JSON, and any figure not in the page's docs); game tests field_manual_given_once, field_manual_recipe, manual_pages_resolve (244 in
