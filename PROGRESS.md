@@ -1,6 +1,6 @@
 # Progress
 
-Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires Wildcatter 0.7.0.
+Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires Wildcatter 0.8.0.
 
 ## Phase 0
 
@@ -373,7 +373,22 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   - Wildcatter 0.7.0 is required (was 0.6.1): the build and all game tests pass on the released 0.7.0. README, this file's head and
     waste.md's biogas line brought up to date.
 
+- Step 21 (2026-11-14): Farmings' chapter in Wildcatter 0.8.0's quest book (Wildcatter's plan, "Farmings chapter", approved by Tim).
+  - Wildcatter 0.8.0 is required (was 0.7.0).
+  - Chapter `farmings:farm` ("The farm", order 120, after Getting started) in
+    `common/src/main/resources/data/farmings/wildcatter_quests/farm.json`, 13 quests: barn, cattle (the corral), hatchery, heat lamps
+    (after Wildcatter's lamp), parlour, scraper, gantry, mixer, digester (after Wildcatter's motor), creamery, biogas into a genset
+    (after the digester and Wildcatter's gas genset), fertilizer in the spreader (after Wildcatter's fertilizer), straws (after plastic).
+  - The biogas quest uses Wildcatter's own `wildcatter:genset_on_biogas` milestone (the gas set fires it while it burns biogas from the
+    pipe); Farmings fires no milestone of its own and no machine class changed. Decisions in `docs/questions/quests.md`.
+  - Game tests `quests_valid` (Wildcatter's `QuestRules.problems` empty with the farm chapter loaded) and `quest_biogas_milestone` (the
+    digester's gas holder piped to a running gas set, a player beside it: the milestone lands and `farmings:biogas_genset` is done).
+    The digester scene's set-up is shared with `genset_burns_farm_biogas`.
+
 ## Known gaps
+- **Quest book:** the "Bring in cattle" quest checks the corral's parts and hay, not a tamed animal (the quest engine counts items,
+  advancements and milestones, and there is no taming milestone). The Field Manual has no page on the quest book (it is Wildcatter's).
+  For Tim.
 - **Wildcatter fertilizer bags:** a 1 t bag of TSP, DAP or MOP is one use in the spreader, like a 10 kg compost item; at a real
   rate (about 200 kg/ha) a tonne would cover about 5 ha. They do nothing by hand (Wildcatter gives them no crop use, and Farmings has no
   hook on another mod's item yet). For Tim.

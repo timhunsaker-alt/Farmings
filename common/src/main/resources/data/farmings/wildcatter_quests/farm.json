@@ -1,0 +1,363 @@
+{
+  "title": "The farm",
+  "icon": "farmings:barn_controller",
+  "order": 120,
+  "after": [
+    "wildcatter:getting_started"
+  ],
+  "quests": [
+    {
+      "id": "barn",
+      "title": "A freestall barn",
+      "icon": "farmings:barn_controller",
+      "text": "Two rows of stalls, each a bed between dividers, facing a 3-wide alley. A feed bunk with a hay feeder in line with every stall, and a water trough in each row. Cattle eat hay blocks; fill the trough by bucket or pipe. Right-click the controller to form it.",
+      "requires": [
+        "wildcatter:steel"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:barn_controller",
+          "count": 1
+        },
+        {
+          "item": "farmings:stall_bed",
+          "count": 2
+        },
+        {
+          "item": "farmings:stall_divider",
+          "count": 3
+        },
+        {
+          "item": "farmings:hay_feeder",
+          "count": 1
+        },
+        {
+          "item": "farmings:water_trough",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "minecraft:hay_block",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "id": "cattle",
+      "title": "Bring in cattle",
+      "icon": "farmings:corral_gate",
+      "text": "Wild cattle graze the plains and keep their distance. Fence a corral with a post, a one-way gate, a bait trough of hay and a water trough. The hay draws them in through the gate; fed and watered for 7 days, they settle into your herd and the barn takes them.",
+      "requires": [
+        "barn"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:corral_post",
+          "count": 1
+        },
+        {
+          "item": "farmings:corral_gate",
+          "count": 1
+        },
+        {
+          "item": "farmings:bait_trough",
+          "count": 1
+        },
+        {
+          "item": "minecraft:hay_block",
+          "count": 4
+        }
+      ],
+      "rewards": [
+        {
+          "item": "farmings:manure_fork",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "hatchery",
+      "title": "The hatchery",
+      "icon": "farmings:incubator",
+      "text": "An incubator hatches fertile eggs without a broody hen, and a brooder's heat lamp keeps the young birds warm. Both run on low-voltage power, such as the steam turbine's: 25 W and 250 W.",
+      "requires": [
+        "wildcatter:lamp"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:incubator",
+          "count": 1
+        },
+        {
+          "item": "farmings:brooder",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "minecraft:wheat_seeds",
+          "count": 16
+        }
+      ]
+    },
+    {
+      "id": "heat_lamps",
+      "title": "Heat lamps for piglets",
+      "icon": "farmings:heat_lamp",
+      "text": "A sow farrows in her crate. Hang a 250 W heat lamp over the creep, on low-voltage power: piglets under it stay warm until weaning, and without one they lose health.",
+      "requires": [
+        "wildcatter:lamp"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:farrowing_crate",
+          "count": 1
+        },
+        {
+          "item": "farmings:heat_lamp",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "farmings:heat_lamp",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "parlor",
+      "title": "The milking parlour",
+      "icon": "farmings:milking_unit",
+      "text": "Cows walk a lane from the barn once a game day. A vacuum pump and milk line under a row of stalls, a milking unit over each, and a bulk tank whose chiller cools the milk. The pump and the chiller are 480 V three-phase motors.",
+      "requires": [
+        "cattle",
+        "wildcatter:motor"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:parlor_controller",
+          "count": 1
+        },
+        {
+          "item": "farmings:parlor_stall",
+          "count": 2
+        },
+        {
+          "item": "farmings:milking_unit",
+          "count": 2
+        },
+        {
+          "item": "farmings:vacuum_pump",
+          "count": 1
+        },
+        {
+          "item": "farmings:bulk_tank",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "minecraft:bucket",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "scraper",
+      "title": "The manure scraper",
+      "icon": "farmings:scraper_drive",
+      "text": "A scraper on a rail down the barn's alley pushes manure into the collection pit once a game day. Its drive at the far end is a 0.75 kW motor on 480 V.",
+      "requires": [
+        "barn",
+        "wildcatter:motor"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:scraper_drive",
+          "count": 1
+        },
+        {
+          "item": "farmings:manure_scraper",
+          "count": 1
+        },
+        {
+          "item": "farmings:scraper_rail",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "id": "gantry",
+      "title": "The field gantry",
+      "icon": "farmings:gantry_cab",
+      "text": "No tractors: a gantry rides two field rails and carries a tool head across the field to plant, mow, rake, bale or harvest. It trails its cable to a field junction wired to 480 V.",
+      "requires": [
+        "wildcatter:motor"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:gantry_cab",
+          "count": 1
+        },
+        {
+          "item": "farmings:gantry_beam",
+          "count": 4
+        },
+        {
+          "item": "farmings:gantry_truck",
+          "count": 2
+        },
+        {
+          "item": "farmings:field_rail",
+          "count": 16
+        },
+        {
+          "item": "farmings:field_junction",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "farmings:field_rail",
+          "count": 16
+        }
+      ]
+    },
+    {
+      "id": "mixer",
+      "title": "Feed mill and mixer",
+      "icon": "farmings:tmr_mixer",
+      "text": "A hammer mill grinds grain into meal, and the TMR mixer blends meal, forage and minerals into a balanced ration: more milk, faster growth, more eggs. Both run on 480 V.",
+      "requires": [
+        "wildcatter:motor"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:hammer_mill",
+          "count": 1
+        },
+        {
+          "item": "farmings:tmr_mixer",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "creamery",
+      "title": "The creamery",
+      "icon": "farmings:creamery_controller",
+      "text": "A row of parts behind a controller: receiving tank, batch pasteurizer, cream separator, churn, cheese vat and press, aging shelf and bottler. Feed it milk by milk line from the parlour. The pasteurizer's 12 kW heater is three-phase.",
+      "requires": [
+        "parlor"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:creamery_controller",
+          "count": 1
+        },
+        {
+          "item": "farmings:batch_pasteurizer",
+          "count": 1
+        },
+        {
+          "item": "farmings:cream_separator",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "minecraft:glass_bottle",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "id": "digester",
+      "title": "The digester",
+      "icon": "farmings:digester_tank",
+      "text": "Manure from the barn goes into the feed pit of a 3 x 3 x 3 digester tank. Its 6.5 kW mixer runs on 480 V. Biogas rises to the gas holder on the roof; digestate goes to the tank at its side.",
+      "requires": [
+        "barn",
+        "wildcatter:motor"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:digester_tank",
+          "count": 1
+        },
+        {
+          "item": "farmings:digester_feed_pit",
+          "count": 1
+        },
+        {
+          "item": "farmings:gas_holder",
+          "count": 1
+        },
+        {
+          "item": "farmings:digestate_tank",
+          "count": 1
+        }
+      ],
+      "rewards": [
+        {
+          "item": "wildcatter:steel_ingot",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "id": "biogas_genset",
+      "title": "Biogas into a genset",
+      "icon": "farmings:gas_holder",
+      "text": "Run steel gas pipe from the gas holder to a gas genset. With no natural gas on the line the set burns the farm's biogas, derated to 850 kW. Run it in bursts: the holder empties faster than the digester fills it.",
+      "requires": [
+        "digester",
+        "wildcatter:genset"
+      ],
+      "tasks": [
+        {
+          "milestone": "wildcatter:genset_on_biogas",
+          "text": "Run a gas genset on the farm's biogas"
+        }
+      ]
+    },
+    {
+      "id": "spreader",
+      "title": "Fertilizer in the spreader",
+      "icon": "farmings:tool_spreader",
+      "text": "Put the spreader head on the gantry and load it with bulk bags of TSP, DAP or MOP from the fertilizer plant. Each bag is one use, as compost and liquid digestate are.",
+      "requires": [
+        "gantry",
+        "wildcatter:fertilizer"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:tool_spreader",
+          "count": 1
+        },
+        {
+          "item": "#c:fertilizers",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "straws",
+      "title": "Straws",
+      "icon": "farmings:empty_straw",
+      "text": "Cut eight straws from a plastic sheet. Fill one from a grown, tame sire, then use it on a female of the same species in heat. Boar straws keep 6 days; turkey straws only 30 minutes.",
+      "requires": [
+        "cattle",
+        "wildcatter:plastic"
+      ],
+      "tasks": [
+        {
+          "item": "farmings:empty_straw",
+          "count": 8
+        }
+      ]
+    }
+  ]
+}

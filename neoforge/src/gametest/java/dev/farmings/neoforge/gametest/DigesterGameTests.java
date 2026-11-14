@@ -83,6 +83,21 @@ final class DigesterGameTests {
 	 * started by hook (as Wildcatter's own biogas scene). It runs on the farm's biogas and draws it from the holder.
 	 */
 	static void gensetBurnsFarmBiogas(GameTestHelper helper) {
+		BiogasSet s = biogasSet(helper);
+		helper.runAfterDelay(30, () -> s.panel().setWantRun(true));
+		helper.runAfterDelay(400, () -> {
+			String set = s.panel().inspect().getString();
+			helper.assertTrue(s.panel().biogasBurned() > 0 && s.digester().digester().gasM3() < s.full(),
+					Component.literal("the gas set burns the farm's biogas: burned " + s.panel().biogasBurned() + " m3, holder " + s.digester().digester().gasM3() + " of " + s.full() + "; " + set));
+			helper.succeed();
+		});
+	}
+
+	/** The digester with a full gas holder piped to a built, stopped Wildcatter gas set whose panel is at (8,2,0). */
+	record BiogasSet(DigesterEntity digester, dev.wildcatter.block.GensetControlPanelBlockEntity panel, double full) {
+	}
+
+	static BiogasSet biogasSet(GameTestHelper helper) {
 		var level = helper.getLevel();
 		for (int x = -1; x <= 10; x++) {
 			for (int z = -4; z <= 2; z++) {
@@ -111,13 +126,7 @@ final class DigesterGameTests {
 		helper.setBlock(new BlockPos(3, 2, -1), gasLine);
 		dev.wildcatter.block.GensetSkid.build(level, helper.absolutePos(new BlockPos(8, 2, 0)), Direction.NORTH, true);
 		var panel = (dev.wildcatter.block.GensetControlPanelBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(8, 2, 0)));
-		helper.runAfterDelay(30, () -> panel.setWantRun(true));
-		helper.runAfterDelay(400, () -> {
-			String set = panel.inspect().getString();
-			helper.assertTrue(panel.biogasBurned() > 0 && d.digester().gasM3() < full,
-					Component.literal("the gas set burns the farm's biogas: burned " + panel.biogasBurned() + " m3, holder " + d.digester().gasM3() + " of " + full + "; " + set));
-			helper.succeed();
-		});
+		return new BiogasSet(d, panel, full);
 	}
 
 	/** The tank fills 3 x 3 x 3 from one item; any cell reads it; breaking a cell takes the whole tank (digester.md, loose ends). */
