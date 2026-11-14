@@ -186,3 +186,8 @@ Every prompt ends "game item icon, plain white background, no text".
 | file | prompt |
 |---|---|
 | stud_book | A single closed leather-bound stud book, dark brown leather cover with a small gold embossed horseshoe, game item icon, plain white background, no text |
+
+## 2026-11-14: Field Manual (Ludo createImage, `item-icon`, Photorealistic 3D, 1 variation)
+| file | prompt |
+|---|---|
+| field_manual | A single closed farm field manual handbook, worn green cloth cover with a small embossed golden wheat sheaf, a red ribbon bookmark hanging out, game item icon, plain white background, no text |

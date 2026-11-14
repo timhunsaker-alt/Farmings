@@ -13,6 +13,8 @@ public final class Farmings {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	/** The client world's game time, set by each loader's client entry point; null on a server. Used only to draw food freshness bars. */
 	public static volatile java.util.function.LongSupplier clientTime;
+	/** Opens the Field Manual screen; set by each loader's client entry point, null on a server (docs/field-manual.md). */
+	public static volatile Runnable openManual;
 
 	private Farmings() {
 	}

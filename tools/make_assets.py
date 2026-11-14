@@ -62,6 +62,7 @@ ITEMS = [
     ("cooked_prime_steak", "Cooked Prime Steak", (136, 82, 48), "steak"),
     ("herd_book", "Herd Book", (60, 110, 60), "book"),
     ("stud_book", "Stud Book", (110, 60, 40), "book"),
+    ("field_manual", "Field Manual", (70, 110, 60), "book"),
     ("milk_helmet", "Milk Helmet", (246, 246, 240), "armor"),
     ("milk_chestplate", "Milk Chestplate", (246, 246, 240), "armor"),
     ("milk_leggings", "Milk Leggings", (246, 246, 240), "armor"),
@@ -204,6 +205,10 @@ EXTRA_LANG = {
     "message.farmings.herd_book.full": "The herd book is full (64 animals).",
     "message.farmings.stud_book.recorded": "Recorded %s in the stud book.",
     "message.farmings.stud_book.full": "The stud book is full (64 horses).",
+    "gui.farmings.manual.search": "Search",
+    "gui.farmings.manual.no_results": "Nothing found",
+    "gui.farmings.manual.back": "Back",
+    "gui.farmings.manual.empty": "No pages",
 }
 CONTROLLER = ("Barn Controller", (200, 110, 40))
 PARLOR_CONTROLLER = ("Parlor Controller", (60, 110, 190))
@@ -590,6 +595,7 @@ SHAPELESS = {
     "empty_straw": (["wildcatter:plastic_sheet"], 8),
     "herd_book": (["minecraft:writable_book", "minecraft:wheat"], 1),
     "stud_book": (["minecraft:writable_book", "minecraft:leather"], 1),
+    "field_manual": (["minecraft:book", "minecraft:wheat"], 1),
     "cheddar": (["farmings:cheddar_wheel"], 8),
     "udder_balm": (["farmings:lanolin", "farmings:lanolin"], 1),
     "mineral_premix": (["minecraft:bone_meal", "farmings:ground_limestone"], 4),

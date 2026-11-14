@@ -16,6 +16,7 @@ public final class FarmingsNeoForgeClient {
 			var mc = net.minecraft.client.Minecraft.getInstance();
 			return mc.level == null ? 0L : mc.level.getGameTime();
 		};
+		dev.farmings.Farmings.openManual = () -> net.minecraft.client.Minecraft.getInstance().setScreenAndShow(new dev.farmings.client.manual.ManualScreen());
 		modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
 				event -> {
 					event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer);

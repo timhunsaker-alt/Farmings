@@ -1460,6 +1460,52 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.runOnClient(client -> client.setScreenAndShow(null));
 	}
 
+	/** The Field Manual (docs/field-manual.md): given on join, opened from the hand, contents, pages, a grid, search and a link followed. */
+	private static void manual(ClientGameTestContext context, TestServerContext server, int y) {
+		boolean[] has = new boolean[1];
+		server.runOnServer(srv -> {
+			for (net.minecraft.server.level.ServerPlayer p : srv.getPlayerList().getPlayers()) {
+				has[0] = p.getInventory().countItem(FarmingsItems.FIELD_MANUAL) > 0;
+				if (!has[0]) {
+					p.getInventory().add(new ItemStack(FarmingsItems.FIELD_MANUAL));
+				}
+				p.getInventory().setSelectedSlot(p.getInventory().findSlotMatchingItem(new ItemStack(FarmingsItems.FIELD_MANUAL)));
+			}
+		});
+		System.out.println("[farmings-manual] given on join: " + has[0]);
+		context.waitTicks(20);
+		context.takeScreenshot("farmings-manual-in-hand");
+		Filming film = context.computeOnClient(client -> Filming.start(client, "field-manual"));
+		context.runOnClient(client -> dev.farmings.Farmings.openManual.run());
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-manual-contents");
+		for (String page : MANUAL_SCENE_PAGES) {
+			context.runOnClient(client -> {
+				if (client.gui.screen() instanceof dev.farmings.client.manual.ManualScreen m) {
+					m.openPage(page);
+				}
+			});
+			context.waitTicks(40);
+			context.takeScreenshot("farmings-manual-" + page);
+			int sheets = context.computeOnClient(client -> client.gui.screen() instanceof dev.farmings.client.manual.ManualScreen m ? m.sheetCount() : 0);
+			for (int i = 1; i < sheets; i++) {
+				context.runOnClient(client -> ((dev.farmings.client.manual.ManualScreen) client.gui.screen()).turn(1));
+				context.waitTicks(30);
+				context.takeScreenshot("farmings-manual-" + page + "-" + (i + 1));
+			}
+		}
+		context.runOnClient(client -> ((dev.farmings.client.manual.ManualScreen) client.gui.screen()).search("hay"));
+		context.waitTicks(40);
+		context.takeScreenshot("farmings-manual-search");
+		context.runOnClient(client -> ((dev.farmings.client.manual.ManualScreen) client.gui.screen()).search(""));
+		context.waitTicks(20);
+		film.stop();
+		context.runOnClient(client -> client.setScreenAndShow(null));
+	}
+
+	/** Pages the manual scene shows, in order. */
+	private static final String[] MANUAL_SCENE_PAGES = {"welcome", "corral"};
+
 	/** An Angus steer and a Wagyu steer killed side by side: their beef, graded steaks and leather on the ground. */
 	private static void beef(ClientGameTestContext context, TestServerContext server, int y) {
 		int cx = 60;
@@ -2936,6 +2982,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("pigbarn".equals(only)) {
 				context.waitTicks(200);
 				pigBarn(context, server, y);
+				return;
+			}
+			if ("manual".equals(only)) {
+				context.waitTicks(100);
+				manual(context, server, y);
 				return;
 			}
 			if ("race".equals(only)) {

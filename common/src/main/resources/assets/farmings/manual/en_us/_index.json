@@ -1,0 +1,43 @@
+{
+ "chapters": [
+  {
+   "id": "getting_started",
+   "title": "Getting started",
+   "pages": [
+    "welcome"
+   ]
+  },
+  {
+   "id": "animals",
+   "title": "Animals",
+   "pages": []
+  },
+  {
+   "id": "genetics",
+   "title": "Genes and breeding",
+   "pages": []
+  },
+  {
+   "id": "buildings",
+   "title": "Buildings",
+   "pages": [
+    "corral"
+   ]
+  },
+  {
+   "id": "fields",
+   "title": "Fields and feed",
+   "pages": []
+  },
+  {
+   "id": "food",
+   "title": "Food and processing",
+   "pages": []
+  },
+  {
+   "id": "waste",
+   "title": "Waste and power",
+   "pages": []
+  }
+ ]
+}

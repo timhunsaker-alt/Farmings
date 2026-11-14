@@ -46,6 +46,12 @@ public final class FarmingsNeoForge {
 						event.put(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)).build());
 					}
 				});
+		// the Field Manual, once, on a player's first join (docs/field-manual.md)
+		net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent.class, event -> {
+			if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+				dev.farmings.item.FieldManualItem.giveOnce(player);
+			}
+		});
 		// new crop seeds from grass a player breaks (docs/crops.md, "Seeds")
 		net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.event.level.block.BreakBlockEvent.class, event -> {
 			if (event.getLevel() instanceof net.minecraft.server.level.ServerLevel level && event.getPlayer() != null && !event.isCanceled()) {

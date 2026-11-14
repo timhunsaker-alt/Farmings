@@ -833,7 +833,8 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal {
 			}
 			return InteractionResult.SUCCESS;
 		}
-		if (stack.isEmpty() && !isVehicle()) {
+		if (!isVehicle()) {
+			// under 2 years nobody rides or saddles it, whatever is in the hand (vanilla would mount on any unused item)
 			if (!isBaby() && ageRealDays() < Equine.RIDING_AGE_DAYS) {
 				if (!level().isClientSide()) {
 					player.sendOverlayMessage(Component.translatable("message.farmings.horse.too_young"));

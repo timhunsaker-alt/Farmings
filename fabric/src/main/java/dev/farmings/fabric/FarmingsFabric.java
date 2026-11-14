@@ -30,6 +30,9 @@ public final class FarmingsFabric implements ModInitializer {
 		for (var type : FarmingsEntities.FOWL) {
 			FabricDefaultAttributeRegistry.register(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)));
 		}
+		// the Field Manual, once, on a player's first join (docs/field-manual.md)
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+				dev.farmings.item.FieldManualItem.giveOnce(handler.getPlayer()));
 		// new crop seeds from grass a player breaks (docs/crops.md, "Seeds")
 		net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> {
 			if (world instanceof net.minecraft.server.level.ServerLevel level) {

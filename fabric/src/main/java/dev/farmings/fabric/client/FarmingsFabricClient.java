@@ -15,6 +15,7 @@ public final class FarmingsFabricClient implements ClientModInitializer {
 			var mc = net.minecraft.client.Minecraft.getInstance();
 			return mc.level == null ? 0L : mc.level.getGameTime();
 		};
+		dev.farmings.Farmings.openManual = () -> net.minecraft.client.Minecraft.getInstance().setScreenAndShow(new dev.farmings.client.manual.ManualScreen());
 		ModelLayerRegistry.registerModelLayer(CattleModels.CATTLE, CattleModels::createLayer);
 		EntityRendererRegistry.register(FarmingsEntities.CATTLE, CattleRenderer::new);
 		ModelLayerRegistry.registerModelLayer(dev.farmings.client.SheepModels.SHEEP, dev.farmings.client.SheepModels::createLayer);

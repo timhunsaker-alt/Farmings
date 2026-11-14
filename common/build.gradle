@@ -84,6 +84,15 @@ tasks.register('verifyPlainJava') {
 }
 compileJava.dependsOn verifyPlainJava
 
+// the Field Manual's pages: links, item IDs, figures against their docs, and the generated JSON up to date (docs/field-manual.md)
+tasks.register('checkManual', Exec) {
+	workingDir = rootProject.projectDir
+	commandLine 'python3', 'tools/make_manual.py', '--check'
+	inputs.files(fileTree(rootProject.file('docs')), rootProject.file('tools/make_manual.py'), fileTree('src/main/resources/assets/farmings/manual'))
+	outputs.upToDateWhen { true }
+}
+check.dependsOn checkManual
+
 // Implement mcgradleconventions loader attribute
 def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
 ['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->

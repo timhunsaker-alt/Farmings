@@ -1,0 +1,130 @@
+{
+ "id": "corral",
+ "title": "The taming corral",
+ "chapter": "buildings",
+ "order": 10,
+ "icon": "farmings:corral_post",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Wild animals become herd animals in a corral."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Build it"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "A closed fence around a floor of up to "
+     },
+     {
+      "t": "1,024",
+      "b": true
+     },
+     {
+      "t": " cells."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "corral post",
+      "b": true
+     },
+     {
+      "t": " on the floor: right-click it to read it. The first player to read it owns it."
+     }
+    ],
+    [
+     {
+      "t": "At least one "
+     },
+     {
+      "t": "corral gate",
+      "b": true
+     },
+     {
+      "t": " in the fence. Animals pass in, never out."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "bait trough",
+      "b": true
+     },
+     {
+      "t": " with hay and a "
+     },
+     {
+      "t": "water trough",
+      "b": true
+     },
+     {
+      "t": " inside."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "grid",
+   "layers": [
+    {
+     "name": "layer 1",
+     "rows": [
+      "FFFFFFF",
+      "F.....F",
+      "G..P..F",
+      "F.B.W.F",
+      "FFFFFFF"
+     ]
+    }
+   ],
+   "key": {
+    "F": "minecraft:oak_fence",
+    "G": "farmings:corral_gate",
+    "P": "farmings:corral_post",
+    "B": "farmings:bait_trough",
+    "W": "farmings:water_trough"
+   }
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Settling"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A filled bait trough draws wild animals in through the gate. After "
+    },
+    {
+     "t": "7",
+     "b": true
+    },
+    {
+     "t": " real days settled on its hay and water, each animal is tamed and the corral's owner becomes its owner."
+    }
+   ]
+  }
+ ]
+}
