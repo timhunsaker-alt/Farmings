@@ -1,6 +1,6 @@
 # Farmings — Roadmap
 
-Exactly one phase is marked **CURRENT** while one is under way (none is: Phases 3 and 4 and the loose ends are done; new animals (goats, geese, guinea fowl) are done; pigs and horses are done, Step 18). A phase is done when `./gradlew build` and the game tests pass with new coverage for
+Exactly one phase is marked **CURRENT** while one is under way (Phase 5, the Field Manual; Phases 3 and 4, the loose ends, new animals and pigs and horses are done). A phase is done when `./gradlew build` and the game tests pass with new coverage for
 the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a page for each new system.
 
 ## Phase 0 — Set up — done
@@ -54,11 +54,15 @@ the phase, PROGRESS.md is updated, and (once it exists) the Field Manual has a p
 The Known gaps from Phases 2-4 (PROGRESS.md Step 16): poultry, straws, sheep, coats, the cold room, compost, Phase 3 built at full
 size, the NeoForge client and a sourcing sweep over every doc.
 
+## Phase 5 — The Field Manual — CURRENT (Step 19, Tim 2026-11-14)
+- A sourcing sweep over every TO VERIFY and NOT FOUND figure first.
+- An in-game guide (`docs/field-manual.md`): a custom screen with chapters, contents, search, links, item icons and multiblock grids;
+  how to play plus the key figures, each checked against its doc at build time; given on first join and crafted from a book and wheat.
+
 ## Ideas (not scheduled, not in code)
 - More species: goats, geese and guinea fowl done (Step 17, 2026-11-13); pigs (with a pig barn and pork curing) and horses (ridden,
   bred for racing on a track you build) done (Step 18, 2026-11-13). The species list is complete.
 - Animal health and a vet cycle; disease and quarantine.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).
-- A Field Manual.
 - **Easter egg: milk armor** (Tim, 2026-11-07). See `docs/milk-armor.md`.
