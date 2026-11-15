@@ -47,22 +47,14 @@
       "id": "cattle",
       "title": "Bring in cattle",
       "icon": "farmings:corral_gate",
-      "text": "Wild cattle graze the plains and keep their distance. Fence a corral with a post, a one-way gate, a bait trough of hay and a water trough. The hay draws them in through the gate; fed and watered for 7 days, they settle into your herd and the barn takes them.",
+      "text": "Wild cattle graze the plains and keep their distance. Fence a corral with a post, a one-way gate, a bait trough of hay and a water trough. The hay draws them in through the gate; fed and watered for 7 days, they settle into your herd and the barn takes them. Stay within 64 blocks of the corral post when one settles.",
       "requires": [
         "barn"
       ],
       "tasks": [
         {
-          "item": "farmings:corral_post",
-          "count": 1
-        },
-        {
-          "item": "farmings:corral_gate",
-          "count": 1
-        },
-        {
-          "item": "farmings:bait_trough",
-          "count": 1
+          "milestone": "farmings:tamed",
+          "text": "Tame a wild animal in a corral"
         },
         {
           "item": "minecraft:hay_block",
@@ -327,7 +319,7 @@
       "id": "spreader",
       "title": "Fertilizer in the spreader",
       "icon": "farmings:tool_spreader",
-      "text": "Put the spreader head on the gantry and load it with bulk bags of TSP, DAP or MOP from the fertilizer plant. Each bag is one use, as compost and liquid digestate are.",
+      "text": "Put the spreader head on the gantry and load it with bulk bags of TSP, DAP or MOP from the fertilizer plant. A spread is 10 kg, as a compost item is, so one 1 t bag gives 100 spreads; the gantry opens a new bag only when the last one is spent. The bags work in the spreader only, not by hand.",
       "requires": [
         "gantry",
         "wildcatter:fertilizer"

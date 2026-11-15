@@ -134,6 +134,9 @@ Fault messages name the first thing missing: `NOT CLOSED IN`, `NO GATE`, `NO BAI
 - **Luring:** every second the post points each wild animal within 32 blocks at the floor cell beside the bait trough. Its path runs
   through the gate.
 - **Path finding:** cattle now have a follow range of 64, as sheep do, so the path can be found from 32 blocks away.
+- **Quest milestone (2026-11-14):** when an animal of any species settles, the post fires `farmings:tamed`
+  (`dev.farmings.quest.Milestones`) through Wildcatter's quest hook, to every player within 64 blocks of the post. The farm chapter's
+  "Bring in cattle" quest asks for it and 4 hay blocks. Game test `quest_tamed_milestone`.
 - **Tests:** `WildBreedsTest`, `CorralLayoutTest`; game tests `wild_*` and `corral_*`.
 - **Client scene `taming`** (`FARMINGS_ONLY=taming`, in a generated world):
   - a census of wild animals found by biome, with no vanilla cows or sheep left on Fabric;

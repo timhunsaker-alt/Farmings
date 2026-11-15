@@ -47,7 +47,8 @@ Fit one tool head at a time: park the gantry at the cab end and sneak-right-clic
 - **Mower** (**11 km/h**): cuts hay into a swath.
 - **Rake** (**10 km/h**): rakes a swath once it has dried **1** real day.
 - **Baler** (**8 km/h**): bales hay **1.5** real days after mowing.
-- **Spreader** (**11 km/h**): spreads compost, liquid digestate or bone meal.
+- **Spreader** (**11 km/h**): spreads compost, liquid digestate or bone meal, one item a spread. A **1 t** bag of TSP, DAP or MOP from
+  Wildcatter is **100** spreads of **10 kg**: the cab opens a bag, keeps what is left and opens the next only when it runs out.
 
 {item:farmings:tool_seed_drill} {item:farmings:tool_harvester} {item:farmings:tool_mower} {item:farmings:tool_rake} {item:farmings:tool_baler} {item:farmings:tool_spreader}
 

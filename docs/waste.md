@@ -79,6 +79,11 @@ A mechanical separator (a screw press or a centrifuge) splits digestate into sol
 - **Fertilizer works like bone meal:** using it advances growth as bone meal does in vanilla Minecraft, on all crops and trees. Amount per use
   and what it works on are decided: **same as bone meal, on all crops and on trees** (Tim, 2026-11-07). The strength per use is that of
   vanilla bone meal; do not invent numbers.
+- **Fertilizer by mass (Tim, 2026-11-14):** one use is 10 kg, the mass of a compost item (`docs/multiblocks/compost.md`). The gantry's
+  spreader counts a Wildcatter bulk bag of TSP, DAP or MOP (1 t, anything of Wildcatter's in `#c:fertilizers`) as 1,000 / 10 = **100
+  uses**. The cab keeps the uses left from an opened bag (saved with it) and opens the next bag only when they run out. Every other
+  fertilizer item (bone meal, compost, liquid digestate, another mod's `#c:fertilizers` item) stays one use. The bags work in the
+  spreader only, not by hand.
 - **Biogas fuel:** Wildcatter 0.6.0 (released 2026-11-11) has a pipe product, `biogas, 60 % CH4`. Another mod offers it on Wildcatter's
   steel pipe through `FluidNode`, and its gas sets burn it derated to 850 kW (Wildcatter `docs/biogas.md`). Farmings builds against
   0.6.0, and its digester offers biogas this way (Phase 3).

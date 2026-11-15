@@ -54,4 +54,40 @@ final class QuestGameTests {
 			Farmings.LOGGER.info("[quest_biogas_milestone] ok: burned {} m3", s.panel().biogasBurned());
 		});
 	}
+
+	/**
+	 * The taming corral with a player beside it: a wild sheep fed and watered there for 7 real days settles, the post fires
+	 * {@code farmings:tamed}, and with 4 hay blocks in hand the farm's cattle quest is done.
+	 */
+	static void tamedMilestone(GameTestHelper helper) {
+		MinecraftServer server = helper.getLevel().getServer();
+		net.minecraft.server.level.ServerLevel level = helper.getLevel();
+		BlockPos c = TamingGameTests.buildCorral(helper);
+		TamingGameTests.fillCorral(helper);
+		var post = TamingGameTests.post(helper, c);
+		ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		BlockPos at = helper.absolutePos(new BlockPos(5, 1, 11));
+		player.teleportTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+		player.getInventory().clearContent();
+		post.claim(player.getUUID());
+		post.refresh(level);
+		dev.farmings.entity.SheepEntity s = SheepGameTests.adult(helper, dev.farmings.husbandry.SheepBreed.MERINO, dev.farmings.genetics.Sex.FEMALE, 18L, new BlockPos(4, 1, 6));
+		s.setWild(true);
+		s.setNoAi(true);
+		QuestData.Progress p = QuestData.get(server).of(player.getStringUUID());
+		post.tend(level, s, s, (int) dev.farmings.husbandry.TimeScale.realDaysToTicks(3.5));
+		helper.assertTrue(s.isWild() && !p.milestones.contains(dev.farmings.quest.Milestones.TAMED.toString()),
+				Component.literal("half settled: no milestone yet: " + p.milestones));
+		post.tend(level, s, s, (int) dev.farmings.husbandry.TimeScale.realDaysToTicks(3.5));
+		helper.assertTrue(!s.isWild(), Component.literal("after 7 days fed and watered she is tamed"));
+		helper.assertTrue(p.milestones.contains(dev.farmings.quest.Milestones.TAMED.toString()),
+				Component.literal("the corral should fire farmings:tamed: " + p.milestones));
+		player.getInventory().add(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.HAY_BLOCK, 4));
+		QuestTracker.check(player);
+		helper.assertTrue(p.done.contains(Farmings.id("cattle").toString()), Component.literal("cattle should be done: " + p.done));
+		server.getPlayerList().remove(player);
+		s.discard();
+		Farmings.LOGGER.info("[quest_tamed_milestone] ok: {}", post.readout(level));
+		helper.succeed();
+	}
 }

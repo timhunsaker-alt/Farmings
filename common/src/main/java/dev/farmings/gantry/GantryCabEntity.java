@@ -64,6 +64,8 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 	private final Map<Integer, Double> drying = new LinkedHashMap<>();
 	private String fault = "";
 	private int worked;
+	/** Spreads left from the last fertilizer item the spreader took (a 1 t bag gives 100); a new item is taken only at 0. */
+	private int fertilizerUses;
 	private boolean forcedPower;
 
 	public GantryCabEntity(BlockPos pos, BlockState state) {
@@ -631,15 +633,40 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 		if (!(s.getBlock() instanceof BonemealableBlock bm) || !bm.isValidBonemealTarget(level, p, s, BonemealSource.INTERACTION)) {
 			return;
 		}
-		for (ItemStack st : inputs) {
-			if (Fertilizers.is(st)) {
-				bm.performBonemeal(level, level.getRandom(), p, s, BonemealSource.INTERACTION);
-				st.shrink(1);
-				worked++;
-				return;
+		if (!takeFertilizerUse()) {
+			fault = "NO FERTILIZER in the cab";
+			return;
+		}
+		bm.performBonemeal(level, level.getRandom(), p, s, BonemealSource.INTERACTION);
+		worked++;
+	}
+
+	/**
+	 * Takes one fertilizer use: from the uses left in the hopper, or else from the next fertilizer item, which is used up at once and
+	 * leaves its other uses behind (a 1 t bag is 100 uses, Fertilizers.uses). False when there is none.
+	 */
+	public boolean takeFertilizerUse() {
+		if (fertilizerUses <= 0) {
+			for (ItemStack st : inputs) {
+				int n = Fertilizers.uses(st);
+				if (n > 0) {
+					st.shrink(1);
+					fertilizerUses = n;
+					break;
+				}
 			}
 		}
-		fault = "NO FERTILIZER in the cab";
+		if (fertilizerUses <= 0) {
+			return false;
+		}
+		fertilizerUses--;
+		setChanged();
+		return true;
+	}
+
+	/** Fertilizer uses left from the last item taken (a part-spread bag). */
+	public int fertilizerUses() {
+		return fertilizerUses;
 	}
 
 	// ---- unloading at the headland stop ----
@@ -738,6 +765,9 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 			b.append(String.format(Locale.ROOT, ", %.0f kW at %.0f km/h", tool.watts(f.span(), realKg) / 1000, tool.kmPerHour));
 		}
 		b.append(String.format(Locale.ROOT, ", bin %.0f of %.0f kg", binKg(), GantryTool.BIN_KG));
+		if (fertilizerUses > 0) {
+			b.append(String.format(Locale.ROOT, ", fertilizer %d use%s left", fertilizerUses, fertilizerUses == 1 ? "" : "s"));
+		}
 		if (!drying.isEmpty()) {
 			double most = drying.values().stream().mapToDouble(Double::doubleValue).max().orElse(0);
 			b.append(String.format(Locale.ROOT, ", %d row%s drying (longest %.1f days)", drying.size(), drying.size() == 1 ? "" : "s", most));
@@ -855,6 +885,7 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 		var ex = out.list("Extras", ItemStack.CODEC);
 		extras.forEach(ex::add);
 		out.putInt("Worked", worked);
+		out.putInt("FertilizerUses", fertilizerUses);
 	}
 
 	@Override
@@ -885,6 +916,7 @@ public class GantryCabEntity extends BlockEntity implements WorldlyContainer {
 		extras.clear();
 		in.listOrEmpty("Extras", ItemStack.CODEC).forEach(extras::add);
 		worked = in.getIntOr("Worked", 0);
+		fertilizerUses = in.getIntOr("FertilizerUses", 0);
 	}
 
 	public int worked() {

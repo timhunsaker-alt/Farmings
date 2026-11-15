@@ -89,6 +89,9 @@ the span as the working width.
   - The harvester also takes ripe vanilla crops, with their own drops.
   - The seed drill sows any crop seed, vanilla seeds included.
   - The spreader takes bone meal now; compost and liquid digestate join with their parts.
+  - Anything in `#c:fertilizers` goes in the spreader too. A Wildcatter 1 t bag (TSP, DAP or MOP) is 100 uses at 10 kg a use, the
+    compost item's mass (waste.md, Tim 2026-11-14). The cab saves the uses left and opens the next bag only at 0; every other item is
+    one use. Game test `spreader_bag_gives_100`.
 - **The bin:** each product is kept in kg. It unloads as round bales of 454 kg, 1 kg grain items and 25 kg chopped forage. A remainder
   stays in the bin.
 - **Game tests:** gantry_plants_strip, gantry_harvests_to_stop, gantry_mows_rakes_bales, gantry_runs_on_its_clock.

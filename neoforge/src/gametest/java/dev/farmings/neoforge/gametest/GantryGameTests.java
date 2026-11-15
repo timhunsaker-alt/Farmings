@@ -92,6 +92,42 @@ final class GantryGameTests {
 		helper.succeed();
 	}
 
+	/**
+	 * One of Wildcatter's 1 t fertilizer bags is 100 spreads (10 kg each, as a compost item; Tim, 2026-11-14). Barley seedlings on all 45
+	 * cells, set back to seedlings before each pass: the first pass opens the bag and spreads 45, the second 45, the third the last 10
+	 * and then reports no fertilizer, and a fourth spreads nothing. The uses left ride with the cab from cell to cell (its saved data).
+	 */
+	static void spreaderBagGives100(GameTestHelper helper) {
+		build(helper);
+		net.minecraft.world.item.Item bag = net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(net.minecraft.resources.Identifier.fromNamespaceAndPath("wildcatter", "tsp_bag"));
+		helper.assertTrue(dev.farmings.gantry.Fertilizers.uses(new ItemStack(bag)) == 100, Component.literal("a Wildcatter bag is 100 uses"));
+		helper.assertTrue(dev.farmings.gantry.Fertilizers.uses(new ItemStack(net.minecraft.world.item.Items.BONE_MEAL)) == 1, Component.literal("bone meal is one"));
+		cab(helper).addInput(new ItemStack(bag, 1));
+		int[] expect = {45, 45, 10, 0};
+		int[] left = {55, 10, 0, 0};
+		int total = 0;
+		for (int pass = 0; pass < expect.length; pass++) {
+			cells(helper, (crop, ground) -> {
+				helper.setBlock(ground, Blocks.FARMLAND);
+				helper.setBlock(crop, FieldCrops.block(FieldCrop.BARLEY).defaultBlockState().setValue(CropBlock.AGE, 0));
+			});
+			GantryCabEntity c = run(helper, GantryTool.SPREADER);
+			int[] spread = {0};
+			cells(helper, (crop, ground) -> {
+				if (helper.getBlockState(crop).getValue(CropBlock.AGE) > 0) {
+					spread[0]++;
+				}
+			});
+			helper.assertTrue(spread[0] == expect[pass], Component.literal("pass " + (pass + 1) + " should spread " + expect[pass] + ": " + spread[0] + "; " + c.readout()));
+			helper.assertTrue(c.fertilizerUses() == left[pass], Component.literal("pass " + (pass + 1) + " should leave " + left[pass] + " uses: " + c.fertilizerUses()));
+			helper.assertTrue(c.isEmpty(), Component.literal("the bag is opened at the first spread and gone from the hopper"));
+			total += spread[0];
+		}
+		helper.assertTrue(total == 100, Component.literal("one bag, 100 spreads: " + total));
+		dev.farmings.Farmings.LOGGER.info("[spreader_bag_gives_100] ok: {} spreads from one bag", total);
+		helper.succeed();
+	}
+
 	/** The combine takes ripe barley (4.13 kg a block), leaves straw swaths, and unloads the grain at the headland stop. */
 	static void gantryHarvestsToStop(GameTestHelper helper) {
 		build(helper);

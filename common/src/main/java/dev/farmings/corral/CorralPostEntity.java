@@ -212,6 +212,7 @@ public class CorralPostEntity extends BlockEntity {
 				a.tame(owner);
 				tamed++;
 				setChanged();
+				dev.wildcatter.quest.QuestEvents.milestone(level, worldPosition, dev.farmings.quest.Milestones.TAMED);
 			}
 		}
 	}

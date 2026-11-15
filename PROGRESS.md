@@ -385,15 +385,27 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
     digester's gas holder piped to a running gas set, a player beside it: the milestone lands and `farmings:biogas_genset` is done).
     The digester scene's set-up is shared with `genset_burns_farm_biogas`.
 
+- Step 22 (2026-11-14): follow-ups from Tim's answers on the quest book (Wildcatter's plan `elegant-swinging-starfish.md`, "5. Farmings"
+  and "6. Paperwork", approved by Tim). Still on Wildcatter 0.8.0 (the brief: 0.8.1 after it is released).
+  - Taming milestone: the corral post fires `farmings:tamed` (`dev.farmings.quest.Milestones`, through Wildcatter's
+    `QuestEvents.milestone`) when an animal settles in it, to every player within 64 blocks. "Bring in cattle" asks for it and keeps
+    the 4 hay blocks; the corral parts are no longer counted. Game test `quest_tamed_milestone`.
+  - Fertilizer by mass: one use is 10 kg (a compost item), so a Wildcatter 1 t bag in `#c:fertilizers` is 100 spreads
+    (`Fertilizers.uses`). The cab keeps the uses left (saved as `FertilizerUses`, and carried as it moves or lifts), opens the next bag
+    only at 0, and shows them in its readout. Other fertilizer items stay one use; bags stay spreader-only. The spreader quest text
+    says so. Game test `spreader_bag_gives_100`: four passes over 45 seedlings spread 45, 45, 10 and 0 from one bag.
+  - Time scale: Tim's answer is to keep Farmings' own; removed from Known gaps.
+  - Docs: waste.md, multiblocks/field-gantry.md, taming.md, the Field Manual's field gantry page (rebuilt), and
+    `docs/questions/quests.md` (earlier decisions accepted or answered; new decisions 8-14).
+  - Test spacing: horse scenes now stand 64 blocks apart, as the shed scenes do. A stable takes in horses within 48, and with two scenes
+    added `stable_houses_feeds_beds` lost a horse to a neighbour's stable in every full run (it passed alone). Full suite: 249 of 249.
+
 ## Known gaps
-- **Quest book:** the "Bring in cattle" quest checks the corral's parts and hay, not a tamed animal (the quest engine counts items,
-  advancements and milestones, and there is no taming milestone). The Field Manual has no page on the quest book (it is Wildcatter's).
-  For Tim.
-- **Wildcatter fertilizer bags:** a 1 t bag of TSP, DAP or MOP is one use in the spreader, like a 10 kg compost item; at a real
-  rate (about 200 kg/ha) a tonne would cover about 5 ha. They do nothing by hand (Wildcatter gives them no crop use, and Farmings has no
-  hook on another mod's item yet). For Tim.
-- **Time scale:** Farmings' waits use their own fixed speed-ups (15:1 creamery batches, 3 real days per game day for poultry) and do not
-  follow Wildcatter 0.7.0's world time scale. A question for Tim.
+- **Quest book:** the Field Manual has no page on the quest book (it is Wildcatter's). `farmings:tamed` is one key for every species,
+  so a tamed sheep also completes "Bring in cattle", and only players within 64 blocks of the post get it (`docs/questions/quests.md`
+  9-10). For Tim.
+- **Wildcatter fertilizer bags:** a 1 t bag is 100 spreads in the gantry (built 2026-11-14). They still do nothing by hand (Wildcatter
+  gives them no crop use), and a part-used bag's uses are lost if the cab is broken.
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing
   rotten eggs, Farmings chicken that spoils, foraging on the run, Muscovy and quail colour mutants, hens per male, no quail cross.
 - **Poultry proposals with no source:**
