@@ -1,6 +1,6 @@
 # Progress
 
-Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires Wildcatter 0.8.0.
+Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires Wildcatter 0.8.1.
 
 ## Phase 0
 
@@ -386,7 +386,7 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
     The digester scene's set-up is shared with `genset_burns_farm_biogas`.
 
 - Step 22 (2026-11-14): follow-ups from Tim's answers on the quest book (Wildcatter's plan `elegant-swinging-starfish.md`, "5. Farmings"
-  and "6. Paperwork", approved by Tim). Still on Wildcatter 0.8.0 (the brief: 0.8.1 after it is released).
+  and "6. Paperwork", approved by Tim). Moved to Wildcatter 0.8.1 once it was released.
   - Taming milestone: the corral post fires `farmings:tamed` (`dev.farmings.quest.Milestones`, through Wildcatter's
     `QuestEvents.milestone`) when an animal settles in it, to every player within 64 blocks. "Bring in cattle" asks for it and keeps
     the 4 hay blocks; the corral parts are no longer counted. Game test `quest_tamed_milestone`.
