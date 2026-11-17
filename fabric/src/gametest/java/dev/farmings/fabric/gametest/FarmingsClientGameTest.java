@@ -65,14 +65,14 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		}
 	}
 
-	private static void barnPart(ServerLevel level, BarnParts kind, BlockPos main) {
+	static void barnPart(ServerLevel level, BarnParts kind, BlockPos main) {
 		BlockState state = FarmingsBlocks.part(kind).defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
 		level.setBlock(main, state, Block.UPDATE_ALL);
 		BigParts.grow(level, main, state);
 	}
 
 	/** The same barn the NeoForge game test builds: alley east-west, pit at the east end, controller at c. */
-	private static void buildBarn(ServerLevel level, BlockPos c, int stalls) {
+	static void buildBarn(ServerLevel level, BlockPos c, int stalls) {
 		int fl = c.getY() - 1;
 		int xd = c.getX() - dev.farmings.husbandry.barn.BarnLayout.alleyLength(stalls);
 		int row = xd + stalls;
@@ -837,7 +837,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-flock-all");
 	}
 
-	private static dev.farmings.entity.PigEntity pig(ServerLevel level, dev.farmings.husbandry.PigBreed breed, Sex sex, long seed, double age) {
+	static dev.farmings.entity.PigEntity pig(ServerLevel level, dev.farmings.husbandry.PigBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.PigEntity p = FarmingsEntities.PIG.create(level, EntitySpawnReason.COMMAND);
 		p.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Swine.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
 		p.setPos(200.5, 0, 200.5);
@@ -907,7 +907,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-pigs-all");
 	}
 
-	private static dev.farmings.entity.HorseEntity horse(ServerLevel level, dev.farmings.husbandry.HorseBreed breed, Sex sex, long seed, double age) {
+	static dev.farmings.entity.HorseEntity horse(ServerLevel level, dev.farmings.husbandry.HorseBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.HorseEntity h = FarmingsEntities.HORSE.create(level, EntitySpawnReason.COMMAND);
 		h.initFounder(breed, sex, seed, age, level.getGameTime());
 		h.setWild(false);
@@ -918,7 +918,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	}
 
 	/** Coat genes for the horses scene: E, A, Cr, D, G, Rn, SB1 copies, the rest as the founder had them. */
-	private static dev.farmings.genetics.HorseGenes coat(dev.farmings.genetics.HorseGenes g, int e, int a, int cr, int d, int grey, int rn, int sb) {
+	static dev.farmings.genetics.HorseGenes coat(dev.farmings.genetics.HorseGenes g, int e, int a, int cr, int d, int grey, int rn, int sb) {
 		dev.farmings.genetics.HorseLocus[] l = {dev.farmings.genetics.HorseLocus.E, dev.farmings.genetics.HorseLocus.A, dev.farmings.genetics.HorseLocus.CR,
 				dev.farmings.genetics.HorseLocus.D, dev.farmings.genetics.HorseLocus.G, dev.farmings.genetics.HorseLocus.RN, dev.farmings.genetics.HorseLocus.SB1};
 		int[] n = {e, a, cr, d, grey, rn, sb};
@@ -1144,7 +1144,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	}
 
 	/** An oval race track centred on (cx, cz): semi-axes 30 by 14 at the centre line, 4 wide, white rails, a gate east and a post west. */
-	private static BlockPos raceTrack(ServerLevel level, int cx, int cz, int y) {
+	static BlockPos raceTrack(ServerLevel level, int cx, int cz, int y) {
 		double a = 30;
 		double b = 14;
 		double w = 4;
@@ -2914,6 +2914,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		// the trailer's shots: their own generated world, only when named
+		if ("trailer".equals(System.getenv("FARMINGS_ONLY"))) {
+			new Trailer(context).run();
+			return;
+		}
 		// the taming scene needs a generated world (biomes and their animals); every other scene uses the flat test world
 		boolean generated = "taming".equals(System.getenv("FARMINGS_ONLY"));
 		try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(!generated).create()) {
