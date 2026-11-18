@@ -242,7 +242,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
-	private static void parlorPart(ServerLevel level, dev.farmings.parlor.ParlorParts kind, BlockPos main) {
+	static void parlorPart(ServerLevel level, dev.farmings.parlor.ParlorParts kind, BlockPos main) {
 		BlockState state = FarmingsBlocks.parlorPart(kind).defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
 		level.setBlock(main, state, Block.UPDATE_ALL);
 		BigParts.grow(level, main, state);
@@ -519,7 +519,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		dev.wildcatter.multiblock.BigParts.grow(level, main, state);
 	}
 
-	private static void clear(ServerLevel level, int cx, int cz, int y, int rx, int rz, int h) {
+	static void clear(ServerLevel level, int cx, int cz, int y, int rx, int rz, int h) {
 		for (int x = cx - rx; x <= cx + rx; x++) {
 			for (int z = cz - rz; z <= cz + rz; z++) {
 				level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
@@ -530,7 +530,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		}
 	}
 
-	private static void placePart(ServerLevel level, Block block, BlockPos main) {
+	static void placePart(ServerLevel level, Block block, BlockPos main) {
 		BlockState state = block.defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
 		level.setBlock(main, state, Block.UPDATE_ALL);
 		BigParts.grow(level, main, state);
@@ -723,7 +723,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		}
 	}
 
-	private static dev.farmings.entity.SheepEntity sheep(ServerLevel level, dev.farmings.husbandry.SheepBreed breed, Sex sex, long seed, double age) {
+	static dev.farmings.entity.SheepEntity sheep(ServerLevel level, dev.farmings.husbandry.SheepBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.SheepEntity s = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.COMMAND);
 		java.util.Map<String, Integer> c = java.util.Map.of(breed.code, 10_000);
 		s.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Flock.targetKg(c, age), level.getGameTime());
@@ -1313,7 +1313,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.takeScreenshot("farmings-race-track");
 	}
 
-	private static dev.farmings.entity.GoatEntity goat(ServerLevel level, dev.farmings.husbandry.GoatBreed breed, Sex sex, long seed, double age) {
+	static dev.farmings.entity.GoatEntity goat(ServerLevel level, dev.farmings.husbandry.GoatBreed breed, Sex sex, long seed, double age) {
 		dev.farmings.entity.GoatEntity g = FarmingsEntities.GOAT.create(level, EntitySpawnReason.COMMAND);
 		g.initFounder(breed, sex, seed, age, dev.farmings.husbandry.Herd.targetKg(java.util.Map.of(breed.code, 10_000), sex == Sex.MALE, age), level.getGameTime());
 		java.util.EnumMap<dev.farmings.genetics.GoatLocus, int[]> m = new java.util.EnumMap<>(g.genes().alleles());
@@ -2917,6 +2917,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		// the trailer's shots: their own generated world, only when named
 		if ("trailer".equals(System.getenv("FARMINGS_ONLY"))) {
 			new Trailer(context).run();
+			return;
+		}
+		// the music videos' footage (FARMINGS_MV_SONG picks the song): their own generated world, only when named
+		if ("musicVideo".equals(System.getenv("FARMINGS_ONLY"))) {
+			new MusicVideo(context).run();
 			return;
 		}
 		// the taming scene needs a generated world (biomes and their animals); every other scene uses the flat test world
