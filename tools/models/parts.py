@@ -201,6 +201,25 @@ def parlor_stall():
 
 
 @part
+def sheep_stall():
+	"""A sheep or goat milking stall (parlor.md, sheep milk): a low concrete standing with a rubber mat, a galvanized headlock yoke at
+	the front the ewe puts her head through, and a small feed trough in front of it, as on a raised sheep platform's stalls."""
+	M = model("sheep_stall", 1, 1, 1, particle="mat")
+	M.box((0, 0, 0), (1, 0.15, 1), "concrete")
+	M.box((0.03, 0.15, 0.2), (0.97, 0.19, 0.97), "mat")
+	M.box((0.1, 0.15, 0.02), (0.9, 0.3, 0.18), "steel")              # feed trough
+	M.box((0.13, 0.27, 0.05), (0.87, 0.28, 0.15), "grey")            # its ration
+	for x in (0.04, 0.96):
+		M.pipe([(x, 0.15, 0.2), (x, 0.9, 0.2)], 1.5, "galv")          # yoke posts
+	M.pipe([(0.04, 0.9, 0.2), (0.96, 0.9, 0.2)], 1.5, "galv")        # top rail
+	M.pipe([(0.04, 0.45, 0.2), (0.96, 0.45, 0.2)], 1.5, "galv")      # neck rail
+	for x in (0.4, 0.6):
+		M.pipe([(x, 0.45, 0.2), (x, 0.9, 0.2)], 1, "galv")             # the headlock bars either side of her neck
+	M.collide((0, 0, 0), (1, 0.19, 1))
+	return M
+
+
+@part
 def milking_unit():
 	"""A milking point: a stainless detacher box on the rail, the long milk tube, the claw and its four teat cups."""
 	M = model("milking_unit", 1, 1, 1, particle="steel")
