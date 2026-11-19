@@ -101,9 +101,51 @@ public class DigesterEntity extends BlockEntity implements CircuitPart, Inspecta
 		return voltage == Voltage.INDUSTRIAL;
 	}
 
+	/** Any outside face of any of the tank's 27 cells takes the 480 V feed, as Wildcatter's big parts take theirs (a cable on a side cell, the roof or the floor). */
+	@Override
+	public boolean hasPortAt(BlockPos cell, Direction face, Conductor role, Voltage voltage) {
+		if (voltage != Voltage.INDUSTRIAL || level == null) {
+			return false;
+		}
+		java.util.List<BlockPos> cells = dev.wildcatter.multiblock.BigParts.cellsAt(level, worldPosition);
+		return cells.contains(cell) && !cells.contains(cell.relative(face));
+	}
+
+	private static final Conductor[] PHASES = {Conductor.A, Conductor.B, Conductor.C};
+
+	/**
+	 * The mixer's terminals are on the main cell's top face, inside the tank; the cell above it carries an internal bus to them, and the
+	 * bus has a terminal on every outside face of every cell. So a cable touching any cell feeds the mixer through the same three-phase
+	 * motor (its leads, its inrush and its stall), and the bus adds only two contact joints.
+	 */
 	@Override
 	public void build(Circuit circuit) {
-		motor.build(circuit, worldPosition);
+		java.util.List<BlockPos> cells = level == null ? java.util.List.of() : dev.wildcatter.multiblock.BigParts.cellsAt(level, worldPosition);
+		BlockPos inside = worldPosition.above();
+		if (cells.size() < 2 || !cells.contains(inside)) {
+			motor.build(circuit, worldPosition);     // not grown to full size (an old one-block tank): terminals on its own faces
+			return;
+		}
+		motor.build(circuit, worldPosition, java.util.List.of(Direction.UP));
+		int[] bus = new int[3];
+		for (int k = 0; k < 3; k++) {
+			bus[k] = circuit.node();
+			circuit.port(inside, Direction.DOWN, PHASES[k], Voltage.INDUSTRIAL, bus[k], dev.wildcatter.Tuning.CONTACT_OHMS / 2, false);
+		}
+		for (BlockPos cell : cells) {
+			for (Direction face : Direction.values()) {
+				if (!cells.contains(cell.relative(face))) {
+					for (int k = 0; k < 3; k++) {
+						circuit.port(cell, face, PHASES[k], Voltage.INDUSTRIAL, bus[k], dev.wildcatter.Tuning.CONTACT_OHMS / 2, false);
+					}
+				}
+			}
+		}
+	}
+
+	/** The mixer motor's line-to-line volts at its last solve: 0 with no supply. */
+	public double volts() {
+		return motor.volts();
 	}
 
 	@Override

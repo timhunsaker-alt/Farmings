@@ -2902,13 +2902,22 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 				var p = (dev.wildcatter.block.GensetControlPanelBlockEntity) level.getBlockEntity(panelAt);
 				var d = (dev.farmings.digester.DigesterEntity) level.getBlockEntity(new BlockPos(gx + 3, y, gz - 3));
 				return String.format(java.util.Locale.ROOT, "Gas set burned %.2f m3 of farm biogas; holder %.1f m3; agitator %s", p.biogasBurned(), d.digester().gasM3(),
-						d.powered() ? "ON (on the set's power)" : "off");
+						d.powered() ? String.format(java.util.Locale.ROOT, "ON at %.0f V (on the set's power)", d.volts()) : "off");
 			}));
 			if (i == 14) {
 				context.takeScreenshot("farmings-fields-genset-running");
 			}
 		}
 		gen.stop();
+		// the cable touches only the tank's east corner cell: the mixer must run on the set's real volts there (not the forced flag)
+		String agitator = server.computeOnServer(srv -> {
+			var d = (dev.farmings.digester.DigesterEntity) srv.overworld().getBlockEntity(new BlockPos(gx + 3, y, gz - 3));
+			double nominal = dev.wildcatter.energy.Voltage.INDUSTRIAL.lineToLine();
+			return d.powered() && Math.abs(d.volts() - nominal) <= 0.1 * nominal ? null : d.inspect().getString();
+		});
+		if (agitator != null) {
+			throw new AssertionError("the digester's mixer is not on the gas set's power through its side cell: " + agitator);
+		}
 		System.out.println("[farmings] genset: " + server.computeOnServer(srv -> ((dev.wildcatter.block.GensetControlPanelBlockEntity) srv.overworld().getBlockEntity(panelAt)).inspect().getString()));
 	}
 

@@ -8,6 +8,7 @@ import dev.farmings.digester.FeedPitEntity;
 import dev.farmings.digester.GasHolderEntity;
 import dev.farmings.digester.PressEntity;
 import dev.wildcatter.block.FluidNode;
+import dev.wildcatter.energy.Voltage;
 import dev.wildcatter.fluid.Product;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -90,6 +91,32 @@ final class DigesterGameTests {
 			helper.assertTrue(s.panel().biogasBurned() > 0 && s.digester().digester().gasM3() < s.full(),
 					Component.literal("the gas set burns the farm's biogas: burned " + s.panel().biogasBurned() + " m3, holder " + s.digester().digester().gasM3() + " of " + s.full() + "; " + set));
 			helper.succeed();
+		});
+	}
+
+	/**
+	 * The farm short's wiring: a 480 V cable from the gas set's panel touching only the tank's east corner cell (not its main cell). Any
+	 * cell takes power, so once the set is up the mixer motor runs on the set's own volts: read from the motor, not the forced flag.
+	 */
+	static void gensetPowersDigesterSideCell(GameTestHelper helper) {
+		BiogasSet s = biogasSet(helper);
+		s.digester().forceRunning(false);
+		s.digester().digester().feed(5_000);     // work for the mixer while the set runs
+		var cable = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(dev.wildcatter.Wildcatter.id("cable_industrial"));
+		for (int z = 0; z >= -4; z--) {
+			helper.setBlock(new BlockPos(9, 2, z), cable);
+		}
+		for (int x = 8; x >= 5; x--) {
+			helper.setBlock(new BlockPos(x, 2, -4), cable);     // (5,2,-4) touches the tank cell (4,2,-4) only
+		}
+		helper.assertTrue(!s.digester().powered(), Component.literal("no power before the set runs: " + s.digester().readout()));
+		helper.runAfterDelay(30, () -> s.panel().setWantRun(true));
+		double nominal = Voltage.INDUSTRIAL.lineToLine();
+		helper.succeedWhen(() -> {
+			double v = s.digester().volts();
+			helper.assertTrue(s.digester().powered() && Math.abs(v - nominal) <= 0.1 * nominal,
+					Component.literal("the mixer runs at the set's " + Math.round(nominal) + " V through a side cell: " + s.digester().inspect().getString()
+							+ "; set: " + s.panel().inspect().getString()));
 		});
 	}
 
