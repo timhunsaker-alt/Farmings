@@ -28,7 +28,8 @@ Route B. Wildcatter 0.6.0 is the other side: a mod offers `Product.BIOGAS` on st
   - The gas comes off evenly over the **20 real days** after feeding (1.3 game days at 15:1).
   - The tank burns **half** of it to stay warm; the other half goes to the gas holder.
   - Poultry litter (10 kg) gives the same per tonne *(proposed; no poultry figure looked up)*.
-- **Power:** the mixer needs Wildcatter 480 V. With no power the tank is unstirred and makes no gas until power returns *(proposed)*.
+- **Power:** the mixer needs Wildcatter 480 V (the world standard's industrial voltage). A cable on any outside face of any of the tank's
+  27 cells feeds it, as Wildcatter's big parts take power (fixed 2026-11-19: only the floor under the main cell did). With no power the tank is unstirred and makes no gas until power returns *(proposed)*.
 - **Digestate:** what goes in comes out after 20 days as digestate, less the gas's mass (about 1.2 kg/m³, so about 3% of the
   manure: *derived*). It goes to the digestate tank.
 - **Separator** (Cornell PRO-DAIRY,

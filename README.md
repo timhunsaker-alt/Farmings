@@ -1,6 +1,6 @@
 # Farmings
 
-Farmings is a planned Minecraft **26.3** add-on (Java **25**) for [Wildcatter](https://github.com/timhunsaker-alt/Wildcatter), on
+Farmings is a Minecraft **26.3** add-on (Java **25**) for [Wildcatter](https://github.com/timhunsaker-alt/Wildcatter), on
 Fabric and NeoForge. It is about raising animals and growing crops the way a modern farm does: individual animals with a sex, a
 breed and a genome; barns, parlors, mills and tanks on Wildcatter's grid; field work by moving contraptions and conveyors,
 not tractors.

@@ -40,14 +40,16 @@ Plan `elegant-swinging-starfish.md`, "5. Farmings" and "6. Paperwork", approved 
 9. **One `farmings:tamed` key for every species.** Decided on recommendation; for Tim. The plan names one key and says "an animal"; the
    corral tames every wild species (cattle, sheep, fowl, the sheep dog and the rest) through the same `tend` call. The quest is "Bring in cattle",
    so taming a sheep there also counts. Per-species keys (`farmings:tamed/cattle`) would make it exact if Tim wants them.
+   **Accepted by Tim 2026-11-19** (B6; C14 answer: keep one key, 64 blocks).
 10. **Who gets the milestone.** Decided on recommendation; for Tim. Wildcatter's hook gives it to every player within 64 blocks of the
     corral post when the animal settles, not to the corral's owner wherever they are (0.8.0 has no per-player hook). The quest text
-    says to be within 64 blocks.
+    says to be within 64 blocks. **Accepted by Tim 2026-11-19** (B6; C14 answer: keep one key, 64 blocks).
 11. **What counts as a Wildcatter bag.** Decided on recommendation; for Tim. Any item in `#c:fertilizers` whose id is in the
     `wildcatter` namespace is 100 uses (today TSP, DAP and MOP bags, all 1 t). Another mod's item in the tag stays one use, since its
-    mass is unknown. A part-used bag's uses are lost if the cab is broken, as the cab's bin is.
+    mass is unknown. A part-used bag's uses are lost if the cab is broken, as the cab's bin is. **Accepted by Tim 2026-11-19** (B6).
 12. **Wildcatter version.** The plan says "set `wildcatter_version=0.8.1`"; the brief for this run says stay on 0.8.0 until 0.8.1 is
-    released. It stays on 0.8.0; only `QuestEvents.milestone` is used, which 0.8.0 has.
+    released. It stays on 0.8.0; only `QuestEvents.milestone` is used, which 0.8.0 has. **Accepted by Tim 2026-11-19** (B6). (Since raised to 0.8.1 once it was released, commit 70f846e.)
 13. **No CHANGELOG.** The brief asks for the CHANGELOG under "Unreleased"; Farmings has no CHANGELOG file (PROGRESS.md is its
-    history). Decided on recommendation; for Tim: PROGRESS.md carries it and no new file is made.
+    history). Decided on recommendation; for Tim: PROGRESS.md carries it and no new file is made. Superseded 2026-11-19: the first public release needs one, so `CHANGELOG.md`
+    now exists (`docs/questions/wave-a.md` 2).
 14. **Still committed locally, not pushed** (brief).

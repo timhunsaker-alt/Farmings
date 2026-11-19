@@ -400,10 +400,16 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   - Test spacing: horse scenes now stand 64 blocks apart, as the shed scenes do. A stable takes in horses within 48, and with two scenes
     added `stable_houses_feeds_beds` lost a horse to a neighbour's stable in every full run (it passed alone). Full suite: 249 of 249.
 
+- Wave A (2026-11-19): Tim's answers and release prep. B6 (quests 9-12) and C14 (one `farmings:tamed` key, 64 blocks) accepted and
+  recorded in `docs/questions/quests.md`. Bug from the farm short fixed: a 480 V cable on a side cell of the digester tank left its
+  mixer unpowered (its terminals were on the bottom centre cell only); any outside face of any cell now feeds it (an internal bus).
+  New game test `genset_powers_digester_side_cell` asserts the motor's real volts against the standard's industrial voltage (it failed
+  before the fix with the set running); the fields client scene asserts them too. The sheep stall's placeholder texture is replaced by
+  a model. CHANGELOG.md and version 0.1.0 for the first public release. Decisions: `docs/questions/wave-a.md`.
+
 ## Known gaps
-- **Quest book:** the Field Manual has no page on the quest book (it is Wildcatter's). `farmings:tamed` is one key for every species,
-  so a tamed sheep also completes "Bring in cattle", and only players within 64 blocks of the post get it (`docs/questions/quests.md`
-  9-10). For Tim.
+- **Quest book:** the Field Manual has no page on the quest book (it is Wildcatter's). `farmings:tamed` stays one key for every
+  species, given to players within 64 blocks of the post (accepted by Tim 2026-11-19, C14).
 - **Wildcatter fertilizer bags:** a 1 t bag is 100 spreads in the gantry (built 2026-11-14). They still do nothing by hand (Wildcatter
   gives them no crop use), and a part-used bag's uses are lost if the cab is broken.
 - **Poultry:** built 2026-11-11 (loose ends): turkey straws (artificial insemination for Broad Breasted White), throwing
