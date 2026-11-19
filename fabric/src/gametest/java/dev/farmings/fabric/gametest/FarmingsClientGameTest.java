@@ -513,7 +513,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 	// ---- 2026-11-09: the cattle finish, the creamery and the art ----
 
 	/** A big part placed whole with its main cell at {@code main}, facing north. */
-	private static void bigPart(ServerLevel level, net.minecraft.world.level.block.Block b, BlockPos main) {
+	static void bigPart(ServerLevel level, net.minecraft.world.level.block.Block b, BlockPos main) {
 		var state = b.defaultBlockState().setValue(dev.wildcatter.block.BigPartBlock.FACING, Direction.NORTH);
 		level.setBlockAndUpdate(main, state);
 		dev.wildcatter.multiblock.BigParts.grow(level, main, state);
@@ -2922,6 +2922,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		// the music videos' footage (FARMINGS_MV_SONG picks the song): their own generated world, only when named
 		if ("musicVideo".equals(System.getenv("FARMINGS_ONLY"))) {
 			new MusicVideo(context).run();
+			return;
+		}
+		// the short "From the barn to the grid": its own generated world, only when named
+		if ("farmShort".equals(System.getenv("FARMINGS_ONLY"))) {
+			new FarmShort(context).run();
 			return;
 		}
 		// the taming scene needs a generated world (biomes and their animals); every other scene uses the flat test world

@@ -169,12 +169,12 @@ final class MusicVideo {
 	private static final Act NONE = (l, t) -> {
 	};
 
-	private static double ease(double s) {
+	static double ease(double s) {
 		return s * s * (3 - 2 * s);
 	}
 
 	/** A slow eased move from a to b, both over the ground. */
-	private static CamPath dolly(G a, G b) {
+	static CamPath dolly(G a, G b) {
 		Cam[] ends = new Cam[2];
 		return (level, s, t) -> {
 			if (ends[0] == null) {
@@ -186,7 +186,7 @@ final class MusicVideo {
 	}
 
 	/** Round a point (over the ground at c), radius r0 to r1, height h0 to h1 over that ground, angle a0 to a1 degrees (0 = east, 90 = south). */
-	private static CamPath orbit(BlockPos o, double cx, double cz, double r0, double r1, double h0, double h1, double a0, double a1, double th) {
+	static CamPath orbit(BlockPos o, double cx, double cz, double r0, double r1, double h0, double h1, double a0, double a1, double th) {
 		double[] g = {Double.NaN};
 		return (level, s, t) -> {
 			if (Double.isNaN(g[0])) {
@@ -410,7 +410,7 @@ final class MusicVideo {
 		m.move(MoverType.SELF, new Vec3(dx / len * step, m.onGround() ? -0.01 : -0.3, dz / len * step));
 	}
 
-	private static void place(Entity e, double x, double y, double z, float yaw) {
+	static void place(Entity e, double x, double y, double z, float yaw) {
 		e.snapTo(x, y, z, yaw, 0);
 		if (e instanceof Mob m) {
 			m.getNavigation().stop();
@@ -422,7 +422,7 @@ final class MusicVideo {
 
 	// ---- the ground (as the trailer) ----
 
-	private static boolean loose(BlockState s) {
+	static boolean loose(BlockState s) {
 		return s.isAir() || s.is(BlockTags.LOGS) || s.is(BlockTags.LEAVES) || (s.canBeReplaced() && s.getFluidState().isEmpty()) || s.is(Blocks.SNOW)
 				|| s.is(Blocks.BAMBOO) || s.is(Blocks.CACTUS) || s.is(Blocks.SUGAR_CANE) || s.is(Blocks.PUMPKIN) || s.is(Blocks.MELON) || s.is(BlockTags.FLOWERS);
 	}
@@ -437,7 +437,7 @@ final class MusicVideo {
 		return p.getY() + 1;
 	}
 
-	private static boolean wet(ServerLevel level, int x, int z) {
+	static boolean wet(ServerLevel level, int x, int z) {
 		return !level.getBlockState(new BlockPos(x, surface(level, x, z) - 1, z)).getFluidState().isEmpty();
 	}
 
@@ -500,7 +500,7 @@ final class MusicVideo {
 		return false;
 	}
 
-	private static void forceChunks(ServerLevel level, int x0, int z0, int x1, int z1) {
+	static void forceChunks(ServerLevel level, int x0, int z0, int x1, int z1) {
 		for (int cx = Math.floorDiv(x0, 16); cx <= Math.floorDiv(x1, 16); cx++) {
 			for (int cz = Math.floorDiv(z0, 16); cz <= Math.floorDiv(z1, 16); cz++) {
 				level.setChunkForced(cx, cz, true);
@@ -509,7 +509,7 @@ final class MusicVideo {
 	}
 
 	/** Levels the rectangle to ground at g (the first air), cleared {@code clear} above; a ring {@code blend} wide eases back to the land. */
-	private static void pad(ServerLevel level, int x0, int z0, int x1, int z1, int g, int blend, int clear) {
+	static void pad(ServerLevel level, int x0, int z0, int x1, int z1, int g, int blend, int clear) {
 		forceChunks(level, x0 - blend - 16, z0 - blend - 16, x1 + blend + 16, z1 + blend + 16);
 		for (int x = x0 - blend; x <= x1 + blend; x++) {
 			for (int z = z0 - blend; z <= z1 + blend; z++) {
@@ -527,7 +527,7 @@ final class MusicVideo {
 	}
 
 	/** Ground up to h (grass on top) from {@code from}, air from h to {@code to}. */
-	private static void column(ServerLevel level, int x, int z, int h, int from, int to) {
+	static void column(ServerLevel level, int x, int z, int h, int from, int to) {
 		BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
 		for (int yy = from; yy < h; yy++) {
 			BlockState s = yy == h - 1 ? Blocks.GRASS_BLOCK.defaultBlockState() : yy >= h - 4 ? Blocks.DIRT.defaultBlockState() : Blocks.STONE.defaultBlockState();
@@ -580,7 +580,7 @@ final class MusicVideo {
 	}
 
 	/** Grass and flowers on the open grass of the rectangle. */
-	private static void meadow(ServerLevel level, int x0, int z0, int x1, int z1, long seed, double grass, double flowers) {
+	static void meadow(ServerLevel level, int x0, int z0, int x1, int z1, long seed, double grass, double flowers) {
 		Random rnd = new Random(seed);
 		BlockState[] fl = {Blocks.DANDELION.defaultBlockState(), Blocks.POPPY.defaultBlockState(), Blocks.CORNFLOWER.defaultBlockState(),
 				Blocks.OXEYE_DAISY.defaultBlockState(), Blocks.AZURE_BLUET.defaultBlockState(), Blocks.DANDELION.defaultBlockState()};
@@ -616,7 +616,7 @@ final class MusicVideo {
 	}
 
 	/** Spots round the edge of a rectangle, every {@code step} blocks, jittered, {@code out} blocks outside it. */
-	private static List<int[]> ring(int x0, int z0, int x1, int z1, int out, int step, long seed) {
+	static List<int[]> ring(int x0, int z0, int x1, int z1, int out, int step, long seed) {
 		Random r = new Random(seed);
 		List<int[]> l = new ArrayList<>();
 		for (int x = x0 - out; x <= x1 + out; x += step) {
@@ -630,7 +630,7 @@ final class MusicVideo {
 		return l;
 	}
 
-	private static void fence(ServerLevel level, BlockPos o, int x0, int z0, int x1, int z1) {
+	static void fence(ServerLevel level, BlockPos o, int x0, int z0, int x1, int z1) {
 		for (int x = x0; x <= x1; x++) {
 			for (int z = z0; z <= z1; z++) {
 				if (x == x0 || x == x1 || z == z0 || z == z1) {
@@ -640,7 +640,7 @@ final class MusicVideo {
 		}
 	}
 
-	private static void discardItems(ServerLevel level, BlockPos at, int r) {
+	static void discardItems(ServerLevel level, BlockPos at, int r) {
 		level.getEntitiesOfClass(ItemEntity.class, new AABB(at).inflate(r, 40, r)).forEach(Entity::discard);
 	}
 
