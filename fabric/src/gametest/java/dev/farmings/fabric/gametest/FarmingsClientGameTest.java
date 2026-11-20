@@ -3121,6 +3121,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			return;
 		}
 		// the short "From the barn to the grid": its own generated world, only when named
+		// the animal health films for the trailer: their own generated world, only when named
+		if ("healthFilms".equals(System.getenv("FARMINGS_ONLY"))) {
+			new HealthFilms(context).run();
+			return;
+		}
 		if ("farmShort".equals(System.getenv("FARMINGS_ONLY"))) {
 			new FarmShort(context).run();
 			return;
