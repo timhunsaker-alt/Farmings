@@ -61,6 +61,8 @@ size, the NeoForge client and a sourcing sweep over every doc.
 
 ## Next — Animal health (picked by Tim 2026-11-19; not started)
 Disease, a vet cycle and quarantine. Starts with a spec (real counterpart, sourced values, questions decided on recommendation).
+Spec written 2026-11-19: `docs/animal-health.md` and `docs/multiblocks/isolation-pen.md`; eight questions in
+`docs/questions/animal-health.md`, waiting for Tim.
 
 ## Ideas (not scheduled, not in code)
 - More species: goats, geese and guinea fowl done (Step 17, 2026-11-13); pigs (with a pig barn and pork curing) and horses (ridden,
