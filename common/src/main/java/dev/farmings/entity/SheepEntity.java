@@ -63,7 +63,7 @@ import org.jspecify.annotations.Nullable;
  * apart from {@link CattleEntity} rather than sharing a base class: the two share rules, not state, and the cattle entity is guarded by its
  * game tests as it is.
  */
-public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
+public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant, dev.farmings.health.HealthHost {
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.LONG);
@@ -685,7 +685,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 			lastMilkDay = day;
 			int dim = (int) Math.floor(TimeScale.ticksToRealDays(now - lambedTick)) + 1;
 			milkKg = Flock.milkKg(composition(), dim, score(Trait.MILK_YIELD)) * Math.min(lastFed, lastWatered)
-					* dev.farmings.feed.Ration.eweMilkFactor(ration);
+					* dev.farmings.feed.Ration.eweMilkFactor(ration) * health.milkFactor();
 		}
 	}
 
@@ -856,6 +856,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	// ---- the once-a-second bookkeeping ----
 
 	public void settle(ServerLevel level) {
+		dev.farmings.health.Health.tick(level, this);
 		long now = level.getGameTime();
 		grow(now);
 		updateMilk(now);
@@ -889,7 +890,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 		double age = TimeScale.ticksToRealDays(now - birthTick);
 		double fed = place().shedController() != null && !stageAt(now).lamb() ? lastFed : 1;
 		double mature = Flock.matureWeightKg(composition());
-		double gain = Flock.gainKg(composition(), age - span, span, fed) * (stageAt(now).lamb() ? dev.farmings.feed.Ration.lambFactor(ration) : 1);
+		double gain = Flock.gainKg(composition(), age - span, span, fed) * (stageAt(now).lamb() ? dev.farmings.feed.Ration.lambFactor(ration) : 1) * health.growthFactor();
 		if (gain > 0 && weightKg < mature) {
 			weightKg = Math.min(mature, weightKg + gain);
 		}
@@ -1019,6 +1020,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 			b.append(String.format(Locale.ROOT, ", fed %.0f%%, watered %.0f%%", lastFed * 100, lastWatered * 100));
 		}
 		b.append(String.format(Locale.ROOT, ", health %.0f/%.0f", getHealth(), getMaxHealth()));
+		b.append(dev.farmings.health.Health.readout(this));
 		return b.toString();
 	}
 
@@ -1078,6 +1080,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	@Override
 	protected void addAdditionalSaveData(ValueOutput out) {
 		super.addAdditionalSaveData(out);
+		out.putString("Health", health.encode());
 		out.putString("Breed", breed.code);
 		out.putString("Sex", sex.name());
 		if (genome != null) {
@@ -1122,6 +1125,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	@Override
 	protected void readAdditionalSaveData(ValueInput in) {
 		super.readAdditionalSaveData(in);
+		health = dev.farmings.husbandry.health.HealthRecord.decode(in.getStringOr("Health", ""));
 		try {
 			breed = SheepBreed.byCode(in.getStringOr("Breed", SheepBreed.MERINO.code));
 			sex = Sex.valueOf(in.getStringOr("Sex", Sex.FEMALE.name()));
@@ -1187,5 +1191,75 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant {
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
 		playSound(SoundEvents.SHEEP_STEP, 0.15F, 1.0F);
+	}
+
+	// ---- animal health (docs/animal-health.md) ----
+
+	private dev.farmings.husbandry.health.HealthRecord health = new dev.farmings.husbandry.health.HealthRecord();
+
+	@Override
+	public dev.farmings.husbandry.health.HealthRecord health() {
+		return health;
+	}
+
+	@Override
+	public net.minecraft.core.@org.jspecify.annotations.Nullable BlockPos housing() {
+		return place().shedController();
+	}
+
+	@Override
+	public void leaveHousing() {
+		place().assignShed(null, null);
+	}
+
+	@Override
+	public int healthScore() {
+		int s = score(Trait.HEALTH);
+		return s <= 0 ? 50 : s;
+	}
+
+	@Override
+	public int hardinessScore() {
+		int s = score(Trait.HARDINESS);
+		return s <= 0 ? 50 : s;
+	}
+
+	@Override
+	public double fedShare() {
+		return housing() != null ? lastFed : 1;
+	}
+
+	@Override
+	public double dirtShare() {
+		return dirty;
+	}
+
+	@Override
+	public double rationScore() {
+		return housing() != null ? dev.farmings.feed.Ration.eweScore(ration) : -1;
+	}
+
+	@Override
+	public double forageShare() {
+		return housing() != null ? ration.forage() : -1;
+	}
+
+	@Override
+	public boolean inMilk() {
+		return daysInMilk() > 0;
+	}
+
+	@Override
+	public double milkDays() {
+		return daysInMilk();
+	}
+
+	/** Meat from an animal killed in its meat withdrawal is condemned: no food drops (docs/animal-health.md). */
+	@Override
+	public net.minecraft.world.entity.item.@org.jspecify.annotations.Nullable ItemEntity spawnAtLocation(ServerLevel level, net.minecraft.world.item.ItemStack stack) {
+		if (dev.farmings.health.Health.condemned(this, stack)) {
+			return null;
+		}
+		return super.spawnAtLocation(level, stack);
 	}
 }

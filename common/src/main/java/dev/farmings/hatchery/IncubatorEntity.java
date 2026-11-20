@@ -62,6 +62,18 @@ public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspect
 		return hatched;
 	}
 
+	/** Marek's vaccine doses loaded (docs/animal-health.md): each chicken that hatches here takes one. */
+	private int mareksDoses;
+
+	public int mareksDoses() {
+		return mareksDoses;
+	}
+
+	public void addMareksDoses(int n) {
+		mareksDoses += n;
+		setChanged();
+	}
+
 	public NonNullList<ItemStack> eggs() {
 		return eggs;
 	}
@@ -129,8 +141,14 @@ public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspect
 			if (warm >= breedOf(egg).incubationDays) {
 				BlockPos at = level.getBlockState(worldPosition.above()).getCollisionShape(level, worldPosition.above()).isEmpty() ? worldPosition.above()
 						: worldPosition.relative(Direction.Plane.HORIZONTAL.getRandomDirection(level.getRandom()));
-				if (FowlEggs.hatch(level, egg, at, owner) != null) {
+				FowlEntity chick = FowlEggs.hatch(level, egg, at, owner);
+				if (chick != null) {
 					hatched++;
+					// Marek's vaccine at hatch (docs/animal-health.md): one dose a chick from the incubator's vial
+					if (mareksDoses > 0 && chick.species() == Species.CHICKEN) {
+						mareksDoses--;
+						chick.health().vaccinate(dev.farmings.husbandry.health.Vaccine.MAREKS, level.getGameTime(), 0, TimeScale.FOWL::realDaysToTicks);
+					}
 				}
 				eggs.set(i, ItemStack.EMPTY);
 			}
@@ -170,6 +188,9 @@ public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspect
 			b.append(", ").append(dead).append(" too old to start");
 		}
 		b.append(", 99.5-100.5 F, ").append(hatched).append(" hatched");
+		if (mareksDoses > 0) {
+			b.append(", ").append(mareksDoses).append(" Marek's doses");
+		}
 		return b.toString();
 	}
 
@@ -265,6 +286,7 @@ public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspect
 		super.saveAdditional(out);
 		ContainerHelper.saveAllItems(out, eggs);
 		out.putInt("Hatched", hatched);
+		out.putInt("MareksDoses", mareksDoses);
 		if (owner != null) {
 			out.putString("Owner", owner.toString());
 		}
@@ -276,6 +298,7 @@ public class IncubatorEntity extends BlockEntity implements CircuitPart, Inspect
 		eggs.clear();
 		ContainerHelper.loadAllItems(in, eggs);
 		hatched = in.getIntOr("Hatched", 0);
+		mareksDoses = in.getIntOr("MareksDoses", 0);
 		String o = in.getStringOr("Owner", "");
 		owner = o.isEmpty() ? null : UUID.fromString(o);
 	}

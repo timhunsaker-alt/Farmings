@@ -60,7 +60,7 @@ import org.jspecify.annotations.Nullable;
  * nurse until weaning, and cuts for the curing room. Rules live in {@link Swine}; this class keeps the state, as {@link GoatEntity} does
  * for goats. The pig barn houses it through its {@link Placement}.
  */
-public class PigEntity extends Animal implements Wild.Animal {
+public class PigEntity extends Animal implements Wild.Animal, dev.farmings.health.HealthHost {
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.LONG);
@@ -571,6 +571,7 @@ public class PigEntity extends Animal implements Wild.Animal {
 	}
 
 	public void settle(ServerLevel level) {
+		dev.farmings.health.Health.tick(level, this);
 		long now = level.getGameTime();
 		grow(now);
 		updateBreeding(level, now);
@@ -592,7 +593,7 @@ public class PigEntity extends Animal implements Wild.Animal {
 		boolean male = sex == Sex.MALE;
 		double fed = place().shedController() != null && !stageAt(now).piglet() ? lastFed : 1;
 		double mature = Math.max(120, Swine.matureKg(composition(), male));
-		double gain = Swine.gainKg(composition(), male, age - span, span, fed) * (stageAt(now).piglet() ? 1 : dev.farmings.feed.Ration.lambFactor(ration));
+		double gain = Swine.gainKg(composition(), male, age - span, span, fed) * (stageAt(now).piglet() ? 1 : dev.farmings.feed.Ration.lambFactor(ration)) * health.growthFactor();
 		if (gain > 0 && weightKg < mature) {
 			weightKg = Math.min(mature, weightKg + gain);
 		}
@@ -690,6 +691,7 @@ public class PigEntity extends Animal implements Wild.Animal {
 			b.append(String.format(Locale.ROOT, ", fed %.0f%%, watered %.0f%%", lastFed * 100, lastWatered * 100));
 		}
 		b.append(String.format(Locale.ROOT, ", health %.0f/%.0f", getHealth(), getMaxHealth()));
+		b.append(dev.farmings.health.Health.readout(this));
 		return b.toString();
 	}
 
@@ -752,6 +754,7 @@ public class PigEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void addAdditionalSaveData(ValueOutput out) {
 		super.addAdditionalSaveData(out);
+		out.putString("Health", health.encode());
 		out.putString("Breed", breed.code);
 		out.putString("Sex", sex.name());
 		if (genome != null) {
@@ -790,6 +793,7 @@ public class PigEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void readAdditionalSaveData(ValueInput in) {
 		super.readAdditionalSaveData(in);
+		health = dev.farmings.husbandry.health.HealthRecord.decode(in.getStringOr("Health", ""));
 		try {
 			breed = PigBreed.byCode(in.getStringOr("Breed", PigBreed.LARGE_WHITE.code));
 			sex = Sex.valueOf(in.getStringOr("Sex", Sex.FEMALE.name()));
@@ -854,5 +858,65 @@ public class PigEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
 		playSound(SoundEvents.PIG_STEP.value(), 0.15F, 1.0F);
+	}
+
+	// ---- animal health (docs/animal-health.md) ----
+
+	private dev.farmings.husbandry.health.HealthRecord health = new dev.farmings.husbandry.health.HealthRecord();
+
+	@Override
+	public dev.farmings.husbandry.health.HealthRecord health() {
+		return health;
+	}
+
+	@Override
+	public net.minecraft.core.@org.jspecify.annotations.Nullable BlockPos housing() {
+		return place().shedController();
+	}
+
+	@Override
+	public void leaveHousing() {
+		place().assignShed(null, null);
+	}
+
+	@Override
+	public int healthScore() {
+		int s = score(Trait.HEALTH);
+		return s <= 0 ? 50 : s;
+	}
+
+	@Override
+	public int hardinessScore() {
+		int s = score(Trait.HARDINESS);
+		return s <= 0 ? 50 : s;
+	}
+
+	@Override
+	public double fedShare() {
+		return housing() != null ? lastFed : 1;
+	}
+
+	@Override
+	public double rationScore() {
+		return housing() != null ? dev.farmings.feed.Ration.lambScore(ration) : -1;
+	}
+
+	@Override
+	public net.minecraft.world.entity.animal.Animal animal() {
+		return this;
+	}
+
+	@Override
+	public dev.farmings.genetics.Species species() {
+		return dev.farmings.genetics.Species.PIG;
+	}
+
+	/** Meat from an animal killed in its meat withdrawal is condemned: no food drops (docs/animal-health.md). */
+	@Override
+	public net.minecraft.world.entity.item.@org.jspecify.annotations.Nullable ItemEntity spawnAtLocation(ServerLevel level, net.minecraft.world.item.ItemStack stack) {
+		if (dev.farmings.health.Health.condemned(this, stack)) {
+			return null;
+		}
+		return super.spawnAtLocation(level, stack);
 	}
 }

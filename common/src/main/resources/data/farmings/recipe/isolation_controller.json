@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "SRS",
+  "NBN",
+  "SSS"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "N": "minecraft:iron_bars",
+  "R": "minecraft:redstone",
+  "S": "wildcatter:steel_ingot"
+ },
+ "result": {
+  "id": "farmings:isolation_controller",
+  "count": 1
+ }
+}

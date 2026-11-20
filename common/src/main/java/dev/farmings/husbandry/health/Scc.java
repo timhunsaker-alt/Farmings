@@ -13,7 +13,7 @@ public final class Scc {
 	public static final int HEALTHY = 100_000;
 	public static final int SUBCLINICAL_LEVEL = 600_000;
 	public static final int CLINICAL_LEVEL = 3_000_000;
-	public static final int CHRONIC_LEVEL = 700_000;
+	public static final int CHRONIC_LEVEL = 1_000_000;
 
 	private Scc() {
 	}

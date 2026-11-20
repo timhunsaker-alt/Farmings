@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:antibiotic",
+  "minecraft:glass_bottle",
+  "minecraft:iron_nugget"
+ ],
+ "result": {
+  "id": "farmings:antibiotic_injection",
+  "count": 2
+ }
+}

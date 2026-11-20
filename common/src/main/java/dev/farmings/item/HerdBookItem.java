@@ -39,7 +39,7 @@ public class HerdBookItem extends Item {
 
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
-		if (!(target instanceof CattleEntity cow)) {
+		if (!(target instanceof dev.farmings.health.HealthHost h)) {
 			return InteractionResult.PASS;
 		}
 		if (player.level().isClientSide()) {
@@ -47,8 +47,8 @@ public class HerdBookItem extends Item {
 		}
 		// interactLivingEntity hands us a copy in creative; write to the stack in the hand.
 		ItemStack held = player.getItemInHand(hand);
-		boolean added = record(held, cow);
-		player.sendOverlayMessage(Component.translatable(added ? "message.farmings.herd_book.recorded" : "message.farmings.herd_book.full", cow.herdId()));
+		boolean added = target instanceof CattleEntity cow ? record(held, cow) : put(held, h.herdId(), healthOnlyPage(h));
+		player.sendOverlayMessage(Component.translatable(added ? "message.farmings.herd_book.recorded" : "message.farmings.herd_book.full", h.herdId()));
 		return added ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 	}
 
@@ -62,9 +62,50 @@ public class HerdBookItem extends Item {
 
 	/** Records the animal into the book; false if the book is full and she is not already in it. */
 	public static boolean record(ItemStack book, CattleEntity cow) {
+		return put(book, cow.herdId(), page(cow) + PAGE_BREAK + healthPage(cow));
+	}
+
+	/** A page break inside one entry: the entry takes two book pages (the animal, then its health). */
+	public static final String PAGE_BREAK = "\f";
+
+	/** The health section (docs/animal-health.md, "What the player sees"): cases, treatments, vaccines, cells, quarantine. */
+	public static String healthPage(dev.farmings.health.HealthHost h) {
+		StringBuilder b = new StringBuilder("Health ").append(h.herdId()).append('\n');
+		var r = h.health();
+		long now = h.animal().level().getGameTime();
+		if (h.inMilk()) {
+			b.append("SCC ").append(String.format(Locale.ROOT, "%,d", r.scc())).append(" CMT ").append(dev.farmings.husbandry.health.Scc.cmt(r.scc())).append('\n');
+		}
+		for (var e : r.vaccines().entrySet()) {
+			b.append(e.getKey().label).append(" x").append(e.getValue().doses()).append(r.doseDue(e.getKey(), now, dev.farmings.health.Health.scale(h)::realDaysToTicks) ? " DUE" : "").append('\n');
+		}
+		if (now < r.milkUntil() || now < r.meatUntil()) {
+			b.append(String.format(Locale.ROOT, "withheld: milk %.1f, meat %.1f gd", Math.max(0, r.milkUntil() - now) / 24000.0, Math.max(0, r.meatUntil() - now) / 24000.0)).append('\n');
+		}
+		for (String e : dev.farmings.health.Health.history(h)) {
+			b.append(e).append('\n');
+		}
+		return b.toString();
+	}
+
+	/** Species other than cattle: who it is and its health. */
+	public static String healthOnlyPage(dev.farmings.health.HealthHost h) {
+		return "ID " + h.herdId() + "\n" + h.species().name().toLowerCase(Locale.ROOT) + "\n" + PAGE_BREAK + healthPage(h);
+	}
+
+	/** A herd check from the vet kit, as its own entry, replaced by the next check of the same housing. */
+	public static boolean writeHerdCheck(ItemStack book, net.minecraft.core.BlockPos at, long tick, List<String> lines) {
+		StringBuilder b = new StringBuilder("Herd check, day ").append(Math.floorDiv(tick, TimeScale.TICKS_PER_GAME_DAY)).append('\n')
+				.append(at.toShortString()).append('\n');
+		for (String l : lines) {
+			b.append("- ").append(l).append('\n');
+		}
+		return put(book, "check@" + at.toShortString(), b.toString());
+	}
+
+	/** Puts one entry in the book, replacing the entry with the same key. */
+	public static boolean put(ItemStack book, String id, String page) {
 		List<String[]> entries = entries(book);
-		String id = cow.herdId();
-		String page = page(cow);
 		boolean replaced = false;
 		for (String[] e : entries) {
 			if (e[0].equals(id)) {
@@ -88,7 +129,9 @@ public class HerdBookItem extends Item {
 		CustomData.update(DataComponents.CUSTOM_DATA, book, tag -> tag.put(KEY, list));
 		List<Filterable<Component>> pages = new ArrayList<>();
 		for (String[] e : entries) {
-			pages.add(Filterable.passThrough(Component.literal(e[1])));
+			for (String part : e[1].split(PAGE_BREAK)) {
+				pages.add(Filterable.passThrough(Component.literal(part)));
+			}
 		}
 		book.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough("Herd Book"), "Farmings", 0, pages, true));
 		return true;

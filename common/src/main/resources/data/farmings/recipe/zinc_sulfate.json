@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "wildcatter:zinc_ingot",
+  "wildcatter:sulfur",
+  "minecraft:water_bucket"
+ ],
+ "result": {
+  "id": "farmings:zinc_sulfate",
+  "count": 4
+ }
+}

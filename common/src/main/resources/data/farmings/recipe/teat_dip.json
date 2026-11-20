@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:glass_bottle",
+  "wildcatter:chlorine_ton_container"
+ ],
+ "result": {
+  "id": "farmings:teat_dip",
+  "count": 64
+ }
+}

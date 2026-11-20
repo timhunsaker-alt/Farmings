@@ -138,6 +138,15 @@ YARN_DYES = {"white": (234, 236, 236), "orange": (249, 128, 29), "magenta": (199
              "purple": (137, 50, 184), "blue": (60, 68, 170), "brown": (131, 84, 50), "green": (94, 124, 22), "red": (176, 46, 38), "black": (40, 40, 46)}
 
 
+VACCINE_CAPS = {"cdt": (60, 150, 70), "respiratory": (50, 90, 190), "erysipelas": (190, 50, 50), "mareks": (220, 180, 40), "strangles": (130, 60, 170)}
+
+
+def health_blocks():
+	"""Animal health's block faces (docs/animal-health.md): the isolation controller's board from its Ludo picture. The footbath liquid, the
+	waste can's stainless and the sick-pen straw are materials (mat_footbath, mat_stainless_can, mat_sick_pen_straw)."""
+	face("face_isolation_controller", (0.1, 0.1, 0.9, 0.9)).save(f"{ASSETS}/block/isolation_controller.png")
+
+
 def main():
 	os.makedirs(f"{ASSETS}/block/mat", exist_ok=True)
 	os.makedirs(f"{ASSETS}/item", exist_ok=True)
@@ -162,6 +171,19 @@ def main():
 						v = (r + g + bl) / (3 * 255)
 						px[x, y] = (int(rgb[0] * v), int(rgb[1] * v), int(rgb[2] * v), al) if colour != "white" else (r, g, bl, al)
 				tinted.save(f"{ASSETS}/item/yarn_{colour}.png")
+		if name == "vaccine":
+			# one vial; each vaccine gets its own cap colour (docs/animal-health.md, "Vaccines")
+			for vac, rgb in VACCINE_CAPS.items():
+				tinted = img.copy()
+				px = tinted.load()
+				for y in range(tinted.height):
+					for x in range(tinted.width):
+						r, g, bl, al = px[x, y]
+						if al and g > r + 25 and g > bl + 25:
+							v = (r + g + bl) / (3 * 255) * 1.6
+							px[x, y] = (min(255, int(rgb[0] * v)), min(255, int(rgb[1] * v)), min(255, int(rgb[2] * v)), al)
+				tinted.save(f"{ASSETS}/item/vaccine_{vac}.png")
+	health_blocks()
 	# the worn milk armor is drawn by tools/armor_textures.py (face by face, with drips), not from a flat swatch
 	import subprocess, sys
 	subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "armor_textures.py")], check=True)

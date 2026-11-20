@@ -65,6 +65,11 @@ public class StrawItem extends Item {
 		if (player.level().isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
+		if (!filled && player.level() instanceof net.minecraft.server.level.ServerLevel sl
+				&& dev.farmings.health.HealthWorld.get(sl).standstill(target.blockPosition())) {
+			player.sendOverlayMessage(net.minecraft.network.chat.Component.literal("Standstill: no straws are filled here (notifiable disease)"));
+			return InteractionResult.FAIL;
+		}
 		return filled ? inseminate(stack, player, target) : collect(stack, player, target);
 	}
 

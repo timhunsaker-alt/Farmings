@@ -1,0 +1,40 @@
+{
+ "parent": "minecraft:block/thin_block",
+ "textures": {
+  "particle": "farmings:block/mat/mat_sick_pen_straw"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    2,
+    16
+   ],
+   "faces": {
+    "down": {
+     "texture": "farmings:block/mat/mat_sick_pen_straw"
+    },
+    "up": {
+     "texture": "farmings:block/mat/mat_sick_pen_straw"
+    },
+    "north": {
+     "texture": "farmings:block/mat/mat_sick_pen_straw"
+    },
+    "south": {
+     "texture": "farmings:block/mat/mat_sick_pen_straw"
+    },
+    "east": {
+     "texture": "farmings:block/mat/mat_sick_pen_straw"
+    },
+    "west": {
+     "texture": "farmings:block/mat/mat_sick_pen_straw"
+    }
+   }
+  }
+ ]
+}

@@ -229,7 +229,7 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 		}
 		Map<Integer, Species> claim = claims(members);
 		int runs = runCount();
-		for (SmallRuminant s : SmallRuminant.in(level, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> s.shedController() == null && !s.isWild())) {
+		for (SmallRuminant s : SmallRuminant.in(level, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), s -> s.shedController() == null && !s.isWild() && dev.farmings.health.Health.mayHouse(level, s.animal()))) {
 			boolean runFree = claim.size() < runs || claim.containsValue(s.species());
 			if (s.young() || (runFree && used + s.penBlocks() <= room + 1e-9)) {
 				s.assignShed(worldPosition, null);

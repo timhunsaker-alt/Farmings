@@ -70,6 +70,10 @@ public final class HealthRecord {
 	private long lastTick = -1;
 	private long lastExam = -1;
 	private boolean reported;
+	/** The housing it was last in (a packed position; Long.MIN_VALUE for none): a change opens the stress window. */
+	private long home = Long.MIN_VALUE;
+	/** The isolation pen holding it (a packed position; Long.MIN_VALUE for none). */
+	private long pen = Long.MIN_VALUE;
 
 	public List<Case> cases() {
 		return cases;
@@ -366,6 +370,22 @@ public final class HealthRecord {
 		reported = r;
 	}
 
+	public long home() {
+		return home;
+	}
+
+	public void setHome(long h) {
+		home = h;
+	}
+
+	public long pen() {
+		return pen;
+	}
+
+	public void setPen(long p) {
+		pen = p;
+	}
+
 	public void event(long now, String text) {
 		events.addLast(now + "|" + text.replace(';', ',').replace('|', '/'));
 		while (events.size() > EVENTS) {
@@ -384,7 +404,7 @@ public final class HealthRecord {
 		StringBuilder b = new StringBuilder("v1");
 		b.append(";scc=").append(scc).append(";milk=").append(milkUntil).append(";meat=").append(meatUntil).append(";stress=").append(stressUntil)
 				.append(";bath=").append(footbathUntil).append(";quar=").append(quarantineUntil).append(";dip=").append(teatDipped)
-				.append(";last=").append(lastTick).append(";exam=").append(lastExam).append(";rep=").append(reported);
+				.append(";last=").append(lastTick).append(";exam=").append(lastExam).append(";rep=").append(reported).append(";home=").append(home).append(";pen=").append(pen);
 		for (Case c : cases) {
 			b.append(";case=").append(c.disease.name()).append(',').append(c.stage.name()).append(',').append(c.since).append(',').append(c.until)
 					.append(',').append(c.treated);
@@ -420,6 +440,8 @@ public final class HealthRecord {
 					case "last" -> r.lastTick = Long.parseLong(v);
 					case "exam" -> r.lastExam = Long.parseLong(v);
 					case "rep" -> r.reported = Boolean.parseBoolean(v);
+					case "home" -> r.home = Long.parseLong(v);
+					case "pen" -> r.pen = Long.parseLong(v);
 					case "case" -> {
 						String[] f = v.split(",");
 						Disease d = Disease.byName(f[0]);

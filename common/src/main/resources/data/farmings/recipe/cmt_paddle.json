@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "wildcatter:plastic_sheet",
+  "wildcatter:plastic_sheet"
+ ],
+ "result": {
+  "id": "farmings:cmt_paddle",
+  "count": 1
+ }
+}

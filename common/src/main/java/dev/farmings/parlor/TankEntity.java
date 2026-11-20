@@ -94,6 +94,7 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 		output.putDouble("FatPct", tank.fatPct());
 		output.putDouble("ProteinPct", tank.proteinPct());
 		output.putString("Milk", tank.kind().name());
+		output.putDouble("Scc", tank.scc());
 	}
 
 	@Override
@@ -103,5 +104,6 @@ public class TankEntity extends BlockEntity implements CircuitPart, Inspectable,
 		grown = input.getBooleanOr("grown", false);
 		tank.load(input.getDoubleOr("Litres", 0), input.getDoubleOr("TempC", BulkTank.COLD_C), input.getLongOr("SinceAdd", Long.MAX_VALUE / 2));
 		tank.loadComponents(input.getDoubleOr("FatPct", 3.72), input.getDoubleOr("ProteinPct", 3.06));
+		tank.loadScc(input.getDoubleOr("Scc", 0));
 	}
 }

@@ -1,0 +1,44 @@
+{
+  "entity.cattle.cough": {
+    "sounds": [
+      "farmings:cattle_cough"
+    ],
+    "subtitle": "subtitles.farmings.entity.cattle.cough"
+  },
+  "entity.sheep.cough": {
+    "sounds": [
+      "farmings:sheep_cough"
+    ],
+    "subtitle": "subtitles.farmings.entity.sheep.cough"
+  },
+  "entity.pig.cough": {
+    "sounds": [
+      "farmings:pig_cough"
+    ],
+    "subtitle": "subtitles.farmings.entity.pig.cough"
+  },
+  "entity.horse.cough": {
+    "sounds": [
+      "farmings:horse_cough"
+    ],
+    "subtitle": "subtitles.farmings.entity.horse.cough"
+  },
+  "block.footbath.splash": {
+    "sounds": [
+      "farmings:footbath"
+    ],
+    "subtitle": "subtitles.farmings.block.footbath.splash"
+  },
+  "item.cmt_paddle.swirl": {
+    "sounds": [
+      "farmings:cmt"
+    ],
+    "subtitle": "subtitles.farmings.item.cmt_paddle.swirl"
+  },
+  "item.vet_kit.open": {
+    "sounds": [
+      "farmings:vet_kit"
+    ],
+    "subtitle": "subtitles.farmings.item.vet_kit.open"
+  }
+}

@@ -1,0 +1,14 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:glass_bottle",
+  "#farmings:eggs",
+  "wildcatter:plastic_sheet",
+  "minecraft:porkchop"
+ ],
+ "result": {
+  "id": "farmings:vaccine_erysipelas",
+  "count": 4
+ }
+}

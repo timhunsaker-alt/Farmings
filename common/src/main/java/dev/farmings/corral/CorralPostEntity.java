@@ -207,9 +207,15 @@ public class CorralPostEntity extends BlockEntity {
 			}
 		}
 		if (eaten >= wantKg * 0.999 && drunk >= wantL * 0.999) {
+			if (dev.farmings.health.HealthWorld.get(level).standstill(worldPosition)) {
+				return;     // a standstill: no taming (docs/animal-health.md, notifiable diseases)
+			}
 			a.setSettledDays(a.settledDays() + a.timeScale().ticksToRealDays(ticks));
 			if (a.settledDays() >= WildBreeds.SETTLE_DAYS) {
 				a.tame(owner);
+				if (a instanceof dev.farmings.health.HealthHost h) {
+					dev.farmings.health.Health.onTamed(level, h, worldPosition);
+				}
 				tamed++;
 				setChanged();
 				dev.wildcatter.quest.QuestEvents.milestone(level, worldPosition, dev.farmings.quest.Milestones.TAMED);

@@ -242,7 +242,7 @@ public class PigBarnControllerEntity extends BlockEntity {
 		}
 		double room = check.pen().size();
 		for (PigEntity p : level.getEntitiesOfClass(PigEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS),
-				p -> p.place().shedController() == null && !p.isWild())) {
+				p -> p.place().shedController() == null && !p.isWild() && dev.farmings.health.Health.mayHouse(level, p))) {
 			double need = space(p);
 			if (used + need <= room + 1e-9) {
 				p.place().assignShed(worldPosition, null);

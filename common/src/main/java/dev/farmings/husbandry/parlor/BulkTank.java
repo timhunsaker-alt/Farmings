@@ -117,6 +117,28 @@ public final class BulkTank {
 		return add(addL, inC, fat, protein);
 	}
 
+	/** The tank's somatic cell count, cells/mL, volume-weighted (docs/animal-health.md, "Bulk tank SCC"). */
+	private double scc;
+
+	public double scc() {
+		return litres > 1e-6 ? scc : 0;
+	}
+
+	public void loadScc(double scc) {
+		this.scc = scc;
+	}
+
+	/** Mixes {@code addL} at {@code cells} into the count; call just before adding that milk. */
+	public void mixScc(double addL, double cells) {
+		double in = Math.max(0, Math.min(addL, room()));
+		scc = dev.farmings.husbandry.health.Scc.mix(litres > 1e-6 ? scc : 0, litres, cells, in);
+	}
+
+	/** Over the Grade "A" limit for its milk (750,000/mL; goat milk 1,500,000/mL; PMO 2013): a warning on the readout. */
+	public boolean highScc() {
+		return scc() > dev.farmings.husbandry.health.Scc.tankLimit(kind() == MilkKind.GOAT);
+	}
+
 	public double fatPct() {
 		return fatPct;
 	}

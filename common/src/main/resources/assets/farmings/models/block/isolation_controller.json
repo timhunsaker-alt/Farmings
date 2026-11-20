@@ -1,0 +1,12 @@
+{
+ "parent": "minecraft:block/cube",
+ "textures": {
+  "north": "farmings:block/isolation_controller",
+  "south": "farmings:block/isolation_controller",
+  "east": "farmings:block/isolation_controller",
+  "west": "farmings:block/isolation_controller",
+  "up": "farmings:block/mat/mat_stainless_can",
+  "down": "farmings:block/mat/mat_stainless_can",
+  "particle": "farmings:block/isolation_controller"
+ }
+}

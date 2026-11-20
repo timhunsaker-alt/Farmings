@@ -1,0 +1,16 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "KBK",
+  "KKK"
+ ],
+ "key": {
+  "B": "minecraft:bucket",
+  "K": "minecraft:gray_concrete"
+ },
+ "result": {
+  "id": "farmings:footbath",
+  "count": 2
+ }
+}

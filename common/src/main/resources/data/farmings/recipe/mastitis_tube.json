@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:antibiotic",
+  "wildcatter:plastic_sheet"
+ ],
+ "result": {
+  "id": "farmings:mastitis_tube",
+  "count": 4
+ }
+}

@@ -52,7 +52,7 @@ import org.jspecify.annotations.Nullable;
  * <p>This is the animal itself. It does not breed, milk or eat yet: vanilla breeding, bucket milking and wheat-tempting are left
  * out on purpose, because those come with the barn, the parlor and the genetics step. Its look is a vanilla cow until the Ludo art.
  */
-public class CattleEntity extends Animal implements Wild.Animal {
+public class CattleEntity extends Animal implements Wild.Animal, dev.farmings.health.HealthHost {
 	/** Breed and stage, sent to the client so the renderer can pick the right coat, model and udder. */
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
@@ -517,7 +517,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 			lastMilkDay = day;
 			double realDays = TimeScale.ticksToRealDays(nowTick - calvedTick);
 			milkKg = dev.farmings.husbandry.Lactation.producedKg(breed, dev.farmings.husbandry.Lactation.daysInMilk(realDays),
-					score(Trait.MILK_YIELD), lastFed, lastWatered, Math.max(1, lactations), dirty) * dev.farmings.feed.Ration.milkFactor(ration);
+					score(Trait.MILK_YIELD), lastFed, lastWatered, Math.max(1, lactations), dirty) * dev.farmings.feed.Ration.milkFactor(ration) * health.milkFactor();
 		}
 	}
 
@@ -777,6 +777,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 
 	/** The once-a-second bookkeeping: age and stage, the udder, heat and calving. Game tests call it to skip waiting. */
 	public void settle(ServerLevel level) {
+		dev.farmings.health.Health.tick(level, this);
 		long now = level.getGameTime();
 		grow(now);
 		syncAge(now);
@@ -802,7 +803,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 		double age = ageRealDays();
 		boolean housed = stallController != null && stage() != Stage.CALF;
 		double fed = housed ? lastFed : 1;
-		double gain = dev.farmings.husbandry.Growth.gainKg(breed, age - span, span, fed) * (housed ? dev.farmings.feed.Ration.growthFactor(ration) : 1);
+		double gain = dev.farmings.husbandry.Growth.gainKg(breed, age - span, span, fed) * (housed ? dev.farmings.feed.Ration.growthFactor(ration) : 1) * health.growthFactor();
 		if (gain > 0 && weightKg < breed.matureWeightKg) {
 			weightKg = Math.min(breed.matureWeightKg, weightKg + gain);
 		}
@@ -1028,6 +1029,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 			}
 		}
 		b.append(String.format(java.util.Locale.ROOT, ", health %.0f/%.0f", getHealth(), getMaxHealth()));
+		b.append(dev.farmings.health.Health.readout(this));
 		return b.toString();
 	}
 
@@ -1092,6 +1094,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void addAdditionalSaveData(ValueOutput output) {
 		super.addAdditionalSaveData(output);
+		output.putString("Health", health.encode());
 		output.putString("Breed", breed.code);
 		output.putString("Sex", sex.name());
 		if (genome != null) {
@@ -1145,6 +1148,7 @@ public class CattleEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
+		health = dev.farmings.husbandry.health.HealthRecord.decode(input.getStringOr("Health", ""));
 		try {
 			breed = CattleBreed.byCode(input.getStringOr("Breed", CattleBreed.HOLSTEIN.code));
 			sex = Sex.valueOf(input.getStringOr("Sex", Sex.FEMALE.name()));
@@ -1232,5 +1236,79 @@ public class CattleEntity extends Animal implements Wild.Animal {
 	@Override
 	protected float getSoundVolume() {
 		return 0.4F;
+	}
+
+	// ---- animal health (docs/animal-health.md) ----
+
+	private dev.farmings.husbandry.health.HealthRecord health = new dev.farmings.husbandry.health.HealthRecord();
+
+	@Override
+	public dev.farmings.husbandry.health.HealthRecord health() {
+		return health;
+	}
+
+	@Override
+	public net.minecraft.core.@org.jspecify.annotations.Nullable BlockPos housing() {
+		return stallController;
+	}
+
+	@Override
+	public void leaveHousing() {
+		clearStall();
+	}
+
+	@Override
+	public int healthScore() {
+		int s = score(Trait.HEALTH);
+		return s <= 0 ? 50 : s;
+	}
+
+	@Override
+	public int hardinessScore() {
+		return 50;
+	}
+
+	@Override
+	public double fedShare() {
+		return housing() != null ? lastFed : 1;
+	}
+
+	@Override
+	public double dirtShare() {
+		return dirty;
+	}
+
+	@Override
+	public double rationScore() {
+		return housing() != null ? dev.farmings.feed.Ration.dairyScore(ration) : -1;
+	}
+
+	@Override
+	public boolean inMilk() {
+		return dev.farmings.husbandry.Lifecycle.givesMilk(stage());
+	}
+
+	@Override
+	public double milkDays() {
+		return daysInMilk();
+	}
+
+	@Override
+	public net.minecraft.world.entity.animal.Animal animal() {
+		return this;
+	}
+
+	@Override
+	public dev.farmings.genetics.Species species() {
+		return dev.farmings.genetics.Species.CATTLE;
+	}
+
+	/** Meat from an animal killed in its meat withdrawal is condemned: no food drops (docs/animal-health.md). */
+	@Override
+	public net.minecraft.world.entity.item.@org.jspecify.annotations.Nullable ItemEntity spawnAtLocation(ServerLevel level, net.minecraft.world.item.ItemStack stack) {
+		if (dev.farmings.health.Health.condemned(this, stack)) {
+			return null;
+		}
+		return super.spawnAtLocation(level, stack);
 	}
 }

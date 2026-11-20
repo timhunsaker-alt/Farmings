@@ -1,0 +1,12 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:antibiotic",
+  "minecraft:glass_bottle"
+ ],
+ "result": {
+  "id": "farmings:coccidiostat",
+  "count": 4
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "minecraft:glass_bottle",
+  "#farmings:eggs",
+  "wildcatter:plastic_sheet",
+  "minecraft:hay_block"
+ ],
+ "result": {
+  "id": "farmings:vaccine_strangles",
+  "count": 4
+ }
+}

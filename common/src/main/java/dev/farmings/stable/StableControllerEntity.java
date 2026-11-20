@@ -221,7 +221,7 @@ public class StableControllerEntity extends BlockEntity implements net.minecraft
 			used += h.stage().foal() ? 0 : 1;
 		}
 		for (HorseEntity h : level.getEntitiesOfClass(HorseEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS),
-				h -> h.place().shedController() == null && !h.isWild() && !h.isVehicle())) {
+				h -> h.place().shedController() == null && !h.isWild() && !h.isVehicle() && dev.farmings.health.Health.mayHouse(level, h))) {
 			int need = h.stage().foal() ? 0 : 1;
 			if (used + need <= stalls()) {
 				h.place().assignShed(worldPosition, null);

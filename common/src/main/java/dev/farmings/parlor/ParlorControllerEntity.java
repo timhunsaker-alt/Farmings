@@ -107,6 +107,87 @@ public class ParlorControllerEntity extends BlockEntity {
 		return fault;
 	}
 
+	// ---- animal health at milking (docs/animal-health.md): teat dip, the waste milk can, contagious mastitis ----
+
+	/** Cows the loaded teat dip will still dip. */
+	private int teatDips;
+	/** Per stall: the last animal milked there had clinical or chronic mastitis (not saved). */
+	private boolean[] lastMastitis = new boolean[0];
+
+	public int teatDips() {
+		return teatDips;
+	}
+
+	public void addTeatDip(int n) {
+		teatDips += n;
+		setChanged();
+	}
+
+	/** The waste milk can within 4 blocks of the controller, or null. */
+	public dev.farmings.health.HealthBlocks.@org.jspecify.annotations.Nullable WasteCanEntity wasteCan(Level level) {
+		for (BlockPos p : BlockPos.betweenClosed(worldPosition.offset(-4, -2, -4), worldPosition.offset(4, 2, 4))) {
+			if (level.getBlockEntity(p) instanceof dev.farmings.health.HealthBlocks.WasteCanEntity can) {
+				return can;
+			}
+		}
+		return null;
+	}
+
+	/** A withheld animal can be milked only into a waste can with room. */
+	private boolean canMilk(Level level, dev.farmings.husbandry.health.HealthRecord r, double litres) {
+		if (!r.milkHeld(level.getGameTime())) {
+			return true;
+		}
+		var can = wasteCan(level);
+		return can != null && can.room() >= litres;
+	}
+
+	/**
+	 * Health at the stall: contagious mastitis from the unit's last cow, the post-milking dip, and where the milk goes. Returns true if her
+	 * milk went to the tank, false if to the waste can (it has been taken either way).
+	 */
+	private boolean healthAtMilking(Level level, int stall, dev.farmings.husbandry.health.HealthRecord r, dev.farmings.genetics.Species sp, double litres) {
+		long now = level.getGameTime();
+		if (lastMastitis.length != check.stalls()) {
+			lastMastitis = new boolean[check.stalls()];
+		}
+		var rules = level instanceof net.minecraft.server.level.ServerLevel sl ? dev.farmings.health.FarmingsRules.model(sl.getServer())
+				: new dev.farmings.husbandry.health.HealthModel.Rules(false, false, false);
+		if (stall >= 0 && stall < lastMastitis.length && lastMastitis[stall]) {
+			double roll = new java.util.SplittableRandom(level.getGameTime() * 31 + stall + r.encode().length()).nextDouble();
+			dev.farmings.husbandry.health.HealthModel.parlorExposure(r, now, teatDips > 0, roll, rules, sp);
+		}
+		boolean held = r.milkHeld(now);
+		if (teatDips > 0) {
+			teatDips--;
+			r.dipTeats(now);
+		}
+		if (stall >= 0 && stall < lastMastitis.length) {
+			lastMastitis[stall] = r.has(dev.farmings.husbandry.health.Disease.MASTITIS, dev.farmings.husbandry.health.HealthRecord.Stage.SICK)
+					|| r.has(dev.farmings.husbandry.health.Disease.MASTITIS, dev.farmings.husbandry.health.HealthRecord.Stage.CHRONIC);
+		}
+		if (held) {
+			var can = wasteCan(level);
+			if (can != null) {
+				can.add(litres);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput out) {
+		super.saveAdditional(out);
+		out.putInt("TeatDips", teatDips);
+	}
+
+	@Override
+	protected void loadAdditional(net.minecraft.world.level.storage.ValueInput in) {
+		super.loadAdditional(in);
+		teatDips = in.getIntOr("TeatDips", 0);
+	}
+
 	// ---- positions: drawn with the controller at 0, the tank towards +x, the stalls towards +z ----
 
 	private BlockPos at(int ax, int y, int az) {
@@ -202,11 +283,18 @@ public class ParlorControllerEntity extends BlockEntity {
 			double dz = c.getZ() - (p.getZ() + 0.5);
 			if (dx * dx + dz * dz <= AT_STAND_SQ) {
 				double litres = c.milkKg() / BulkTank.KG_PER_L;
-				if (tank.room() >= litres) {
+				if (!canMilk(level, c.health(), litres)) {
+					fault = wasteCan(level) == null ? "NO WASTE MILK CAN" : "WASTE CAN FULL";
+					c.setMilkingStand(null);
+					c.walkRoute(route(true), null, true);
+				} else if (tank.room() >= litres) {
 					double fat = c.milkFatPct();
 					double protein = c.milkProteinPct();
 					c.takeMilk();
-					tank.add(litres, BulkTank.MILK_IN_C, fat, protein, dev.farmings.husbandry.parlor.MilkKind.COW);
+					if (healthAtMilking(level, i, c.health(), dev.farmings.genetics.Species.CATTLE, litres)) {
+						tank.mixScc(litres, c.health().scc());
+						tank.add(litres, BulkTank.MILK_IN_C, fat, protein, dev.farmings.husbandry.parlor.MilkKind.COW);
+					}
 					c.setMilkingStand(null);
 					c.walkRoute(route(true), null, true);
 					tankEntity.setChanged();
@@ -234,7 +322,8 @@ public class ParlorControllerEntity extends BlockEntity {
 			if (called >= link.penCapacity()) {
 				break;
 			}
-			if (standIndex(c) < 0 && c.penSpot() == null && c.stage() == Stage.LACTATING_COW && c.milkKg() > 0) {
+			if (standIndex(c) < 0 && c.penSpot() == null && c.stage() == Stage.LACTATING_COW && c.milkKg() > 0
+					&& canMilk(level, c.health(), c.milkKg() / BulkTank.KG_PER_L)) {
 				c.walkRoute(route(false), pos(pen.get(called % pen.size())), false);
 				called++;
 			}
@@ -348,7 +437,8 @@ public class ParlorControllerEntity extends BlockEntity {
 					continue;
 				}
 				for (dev.farmings.entity.SmallRuminant s : flock) {
-					if (s.reservedBy() == null && s.dairy() && s.milkKg() > 0 && s.milkKind() == want) {
+					if (s.reservedBy() == null && s.dairy() && s.milkKg() > 0 && s.milkKind() == want
+							&& canMilk(level, ((dev.farmings.health.HealthHost) s.animal()).health(), s.milkKg() / BulkTank.KG_PER_L)) {
 						s.reserve(worldPosition);
 						s.sendTo(p);
 						break;
@@ -367,9 +457,15 @@ public class ParlorControllerEntity extends BlockEntity {
 				// within reach of the stall she is stepped up onto it, as dairy ewes and does are led into a raised parlor
 				a.snapTo(p.getX() + 0.5, p.getY() + 0.2, p.getZ() + 0.5, a.getYRot(), a.getXRot());
 				double litres = here.milkKg() / BulkTank.KG_PER_L;
-				if (tank.room() >= litres) {
-					tank.add(litres, BulkTank.MILK_IN_C, here.milkFatPct(), here.milkProteinPct(), here.milkKind());
+				dev.farmings.health.HealthHost hh = (dev.farmings.health.HealthHost) a;
+				if (canMilk(level, hh.health(), litres) && tank.room() >= litres) {
+					double fat = here.milkFatPct();
+					double protein = here.milkProteinPct();
 					here.takeMilk();
+					if (healthAtMilking(level, i, hh.health(), hh.species(), litres)) {
+						tank.mixScc(litres, hh.health().scc());
+						tank.add(litres, BulkTank.MILK_IN_C, fat, protein, here.milkKind());
+					}
 					tankEntity.setChanged();
 				}
 				here.reserve(null);
@@ -416,6 +512,12 @@ public class ParlorControllerEntity extends BlockEntity {
 		if (tank != null && tank.tank().kind() != dev.farmings.husbandry.parlor.MilkKind.COW) {
 			milk += " (" + tank.tank().kind().label() + " milk)";
 		}
-		return "Parlor: FORMED, " + check.stalls() + " stalls" + milk + lane + (fault.isEmpty() ? ", ready" : ", " + fault);
+		if (tank != null && tank.tank().litres() > 1e-6) {
+			milk += String.format(java.util.Locale.ROOT, ", tank SCC %,.0f/mL", tank.tank().scc()) + (tank.tank().highScc() ? " HIGH SCC" : "");
+		}
+		var can = wasteCan(level);
+		String health = (teatDips > 0 ? ", teat dip for " + teatDips + " cows" : ", NO TEAT DIP")
+				+ (can == null ? ", no waste milk can" : String.format(java.util.Locale.ROOT, ", waste can %.0f L", can.litres()));
+		return "Parlor: FORMED, " + check.stalls() + " stalls" + milk + lane + health + (fault.isEmpty() ? ", ready" : ", " + fault);
 	}
 }

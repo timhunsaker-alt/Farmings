@@ -435,6 +435,7 @@ def main():
     feedmill_assets(lang)
     compost_assets(lang)
     digester_assets(lang)
+    health_assets(lang)
     write(os.path.join(ASSETS, "lang", "en_us.json"), {k: lang[k] for k in sorted(lang)})
     recipes()
     print("wrote", len(PARTS) + 1, "blocks")
@@ -1701,6 +1702,80 @@ def digester_assets(lang):
     tex = "farmings:item/" + name + ("" if real else "_placeholder")
     write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": tex}})
     write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+
+
+# animal health (docs/animal-health.md): items, blocks, recipes (all proposed) and sounds
+HEALTH_ITEMS = {"vet_kit": "Vet Kit", "cmt_paddle": "CMT Paddle", "cmt_reagent": "CMT Reagent", "antibiotic": "Antibiotic",
+                "mastitis_tube": "Intramammary Mastitis Tube", "antibiotic_injection": "Long-Acting Antibiotic Injection", "electrolytes": "Oral Electrolytes",
+                "coccidiostat": "Coccidiostat (for the water)", "teat_dip": "Teat Dip", "zinc_sulfate": "Zinc Sulfate (footbath)",
+                "vaccine_cdt": "CDT Vaccine (sheep, goats)", "vaccine_respiratory": "Respiratory Vaccine (cattle)", "vaccine_erysipelas": "Erysipelas Vaccine (pigs)",
+                "vaccine_mareks": "Marek's Vaccine (hatchery)", "vaccine_strangles": "Strangles Vaccine (horses)", "spoiled_vaccine": "Spoiled Vaccine"}
+HEALTH_BLOCKS = {"footbath": "Footbath", "waste_milk_can": "Waste Milk Can", "isolation_controller": "Isolation Pen Controller", "isolation_pen": "Isolation Pen Floor"}
+HEALTH_KEYS = {"L": "minecraft:leather", "G": "minecraft:glass", "I": "minecraft:iron_ingot", "T": "minecraft:string", "K": "minecraft:gray_concrete",
+               "B": "minecraft:bucket", "N": "minecraft:iron_bars", "H": "minecraft:wheat", "S": "wildcatter:steel_ingot", "R": "minecraft:redstone"}
+HEALTH_SHAPED = {"vet_kit": (["LGL", "ITI", "LLL"], 1), "footbath": (["KBK", "KKK"], 2), "waste_milk_can": (["I I", "IBI", "III"], 1),
+                 "isolation_pen": (["NNN", "HHH"], 6), "isolation_controller": (["SRS", "NBN", "SSS"], 1)}
+HEALTH_SHAPELESS = {
+    "cmt_paddle": (["wildcatter:plastic_sheet", "wildcatter:plastic_sheet"], 1),
+    "cmt_reagent": (["minecraft:glass_bottle", "wildcatter:sodium_sulfate_bag"], 4),
+    "antibiotic": (["farmings:whey_bottle", "minecraft:brown_mushroom", "minecraft:sugar"], 4),
+    "mastitis_tube": (["farmings:antibiotic", "wildcatter:plastic_sheet"], 4),
+    "antibiotic_injection": (["farmings:antibiotic", "minecraft:glass_bottle", "minecraft:iron_nugget"], 2),
+    "electrolytes": (["minecraft:sugar", "farmings:salt", "minecraft:paper"], 4),
+    "coccidiostat": (["farmings:antibiotic", "minecraft:glass_bottle"], 4),
+    "teat_dip": (["minecraft:glass_bottle", "wildcatter:chlorine_ton_container"], 64),
+    "zinc_sulfate": (["wildcatter:zinc_ingot", "wildcatter:sulfur", "minecraft:water_bucket"], 4),
+    "vaccine_cdt": (["minecraft:glass_bottle", "#farmings:eggs", "wildcatter:plastic_sheet", "minecraft:white_wool"], 4),
+    "vaccine_respiratory": (["minecraft:glass_bottle", "#farmings:eggs", "wildcatter:plastic_sheet", "minecraft:leather"], 4),
+    "vaccine_erysipelas": (["minecraft:glass_bottle", "#farmings:eggs", "wildcatter:plastic_sheet", "minecraft:porkchop"], 4),
+    "vaccine_mareks": (["minecraft:glass_bottle", "#farmings:eggs", "wildcatter:plastic_sheet", "minecraft:feather"], 4),
+    "vaccine_strangles": (["minecraft:glass_bottle", "#farmings:eggs", "wildcatter:plastic_sheet", "minecraft:hay_block"], 4),
+}
+HEALTH_SOUNDS = {"entity.cattle.cough": ("cattle_cough", "Cow coughs"), "entity.sheep.cough": ("sheep_cough", "Sheep coughs"),
+                 "entity.pig.cough": ("pig_cough", "Pig coughs"), "entity.horse.cough": ("horse_cough", "Horse coughs"),
+                 "block.footbath.splash": ("footbath", "Footbath splashes"), "item.cmt_paddle.swirl": ("cmt", "CMT paddle swirls"),
+                 "item.vet_kit.open": ("vet_kit", "Vet kit opens")}
+
+
+def health_assets(lang):
+    for name, title in HEALTH_ITEMS.items():
+        lang["item.farmings." + name] = title
+        parent = "minecraft:item/handheld" if name == "vet_kit" else "minecraft:item/generated"
+        write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": "farmings:item/" + name}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
+    m = os.path.join(ASSETS, "models", "block")
+    # footbath: a shallow concrete basin (the Ludo liquid inside, grooved concrete rim)
+    write(os.path.join(m, "footbath.json"), {"textures": {"liquid": "farmings:block/mat/mat_footbath", "rim": "farmings:block/mat/mat_grooved_concrete",
+          "particle": "farmings:block/mat/mat_grooved_concrete"}, "elements": [
+        {"from": [0, 0, 0], "to": [16, 1, 16], "faces": {f: {"texture": "#rim"} for f in ("down", "up", "north", "south", "east", "west")}},
+        {"from": [0, 1, 0], "to": [16, 3, 1], "faces": {f: {"texture": "#rim"} for f in ("up", "north", "south", "east", "west")}},
+        {"from": [0, 1, 15], "to": [16, 3, 16], "faces": {f: {"texture": "#rim"} for f in ("up", "north", "south", "east", "west")}},
+        {"from": [1, 1, 1], "to": [15, 2.5, 15], "faces": {"up": {"texture": "#liquid"}}}]})
+    # waste milk can: a stainless churn
+    write(os.path.join(m, "waste_milk_can.json"), {"textures": {"steel": "farmings:block/mat/mat_stainless_can", "particle": "farmings:block/mat/mat_stainless_can"},
+          "elements": [{"from": [3, 0, 3], "to": [13, 11, 13], "faces": {f: {"texture": "#steel"} for f in ("down", "up", "north", "south", "east", "west")}},
+                       {"from": [5, 11, 5], "to": [11, 14, 11], "faces": {f: {"texture": "#steel"} for f in ("up", "north", "south", "east", "west")}}]})
+    write(os.path.join(m, "isolation_controller.json"), {"parent": "minecraft:block/cube", "textures": {
+          "north": "farmings:block/isolation_controller", "south": "farmings:block/isolation_controller", "east": "farmings:block/isolation_controller",
+          "west": "farmings:block/isolation_controller", "up": "farmings:block/mat/mat_stainless_can", "down": "farmings:block/mat/mat_stainless_can",
+          "particle": "farmings:block/isolation_controller"}})
+    write(os.path.join(m, "isolation_pen.json"), {"parent": "minecraft:block/thin_block", "textures": {"particle": "farmings:block/mat/mat_sick_pen_straw"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {f: {"texture": "farmings:block/mat/mat_sick_pen_straw"} for f in ("down", "up", "north", "south", "east", "west")}}]})
+    for name, title in HEALTH_BLOCKS.items():
+        lang["block.farmings." + name] = title
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
+        write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
+    out = os.path.join(DATA, "recipe")
+    for name, (pattern, count) in HEALTH_SHAPED.items():
+        used = sorted({c for row in pattern for c in row if c != " "})
+        write(os.path.join(out, name + ".json"), {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": pattern,
+              "key": {c: HEALTH_KEYS[c] for c in used}, "result": {"id": "farmings:" + name, "count": count}})
+    for name, (items, count) in HEALTH_SHAPELESS.items():
+        write(os.path.join(out, name + ".json"), {"type": "minecraft:crafting_shapeless", "category": "misc", "ingredients": items,
+              "result": {"id": "farmings:" + name, "count": count}})
+    for key, (file, sub) in HEALTH_SOUNDS.items():
+        lang["subtitles.farmings." + key] = sub
 
 
 def loot(name):

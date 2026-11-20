@@ -1,0 +1,19 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "pattern": [
+  "LGL",
+  "ITI",
+  "LLL"
+ ],
+ "key": {
+  "G": "minecraft:glass",
+  "I": "minecraft:iron_ingot",
+  "L": "minecraft:leather",
+  "T": "minecraft:string"
+ },
+ "result": {
+  "id": "farmings:vet_kit",
+  "count": 1
+ }
+}

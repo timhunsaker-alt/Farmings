@@ -305,7 +305,7 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 		List<FowlEntity> members = members(level);
 		Map<Species, Integer> adults = adults(members, false);
 		int floor = check.floor().size();
-		for (FowlEntity f : level.getEntitiesOfClass(FowlEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), f -> f.coop() == null && !f.isWild())) {
+		for (FowlEntity f : level.getEntitiesOfClass(FowlEntity.class, new AABB(worldPosition).inflate(TAKE_IN_RADIUS), f -> f.coop() == null && !f.isWild() && dev.farmings.health.Health.mayHouse(level, f))) {
 			if (f.young()) {
 				f.assignCoop(worldPosition, null);
 			} else if (CoopLayout.room(adults, f.species(), floor)) {

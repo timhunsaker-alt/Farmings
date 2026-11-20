@@ -77,6 +77,7 @@ public final class Perishables {
 			case POULTRY -> FarmingsItems.SPOILED_POULTRY;
 			case PORK -> FarmingsItems.SPOILED_PORK;
 			case LARD -> FarmingsItems.RANCID_LARD;
+			case VACCINE -> dev.farmings.health.HealthItems.SPOILED_VACCINE;
 		};
 	}
 }

@@ -21,7 +21,7 @@ public final class Spoilage {
 	/** Spoil ticks are rounded up to this, and a fridge credits its food once per this many ticks, so stacks stay alike *(proposed)*. */
 	public static final long STEP = 1_200;
 
-	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON, EGG, POULTRY, PORK, LARD }
+	public enum Spoiled { BOTTLE, BUTTER, CHEESE, STEAK, MUTTON, EGG, POULTRY, PORK, LARD, VACCINE }
 
 	public enum Food {
 		MILK(7, 1, Spoiled.BOTTLE),
@@ -54,7 +54,10 @@ public final class Spoilage {
 		BACON(7, 1, Spoiled.PORK),
 		RAW_SAUSAGE(1.5, 1, Spoiled.PORK),
 		COOKED_SAUSAGE(7, 1, Spoiled.PORK),
-		LARD(365, 150, Spoiled.LARD);
+		LARD(365, 150, Spoiled.LARD),
+		// Vaccines (docs/animal-health.md, "Vaccines"): kept refrigerated a year (labels date them in months to years, TO VERIFY); useless
+		// after 1 game day out of the cold (proposed).
+		VACCINE(365, 1, Spoiled.VACCINE);
 
 		public final double fridgeDays;
 		public final double roomDays;

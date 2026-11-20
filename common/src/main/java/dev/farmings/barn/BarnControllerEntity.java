@@ -313,7 +313,7 @@ public class BarnControllerEntity extends BlockEntity {
 				if (cow.stallController() != null && worldPosition.equals(cow.stallController())) {
 					cow.clearStall();
 				}
-				if (cow.stallController() == null && !cow.isWild()) {
+				if (cow.stallController() == null && !cow.isWild() && (!(level instanceof net.minecraft.server.level.ServerLevel sl) || dev.farmings.health.Health.mayHouse(sl, cow))) {
 					homeless.add(cow);
 				}
 			} else {

@@ -66,7 +66,7 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>Rules live in plain Java ({@link Fowl}, {@link LayingCycle}, {@link Clutch}); this class keeps the state and does the Minecraft side.
  */
-public class FowlEntity extends Animal implements Wild.Animal {
+public class FowlEntity extends Animal implements Wild.Animal, dev.farmings.health.HealthHost {
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.LONG);
 	/** Bit 0 male, bit 1 young (needs heat). */
@@ -315,7 +315,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 
 	/** A bird that lays eggs now: an adult hen, tame, not retired, not sitting. */
 	public boolean laying() {
-		return sex == Sex.FEMALE && !wild && !broody && genome != null && LayingCycle.eggsPerDay(species, composition(), ageRealDays(), score(Trait.EGG_PRODUCTION),
+		return sex == Sex.FEMALE && !wild && !broody && genome != null && health.laying() && LayingCycle.eggsPerDay(species, composition(), ageRealDays(), score(Trait.EGG_PRODUCTION),
 				dayOfYear(level().getGameTime())) > 0;
 	}
 
@@ -687,6 +687,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	// ---- the once-a-second bookkeeping ----
 
 	public void settle(ServerLevel level) {
+		dev.farmings.health.Health.tick(level, this);
 		long now = level.getGameTime();
 		grow(now);
 		cold(now);
@@ -738,7 +739,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 		if (young() && !warm()) {
 			fed = 0;     // a cold young bird does not grow that day
 		}
-		double gain = (Fowl.weightKg(composition(), sex, age) - Fowl.weightKg(composition(), sex, age - span)) * fed;
+		double gain = (Fowl.weightKg(composition(), sex, age) - Fowl.weightKg(composition(), sex, age - span)) * fed * health.growthFactor();
 		double mature = Fowl.matureKg(composition(), sex);
 		if (gain > 0 && weightKg < mature) {
 			weightKg = Math.min(mature, weightKg + gain);
@@ -999,6 +1000,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 			b.append(String.format(Locale.ROOT, ", fed %.0f%%, watered %.0f%%", lastFed * 100, lastWatered * 100));
 		}
 		b.append(String.format(Locale.ROOT, ", health %.0f/%.0f", getHealth(), getMaxHealth()));
+		b.append(dev.farmings.health.Health.readout(this));
 		return b.toString();
 	}
 
@@ -1067,6 +1069,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void addAdditionalSaveData(ValueOutput out) {
 		super.addAdditionalSaveData(out);
+		out.putString("Health", health.encode());
 		out.putString("Breed", breed.code);
 		out.putString("Sex", sex.name());
 		if (genome != null) {
@@ -1105,6 +1108,7 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void readAdditionalSaveData(ValueInput in) {
 		super.readAdditionalSaveData(in);
+		health = dev.farmings.husbandry.health.HealthRecord.decode(in.getStringOr("Health", ""));
 		try {
 			FowlBreed b = FowlBreed.byCode(in.getStringOr("Breed", breed.code));
 			breed = b != null && b.species == species ? b : defaultBreed(species);
@@ -1194,5 +1198,59 @@ public class FowlEntity extends Animal implements Wild.Animal {
 	@Override
 	protected void playStepSound(BlockPos pos, BlockState state) {
 		playSound(sounds().stepSound().value(), 0.15F, 1.0F);
+	}
+
+	// ---- animal health (docs/animal-health.md) ----
+
+	private dev.farmings.husbandry.health.HealthRecord health = new dev.farmings.husbandry.health.HealthRecord();
+
+	@Override
+	public dev.farmings.husbandry.health.HealthRecord health() {
+		return health;
+	}
+
+	@Override
+	public net.minecraft.core.@org.jspecify.annotations.Nullable BlockPos housing() {
+		return coop;
+	}
+
+	@Override
+	public void leaveHousing() {
+		assignCoop(null, null);
+	}
+
+	@Override
+	public int healthScore() {
+		int s = score(Trait.HEALTH);
+		return s <= 0 ? 50 : s;
+	}
+
+	@Override
+	public int hardinessScore() {
+		return 50;
+	}
+
+	@Override
+	public double fedShare() {
+		return housing() != null ? lastFed : 1;
+	}
+
+	@Override
+	public double rationScore() {
+		return housing() != null ? dev.farmings.feed.Ration.layerScore(ration) : -1;
+	}
+
+	@Override
+	public net.minecraft.world.entity.animal.Animal animal() {
+		return this;
+	}
+
+	/** Meat from an animal killed in its meat withdrawal is condemned: no food drops (docs/animal-health.md). */
+	@Override
+	public net.minecraft.world.entity.item.@org.jspecify.annotations.Nullable ItemEntity spawnAtLocation(ServerLevel level, net.minecraft.world.item.ItemStack stack) {
+		if (dev.farmings.health.Health.condemned(this, stack)) {
+			return null;
+		}
+		return super.spawnAtLocation(level, stack);
 	}
 }

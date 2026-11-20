@@ -145,6 +145,10 @@ public final class FarmingsBlocks {
 	public static void creativeTab(java.util.function.Consumer<net.minecraft.world.level.ItemLike> output) {
 		output.accept(BARN_CONTROLLER);
 		FarmingsItems.ALL.values().forEach(output);
+		dev.farmings.health.HealthItems.ALL.values().forEach(output);
+		for (Block b : dev.farmings.health.HealthBlocks.ALL) {
+			output.accept(b);
+		}
 		for (BarnParts kind : BarnParts.values()) {
 			output.accept(part(kind));
 		}
@@ -262,6 +266,8 @@ public final class FarmingsBlocks {
 		dev.farmings.digester.DigesterBlocks.register();
 		dev.farmings.shearing.ShearingBlocks.register();
 		dev.farmings.woolmill.WoolMillBlocks.register();
+		dev.farmings.health.HealthBlocks.register();
 		FarmingsItems.register();
+		dev.farmings.health.HealthItems.register();
 	}
 }

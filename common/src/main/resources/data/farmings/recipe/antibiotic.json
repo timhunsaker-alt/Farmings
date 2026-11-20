@@ -1,0 +1,13 @@
+{
+ "type": "minecraft:crafting_shapeless",
+ "category": "misc",
+ "ingredients": [
+  "farmings:whey_bottle",
+  "minecraft:brown_mushroom",
+  "minecraft:sugar"
+ ],
+ "result": {
+  "id": "farmings:antibiotic",
+  "count": 4
+ }
+}
