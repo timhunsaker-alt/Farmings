@@ -46,6 +46,9 @@ public final class FarmingsNeoForge {
 						event.put(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)).build());
 					}
 				});
+		// /farmings rule (docs/animal-health.md, "World rules")
+		net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.event.RegisterCommandsEvent.class,
+				event -> dev.farmings.health.FarmingsCommands.register(event.getDispatcher()));
 		// the Field Manual, once, on a player's first join (docs/field-manual.md)
 		net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent.class, event -> {
 			if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {

@@ -77,6 +77,7 @@ final class HealthGameTests {
 		r.accept("standstill_lifts", HealthGameTests::standstillLifts);
 		r.accept("herd_check_lists_due", HealthGameTests::herdCheckListsDue);
 		r.accept("sick_cow_walks_slower", HealthGameTests::sickCowWalksSlower);
+		r.accept("rule_command_sets_disease", HealthGameTests::ruleCommand);
 	}
 
 	static CattleEntity cow(GameTestHelper helper, long seed, BlockPos at) {
@@ -548,6 +549,18 @@ final class HealthGameTests {
 		double after = cow.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
 		helper.assertTrue(Math.abs(after / before - 0.7) < 1e-6, Component.literal("speed " + before + " -> " + after));
 		helper.assertTrue(cow.readout().contains("lame"), Component.literal(cow.readout()));
+		helper.succeed();
+	}
+
+	/** {@code /farmings rule disease true} turns disease on in a world saved before it; false turns it back off. */
+	static void ruleCommand(GameTestHelper helper) {
+		var srv = helper.getLevel().getServer();
+		var src = srv.createCommandSourceStack().withSuppressedOutput();
+		srv.getCommands().performPrefixedCommand(src, "farmings rule disease true");
+		boolean on = FarmingsRules.on(srv, FarmingsRules.DISEASE);
+		srv.getCommands().performPrefixedCommand(src, "farmings rule disease false");
+		helper.assertTrue(on, Component.literal("the command turned disease on"));
+		helper.assertTrue(!FarmingsRules.on(srv, FarmingsRules.DISEASE), Component.literal("and off again"));
 		helper.succeed();
 	}
 }

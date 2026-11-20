@@ -91,6 +91,14 @@ public final class Health {
 		}
 		effects(level, h, r, world, now, sc);
 		IsolationHold.hold(level, h, now);
+		// a footbath under its feet (its 3 px are thinner than the step a block's stepOn reads, so it is also checked here)
+		BlockPos feet = a.blockPosition();
+		for (BlockPos p : new BlockPos[] {feet, feet.below()}) {
+			if (level.getBlockEntity(p) instanceof HealthBlocks.FootbathEntity bath) {
+				bath.pass(level, h);
+				break;
+			}
+		}
 	}
 
 	private static Risk.Inputs inputs(ServerLevel level, HealthHost h, HealthWorld world, long now, HealthModel.Rules rules) {

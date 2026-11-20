@@ -437,6 +437,9 @@ withdrawal, vaccines, the isolation pen, the footbath, notifiable diseases; each
   growth and eggs. The readout shows the signs, the red leg band (withdrawal) and quarantine.
 - **World rules** `disease` (on in new worlds), `notifiable_disease` (off), `disease_deaths` (off), saved with the world and shown on
   Wildcatter's World Rules screen. A world with Farmings data saved before this build starts with all three off.
+- **Tests:** 26 game tests in `HealthGameTests`; the full NeoForge suite passes, 276 of 276. Client scene `health`
+  (`FARMINGS_ONLY=health ./gradlew :fabric:runClientGameTest`): a lame cow beside a well one, the exam, the sick pen, three ewes through a
+  footbath (3 of 3 treated), the items; filmed.
 - **Items, blocks, recipes, quests and the Field Manual chapter "Animal health"** as specified above; icons, block faces and sounds from Ludo
   (`tools/process_art.py`, `tools/process_sounds.py`).
 
@@ -450,7 +453,10 @@ withdrawal, vaccines, the isolation pen, the footbath, notifiable diseases; each
   engine, the inputs are not read yet. **Weaning** does not open the BRD window; taming and a move to new housing do.
 - **Not drawn:** the head-low pose, the limp animation, the red leg band and the erysipelas marks. The slower walk, the cough and the
   readout carry those signs for now (Known gaps).
-- **No `/farmings rule` command:** Farmings has no commands; the rules are set on the World Rules screen at world creation.
+- **`/farmings rule [name] [true|false]`** (operators) lists and sets the three rules, so a world saved before can turn disease on
+  (game test `rule_command_sets_disease`).
+- **The footbath** is also checked in each animal's health step (the block under its feet), because a 3 px bath is thinner than the step
+  a block's `stepOn` reads.
 - **The footbath** is a Wildcatter water user (a pump's pipe fills it), as the trough is.
 
 ### Sourcing, 2026-11-19

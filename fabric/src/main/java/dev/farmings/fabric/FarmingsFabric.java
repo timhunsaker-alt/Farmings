@@ -30,6 +30,8 @@ public final class FarmingsFabric implements ModInitializer {
 		for (var type : FarmingsEntities.FOWL) {
 			FabricDefaultAttributeRegistry.register(type, dev.farmings.entity.FowlEntity.createAttributes(FarmingsEntities.speciesOf(type)));
 		}
+		// /farmings rule (docs/animal-health.md, "World rules")
+		net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT.register((dispatcher, context, selection) -> dev.farmings.health.FarmingsCommands.register(dispatcher));
 		// the Field Manual, once, on a player's first join (docs/field-manual.md)
 		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
 				dev.farmings.item.FieldManualItem.giveOnce(handler.getPlayer()));

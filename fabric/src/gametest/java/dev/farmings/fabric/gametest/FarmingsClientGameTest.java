@@ -242,6 +242,192 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		film.stop();
 	}
 
+	/**
+	 * Animal health (docs/animal-health.md, "Client scenes"): a lame cow beside a well one, both walked the same way (she is slower), a
+	 * coughing heifer in an isolation pen, three sheep through a charged footbath, the vet kit's exam and herd check on the action bar, and
+	 * the new items in frames. Filmed, with screenshots.
+	 */
+	private static void health(ClientGameTestContext context, TestServerContext server, int y) {
+		int cx = 300;
+		int cz = 300;
+		BlockPos penCtl = new BlockPos(cx - 12, y, cz + 6);
+		java.util.List<net.minecraft.world.entity.Mob> walkers = new java.util.ArrayList<>();
+		java.util.List<dev.farmings.entity.SheepEntity> sheep = new java.util.ArrayList<>();
+		CattleEntity[] pair = new CattleEntity[3];
+		// stand at the scene first, so its chunks stay loaded and the animals made below are the ones that tick
+		server.runCommand("tp @p " + (cx - 2) + " " + (y + 5) + " " + (cz - 12) + " 20 25");
+		context.waitTicks(60);
+		server.runOnServer(srv -> {
+			ServerLevel level = srv.overworld();
+			dev.farmings.health.FarmingsRules.set(srv, dev.farmings.health.FarmingsRules.DISEASE, true);
+			for (int x = cx - 24; x <= cx + 14; x++) {
+				for (int z = cz - 12; z <= cz + 14; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
+					for (int h = 0; h < 8; h++) {
+						level.setBlockAndUpdate(new BlockPos(x, y + h, z), net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					}
+				}
+			}
+			long now = level.getGameTime();
+			// the lame cow and the well one, side by side
+			for (int i = 0; i < 2; i++) {
+				CattleEntity c = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+				c.initFounder(CattleBreed.HOLSTEIN, Sex.FEMALE, 900L + i, 900, 650, now);
+				c.setPos(cx - 8 + 0.5, y, cz - 4 + i * 3 + 0.5);
+				c.setNoAi(true);     // held still until their walk
+				level.addFreshEntity(c);
+				pair[i] = c;
+				walkers.add(c);
+			}
+			pair[0].health().setLastTick(now);
+			pair[0].health().infect(dev.farmings.husbandry.health.Disease.FOOT_ROT, dev.farmings.husbandry.health.HealthRecord.Stage.SICK, now, now + 10_000_000L);
+			// the isolation pen (hospital) with a coughing heifer
+			for (int x = penCtl.getX() + 1; x <= penCtl.getX() + 4; x++) {
+				for (int z = penCtl.getZ() - 1; z <= penCtl.getZ() + 2; z++) {
+					level.setBlockAndUpdate(new BlockPos(x, y, z), dev.farmings.health.HealthBlocks.ISOLATION_PEN.defaultBlockState());
+				}
+			}
+			level.setBlockAndUpdate(penCtl, dev.farmings.health.HealthBlocks.ISOLATION_CONTROLLER.defaultBlockState());
+			barnPart(level, BarnParts.HAY_FEEDER, new BlockPos(penCtl.getX() + 2, y, penCtl.getZ() - 2));
+			barnPart(level, BarnParts.WATER_TROUGH, new BlockPos(penCtl.getX() + 5, y, penCtl.getZ()));
+			((FeederEntity) BigParts.entity(level, new BlockPos(penCtl.getX() + 2, y, penCtl.getZ() - 2))).addBlock();
+			((TroughEntity) BigParts.entity(level, new BlockPos(penCtl.getX() + 5, y, penCtl.getZ()))).pourBucket();
+			for (int x = penCtl.getX(); x <= penCtl.getX() + 5; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, penCtl.getZ() + 3), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+			}
+			var ctl = (dev.farmings.health.IsolationController) level.getBlockEntity(penCtl);
+			ctl.setMode(dev.farmings.health.IsolationController.Mode.HOSPITAL);
+			ctl.refresh(level);
+			CattleEntity heifer = FarmingsEntities.CATTLE.create(level, EntitySpawnReason.COMMAND);
+			heifer.initFounder(CattleBreed.JERSEY, Sex.FEMALE, 903L, 400, 280, now);
+			heifer.setPos(penCtl.getX() + 2.5, y + 0.2, penCtl.getZ() + 0.5);
+			level.addFreshEntity(heifer);
+			heifer.health().setLastTick(now);
+			heifer.health().infect(dev.farmings.husbandry.health.Disease.BRD, dev.farmings.husbandry.health.HealthRecord.Stage.SICK, now, now + 10_000_000L);
+			heifer.health().setPen(penCtl.asLong());
+			pair[2] = heifer;
+			// a footbath lane, charged, and three ewes to walk through it
+			for (int x = cx + 2; x <= cx + 8; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, cz - 1), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+				level.setBlockAndUpdate(new BlockPos(x, y, cz + 1), net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState());
+			}
+			for (int x = cx + 4; x <= cx + 6; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, cz), dev.farmings.health.HealthBlocks.FOOTBATH.defaultBlockState());
+				var bath = (dev.farmings.health.HealthBlocks.FootbathEntity) level.getBlockEntity(new BlockPos(x, y, cz));
+				bath.addWater(100);
+				bath.charge(100);
+			}
+			for (int i = 0; i < 3; i++) {
+				dev.farmings.entity.SheepEntity s = FarmingsEntities.SHEEP.create(level, EntitySpawnReason.COMMAND);
+				java.util.Map<String, Integer> comp = java.util.Map.of(dev.farmings.husbandry.SheepBreed.SUFFOLK.code, 10_000);
+				s.initFounder(dev.farmings.husbandry.SheepBreed.SUFFOLK, Sex.FEMALE, 910L + i, 700, dev.farmings.husbandry.Flock.targetKg(comp, 700), now);
+				s.setPos(cx + 2.5 - i * 1.3, y, cz + 0.5);
+				s.setNoAi(true);     // held in the lane until their walk
+				level.addFreshEntity(s);
+				s.health().setLastTick(now);
+				s.health().infect(dev.farmings.husbandry.health.Disease.FOOT_ROT, dev.farmings.husbandry.health.HealthRecord.Stage.SICK, now, now + 10_000_000L);
+				sheep.add(s);
+			}
+			// the waste milk can and a wall of item frames with the new items
+			level.setBlockAndUpdate(new BlockPos(cx - 3, y, cz + 8), dev.farmings.health.HealthBlocks.WASTE_MILK_CAN.defaultBlockState());
+			net.minecraft.world.item.Item[] items = {dev.farmings.health.HealthItems.VET_KIT, dev.farmings.health.HealthItems.CMT_PADDLE, dev.farmings.health.HealthItems.CMT_REAGENT,
+					dev.farmings.health.HealthItems.MASTITIS_TUBE, dev.farmings.health.HealthItems.ANTIBIOTIC_INJECTION, dev.farmings.health.HealthItems.ELECTROLYTES,
+					dev.farmings.health.HealthItems.TEAT_DIP, dev.farmings.health.HealthItems.ZINC_SULFATE, dev.farmings.health.HealthItems.VACCINE_CDT,
+					dev.farmings.health.HealthItems.VACCINE_RESPIRATORY, dev.farmings.health.HealthItems.VACCINE_ERYSIPELAS, dev.farmings.health.HealthItems.VACCINE_MAREKS};
+			for (int i = 0; i < items.length; i++) {
+				BlockPos wall = new BlockPos(cx - 6 + i % 6, y + 1 + i / 6, cz + 10);
+				level.setBlockAndUpdate(wall, net.minecraft.world.level.block.Blocks.SPRUCE_PLANKS.defaultBlockState());
+				var frame = new net.minecraft.world.entity.decoration.ItemFrame(level, wall.north(), Direction.NORTH);
+				frame.setItem(new ItemStack(items[i]));
+				level.addFreshEntity(frame);
+			}
+			for (int x = cx - 6; x <= cx - 1; x++) {
+				level.setBlockAndUpdate(new BlockPos(x, y, cz + 10), net.minecraft.world.level.block.Blocks.SPRUCE_PLANKS.defaultBlockState());
+			}
+		});
+		context.waitTicks(40);
+		// the lame cow and the well one, walked the same 12 blocks
+		server.runCommand("tp @p " + (cx - 2) + " " + (y + 5) + " " + (cz - 12) + " 20 25");
+		context.waitTicks(30);
+		Filming film = context.computeOnClient(client -> Filming.start(client, "health-lame-cow"));
+		// walked by hand, step by step (their own goals want them home): the well cow at 0.1 block a tick, the lame one at her slowed share
+		for (int i = 0; i < 100; i++) {
+			context.waitTicks(2);
+			server.runOnServer(srv -> {
+				for (var m : walkers) {
+					double speed = m.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED) / 0.2;
+					m.setYRot(-90);
+					m.setYHeadRot(-90);
+					m.setYBodyRot(-90);
+					m.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(0.12 * speed, -0.08, 0));
+				}
+			});
+			if (i % 10 == 0) {
+				String text = server.computeOnServer(srv -> pair[0].readout().replaceAll("^.*?(LOOKS SICK[^,]*).*$", "Near: $1, walks 30% slower") + "   |   far: well");
+				server.runCommand("title @p actionbar \"" + text.replace("\"", "") + "\"");
+			}
+			if (i == 60) {
+				context.takeScreenshot("farmings-health-lame-cow-behind");
+			}
+		}
+		film.stop();
+		// the vet kit's exam of the lame cow, on the action bar
+		String exam = server.computeOnServer(srv -> dev.farmings.health.Health.exam(srv.overworld(), pair[0]));
+		server.runCommand("title @p actionbar \"" + exam.replace("\"", "") + "\"");
+		context.waitTicks(10);
+		context.takeScreenshot("farmings-health-exam");
+		// the isolation pen with the coughing heifer
+		server.runCommand("tp @p " + (penCtl.getX() + 2) + " " + (y + 5) + " " + (penCtl.getZ() - 7) + " 0 35");
+		context.waitTicks(40);
+		Filming pen = context.computeOnClient(client -> Filming.start(client, "health-sick-pen"));
+		for (int i = 0; i < 6; i++) {
+			context.waitTicks(20);
+			String text = server.computeOnServer(srv -> ((dev.farmings.health.IsolationController) srv.overworld().getBlockEntity(penCtl)).readout(srv.overworld())
+					+ " | " + dev.farmings.health.Health.exam(srv.overworld(), pair[2]));
+			server.runCommand("title @p actionbar \"" + text.replace("\"", "") + "\"");
+		}
+		context.takeScreenshot("farmings-health-sick-pen");
+		pen.stop();
+		// three ewes through the footbath
+		server.runCommand("tp @p " + (cx + 5) + " " + (y + 5) + " " + (cz - 7) + " 0 40");
+		context.waitTicks(30);
+		Filming bath = context.computeOnClient(client -> Filming.start(client, "health-footbath"));
+		for (int i = 0; i < 90; i++) {
+			context.waitTicks(2);
+			server.runOnServer(srv -> {
+				for (var sh : sheep) {
+					sh.setYRot(-90);
+					sh.setYHeadRot(-90);
+					sh.setYBodyRot(-90);
+					sh.move(net.minecraft.world.entity.MoverType.SELF, new Vec3(0.12, -0.08, 0));
+					sh.settle(srv.overworld());     // held animals do not run their own bookkeeping
+				}
+			});
+			if (i % 10 == 0) {
+				String text = server.computeOnServer(srv -> {
+					long treated = sheep.stream().filter(sh -> sh.health().caseOf(dev.farmings.husbandry.health.Disease.FOOT_ROT) != null
+							&& sh.health().caseOf(dev.farmings.husbandry.health.Disease.FOOT_ROT).treated).count();
+					var b = (dev.farmings.health.HealthBlocks.FootbathEntity) srv.overworld().getBlockEntity(new BlockPos(cx + 5, y, cz));
+					return b.readout() + " | ewes treated: " + treated + " of 3";
+				});
+				server.runCommand("title @p actionbar \"" + text.replace("\"", "") + "\"");
+			}
+			if (i == 45) {
+				context.takeScreenshot("farmings-health-footbath");
+			}
+		}
+		context.takeScreenshot("farmings-health-footbath-after");
+		bath.stop();
+		// the items, the waste can and an overview
+		server.runCommand("tp @p " + (cx - 3.5) + " " + (y + 1.6) + " " + (cz + 6) + " 0 10");
+		context.waitTicks(30);
+		context.takeScreenshot("farmings-health-items");
+		server.runCommand("tp @p " + (cx - 6) + " " + (y + 14) + " " + (cz - 14) + " 10 45");
+		context.waitTicks(30);
+		context.takeScreenshot("farmings-health-overview");
+		server.runOnServer(srv -> dev.farmings.health.FarmingsRules.set(srv, dev.farmings.health.FarmingsRules.DISEASE, false));
+	}
+
 	static void parlorPart(ServerLevel level, dev.farmings.parlor.ParlorParts kind, BlockPos main) {
 		BlockState state = FarmingsBlocks.parlorPart(kind).defaultBlockState().setValue(BigPartBlock.FACING, Direction.NORTH);
 		level.setBlock(main, state, Block.UPDATE_ALL);
@@ -2992,6 +3178,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			if ("newanimals".equals(only)) {
 				context.waitTicks(200);
 				newAnimals(context, server, y);
+				return;
+			}
+			if ("health".equals(only)) {
+				context.waitTicks(200);
+				health(context, server, y);
 				return;
 			}
 			if ("newbirds".equals(only)) {

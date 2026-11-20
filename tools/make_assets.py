@@ -1759,8 +1759,8 @@ def health_assets(lang):
           "north": "farmings:block/isolation_controller", "south": "farmings:block/isolation_controller", "east": "farmings:block/isolation_controller",
           "west": "farmings:block/isolation_controller", "up": "farmings:block/mat/mat_stainless_can", "down": "farmings:block/mat/mat_stainless_can",
           "particle": "farmings:block/isolation_controller"}})
-    write(os.path.join(m, "isolation_pen.json"), {"parent": "minecraft:block/thin_block", "textures": {"particle": "farmings:block/mat/mat_sick_pen_straw"},
-          "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {f: {"texture": "farmings:block/mat/mat_sick_pen_straw"} for f in ("down", "up", "north", "south", "east", "west")}}]})
+    write(os.path.join(m, "isolation_pen.json"), {"textures": {"straw": "farmings:block/mat/mat_sick_pen_straw", "particle": "farmings:block/mat/mat_sick_pen_straw"},
+          "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {f: {"texture": "#straw"} for f in ("down", "up", "north", "south", "east", "west")}}]})
     for name, title in HEALTH_BLOCKS.items():
         lang["block.farmings." + name] = title
         write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})

@@ -24,8 +24,8 @@ final class QuestGameTests {
 		QuestBook book = QuestTracker.book(server);
 		QuestBook.Chapter farm = book.chapter(Farmings.id("farm"));
 		helper.assertTrue(farm != null, Component.literal("the farm chapter should load: " + book.chapters().stream().map(c -> c.id().toString()).toList()));
-		helper.assertTrue(farm.quests().size() == 13 && book.quest(Farmings.id("biogas_genset")) != null,
-				Component.literal("13 farm quests, biogas_genset among them: " + farm.quests().size()));
+		helper.assertTrue(farm.quests().size() == 18 && book.quest(Farmings.id("biogas_genset")) != null && book.quest(Farmings.id("herd_health")) != null,
+				Component.literal("18 farm quests (five on animal health), biogas_genset among them: " + farm.quests().size()));
 		List<String> problems = QuestRules.problems(server);
 		helper.assertTrue(problems.isEmpty(), Component.literal("every chapter should pass the check: " + problems));
 		Farmings.LOGGER.info("[quests_valid] ok: {} chapters, {} quests", book.chapters().size(), book.quests().size());

@@ -414,13 +414,13 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   (the parlor diverts withheld milk to a waste milk can; condemned meat drops nothing), five vaccines on the cold chain (Marek's through
   the incubator), the footbath, the isolation pen (quarantine and hospital), bulk-tank SCC and HIGH SCC, herd book health pages, the
   notifiable diseases and standstills (opt-in), three world rules on Wildcatter's World Rules screen, five quests and five milestones,
-  the Field Manual chapter "Animal health". Ludo: 12 icons (five vaccine caps tinted from one), 4 block faces, 7 sounds. Game tests: 25
-  new (`HealthGameTests`), `herd_book_records` now expects two pages an animal. Build decisions 9-11 in `docs/questions/animal-health.md`.
+  the Field Manual chapter "Animal health". Ludo: 12 icons (five vaccine caps tinted from one), 4 block faces, 7 sounds. Game tests: 26
+  new (`HealthGameTests`), `herd_book_records` expects two pages an animal, `quests_valid` 18 quests; full suite 276 of 276. Client scene
+  `health`, filmed. `/farmings rule` sets the rules in any world. Build decisions 9-11 in `docs/questions/animal-health.md`.
 
 ## Known gaps
 - **Animal health:** the head-low pose, limp, red leg band and erysipelas marks are not drawn (the walk, cough and readout show them);
-  dirt counts only for cattle and sheep; the cold and dam-vaccination factors and weaning stress are not wired; no `/farmings rule`
-  command (the World Rules screen sets the rules).
+  dirt counts only for cattle and sheep; the cold and dam-vaccination factors and weaning stress are not wired.
 - **Quest book:** the Field Manual has no page on the quest book (it is Wildcatter's). `farmings:tamed` stays one key for every
   species, given to players within 64 blocks of the post (accepted by Tim 2026-11-19, C14).
 - **Wildcatter fertilizer bags:** a 1 t bag is 100 spreads in the gantry (built 2026-11-14). They still do nothing by hand (Wildcatter
