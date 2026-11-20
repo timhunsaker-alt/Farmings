@@ -102,6 +102,18 @@
     ],
     [
      {
+      "t": "Vaccinate a cow (respiratory) or a ewe or doe (CDT) in the "
+     },
+     {
+      "t": "6",
+      "b": true
+     },
+     {
+      "t": " weeks before she gives birth: her young get antibodies in the first milk, and half the risk of scours."
+     }
+    ],
+    [
+     {
       "t": "A booster falls due a year after the last dose; the herd check lists it."
      }
     ]
@@ -147,7 +159,21 @@
      "b": true
     },
     {
-     "t": " real days. A pasture a lame sheep grazed stays infective "
+     "t": " real days. Each one carries "
+    },
+    {
+     "t": "1",
+     "b": true
+    },
+    {
+     "t": " L out on its feet: top the bath up before it falls under "
+    },
+    {
+     "t": "60",
+     "b": true
+    },
+    {
+     "t": " L (a water pump's pipe keeps it full). A pasture a lame sheep grazed stays infective "
     },
     {
      "t": "7",

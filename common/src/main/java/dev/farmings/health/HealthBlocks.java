@@ -98,9 +98,19 @@ public final class HealthBlocks {
 	 */
 	public static class FootbathBlock extends BaseEntityBlock {
 		private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 3, 16);
+		/** How full it looks: eighths of its 100 L, rounded up (0 is empty). */
+		public static final net.minecraft.world.level.block.state.properties.IntegerProperty LEVEL =
+				net.minecraft.world.level.block.state.properties.IntegerProperty.create("level", 0, 8);
 
 		public FootbathBlock(Properties p) {
 			super(p);
+			registerDefaultState(defaultBlockState().setValue(LEVEL, 0));
+		}
+
+		@Override
+		protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+			super.createBlockStateDefinition(builder);
+			builder.add(LEVEL);
 		}
 
 		@Override
@@ -166,6 +176,8 @@ public final class HealthBlocks {
 		/** A 1 m x 1 m bath 10 cm deep holds 100 L (proposed: over MSD's 6 cm). */
 		public static final double CAPACITY_L = 100;
 		public static final int PASSES_PER_BAG = 100;
+		/** Each animal through carries 1 L out on its feet and legs (proposed): 40 passes take a full bath to the 60 L it needs. */
+		public static final double DRAG_OUT_L = 1.0;
 		private double litres;
 		private int passes;
 
@@ -188,7 +200,23 @@ public final class HealthBlocks {
 
 		public void addWater(double l) {
 			litres = Math.min(CAPACITY_L, litres + l);
+			changed();
+		}
+
+		public double litres() {
+			return litres;
+		}
+
+		/** Saves, and shows the new level on the block (the liquid drops as animals carry it out). */
+		private void changed() {
 			setChanged();
+			if (level != null && !level.isClientSide()) {
+				int lv = (int) Math.ceil(litres / CAPACITY_L * 8 - 1e-9);
+				BlockState st = getBlockState();
+				if (st.hasProperty(FootbathBlock.LEVEL) && st.getValue(FootbathBlock.LEVEL) != lv) {
+					level.setBlock(worldPosition, st.setValue(FootbathBlock.LEVEL, Math.max(0, Math.min(8, lv))), Block.UPDATE_CLIENTS);
+				}
+			}
 		}
 
 		/** An animal walks through: a dose if charged and it has not had one in the last real day. */
@@ -203,8 +231,8 @@ public final class HealthBlocks {
 			}
 			Health.footbath(level, h);
 			passes--;
-			litres = Math.max(0, litres - 0.5);
-			setChanged();
+			litres = Math.max(0, litres - DRAG_OUT_L);
+			changed();
 			level.playSound(null, worldPosition, HealthSounds.FOOTBATH, net.minecraft.sounds.SoundSource.BLOCKS, 0.7F, 1.0F);
 		}
 
@@ -223,7 +251,7 @@ public final class HealthBlocks {
 			int fits = (int) Math.max(0, Math.min(l, Math.floor(CAPACITY_L - litres)));
 			if (fits > 0) {
 				litres += fits;
-				setChanged();
+				changed();
 			}
 			return fits;
 		}

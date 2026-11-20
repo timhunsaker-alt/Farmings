@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
  *       keeps the hooves on the ground. These proportions are drawn, not measured *(proposed)*.</li>
  * </ul>
  */
-public class CattleModel extends CowModel {
+public class CattleModel extends CowModel implements HealthSignsModel {
 	private final ModelPart rightHorn;
 	private final ModelPart leftHorn;
 	private final ModelPart rightEar;
@@ -86,5 +86,11 @@ public class CattleModel extends CowModel {
 		} else if (c.bull) {
 			head.xScale = head.yScale = head.zScale = 1.08F;
 		}
+		HealthSignsPose.quadruped(c.healthSigns, head, rightFrontLeg, leftFrontLeg, c.walkAnimationPos, c.walkAnimationSpeed);
+	}
+
+	@Override
+	public ModelPart[] bandLegs() {
+		return new ModelPart[] {rightHindLeg, leftHindLeg};
 	}
 }

@@ -1751,6 +1751,14 @@ def health_assets(lang):
         {"from": [0, 1, 0], "to": [16, 3, 1], "faces": {f: {"texture": "#rim"} for f in ("up", "north", "south", "east", "west")}},
         {"from": [0, 1, 15], "to": [16, 3, 16], "faces": {f: {"texture": "#rim"} for f in ("up", "north", "south", "east", "west")}},
         {"from": [1, 1, 1], "to": [15, 2.5, 15], "faces": {"up": {"texture": "#liquid"}}}]})
+    # its fill: eight levels, the liquid's surface 0.22 px a level, none when empty (the level drops as animals carry it out)
+    rim = [{"from": [0, 0, 0], "to": [16, 1, 16], "faces": {f: {"texture": "#rim"} for f in ("down", "up", "north", "south", "east", "west")}},
+           {"from": [0, 1, 0], "to": [16, 3, 1], "faces": {f: {"texture": "#rim"} for f in ("up", "north", "south", "east", "west")}},
+           {"from": [0, 1, 15], "to": [16, 3, 16], "faces": {f: {"texture": "#rim"} for f in ("up", "north", "south", "east", "west")}}]
+    for lv in range(9):
+        liquid = [{"from": [1, 1, 1], "to": [15, round(1 + lv * 0.21875, 4), 15], "faces": {"up": {"texture": "#liquid"}}}] if lv else []
+        write(os.path.join(m, "footbath_level_%d.json" % lv), {"textures": {"liquid": "farmings:block/mat/mat_footbath",
+              "rim": "farmings:block/mat/mat_grooved_concrete", "particle": "farmings:block/mat/mat_grooved_concrete"}, "elements": rim + liquid})
     # waste milk can: a stainless churn
     write(os.path.join(m, "waste_milk_can.json"), {"textures": {"steel": "farmings:block/mat/mat_stainless_can", "particle": "farmings:block/mat/mat_stainless_can"},
           "elements": [{"from": [3, 0, 3], "to": [13, 11, 13], "faces": {f: {"texture": "#steel"} for f in ("down", "up", "north", "south", "east", "west")}},
@@ -1763,7 +1771,9 @@ def health_assets(lang):
           "elements": [{"from": [0, 0, 0], "to": [16, 2, 16], "faces": {f: {"texture": "#straw"} for f in ("down", "up", "north", "south", "east", "west")}}]})
     for name, title in HEALTH_BLOCKS.items():
         lang["block.farmings." + name] = title
-        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": {"": {"model": "farmings:block/" + name}}})
+        variants = {"level=%d" % lv: {"model": "farmings:block/footbath_level_%d" % lv} for lv in range(9)} if name == "footbath" \
+            else {"": {"model": "farmings:block/" + name}}
+        write(os.path.join(ASSETS, "blockstates", name + ".json"), {"variants": variants})
         write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:block/" + name}})
         write(os.path.join(DATA, "loot_table", "blocks", name + ".json"), loot(name))
     out = os.path.join(DATA, "recipe")

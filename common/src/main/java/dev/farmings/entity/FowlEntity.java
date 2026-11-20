@@ -69,6 +69,8 @@ import org.jspecify.annotations.Nullable;
 public class FowlEntity extends Animal implements Wild.Animal, dev.farmings.health.HealthHost {
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.LONG);
+	/** The signs of sickness drawn on it (dev.farmings.health.HealthSigns flags). */
+	private static final EntityDataAccessor<Integer> DATA_SIGNS = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.INT);
 	/** Bit 0 male, bit 1 young (needs heat). */
 	private static final EntityDataAccessor<Integer> DATA_FLAGS = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> DATA_SIZE = SynchedEntityData.defineId(FowlEntity.class, EntityDataSerializers.FLOAT);
@@ -149,6 +151,7 @@ public class FowlEntity extends Animal implements Wild.Animal, dev.farmings.heal
 		super.defineSynchedData(builder);
 		builder.define(DATA_BREED, 0);
 		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_SIGNS, 0);
 		builder.define(DATA_FLAGS, 0);
 		builder.define(DATA_SIZE, 1.0F);
 	}
@@ -1230,6 +1233,19 @@ public class FowlEntity extends Animal implements Wild.Animal, dev.farmings.heal
 		return 50;
 	}
 
+	/** The cold rule for animal health: a young bird out of the brooder's or its mother's warmth (docs/animal-health.md, "Risk factors"). */
+	@Override
+	public boolean cold() {
+		return young() && !warm();
+	}
+
+	/** Its housing's dirt for animal health (docs/animal-health.md, "Risk factors"). */
+	@Override
+	public double dirtShare() {
+		net.minecraft.core.BlockPos h = housing();
+		return h != null && level().getBlockEntity(h) instanceof dev.farmings.coop.CoopControllerEntity c ? c.litterShare() : 0;
+	}
+
 	@Override
 	public double fedShare() {
 		return housing() != null ? lastFed : 1;
@@ -1238,6 +1254,18 @@ public class FowlEntity extends Animal implements Wild.Animal, dev.farmings.heal
 	@Override
 	public double rationScore() {
 		return housing() != null ? dev.farmings.feed.Ration.layerScore(ration) : -1;
+	}
+
+	@Override
+	public void syncSigns(int signs) {
+		if (entityData.get(DATA_SIGNS) != signs) {
+			entityData.set(DATA_SIGNS, signs);
+		}
+	}
+
+	@Override
+	public int syncedSigns() {
+		return entityData.get(DATA_SIGNS);
 	}
 
 	@Override

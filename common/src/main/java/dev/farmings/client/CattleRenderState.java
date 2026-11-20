@@ -5,7 +5,15 @@ import dev.farmings.husbandry.CattleBreed;
 import net.minecraft.client.renderer.entity.state.CowRenderState;
 
 /** What the renderer needs to know about one animal. */
-public class CattleRenderState extends CowRenderState {
+public class CattleRenderState extends CowRenderState implements HealthSignsState {
+	/** The signs of sickness (dev.farmings.health.HealthSigns flags). */
+	public int healthSigns;
+
+	@Override
+	public int healthSigns() {
+		return healthSigns;
+	}
+
 	public CattleBreed breed = CattleBreed.HOLSTEIN;
 	public VisualPhenotype look = CattleRenderer.DEFAULT_LOOK;
 	public int markings;

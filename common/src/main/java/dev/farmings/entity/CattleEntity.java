@@ -58,6 +58,8 @@ public class CattleEntity extends Animal implements Wild.Animal, dev.farmings.he
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 	/** The resolved coat (VisualPhenotype.pack) and the seed for her exact markings, for the renderer. */
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.LONG);
+	/** The signs of sickness drawn on it (dev.farmings.health.HealthSigns flags). */
+	private static final EntityDataAccessor<Integer> DATA_SIGNS = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_MARKINGS = SynchedEntityData.defineId(CattleEntity.class, EntityDataSerializers.INT);
 
 	private CattleBreed breed = CattleBreed.HOLSTEIN;
@@ -134,6 +136,7 @@ public class CattleEntity extends Animal implements Wild.Animal, dev.farmings.he
 		builder.define(DATA_BREED, CattleBreed.HOLSTEIN.ordinal());
 		builder.define(DATA_STAGE, Stage.HEIFER.ordinal());
 		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_SIGNS, 0);
 		builder.define(DATA_MARKINGS, 0);
 	}
 
@@ -669,6 +672,7 @@ public class CattleEntity extends Animal implements Wild.Animal, dev.farmings.he
 				calf.damId = herdId(genome);
 				calf.sireId = herdId(sire);
 				calf.setPos(getX() + 0.8, getY(), getZ() + i * 0.8);
+				dev.farmings.health.Health.atBirth(level, this, calf);
 				level.addFreshEntity(calf);
 				born.add(calf);
 				if (ownerId != null) {
@@ -1291,6 +1295,18 @@ public class CattleEntity extends Animal implements Wild.Animal, dev.farmings.he
 	@Override
 	public double milkDays() {
 		return daysInMilk();
+	}
+
+	@Override
+	public void syncSigns(int signs) {
+		if (entityData.get(DATA_SIGNS) != signs) {
+			entityData.set(DATA_SIGNS, signs);
+		}
+	}
+
+	@Override
+	public int syncedSigns() {
+		return entityData.get(DATA_SIGNS);
 	}
 
 	@Override

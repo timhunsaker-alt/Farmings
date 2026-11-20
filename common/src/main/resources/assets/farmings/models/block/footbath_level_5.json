@@ -1,0 +1,116 @@
+{
+ "textures": {
+  "liquid": "farmings:block/mat/mat_footbath",
+  "rim": "farmings:block/mat/mat_grooved_concrete",
+  "particle": "farmings:block/mat/mat_grooved_concrete"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    1,
+    16
+   ],
+   "faces": {
+    "down": {
+     "texture": "#rim"
+    },
+    "up": {
+     "texture": "#rim"
+    },
+    "north": {
+     "texture": "#rim"
+    },
+    "south": {
+     "texture": "#rim"
+    },
+    "east": {
+     "texture": "#rim"
+    },
+    "west": {
+     "texture": "#rim"
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    1,
+    0
+   ],
+   "to": [
+    16,
+    3,
+    1
+   ],
+   "faces": {
+    "up": {
+     "texture": "#rim"
+    },
+    "north": {
+     "texture": "#rim"
+    },
+    "south": {
+     "texture": "#rim"
+    },
+    "east": {
+     "texture": "#rim"
+    },
+    "west": {
+     "texture": "#rim"
+    }
+   }
+  },
+  {
+   "from": [
+    0,
+    1,
+    15
+   ],
+   "to": [
+    16,
+    3,
+    16
+   ],
+   "faces": {
+    "up": {
+     "texture": "#rim"
+    },
+    "north": {
+     "texture": "#rim"
+    },
+    "south": {
+     "texture": "#rim"
+    },
+    "east": {
+     "texture": "#rim"
+    },
+    "west": {
+     "texture": "#rim"
+    }
+   }
+  },
+  {
+   "from": [
+    1,
+    1,
+    1
+   ],
+   "to": [
+    15,
+    2.0938,
+    15
+   ],
+   "faces": {
+    "up": {
+     "texture": "#liquid"
+    }
+   }
+  }
+ ]
+}

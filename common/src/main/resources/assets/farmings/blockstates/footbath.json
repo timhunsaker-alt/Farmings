@@ -1,7 +1,31 @@
 {
  "variants": {
-  "": {
-   "model": "farmings:block/footbath"
+  "level=0": {
+   "model": "farmings:block/footbath_level_0"
+  },
+  "level=1": {
+   "model": "farmings:block/footbath_level_1"
+  },
+  "level=2": {
+   "model": "farmings:block/footbath_level_2"
+  },
+  "level=3": {
+   "model": "farmings:block/footbath_level_3"
+  },
+  "level=4": {
+   "model": "farmings:block/footbath_level_4"
+  },
+  "level=5": {
+   "model": "farmings:block/footbath_level_5"
+  },
+  "level=6": {
+   "model": "farmings:block/footbath_level_6"
+  },
+  "level=7": {
+   "model": "farmings:block/footbath_level_7"
+  },
+  "level=8": {
+   "model": "farmings:block/footbath_level_8"
   }
  }
 }

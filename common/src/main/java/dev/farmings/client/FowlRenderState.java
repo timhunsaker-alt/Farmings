@@ -6,7 +6,15 @@ import dev.farmings.husbandry.poultry.FowlBreed;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 /** What the bird renderer needs to know about one bird. */
-public class FowlRenderState extends LivingEntityRenderState {
+public class FowlRenderState extends LivingEntityRenderState implements HealthSignsState {
+	/** The signs of sickness (dev.farmings.health.HealthSigns flags). */
+	public int healthSigns;
+
+	@Override
+	public int healthSigns() {
+		return healthSigns;
+	}
+
 	public Species species = Species.CHICKEN;
 	public FowlBreed breed = FowlBreed.LEGHORN;
 	public PoultryLook look = FowlRenderer.DEFAULT_LOOK;

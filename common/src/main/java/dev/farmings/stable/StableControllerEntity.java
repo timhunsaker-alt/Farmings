@@ -291,6 +291,15 @@ public class StableControllerEntity extends BlockEntity implements net.minecraft
 		}
 	}
 
+	/** How dirty this animal's bedding is for animal health's dirt factor (docs/animal-health.md, "Risk factors"): 0 on the paddock, the soiled share of
+	 * the store, 1 when the stable reads DIRTY. */
+	public double dirtFor(HorseEntity h) {
+		if (onPaddock(h)) {
+			return 0;
+		}
+		return dirty ? 1 : Math.min(1, bedding.soiledKg() / ShedBedding.MAX_SOILED_KG);
+	}
+
 	private boolean onPaddock(HorseEntity h) {
 		BlockPos b = h.blockPosition();
 		return paddockCells.contains(b.asLong()) || paddockCells.contains(b.above().asLong()) || paddockCells.contains(b.below().asLong());

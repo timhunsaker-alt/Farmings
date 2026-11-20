@@ -78,6 +78,11 @@ final class HealthGameTests {
 		r.accept("herd_check_lists_due", HealthGameTests::herdCheckListsDue);
 		r.accept("sick_cow_walks_slower", HealthGameTests::sickCowWalksSlower);
 		r.accept("rule_command_sets_disease", HealthGameTests::ruleCommand);
+		r.accept("signs_synced_for_drawing", HealthGameTests::signsSynced);
+		r.accept("piglet_cold_and_dirty_pit", HealthGameTests::pigletColdAndDirtyPit);
+		r.accept("dam_vaccine_halves_scours", HealthGameTests::damVaccineHalvesScours);
+		r.accept("weaning_opens_brd_window", HealthGameTests::weaningOpensBrdWindow);
+		r.accept("footbath_level_drops", HealthGameTests::footbathLevelDrops);
 	}
 
 	static CattleEntity cow(GameTestHelper helper, long seed, BlockPos at) {
@@ -561,6 +566,121 @@ final class HealthGameTests {
 		srv.getCommands().performPrefixedCommand(src, "farmings rule disease false");
 		helper.assertTrue(on, Component.literal("the command turned disease on"));
 		helper.assertTrue(!FarmingsRules.on(srv, FarmingsRules.DISEASE), Component.literal("and off again"));
+		helper.succeed();
+	}
+
+	/** The signs the client draws: a lame cow is sick and lame, a treated one wears the band, a pig with erysipelas the diamonds. */
+	static void signsSynced(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		CattleEntity cow = cow(helper, 701L, new BlockPos(3, 1, 3));
+		long now = level.getGameTime();
+		cow.health().setLastTick(now - 20);
+		cow.health().infect(Disease.FOOT_ROT, Stage.SICK, now, now + 1_000_000);
+		cow.settle(level);
+		int f = cow.syncedSigns();
+		helper.assertTrue(f == (dev.farmings.health.HealthSigns.SICK | dev.farmings.health.HealthSigns.LAME), Component.literal("lame cow signs " + f));
+		Health.treat(level, cow, Drug.INJECTION);
+		cow.settle(level);
+		helper.assertTrue(dev.farmings.health.HealthSigns.has(cow.syncedSigns(), dev.farmings.health.HealthSigns.BAND), Component.literal("band " + cow.syncedSigns()));
+		var pig = PigGameTests.adult(helper, dev.farmings.husbandry.PigBreed.LARGE_WHITE, Sex.FEMALE, 702L, new BlockPos(6, 1, 6));
+		pig.setNoAi(true);
+		pig.health().setLastTick(now - 20);
+		pig.health().infect(Disease.ERYSIPELAS, Stage.SICK, now, now + 1_000_000);
+		pig.settle(level);
+		helper.assertTrue(dev.farmings.health.HealthSigns.has(pig.syncedSigns(), dev.farmings.health.HealthSigns.DIAMONDS), Component.literal("pig " + pig.syncedSigns()));
+		helper.succeed();
+	}
+
+	/** A piglet out of the lamp is cold (scours risk x2); a full pit under the slats is fully dirty for the pigs in the barn. */
+	static void pigletColdAndDirtyPit(GameTestHelper helper) {
+		BlockPos c = PigGameTests.buildBarn(helper);
+		ServerLevel level = helper.getLevel();
+		var barn = PigGameTests.barn(helper, c);
+		barn.refresh(level);
+		BlockPos crate = helper.absolutePos(new BlockPos(5, 1, 1));
+		var warm = PigGameTests.pig(helper, dev.farmings.husbandry.PigBreed.LARGE_WHITE, Sex.FEMALE, 703L, 3, new BlockPos(5, 1, 1));
+		var cold = PigGameTests.pig(helper, dev.farmings.husbandry.PigBreed.LARGE_WHITE, Sex.FEMALE, 704L, 3, new BlockPos(3, 1, 2));
+		warm.setNoAi(true);
+		cold.setNoAi(true);
+		warm.place().assignShed(c, crate);
+		cold.place().assignShed(c, helper.absolutePos(new BlockPos(3, 1, 2)));
+		helper.setBlock(new BlockPos(5, 3, 1), dev.farmings.piggery.PigBarnBlocks.HEAT_LAMP);
+		((dev.farmings.piggery.HeatLampEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(5, 3, 1)))).forceRunning(true);
+		barn.tend(level, java.util.List.of(warm, cold), 0.01);
+		helper.assertTrue(!warm.cold() && cold.cold(), Component.literal("warm " + warm.cold() + ", cold " + cold.cold()));
+		long now = level.getGameTime();
+		Risk.Inputs in = Risk.Inputs.typical(3);
+		double hw = HealthModel.hazard(Disease.SCOURS, warm.health(), Species.PIG, in.withCold(warm.cold()), HealthModel.Group.NONE, now, sc());
+		double hc = HealthModel.hazard(Disease.SCOURS, cold.health(), Species.PIG, in.withCold(cold.cold()), HealthModel.Group.NONE, now, sc());
+		helper.assertTrue(Math.abs(hc / hw - Risk.COLD_FACTOR) < 1e-9, Component.literal("cold scours " + hc + " vs " + hw));
+		helper.assertTrue(warm.dirtShare() == 0, Component.literal("empty pit: clean, " + warm.dirtShare()));
+		barn.addSlurryForTest(barn.pitCapacityKg());
+		helper.assertTrue(Math.abs(warm.dirtShare() - 1) < 1e-9, Component.literal("full pit: dirty, " + warm.dirtShare()));
+		helper.succeed();
+	}
+
+	/** A cow given the respiratory vaccine 3 weeks before calving: her calf's scours risk is half an unvaccinated cow's calf's. */
+	static void damVaccineHalvesScours(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		CattleEntity dam = cow(helper, 705L, new BlockPos(2, 1, 2));
+		CattleEntity other = cow(helper, 706L, new BlockPos(6, 1, 2));
+		CattleEntity c1 = cow(helper, 707L, new BlockPos(2, 1, 6));
+		CattleEntity c2 = cow(helper, 708L, new BlockPos(6, 1, 6));
+		Health.vaccinate(level, dam, Vaccine.RESPIRATORY);
+		Health.atBirth(level, dam, c1);
+		Health.atBirth(level, other, c2);
+		long now = level.getGameTime();
+		double h1 = HealthModel.hazard(Disease.SCOURS, c1.health(), Species.CATTLE, Risk.Inputs.typical(2), HealthModel.Group.NONE, now, sc());
+		double h2 = HealthModel.hazard(Disease.SCOURS, c2.health(), Species.CATTLE, Risk.Inputs.typical(2), HealthModel.Group.NONE, now, sc());
+		helper.assertTrue(c1.health().damVaccinated() && !c2.health().damVaccinated(), Component.literal("flags"));
+		helper.assertTrue(Math.abs(h1 / h2 - Risk.DAM_VACCINE_FACTOR) < 1e-9, Component.literal("scours " + h1 + " vs " + h2));
+		// a dose 7 weeks before birth is too early
+		CattleEntity late = cow(helper, 709L, new BlockPos(4, 1, 4));
+		late.health().vaccines().put(Vaccine.RESPIRATORY, new HealthRecord.Doses(1, now - sc().realDaysToTicks(49)));
+		Health.atBirth(level, late, c2);
+		helper.assertTrue(!c2.health().damVaccinated(), Component.literal("7 weeks is outside the window"));
+		helper.succeed();
+	}
+
+	/** A dairy calf passing 8 weeks old is weaned: the BRD stress window opens. */
+	static void weaningOpensBrdWindow(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		FarmingsGameTests.floor(helper);
+		long now = level.getGameTime();
+		CattleEntity calf = helper.spawn(FarmingsEntities.CATTLE, new BlockPos(3, 1, 3));
+		calf.initFounder(CattleBreed.HOLSTEIN, Sex.FEMALE, 710L, HealthModel.DAIRY_WEANING_DAYS - 0.05, 80, now);     // 8 weeks old in 80 ticks
+		calf.setNoAi(true);
+		calf.health().setLastTick(now);
+		helper.assertTrue(!calf.health().stressed(now), Component.literal("not stressed before"));
+		helper.runAfterDelay(200, () -> {
+			long t = level.getGameTime();
+			Health.tick(level, calf);
+			helper.assertTrue(calf.health().stressed(t), Component.literal("weaned: stressed, age " + calf.ageRealDays()));
+			helper.assertTrue(calf.health().encode().contains("weaned"), Component.literal(calf.health().encode()));
+			helper.succeed();
+		});
+	}
+
+	/** Each ewe through carries 1 L out: the bath reads 99 L after one, and the drawn level falls an eighth after 13. */
+	static void footbathLevelDrops(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		FarmingsGameTests.floor(helper);
+		helper.setBlock(new BlockPos(3, 1, 3), HealthBlocks.FOOTBATH);
+		BlockPos at = helper.absolutePos(new BlockPos(3, 1, 3));
+		var bath = (HealthBlocks.FootbathEntity) level.getBlockEntity(at);
+		bath.addWater(100);
+		bath.charge(100);
+		helper.assertTrue(level.getBlockState(at).getValue(HealthBlocks.FootbathBlock.LEVEL) == 8, Component.literal("full"));
+		for (int i = 0; i < 13; i++) {
+			SheepEntity ewe = SheepGameTests.adult(helper, SheepBreed.SUFFOLK, Sex.FEMALE, 720L + i, new BlockPos(5, 1, 5));
+			ewe.setNoAi(true);
+			bath.pass(level, ewe);
+			if (i == 0) {
+				helper.assertTrue(Math.abs(bath.litres() - 99) < 1e-9 && bath.readout().contains("99 of 100 L"), Component.literal(bath.readout()));
+			}
+			ewe.discard();
+		}
+		helper.assertTrue(level.getBlockState(at).getValue(HealthBlocks.FootbathBlock.LEVEL) == 7, Component.literal("level " + level.getBlockState(at)));
 		helper.succeed();
 	}
 }

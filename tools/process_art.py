@@ -147,6 +147,20 @@ def health_blocks():
 	face("face_isolation_controller", (0.1, 0.1, 0.9, 0.9)).save(f"{ASSETS}/block/isolation_controller.png")
 
 
+def health_signs():
+	"""The signs of sickness drawn on the animals (docs/animal-health.md, "What the player sees"): the red leg band of a withdrawal and the
+	raised red-purple diamond patches of swine erysipelas, each tiled from the cleanest window of its Ludo swatch. The band cube is 16 x 4 x 16
+	px and a diamond 8 x 8 x 1 px in box UV (dev.farmings.client.HealthSignsLayer), scaled to the leg or the flank when drawn."""
+	os.makedirs(f"{ASSETS}/entity/health", exist_ok=True)
+	for name, size, canvas in (("leg_band", 16, (64, 20)), ("erysipelas", 16, (32, 32))):
+		tile = tileable(cleanest(Image.open(f"{SRC}/sign_{name}.webp").convert("RGB")).resize((size, size), Image.LANCZOS))
+		out = Image.new("RGBA", canvas)
+		for y in range(0, canvas[1], size):
+			for x in range(0, canvas[0], size):
+				out.paste(tile, (x, y))
+		out.save(f"{ASSETS}/entity/health/{name}.png")
+
+
 def main():
 	os.makedirs(f"{ASSETS}/block/mat", exist_ok=True)
 	os.makedirs(f"{ASSETS}/item", exist_ok=True)
@@ -184,6 +198,7 @@ def main():
 							px[x, y] = (min(255, int(rgb[0] * v)), min(255, int(rgb[1] * v)), min(255, int(rgb[2] * v)), al)
 				tinted.save(f"{ASSETS}/item/vaccine_{vac}.png")
 	health_blocks()
+	health_signs()
 	# the worn milk armor is drawn by tools/armor_textures.py (face by face, with drips), not from a flat swatch
 	import subprocess, sys
 	subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "armor_textures.py")], check=True)

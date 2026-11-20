@@ -191,3 +191,9 @@ Every prompt ends "game item icon, plain white background, no text".
 | file | prompt |
 |---|---|
 | field_manual | A single closed farm field manual handbook, worn green cloth cover with a small embossed golden wheat sheaf, a red ribbon bookmark hanging out, game item icon, plain white background, no text |
+
+## 2026-11-20: signs of sickness (Ludo createImage, `texture`, 16-Bit Pixel, 1:1, 1 variation; one try each)
+| file | prompt |
+|---|---|
+| sign_leg_band | Seamless flat texture of a bright red plastic livestock leg band strap, slightly glossy, fine ribbed surface, no text, fills the whole frame |
+| sign_erysipelas | Seamless flat texture of an inflamed skin lesion swatch: raised dark red-purple mottled skin patch, slightly bumpy, fills the whole frame, no gore, no blood |

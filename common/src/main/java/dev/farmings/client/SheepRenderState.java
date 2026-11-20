@@ -4,7 +4,15 @@ import dev.farmings.genetics.SheepLook;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 /** What the sheep renderer needs to know about one sheep. */
-public class SheepRenderState extends LivingEntityRenderState {
+public class SheepRenderState extends LivingEntityRenderState implements HealthSignsState {
+	/** The signs of sickness (dev.farmings.health.HealthSigns flags). */
+	public int healthSigns;
+
+	@Override
+	public int healthSigns() {
+		return healthSigns;
+	}
+
 	public SheepLook look = SheepRenderer.DEFAULT_LOOK;
 	/** Fleece growth as a share of a year, 0-2. */
 	public float fleece = 1.0F;

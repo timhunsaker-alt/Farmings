@@ -21,13 +21,14 @@ import net.minecraft.resources.Identifier;
  * base coat by Extension, Agouti, Cream and Dun, with roan, sabino, face and leg markings and grey drawn over it (textures by
  * tools/horse_textures.py). Foals are the adult model scaled by weight, as the other Farmings animals *(proposed)*.
  */
-public class HorseRenderer extends AbstractHorseRenderer<HorseEntity, HorseRenderState, HorseModel> {
+public class HorseRenderer extends AbstractHorseRenderer<HorseEntity, HorseRenderState, FarmingsHorseModel> {
 	static final HorseLook DEFAULT_LOOK = new HorseLook(HorseLook.Base.BAY, 0, false, false, 0, 0, 0, false, 0);
 	private static final String DIR = "textures/entity/horse/";
 
 	public HorseRenderer(EntityRendererProvider.Context context) {
-		super(context, new HorseModel(context.bakeLayer(ModelLayers.HORSE)), new HorseModel(context.bakeLayer(ModelLayers.HORSE)));
+		super(context, new FarmingsHorseModel(context.bakeLayer(ModelLayers.HORSE)), new FarmingsHorseModel(context.bakeLayer(ModelLayers.HORSE)));
 		addLayer(new Markings(this));
+		addLayer(new HealthSignsLayer<>(this));
 		addLayer(new SimpleEquipmentLayer<>(this, context.getEquipmentRenderer(), EquipmentClientInfo.LayerType.HORSE_BODY, s -> s.bodyArmorItem,
 				new HorseModel(context.bakeLayer(ModelLayers.HORSE_ARMOR)), null, 2));
 		addLayer(new SimpleEquipmentLayer<>(this, context.getEquipmentRenderer(), EquipmentClientInfo.LayerType.HORSE_SADDLE, s -> s.saddle,
@@ -56,14 +57,15 @@ public class HorseRenderer extends AbstractHorseRenderer<HorseEntity, HorseRende
 	@Override
 	public void extractRenderState(HorseEntity entity, HorseRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
+		state.healthSigns = entity.syncedSigns();
 		HorseLook look = entity.syncedLook();
 		state.look = look == null ? DEFAULT_LOOK : look;
 		state.weightKg = entity.syncedKg();
 		state.matureKg = entity.syncedMatureKg();
 	}
 
-	private static final class Markings extends RenderLayer<HorseRenderState, HorseModel> {
-		Markings(RenderLayerParent<HorseRenderState, HorseModel> parent) {
+	private static final class Markings extends RenderLayer<HorseRenderState, FarmingsHorseModel> {
+		Markings(RenderLayerParent<HorseRenderState, FarmingsHorseModel> parent) {
 			super(parent);
 		}
 

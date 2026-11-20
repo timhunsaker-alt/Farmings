@@ -14,6 +14,9 @@ public final class Risk {
 	/** Teat dip: "70 percent or more" fewer new infections (NMC 2020). */
 	public static final double TEAT_DIP_FACTOR = 0.3;
 	public static final double FOOTBATH_FACTOR = 0.3;
+	/** Neonatal scours in the young of a dam vaccinated in the 6 weeks before birth: halved (docs/animal-health.md, "Neonatal scours"; proposed). */
+	public static final double DAM_VACCINE_FACTOR = 0.5;
+	public static final double DAM_VACCINE_DAYS = 42;
 	/** A fresh cow (under 30 days in milk) has twice the mastitis risk (proposed). */
 	public static final double FRESH_DAYS = 30;
 	public static final double FRESH_FACTOR = 2.0;

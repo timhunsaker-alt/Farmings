@@ -4,7 +4,7 @@ import net.minecraft.client.model.QuadrupedModel;
 import net.minecraft.client.model.geom.ModelPart;
 
 /** What the sheep's skin and fleece models share: the walking pose and the body shape from the breed shares, so the two line up. */
-abstract class SheepBaseModel extends QuadrupedModel<SheepRenderState> {
+abstract class SheepBaseModel extends QuadrupedModel<SheepRenderState> implements HealthSignsModel {
 	SheepBaseModel(ModelPart root) {
 		super(root);
 	}
@@ -27,5 +27,11 @@ abstract class SheepBaseModel extends QuadrupedModel<SheepRenderState> {
 			leg.y += shift;
 			leg.x *= width;
 		}
+		HealthSignsPose.quadruped(s.healthSigns, head, rightFrontLeg, leftFrontLeg, s.walkAnimationPos, s.walkAnimationSpeed);
+	}
+
+	@Override
+	public ModelPart[] bandLegs() {
+		return new ModelPart[] {rightHindLeg, leftHindLeg};
 	}
 }

@@ -4,7 +4,15 @@ import dev.farmings.genetics.PigLook;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 /** What the pig renderer needs to know about one pig. */
-public class PigRenderState extends LivingEntityRenderState {
+public class PigRenderState extends LivingEntityRenderState implements HealthSignsState {
+	/** The signs of sickness (dev.farmings.health.HealthSigns flags). */
+	public int healthSigns;
+
+	@Override
+	public int healthSigns() {
+		return healthSigns;
+	}
+
 	public PigLook look = PigRenderer.DEFAULT_LOOK;
 	/** Duroc share, 0-1: drooping ears from 0.5. */
 	public float droop;

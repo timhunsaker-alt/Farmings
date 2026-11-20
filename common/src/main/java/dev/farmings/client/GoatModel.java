@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.ModelPart;
  * larger), a beard and wattles when the look has them, an udder on a doe in kid or in milk, and the body shape: Boer blood wider and
  * deeper with shorter legs, dairy blood leaner and longer in the leg. Proportions are drawn, not measured *(proposed)*.
  */
-public class GoatModel extends QuadrupedModel<GoatRenderState> {
+public class GoatModel extends QuadrupedModel<GoatRenderState> implements HealthSignsModel {
 	private final ModelPart rightEar;
 	private final ModelPart leftEar;
 	private final ModelPart rightLop;
@@ -66,5 +66,11 @@ public class GoatModel extends QuadrupedModel<GoatRenderState> {
 		if (kid) {
 			head.xScale = head.yScale = head.zScale = 1.35F;
 		}
+		HealthSignsPose.quadruped(s.healthSigns, head, rightFrontLeg, leftFrontLeg, s.walkAnimationPos, s.walkAnimationSpeed);
+	}
+
+	@Override
+	public ModelPart[] bandLegs() {
+		return new ModelPart[] {rightHindLeg, leftHindLeg};
 	}
 }

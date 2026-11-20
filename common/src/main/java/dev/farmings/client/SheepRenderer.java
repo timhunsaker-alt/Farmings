@@ -32,6 +32,7 @@ public class SheepRenderer extends MobRenderer<SheepEntity, SheepRenderState, Sh
 	public SheepRenderer(EntityRendererProvider.Context context) {
 		super(context, new SheepModel(context.bakeLayer(SheepModels.SHEEP)), 0.7F);
 		addLayer(new Markings(this));
+		addLayer(new HealthSignsLayer<>(this));
 		addLayer(new Fleece(this, new SheepFleeceModel(context.bakeLayer(SheepModels.FLEECE))));
 	}
 
@@ -79,6 +80,7 @@ public class SheepRenderer extends MobRenderer<SheepEntity, SheepRenderState, Sh
 	@Override
 	public void extractRenderState(SheepEntity entity, SheepRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
+		state.healthSigns = entity.syncedSigns();
 		SheepLook look = entity.syncedLook();
 		state.look = look == null ? DEFAULT_LOOK : look;
 		state.fleece = entity.syncedFleece();

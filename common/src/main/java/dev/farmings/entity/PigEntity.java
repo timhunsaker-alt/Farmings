@@ -64,6 +64,8 @@ public class PigEntity extends Animal implements Wild.Animal, dev.farmings.healt
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.LONG);
+	/** The signs of sickness drawn on it (dev.farmings.health.HealthSigns flags). */
+	private static final EntityDataAccessor<Integer> DATA_SIGNS = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.INT);
 	/** Duroc share 0-100 (drooping ears) and the weight in kg, for the model. */
 	private static final EntityDataAccessor<Integer> DATA_BODY = SynchedEntityData.defineId(PigEntity.class, EntityDataSerializers.INT);
 
@@ -117,6 +119,7 @@ public class PigEntity extends Animal implements Wild.Animal, dev.farmings.healt
 		builder.define(DATA_BREED, 0);
 		builder.define(DATA_STAGE, PigStage.GILT.ordinal());
 		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_SIGNS, 0);
 		builder.define(DATA_BODY, 0);
 	}
 
@@ -891,6 +894,26 @@ public class PigEntity extends Animal implements Wild.Animal, dev.farmings.healt
 		return s <= 0 ? 50 : s;
 	}
 
+	/** A piglet out of its heat lamp's warmth on the barn's last check (not saved: the barn checks again within a second). */
+	private boolean coldNow;
+
+	public void setCold(boolean cold) {
+		this.coldNow = cold;
+	}
+
+	/** The cold rule for animal health: a piglet out of the heat (docs/animal-health.md, "Risk factors"). */
+	@Override
+	public boolean cold() {
+		return coldNow && stage().piglet();
+	}
+
+	/** Its housing's dirt for animal health (docs/animal-health.md, "Risk factors"). */
+	@Override
+	public double dirtShare() {
+		net.minecraft.core.BlockPos h = housing();
+		return h != null && level().getBlockEntity(h) instanceof dev.farmings.piggery.PigBarnControllerEntity c ? c.dirtFor(this) : 0;
+	}
+
 	@Override
 	public double fedShare() {
 		return housing() != null ? lastFed : 1;
@@ -899,6 +922,18 @@ public class PigEntity extends Animal implements Wild.Animal, dev.farmings.healt
 	@Override
 	public double rationScore() {
 		return housing() != null ? dev.farmings.feed.Ration.lambScore(ration) : -1;
+	}
+
+	@Override
+	public void syncSigns(int signs) {
+		if (entityData.get(DATA_SIGNS) != signs) {
+			entityData.set(DATA_SIGNS, signs);
+		}
+	}
+
+	@Override
+	public int syncedSigns() {
+		return entityData.get(DATA_SIGNS);
 	}
 
 	@Override

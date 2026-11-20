@@ -77,6 +77,16 @@ public final class Health {
 			}
 			r.setHome(homeKey);
 		}
+		// weaning is a stress too (a calf's weaning age passed since the last step)
+		if (h.species() == Species.CATTLE && r.lastTick() >= 0 && now > r.lastTick() && h.animal() instanceof dev.farmings.entity.CattleEntity calf) {
+			double wean = calf.breed().use == dev.farmings.husbandry.CattleBreed.Use.BEEF ? HealthModel.BEEF_WEANING_DAYS : HealthModel.DAIRY_WEANING_DAYS;
+			double age = h.ageRealDays();
+			double before = age - sc.ticksToRealDays(now - r.lastTick());
+			if (before < wean && age >= wean) {
+				r.stress(now + sc.realDaysToTicks(HealthModel.BRD_WINDOW_DAYS));
+				r.event(now, "weaned");
+			}
+		}
 		HealthModel.Rules rules = FarmingsRules.model(level.getServer());
 		HealthWorld world = HealthWorld.get(level);
 		HealthModel.Outcome out = HealthModel.step(r, h.species(), inputs(level, h, world, now, rules), group(level, h), now, roll(level, h, now), rules);
@@ -205,6 +215,8 @@ public final class Health {
 				speed.addTransientModifier(new AttributeModifier(SLOW, slow, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 			}
 		}
+		// the signs the client draws: head low, the limp, the leg band, erysipelas' marks
+		h.syncSigns(HealthSigns.of(h.species(), r, now));
 		// the cough, every 15 s or so
 		if (r.coughing() && Math.floorMod(now + a.getId() * 7L, 300L) < 20) {
 			net.minecraft.sounds.SoundEvent cough = HealthSounds.cough(h.species());
@@ -261,6 +273,25 @@ public final class Health {
 		}
 		r.event(now, "tamed");
 		IsolationHold.sendToQuarantine(level, h, corral);
+	}
+
+	/**
+	 * A newborn: its dam's vaccine in the 6 weeks before birth (CDT for ewes and does, the respiratory vaccine for cows) passes antibodies in
+	 * the colostrum, and halves its scours risk (docs/animal-health.md, "Neonatal scours").
+	 */
+	public static void atBirth(ServerLevel level, HealthHost dam, HealthHost young) {
+		long now = level.getGameTime();
+		TimeScale.Scale sc = scale(dam);
+		Vaccine v = switch (dam.species()) {
+			case CATTLE -> Vaccine.RESPIRATORY;
+			case SHEEP, GOAT -> Vaccine.CDT;
+			default -> null;
+		};
+		HealthRecord.Doses d = v == null ? null : dam.health().vaccines().get(v);
+		boolean vaccinated = d != null && now - d.last() <= sc.realDaysToTicks(Risk.DAM_VACCINE_DAYS);
+		young.health().setDamVaccinated(vaccinated);
+		young.health().setLastTick(now);
+		young.health().event(now, vaccinated ? "born; dam vaccinated (" + v.label + ")" : "born");
 	}
 
 	/** Housing may take this animal in: not held in an isolation pen and not inside a standstill. */

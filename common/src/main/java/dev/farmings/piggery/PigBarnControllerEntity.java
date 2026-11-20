@@ -316,6 +316,13 @@ public class PigBarnControllerEntity extends BlockEntity {
 		}
 	}
 
+	/** How dirty a pig's pen is for animal health's dirt factor: 0 on pasture, otherwise how full the pit under the slats is (full is the
+	 * barn's DIRTY) *(proposed)*. */
+	public double dirtFor(PigEntity p) {
+		double cap = pitCapacityKg();
+		return onPasture(p) || cap <= 0 ? 0 : Math.min(1, pitKg / cap);
+	}
+
 	private boolean onPasture(PigEntity p) {
 		BlockPos b = p.blockPosition();
 		return pastureCells.contains(b.asLong()) || pastureCells.contains(b.above().asLong()) || pastureCells.contains(b.below().asLong());
@@ -344,12 +351,15 @@ public class PigBarnControllerEntity extends BlockEntity {
 		for (PigEntity p : members) {
 			if (p.stage().piglet()) {
 				BlockPos h = p.place().home();
-				if (h == null || !warmAt(level, h)) {
+				boolean cold = h == null || !warmAt(level, h);
+				p.setCold(cold);     // animal health: scours risk x2 while cold (docs/animal-health.md, "Risk factors")
+				if (cold) {
 					// a newborn needs 32-35 °C (Smith et al. 2019): without a lamp it loses health as a cold chick does (proposed)
 					p.setHealth((float) Math.max(1.0, p.getHealth() - dev.farmings.husbandry.poultry.Fowl.COLD_HEALTH_LOSS / 100.0 * p.getMaxHealth() * dayShare));
 				}
 				continue;
 			}
+			p.setCold(false);
 			double needDm = p.feedKgPerDay() * DM_SHARE * dayShare;
 			double got = 0;
 			if (onPasture(p)) {

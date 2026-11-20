@@ -68,6 +68,7 @@ public class FowlRenderer extends MobRenderer<FowlEntity, FowlRenderState, FowlM
 	@Override
 	public void extractRenderState(FowlEntity entity, FowlRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
+		state.healthSigns = entity.syncedSigns();
 		PoultryLook look = entity.syncedLook();
 		state.look = look == null ? DEFAULT_LOOK : look;
 		state.species = entity.species();

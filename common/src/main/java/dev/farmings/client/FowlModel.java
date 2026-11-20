@@ -135,5 +135,10 @@ public class FowlModel extends EntityModel<FowlRenderState> {
 		if (s.young) {
 			head.xScale = head.yScale = head.zScale = 1.3F;
 		}
+		// a sick bird stands hunched, head drawn down
+		if (dev.farmings.health.HealthSigns.has(s.healthSigns, dev.farmings.health.HealthSigns.SICK)) {
+			head.xRot += 0.35F;
+			head.y += 1.0F;
+		}
 	}
 }

@@ -70,6 +70,8 @@ public final class HealthRecord {
 	private long lastTick = -1;
 	private long lastExam = -1;
 	private boolean reported;
+	/** Its dam had her vaccine (CDT for ewes and does, the respiratory vaccine for cows) in the 6 weeks before it was born: colostrum antibodies. */
+	private boolean damVaccinated;
 	/** The housing it was last in (a packed position; Long.MIN_VALUE for none): a change opens the stress window. */
 	private long home = Long.MIN_VALUE;
 	/** The isolation pen holding it (a packed position; Long.MIN_VALUE for none). */
@@ -310,6 +312,14 @@ public final class HealthRecord {
 		this.meatUntil = meat;
 	}
 
+	public boolean damVaccinated() {
+		return damVaccinated;
+	}
+
+	public void setDamVaccinated(boolean v) {
+		damVaccinated = v;
+	}
+
 	public boolean stressed(long now) {
 		return now < stressUntil;
 	}
@@ -404,7 +414,7 @@ public final class HealthRecord {
 		StringBuilder b = new StringBuilder("v1");
 		b.append(";scc=").append(scc).append(";milk=").append(milkUntil).append(";meat=").append(meatUntil).append(";stress=").append(stressUntil)
 				.append(";bath=").append(footbathUntil).append(";quar=").append(quarantineUntil).append(";dip=").append(teatDipped)
-				.append(";last=").append(lastTick).append(";exam=").append(lastExam).append(";rep=").append(reported).append(";home=").append(home).append(";pen=").append(pen);
+				.append(";last=").append(lastTick).append(";exam=").append(lastExam).append(";rep=").append(reported).append(";home=").append(home).append(";pen=").append(pen).append(";damvac=").append(damVaccinated);
 		for (Case c : cases) {
 			b.append(";case=").append(c.disease.name()).append(',').append(c.stage.name()).append(',').append(c.since).append(',').append(c.until)
 					.append(',').append(c.treated);
@@ -442,6 +452,7 @@ public final class HealthRecord {
 					case "rep" -> r.reported = Boolean.parseBoolean(v);
 					case "home" -> r.home = Long.parseLong(v);
 					case "pen" -> r.pen = Long.parseLong(v);
+					case "damvac" -> r.damVaccinated = Boolean.parseBoolean(v);
 					case "case" -> {
 						String[] f = v.split(",");
 						Disease d = Disease.byName(f[0]);

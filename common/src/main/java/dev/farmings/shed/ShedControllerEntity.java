@@ -390,6 +390,15 @@ public class ShedControllerEntity extends BlockEntity implements net.minecraft.w
 		}
 	}
 
+	/** How dirty this animal's bedding is for animal health's dirt factor (docs/animal-health.md, "Risk factors"): 0 on pasture, the soiled share of
+	 * the store, 1 when the shed reads DIRTY. */
+	public double dirtFor(SmallRuminant s) {
+		if (onPasture(s)) {
+			return 0;
+		}
+		return dirty ? 1 : Math.min(1, bedding.soiledKg() / dev.farmings.husbandry.shed.ShedBedding.MAX_SOILED_KG);
+	}
+
 	private boolean onPasture(SmallRuminant s) {
 		BlockPos p = s.animal().blockPosition();
 		return pastureCells.contains(p.asLong()) || pastureCells.contains(p.above().asLong()) || pastureCells.contains(p.below().asLong());

@@ -70,6 +70,8 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal, dev.farmi
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(HorseEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(HorseEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(HorseEntity.class, EntityDataSerializers.LONG);
+	/** The signs of sickness drawn on it (dev.farmings.health.HealthSigns flags). */
+	private static final EntityDataAccessor<Integer> DATA_SIGNS = SynchedEntityData.defineId(HorseEntity.class, EntityDataSerializers.INT);
 	/** Body weight in kg, for the model's size. */
 	private static final EntityDataAccessor<Integer> DATA_KG = SynchedEntityData.defineId(HorseEntity.class, EntityDataSerializers.INT);
 	/** The speed the horse runs at now when ridden, m/s; 0 when not ridden. */
@@ -150,6 +152,7 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal, dev.farmi
 		builder.define(DATA_BREED, 0);
 		builder.define(DATA_STAGE, HorseStage.FILLY.ordinal());
 		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_SIGNS, 0);
 		builder.define(DATA_KG, 0);
 		builder.define(DATA_PACE, 0F);
 	}
@@ -1099,9 +1102,28 @@ public class HorseEntity extends AbstractHorse implements Wild.Animal, dev.farmi
 		return s <= 0 ? 50 : s;
 	}
 
+	/** Its housing's dirt for animal health (docs/animal-health.md, "Risk factors"). */
+	@Override
+	public double dirtShare() {
+		net.minecraft.core.BlockPos h = housing();
+		return h != null && level().getBlockEntity(h) instanceof dev.farmings.stable.StableControllerEntity c ? c.dirtFor(this) : 0;
+	}
+
 	@Override
 	public double fedShare() {
 		return housing() != null ? lastFed : 1;
+	}
+
+	@Override
+	public void syncSigns(int signs) {
+		if (entityData.get(DATA_SIGNS) != signs) {
+			entityData.set(DATA_SIGNS, signs);
+		}
+	}
+
+	@Override
+	public int syncedSigns() {
+		return entityData.get(DATA_SIGNS);
 	}
 
 	@Override

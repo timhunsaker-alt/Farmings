@@ -25,6 +25,10 @@ public final class HealthModel {
 	/** The stress window after taming, a move or weaning (75% of cases in the first 40-55 days: Smith et al. 2023). */
 	public static final double BRD_WINDOW_DAYS = 45;
 	public static final double SCOURS_AGE_DAYS = 30;
+	/** Weaning opens the BRD stress window: dairy calves at 8 weeks (proposed, from the common 6-8 weeks; TO VERIFY), beef calves at 205 days
+	 * (the age beef weaning weights are adjusted to; TO VERIFY). Farmings calves have no suckling to stop, so the age is the weaning. */
+	public static final double DAIRY_WEANING_DAYS = 56;
+	public static final double BEEF_WEANING_DAYS = 205;
 	public static final double COCCIDIOSIS_AGE_DAYS = 56;
 	public static final double MAREKS_FROM_DAYS = 42;
 	public static final double MAREKS_TO_DAYS = 210;
@@ -231,7 +235,7 @@ public final class HealthModel {
 				if (in.ageDays() >= SCOURS_AGE_DAYS) {
 					return 0;
 				}
-				base = d.hazard * (in.cold() ? Risk.COLD_FACTOR : 1);
+				base = d.hazard * (in.cold() ? Risk.COLD_FACTOR : 1) * (r.damVaccinated() ? Risk.DAM_VACCINE_FACTOR : 1);
 				dirtBorne = true;
 			}
 			case FOOT_ROT -> {

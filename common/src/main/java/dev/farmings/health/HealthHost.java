@@ -67,4 +67,10 @@ public interface HealthHost extends dev.farmings.entity.Wild.Animal {
 		return 0;
 	}
 
+	/** Sends the signs of sickness to the client ({@link HealthSigns} flags). */
+	void syncSigns(int signs);
+
+	/** The signs of sickness as last synced (client side, for drawing). */
+	int syncedSigns();
+
 }

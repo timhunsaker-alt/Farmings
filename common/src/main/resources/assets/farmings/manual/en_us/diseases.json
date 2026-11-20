@@ -35,11 +35,41 @@
     ],
     [
      {
+      "t": "Head low",
+      "b": true
+     },
+     {
+      "t": ": any sick animal stands and walks with its head down."
+     }
+    ],
+    [
+     {
       "t": "Limping",
       "b": true
      },
      {
-      "t": ": foot rot. Clots in the milk: mastitis."
+      "t": ": foot rot (a short step on one foreleg, the head nodding). Clots in the milk: mastitis."
+     }
+    ],
+    [
+     {
+      "t": "Red diamond patches",
+      "b": true
+     },
+     {
+      "t": " on a pig: erysipelas."
+     }
+    ],
+    [
+     {
+      "t": "A "
+     },
+     {
+      "t": "red band",
+      "b": true
+     },
+     {
+      "t": " on both hind legs: treated, and its milk or meat withheld."
      }
     ],
     [
@@ -176,6 +206,14 @@
       "t": " diseases (foot-and-mouth, avian influenza, African swine fever) are off unless the world rule turns them on."
      }
     ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Dirty bedding, litter or a full pit raises the risk for every animal housed on it. Cold piglets and chicks get scours and coccidiosis twice as often. Weaning a calf (8 weeks for dairy breeds) opens the shipping-fever window, as taming and moving do."
+    }
    ]
   },
   {

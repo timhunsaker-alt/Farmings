@@ -17,6 +17,7 @@ public class PigRenderer extends MobRenderer<PigEntity, PigRenderState, PigModel
 
 	public PigRenderer(EntityRendererProvider.Context context) {
 		super(context, new PigModel(context.bakeLayer(PigModels.PIG)), 0.6F);
+		addLayer(new HealthSignsLayer<>(this));
 	}
 
 	@Override
@@ -39,6 +40,7 @@ public class PigRenderer extends MobRenderer<PigEntity, PigRenderState, PigModel
 	@Override
 	public void extractRenderState(PigEntity entity, PigRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
+		state.healthSigns = entity.syncedSigns();
 		PigLook look = entity.syncedLook();
 		state.look = look == null ? DEFAULT_LOOK : look;
 		state.droop = entity.syncedDroop();

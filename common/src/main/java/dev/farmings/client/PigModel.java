@@ -4,7 +4,7 @@ import net.minecraft.client.model.QuadrupedModel;
 import net.minecraft.client.model.geom.ModelPart;
 
 /** The pig model: drooping ears on Duroc blood, erect otherwise (Purdue breed ID; pigs.md); a piglet's big head. */
-public class PigModel extends QuadrupedModel<PigRenderState> {
+public class PigModel extends QuadrupedModel<PigRenderState> implements HealthSignsModel {
 	private final ModelPart rightEar;
 	private final ModelPart leftEar;
 	private final ModelPart rightDroop;
@@ -27,5 +27,16 @@ public class PigModel extends QuadrupedModel<PigRenderState> {
 		if (s.isBaby) {
 			head.xScale = head.yScale = head.zScale = 1.4F;
 		}
+		HealthSignsPose.quadruped(s.healthSigns, head, rightFrontLeg, leftFrontLeg, s.walkAnimationPos, s.walkAnimationSpeed);
+	}
+
+	@Override
+	public ModelPart[] bandLegs() {
+		return new ModelPart[] {rightHindLeg, leftHindLeg};
+	}
+
+	@Override
+	public ModelPart markBody() {
+		return body;
 	}
 }

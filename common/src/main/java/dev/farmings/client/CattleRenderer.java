@@ -25,7 +25,7 @@ import net.minecraft.resources.Identifier;
  * </ol>
  * The textures are drawn by tools/cattle_textures.py.
  */
-public class CattleRenderer extends MobRenderer<CattleEntity, CattleRenderState, CowModel> {
+public class CattleRenderer extends MobRenderer<CattleEntity, CattleRenderState, CattleModel> {
 	/** Shown for a moment before the server sends an animal's looks: a plain black-and-white dairy cow. */
 	static final VisualPhenotype DEFAULT_LOOK = new VisualPhenotype(VisualPhenotype.Coat.BLACK, 0, 1 << 3, 600, 0, true, 0, 0, 0,
 			VisualPhenotype.BodyFamily.DAIRY, null, 0);
@@ -37,6 +37,7 @@ public class CattleRenderer extends MobRenderer<CattleEntity, CattleRenderState,
 	public CattleRenderer(EntityRendererProvider.Context context) {
 		super(context, new CattleModel(context.bakeLayer(CattleModels.CATTLE)), 0.7F);
 		addLayer(new Markings(this));
+		addLayer(new HealthSignsLayer<>(this));
 	}
 
 	@Override
@@ -66,6 +67,7 @@ public class CattleRenderer extends MobRenderer<CattleEntity, CattleRenderState,
 	@Override
 	public void extractRenderState(CattleEntity entity, CattleRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
+		state.healthSigns = entity.syncedSigns();
 		state.breed = entity.syncedBreed();
 		VisualPhenotype look = entity.syncedLook();
 		state.look = look == null ? DEFAULT_LOOK : look;
@@ -112,8 +114,8 @@ public class CattleRenderer extends MobRenderer<CattleEntity, CattleRenderState,
 		return out;
 	}
 
-	private static final class Markings extends RenderLayer<CattleRenderState, CowModel> {
-		Markings(RenderLayerParent<CattleRenderState, CowModel> parent) {
+	private static final class Markings extends RenderLayer<CattleRenderState, CattleModel> {
+		Markings(RenderLayerParent<CattleRenderState, CattleModel> parent) {
 			super(parent);
 		}
 

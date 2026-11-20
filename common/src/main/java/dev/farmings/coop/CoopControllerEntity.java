@@ -115,6 +115,11 @@ public class CoopControllerEntity extends BlockEntity implements WorldlyContaine
 		return out;
 	}
 
+	/** How dirty the coop's litter is for animal health's dirt factor: the share of the full litter store (FULL is 1) *(proposed)*. */
+	public double litterShare() {
+		return Math.min(1, litterKg / (LITTER_ITEM_KG * LITTER_MAX_ITEMS));
+	}
+
 	public double litterKg() {
 		return litterKg;
 	}

@@ -69,6 +69,8 @@ public class GoatEntity extends Animal implements Wild.Animal, SmallRuminant, de
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.LONG);
+	/** The signs of sickness drawn on it (dev.farmings.health.HealthSigns flags). */
+	private static final EntityDataAccessor<Integer> DATA_SIGNS = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.INT);
 	/** Shares of the dairy (Saanen, Nubian), meat (Boer) and lop-eared (Nubian, Boer) breeds, 0-100, for the body and ears. */
 	private static final EntityDataAccessor<Integer> DATA_BODY = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> DATA_UDDER = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.BOOLEAN);
@@ -132,6 +134,7 @@ public class GoatEntity extends Animal implements Wild.Animal, SmallRuminant, de
 		builder.define(DATA_BREED, GoatBreed.SAANEN.ordinal());
 		builder.define(DATA_STAGE, GoatStage.DOELING.ordinal());
 		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_SIGNS, 0);
 		builder.define(DATA_BODY, 0);
 		builder.define(DATA_UDDER, false);
 	}
@@ -527,6 +530,7 @@ public class GoatEntity extends Animal implements Wild.Animal, SmallRuminant, de
 			kid.damId = herdId();
 			kid.sireId = CattleEntity.herdId(sire);
 			kid.place().copyHomeFrom(place());
+			dev.farmings.health.Health.atBirth(level, this, kid);
 			kid.setPos(getX() + 0.6 * (i - (n - 1) / 2.0), getY(), getZ() + 0.6);
 			level.addFreshEntity(kid);
 			lastKidding.add(r.sex().name().toLowerCase(Locale.ROOT));
@@ -675,6 +679,18 @@ public class GoatEntity extends Animal implements Wild.Animal, SmallRuminant, de
 	}
 
 	// ---- the shared face (SmallRuminant) ----
+
+	@Override
+	public void syncSigns(int signs) {
+		if (entityData.get(DATA_SIGNS) != signs) {
+			entityData.set(DATA_SIGNS, signs);
+		}
+	}
+
+	@Override
+	public int syncedSigns() {
+		return entityData.get(DATA_SIGNS);
+	}
 
 	@Override
 	public Animal animal() {
@@ -1146,6 +1162,13 @@ public class GoatEntity extends Animal implements Wild.Animal, SmallRuminant, de
 	public int hardinessScore() {
 		int s = score(Trait.HARDINESS);
 		return s <= 0 ? 50 : s;
+	}
+
+	/** Its housing's dirt for animal health (docs/animal-health.md, "Risk factors"). */
+	@Override
+	public double dirtShare() {
+		net.minecraft.core.BlockPos h = housing();
+		return h != null && level().getBlockEntity(h) instanceof dev.farmings.shed.ShedControllerEntity c ? c.dirtFor(this) : 0;
 	}
 
 	@Override

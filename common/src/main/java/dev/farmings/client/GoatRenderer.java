@@ -31,6 +31,7 @@ public class GoatRenderer extends MobRenderer<GoatEntity, GoatRenderState, GoatM
 	public GoatRenderer(EntityRendererProvider.Context context) {
 		super(context, new GoatModel(context.bakeLayer(GoatModels.GOAT)), 0.6F);
 		addLayer(new Markings(this));
+		addLayer(new HealthSignsLayer<>(this));
 	}
 
 	@Override
@@ -71,6 +72,7 @@ public class GoatRenderer extends MobRenderer<GoatEntity, GoatRenderState, GoatM
 	@Override
 	public void extractRenderState(GoatEntity entity, GoatRenderState state, float partialTicks) {
 		super.extractRenderState(entity, state, partialTicks);
+		state.healthSigns = entity.syncedSigns();
 		GoatLook look = entity.syncedLook();
 		state.look = look == null ? DEFAULT_LOOK : look;
 		state.dairy = entity.syncedDairy();

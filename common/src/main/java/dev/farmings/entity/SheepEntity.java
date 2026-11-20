@@ -67,6 +67,8 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant, d
 	private static final EntityDataAccessor<Integer> DATA_BREED = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_STAGE = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Long> DATA_LOOK = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.LONG);
+	/** The signs of sickness drawn on it (dev.farmings.health.HealthSigns flags). */
+	private static final EntityDataAccessor<Integer> DATA_SIGNS = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.INT);
 	/** Fleece growth as a share of a year, 0 to 2, for the renderer. */
 	private static final EntityDataAccessor<Float> DATA_FLEECE = SynchedEntityData.defineId(SheepEntity.class, EntityDataSerializers.FLOAT);
 	/** Shares of the dairy (East Friesian) and meat (Suffolk, Dorper) breeds, 0-100, for the body shape. */
@@ -136,6 +138,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant, d
 		builder.define(DATA_BREED, SheepBreed.MERINO.ordinal());
 		builder.define(DATA_STAGE, SheepStage.EWE_LAMB.ordinal());
 		builder.define(DATA_LOOK, -1L);
+		builder.define(DATA_SIGNS, 0);
 		builder.define(DATA_FLEECE, 1.0F);
 		builder.define(DATA_BODY, 0);
 		builder.define(DATA_UDDER, false);
@@ -629,6 +632,7 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant, d
 			lamb.damId = herdId();
 			lamb.sireId = CattleEntity.herdId(sire);
 			lamb.place().copyHomeFrom(place());
+			dev.farmings.health.Health.atBirth(level, this, lamb);
 			lamb.setPos(getX() + 0.6 * (i - (n - 1) / 2.0), getY(), getZ() + 0.6);
 			level.addFreshEntity(lamb);
 			lastLambing.add(r.sex().name().toLowerCase(Locale.ROOT));
@@ -786,6 +790,18 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant, d
 	}
 
 	// ---- the shared face (SmallRuminant) ----
+
+	@Override
+	public void syncSigns(int signs) {
+		if (entityData.get(DATA_SIGNS) != signs) {
+			entityData.set(DATA_SIGNS, signs);
+		}
+	}
+
+	@Override
+	public int syncedSigns() {
+		return entityData.get(DATA_SIGNS);
+	}
 
 	@Override
 	public Animal animal() {
@@ -1229,9 +1245,11 @@ public class SheepEntity extends Animal implements Wild.Animal, SmallRuminant, d
 		return housing() != null ? lastFed : 1;
 	}
 
+	/** Its shed's bedding, for animal health (docs/animal-health.md, "Risk factors"); on pasture none. */
 	@Override
 	public double dirtShare() {
-		return dirty;
+		net.minecraft.core.BlockPos h = housing();
+		return h != null && level().getBlockEntity(h) instanceof dev.farmings.shed.ShedControllerEntity c ? c.dirtFor(this) : 0;
 	}
 
 	@Override
