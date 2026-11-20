@@ -423,7 +423,7 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   Dirt for every species (shed and stable bedding, the pig pit, coop litter), cold piglets and chicks, a dam's vaccine in the 6 weeks
   before birth (scours x0.5), weaning opening the BRD window (calves by age). The footbath loses 1 L a dosed animal and draws its level in
   eighths. Game tests: 5 new (`signs_synced_for_drawing`, `piglet_cold_and_dirty_pit`, `dam_vaccine_halves_scours`,
-  `weaning_opens_brd_window`, `footbath_level_drops`). Client films `healthFilms` (six real-time films for the trailer). Decisions 12-17 in
+  `weaning_opens_brd_window`, `footbath_level_drops`); full suite 281 of 281. Client films `healthFilms` (six real-time films for the trailer). Decisions 12-17 in
   `docs/questions/animal-health.md`.
 
 ## Known gaps
