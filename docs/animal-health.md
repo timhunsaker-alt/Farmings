@@ -426,3 +426,36 @@ withdrawal, vaccines, the isolation pen, the footbath, notifiable diseases; each
 7. **Pace:** real annual incidences on each species' clock / half the real rates / double.
 8. **Quarantine for wild-caught animals:** optional, but tamed animals can arrive carrying disease that only quarantine catches / required:
    housing refuses a tamed animal until it has done 30 real days in an isolation pen / no quarantine, a hospital pen only.
+
+## Built, 2026-11-19 (branch `animal-health-spec`; Tim answered all eight questions with the recommended option)
+- **Engine** (plain Java `husbandry/health`): `Disease`, `Vaccine`, `Drug`, `Risk`, `Scc`, `HealthRecord`, `HealthModel`,
+  `IsolationLayout`; unit tests `HealthModelTest` (the 24.8% and 16.2% hazards, the HEALTH curve, CMT bands, saving, withdrawal clocks,
+  determinism, the BRD window's rate over 2,000 calves, vaccines, temperatures).
+- **In the world** (`dev.farmings.health`): every species (cattle, sheep, goats, pigs, horses, all poultry) is a `HealthHost`; its record
+  is saved on the animal as one string; its once-a-second bookkeeping runs the step. Sick animals walk 20% slower (lame 30%), cough
+  (cattle, sheep and goats, pigs, horses; Ludo sounds), lose 1 health a game day to a floor of a fifth of their maximum, and give less milk,
+  growth and eggs. The readout shows the signs, the red leg band (withdrawal) and quarantine.
+- **World rules** `disease` (on in new worlds), `notifiable_disease` (off), `disease_deaths` (off), saved with the world and shown on
+  Wildcatter's World Rules screen. A world with Farmings data saved before this build starts with all three off.
+- **Items, blocks, recipes, quests and the Field Manual chapter "Animal health"** as specified above; icons, block faces and sounds from Ludo
+  (`tools/process_art.py`, `tools/process_sounds.py`).
+
+### Where the build differs from the spec (decided on recommendation; for Tim, `docs/questions/animal-health.md` "Build decisions")
+- **The waste milk can is a block placed within 4 blocks of the parlor controller**, not a part of the parlor's layout, so existing parlors
+  keep forming. Withheld cows are milked when their turn comes, not last.
+- **Chronic mastitis sits at 1,000,000 cells/mL** (was 700,000 in the first draft of `Scc`), so a herd's chronic cows can push a tank over
+  the 750,000 limit *(proposed)*.
+- **Dirt** counts for cattle (the stall) and sheep (the bedding); goats, pigs, horses and birds have no per-animal dirt figure yet, so the
+  factor is 1 for them. **Cold** (piglets, chicks) and **a dam's vaccination** (the scours factor) are not wired: the factors exist in the
+  engine, the inputs are not read yet. **Weaning** does not open the BRD window; taming and a move to new housing do.
+- **Not drawn:** the head-low pose, the limp animation, the red leg band and the erysipelas marks. The slower walk, the cough and the
+  readout carry those signs for now (Known gaps).
+- **No `/farmings rule` command:** Farmings has no commands; the rules are set on the World Rules screen at world creation.
+- **The footbath** is a Wildcatter water user (a pump's pipe fills it), as the trough is.
+
+### Sourcing, 2026-11-19
+Searched again for the TO VERIFY lines (Agriculture Victoria's footrot page: refused the fetch, 403; NAHMS Dairy 2014 Part III: timed out;
+the Myers Poultry page: no response). The marks stay as they are: the 7-day pasture survival, lameness 16.8%, the coccidiosis line, the
+NAHMS 2007 calf figures, the CMT bands, the strangles figures, the EU oxytetracycline milk withdrawal. The figures that rest on a primary
+source are unchanged: NAHMS 24.8% and 16.2%, PMO 750,000 and 1,500,000, MSD temperatures and footbath, MSU CDT schedule, NMC 70%, the
+cephapirin label, the Idaho 30 days.

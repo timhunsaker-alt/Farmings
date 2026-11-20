@@ -59,15 +59,15 @@ size, the NeoForge client and a sourcing sweep over every doc.
 - An in-game guide (`docs/field-manual.md`): a custom screen with chapters, contents, search, links, item icons and multiblock grids;
   how to play plus the key figures, each checked against its doc at build time; given on first join and crafted from a book and wheat.
 
-## Next — Animal health (picked by Tim 2026-11-19; not started)
+## Phase 6 — Animal health — built 2026-11-19 (picked by Tim 2026-11-19; branch `animal-health-spec`)
 Disease, a vet cycle and quarantine. Starts with a spec (real counterpart, sourced values, questions decided on recommendation).
-Spec written 2026-11-19: `docs/animal-health.md` and `docs/multiblocks/isolation-pen.md`; eight questions in
-`docs/questions/animal-health.md`, waiting for Tim.
+Spec `docs/animal-health.md` and `docs/multiblocks/isolation-pen.md`, approved 2026-11-19 (all eight questions answered with the
+recommended option, `docs/questions/animal-health.md`); built the same day.
 
 ## Ideas (not scheduled, not in code)
 - More species: goats, geese and guinea fowl done (Step 17, 2026-11-13); pigs (with a pig barn and pork curing) and horses (ridden,
   bred for racing on a track you build) done (Step 18, 2026-11-13). The species list is complete.
-- Animal health and a vet cycle; disease and quarantine.
+- Animal health follow-ons: drawn sick poses and the leg band; parasites; metabolic disease; scrapie (PRNP) and Marek's (B21) resistance loci.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).
 - **Easter egg: milk armor** (Tim, 2026-11-07). See `docs/milk-armor.md`.

@@ -1,0 +1,124 @@
+{
+ "id": "isolation-pen",
+ "title": "The isolation pen",
+ "chapter": "health",
+ "order": 50,
+ "icon": "farmings:isolation_controller",
+ "blocks": [
+  {
+   "type": "icons",
+   "items": [
+    "farmings:isolation_controller",
+    "farmings:isolation_pen"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A controller beside "
+    },
+    {
+     "t": "2",
+     "b": true
+    },
+    {
+     "t": " to "
+    },
+    {
+     "t": "64",
+     "b": true
+    },
+    {
+     "t": " cells of pen floor, a feeder and a trough, with no other housing within "
+    },
+    {
+     "t": "8",
+     "b": true
+    },
+    {
+     "t": " blocks."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Quarantine:",
+      "b": true
+     },
+     {
+      "t": " a wild animal tamed in a corral within "
+     },
+     {
+      "t": "64",
+      "b": true
+     },
+     {
+      "t": " blocks goes here first for "
+     },
+     {
+      "t": "30",
+      "b": true
+     },
+     {
+      "t": " real days ("
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " game days for cattle). Some arrive carrying disease that quarantine keeps from the herd."
+     }
+    ],
+    [
+     {
+      "t": "Hospital:",
+      "b": true
+     },
+     {
+      "t": " the vet kit sends a sick animal here; it leaves when it has recovered."
+     }
+    ],
+    [
+     {
+      "t": "Sneak and use the controller to switch modes while the pen is empty. One species at a time."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "Notifiable diseases"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "With the world rule on, a vet kit that finds one says to report it. A report puts every Farmings housing within "
+    },
+    {
+     "t": "192",
+     "b": true
+    },
+    {
+     "t": " blocks under a standstill: no animal in or out, no taming, no straws, until "
+    },
+    {
+     "t": "28",
+     "b": true
+    },
+    {
+     "t": " real days after the last case. There is no culling."
+    }
+   ]
+  }
+ ]
+}

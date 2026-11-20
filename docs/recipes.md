@@ -112,3 +112,23 @@ The corral's water trough is the barn's `water_trough`.
   - Turkey, duck and quail cook in a furnace, smoker or campfire.
   - Any Farmings egg fries into a fried egg.
 - **Not made by recipe:** eggs, meat, down, litter and egg cartons come from birds and machines.
+
+## Animal health (docs/animal-health.md; all proposed)
+| Result | Grid | Makes |
+|---|---|---|
+| vet_kit | `LGL / ITI / LLL`: L leather, G glass, I iron ingot, T string | 1 |
+| footbath | `KBK / KKK`: K gray concrete, B bucket | 2 |
+| waste_milk_can | `I I / IBI / III` | 1 |
+| isolation_pen | `NNN / HHH`: N iron bars, H wheat | 6 |
+| isolation_controller | `SRS / NBN / SSS`: S Wildcatter steel ingot, R redstone | 1 |
+| cmt_paddle | shapeless: 2 Wildcatter plastic sheets | 1 |
+| cmt_reagent | shapeless: glass bottle, Wildcatter sodium sulfate bag | 4 |
+| antibiotic | shapeless: whey bottle, brown mushroom, sugar | 4 |
+| mastitis_tube | shapeless: antibiotic, Wildcatter plastic sheet | 4 |
+| antibiotic_injection | shapeless: antibiotic, glass bottle, iron nugget | 2 |
+| electrolytes | shapeless: sugar, salt, paper | 4 |
+| coccidiostat | shapeless: antibiotic, glass bottle | 4 |
+| teat_dip | shapeless: glass bottle, Wildcatter chlorine ton container | 64 |
+| zinc_sulfate | shapeless: Wildcatter zinc ingot, Wildcatter sulfur, water bucket | 4 |
+| vaccine_* | shapeless: glass bottle, any Farmings egg, Wildcatter plastic sheet, and white wool (CDT), leather (respiratory), raw porkchop (erysipelas), feather (Marek's) or a hay block (strangles) | 4 |
+- **Not made by recipe:** the spoiled vaccine (a vaccine kept out of the cold room).

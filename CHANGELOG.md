@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.2.0 (unreleased): animal health
+
+- **Disease:** twelve real diseases (mastitis, shipping fever, scours, foot rot, overeating disease, swine erysipelas, coccidiosis,
+  Marek's disease, strangles, and three notifiable ones off by default). They spread inside a barn, shed, coop, pig barn or stable; dirty
+  stalls, poor feed and the HEALTH gene raise or lower the risk. Sick animals cough, limp, walk slower and give less; they never die of it
+  unless the `disease_deaths` world rule is on.
+- **The vet cycle:** a vet kit (temperature, diagnosis, herd check, sick pen, report), the CMT paddle, drugs with real withdrawal times
+  (withheld milk goes to a waste milk can, condemned meat drops nothing), five vaccines that keep only in the cold room, teat dip, a
+  footbath, bulk-tank somatic cell counts, and health pages in the herd book.
+- **Quarantine and the sick pen:** the isolation pen; tamed animals near one wait out 30 real days in it.
+- **World rules** `disease`, `notifiable_disease` and `disease_deaths` on Wildcatter's World Rules screen; worlds saved before start with
+  disease off.
+- Five quests, a Field Manual chapter, new icons and sounds.
+
 ## v0.1.0 (unreleased): the first public release
 
 Farmings is a Wildcatter add-on (Minecraft 26.3, Fabric and NeoForge) for raising animals and growing crops the way a modern farm does.

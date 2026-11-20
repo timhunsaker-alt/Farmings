@@ -1,0 +1,162 @@
+{
+ "id": "vaccines",
+ "title": "Vaccines and the footbath",
+ "chapter": "health",
+ "order": 40,
+ "icon": "farmings:vaccine_cdt",
+ "blocks": [
+  {
+   "type": "icons",
+   "items": [
+    "farmings:vaccine_respiratory",
+    "farmings:vaccine_cdt",
+    "farmings:vaccine_erysipelas",
+    "farmings:vaccine_mareks",
+    "farmings:vaccine_strangles"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Vaccines keep only in the "
+    },
+    {
+     "t": "cold room",
+     "link": "cold-room"
+    },
+    {
+     "t": ": out of it they spoil in a game day."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Respiratory",
+      "b": true
+     },
+     {
+      "t": " (cattle): halves shipping fever. "
+     },
+     {
+      "t": "CDT",
+      "b": true
+     },
+     {
+      "t": " (sheep, goats): "
+     },
+     {
+      "t": "2",
+      "b": true
+     },
+     {
+      "t": " doses "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " weeks apart, ewes "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " weeks before lambing."
+     }
+    ],
+    [
+     {
+      "t": "Erysipelas",
+      "b": true
+     },
+     {
+      "t": " (pigs), "
+     },
+     {
+      "t": "strangles",
+      "b": true
+     },
+     {
+      "t": " (horses): two doses, then yearly. "
+     },
+     {
+      "t": "Marek's",
+      "b": true
+     },
+     {
+      "t": ": load it into an "
+     },
+     {
+      "t": "incubator",
+      "link": "hatchery"
+     },
+     {
+      "t": "; each chick that hatches is vaccinated."
+     }
+    ],
+    [
+     {
+      "t": "A booster falls due a year after the last dose; the herd check lists it."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The footbath"
+    }
+   ]
+  },
+  {
+   "type": "icons",
+   "items": [
+    "farmings:footbath",
+    "farmings:zinc_sulfate"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Set it in a lane or a gate path, fill it with water and charge it with "
+    },
+    {
+     "t": "10%",
+     "b": true
+    },
+    {
+     "t": " zinc sulfate ("
+    },
+    {
+     "t": "100",
+     "b": true
+    },
+    {
+     "t": " passes a bag). Every animal that walks through is treated for foot rot and protected "
+    },
+    {
+     "t": "14",
+     "b": true
+    },
+    {
+     "t": " real days. A pasture a lame sheep grazed stays infective "
+    },
+    {
+     "t": "7",
+     "b": true
+    },
+    {
+     "t": " real days."
+    }
+   ]
+  }
+ ]
+}

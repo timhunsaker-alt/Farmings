@@ -1,0 +1,226 @@
+{
+ "id": "diseases",
+ "title": "Diseases",
+ "chapter": "health",
+ "order": 10,
+ "icon": "farmings:vet_kit",
+ "blocks": [
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "Tame animals catch real diseases. They spread inside a barn, shed, coop, pig barn or stable, not between them. Nothing gory is shown, and by default no animal dies of disease: its health stops at a floor and it gives less."
+    }
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "What to watch for"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Coughing",
+      "b": true
+     },
+     {
+      "t": " and walking slowly: shipping fever (BRD) in cattle, strangles in horses."
+     }
+    ],
+    [
+     {
+      "t": "Limping",
+      "b": true
+     },
+     {
+      "t": ": foot rot. Clots in the milk: mastitis."
+     }
+    ],
+    [
+     {
+      "t": "An animal off its feed, lying down more, a hen that stops laying."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The diseases"
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Mastitis",
+      "b": true
+     },
+     {
+      "t": " (cows, ewes, does in milk): about "
+     },
+     {
+      "t": "24.8%",
+      "b": true
+     },
+     {
+      "t": " of cows a year. Dirty stalls double it; teat dip cuts it by "
+     },
+     {
+      "t": "70%",
+      "b": true
+     },
+     {
+      "t": "."
+     }
+    ],
+    [
+     {
+      "t": "Shipping fever",
+      "b": true
+     },
+     {
+      "t": " (cattle): "
+     },
+     {
+      "t": "16.2%",
+      "b": true
+     },
+     {
+      "t": " of newly tamed or moved cattle, in the "
+     },
+     {
+      "t": "45",
+      "b": true
+     },
+     {
+      "t": " days after."
+     }
+    ],
+    [
+     {
+      "t": "Scours",
+      "b": true
+     },
+     {
+      "t": " (young under "
+     },
+     {
+      "t": "30",
+      "b": true
+     },
+     {
+      "t": " days), "
+     },
+     {
+      "t": "foot rot",
+      "b": true
+     },
+     {
+      "t": ", "
+     },
+     {
+      "t": "overeating disease",
+      "b": true
+     },
+     {
+      "t": " (sheep and goats on a sudden grain rise), "
+     },
+     {
+      "t": "erysipelas",
+      "b": true
+     },
+     {
+      "t": " (pigs), "
+     },
+     {
+      "t": "coccidiosis",
+      "b": true
+     },
+     {
+      "t": " (young birds on dirty litter), "
+     },
+     {
+      "t": "Marek's disease",
+      "b": true
+     },
+     {
+      "t": " (chickens), "
+     },
+     {
+      "t": "strangles",
+      "b": true
+     },
+     {
+      "t": " (horses)."
+     }
+    ],
+    [
+     {
+      "t": "Three "
+     },
+     {
+      "t": "notifiable",
+      "b": true
+     },
+     {
+      "t": " diseases (foot-and-mouth, avian influenza, African swine fever) are off unless the world rule turns them on."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "A healthier genome (the HEALTH score) halves the risk at 100 and doubles it at 0: a game rule, not a real-world figure."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "More: "
+    },
+    {
+     "t": "the vet kit",
+     "link": "vet-kit"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "treatment",
+     "link": "treatment"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "vaccines",
+     "link": "vaccines"
+    },
+    {
+     "t": ", "
+    },
+    {
+     "t": "the isolation pen",
+     "link": "isolation-pen"
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}

@@ -69,3 +69,23 @@ recommendation; for Tim** and says so where it stands. The recommended option is
 - **Why:** it rewards doing it right without blocking a new player who hasn't built one.
 - **Alternatives:** required: housing refuses a tamed animal until it has done its 30 days; no quarantine at all, a hospital pen only.
 - **Answered by Tim 2026-11-19:** the chosen option.
+
+## Build decisions (2026-11-19, decided on recommendation; for Tim)
+Logged while building the answered spec. Format as above.
+
+### 9. The waste milk can stands beside the parlor rather than in its layout
+- **Chosen:** a `waste_milk_can` block anywhere within 4 blocks of the parlor controller; withheld milk goes there. With none (or full), a
+  withheld cow is not called and keeps her milk.
+- **Why:** a layout part would make every existing parlor fail to form until rebuilt.
+- **Alternatives:** a parlor part on the milk line (a real dump line); milking withheld cows last by reordering the call.
+
+### 10. Signs shown by walk, sound and readout before the drawn poses
+- **Chosen:** a sick animal walks slower (lame 30%), coughs (four Ludo coughs) and the readout lists its signs and the red leg band; the
+  head-low pose, limp, leg band and erysipelas marks are not drawn yet.
+- **Why:** each is a change to six species' models; the behaviour is complete without them.
+- **Alternatives:** draw them now, species by species.
+
+### 11. Chronic mastitis at 1,000,000 cells/mL
+- **Chosen:** 1,000,000 (proposed), above the 750,000 tank limit, so chronic cows are what push a tank to HIGH SCC.
+- **Why:** with 700,000 no herd could ever reach the limit (clinical milk never goes in the tank).
+- **Alternatives:** 700,000 and a lower warning threshold.

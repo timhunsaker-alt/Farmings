@@ -30,6 +30,17 @@
    ]
   },
   {
+   "id": "health",
+   "title": "Animal health",
+   "pages": [
+    "diseases",
+    "vet-kit",
+    "treatment",
+    "vaccines",
+    "isolation-pen"
+   ]
+  },
+  {
    "id": "genetics",
    "title": "Genes and breeding",
    "pages": [

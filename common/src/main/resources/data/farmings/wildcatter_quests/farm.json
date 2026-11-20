@@ -350,6 +350,94 @@
           "count": 8
         }
       ]
+    },
+    {
+      "id": "herd_health",
+      "title": "Herd health",
+      "icon": "farmings:vet_kit",
+      "text": "Animals catch real diseases: mastitis, shipping fever, scours, foot rot and more. A vet kit (leather, glass, iron, string) takes a temperature and names what an animal has; on a barn, shed, coop, pig barn or stable controller it writes a herd check of everything due. Watch for coughing, limping and animals off their feed.",
+      "requires": [
+        "cattle"
+      ],
+      "tasks": [
+        {
+          "milestone": "farmings:examined",
+          "text": "Examine an animal with the vet kit"
+        }
+      ],
+      "rewards": [
+        {
+          "item": "farmings:electrolytes",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "isolation_pen",
+      "title": "Quarantine and the sick pen",
+      "icon": "farmings:isolation_controller",
+      "text": "An isolation pen keeps new arrivals apart for 30 real days, and sick animals apart from the herd. Pen floor, a feeder and a trough, 8 blocks from any other housing. Sneak and use the controller to switch between quarantine and hospital.",
+      "requires": [
+        "herd_health"
+      ],
+      "tasks": [
+        {
+          "milestone": "farmings:isolation_pen",
+          "text": "Form an isolation pen"
+        }
+      ]
+    },
+    {
+      "id": "vaccinate",
+      "title": "Vaccinate",
+      "icon": "farmings:vaccine_respiratory",
+      "text": "Vaccines keep only in the cold room. Give one to the animals it is for: respiratory for cattle, CDT for sheep and goats, erysipelas for pigs, strangles for horses; Marek's goes into the incubator. Boosters fall due a year on.",
+      "requires": [
+        "herd_health",
+        "wildcatter:plastic"
+      ],
+      "tasks": [
+        {
+          "milestone": "farmings:vaccinated",
+          "text": "Give a vaccine dose"
+        }
+      ]
+    },
+    {
+      "id": "milk_quality",
+      "title": "Milk quality",
+      "icon": "farmings:teat_dip",
+      "text": "Test a cow's milk with the CMT paddle and its reagent, and load teat dip into the parlor controller: dipping every cow after milking cuts new mastitis by 70%. A waste milk can beside the parlor takes the milk of treated cows.",
+      "requires": [
+        "herd_health",
+        "parlor"
+      ],
+      "tasks": [
+        {
+          "milestone": "farmings:teat_dip",
+          "text": "Load teat dip into a parlor"
+        },
+        {
+          "item": "farmings:cmt_paddle",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "footbath",
+      "title": "Footbath",
+      "icon": "farmings:footbath",
+      "text": "A footbath in a lane or a gate path, filled with water and charged with 10% zinc sulfate, treats foot rot in every animal that walks through and keeps it off for 14 real days. Zinc sulfate is made from zinc, sulfur and water.",
+      "requires": [
+        "herd_health",
+        "wildcatter:fertilizer"
+      ],
+      "tasks": [
+        {
+          "milestone": "farmings:footbath",
+          "text": "Charge a footbath"
+        }
+      ]
     }
   ]
 }

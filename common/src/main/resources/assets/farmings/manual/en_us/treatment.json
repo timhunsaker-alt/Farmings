@@ -1,0 +1,127 @@
+{
+ "id": "treatment",
+ "title": "Treatment and withdrawal",
+ "chapter": "health",
+ "order": 30,
+ "icon": "farmings:mastitis_tube",
+ "blocks": [
+  {
+   "type": "icons",
+   "items": [
+    "farmings:mastitis_tube",
+    "farmings:antibiotic_injection",
+    "farmings:electrolytes",
+    "farmings:coccidiostat",
+    "farmings:teat_dip"
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "One item is one course. A treated animal wears a red leg band until its withdrawal is over."
+    }
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Mastitis tube:",
+      "b": true
+     },
+     {
+      "t": " mastitis. Milk withheld "
+     },
+     {
+      "t": "96",
+      "b": true
+     },
+     {
+      "t": " h, meat "
+     },
+     {
+      "t": "4",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Long-acting injection:",
+      "b": true
+     },
+     {
+      "t": " shipping fever, foot rot, erysipelas, scours. Milk "
+     },
+     {
+      "t": "10",
+      "b": true
+     },
+     {
+      "t": " days, meat "
+     },
+     {
+      "t": "28",
+      "b": true
+     },
+     {
+      "t": " days."
+     }
+    ],
+    [
+     {
+      "t": "Electrolytes:",
+      "b": true
+     },
+     {
+      "t": " scours, no withdrawal. "
+     },
+     {
+      "t": "Coccidiostat:",
+      "b": true
+     },
+     {
+      "t": " use it on a coop controller to dose every bird."
+     }
+    ],
+    [
+     {
+      "t": "Withheld milk never reaches the tank: the parlor milks the cow into a "
+     },
+     {
+      "t": "waste milk can",
+      "b": true
+     },
+     {
+      "t": " beside it. With no can she is not called."
+     }
+    ],
+    [
+     {
+      "t": "An animal killed during its meat withdrawal drops no meat."
+     }
+    ],
+    [
+     {
+      "t": "Teat dip:",
+      "b": true
+     },
+     {
+      "t": " load it into the parlor controller; one bottle dips "
+     },
+     {
+      "t": "50",
+      "b": true
+     },
+     {
+      "t": " cows."
+     }
+    ]
+   ]
+  }
+ ]
+}

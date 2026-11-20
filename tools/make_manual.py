@@ -20,6 +20,7 @@ LANG = os.path.join(ASSETS, "lang", "en_us.json")
 CHAPTERS = [
     ("getting_started", "Getting started"),
     ("animals", "Animals"),
+    ("health", "Animal health"),
     ("genetics", "Genes and breeding"),
     ("buildings", "Buildings"),
     ("fields", "Fields and feed"),

@@ -50,11 +50,13 @@ book art.
 1. **Getting started:** what Farmings is, wild animals and the taming corral, the herd book, time scales, power from Wildcatter,
    spoilage and keeping food.
 2. **Animals:** cattle, sheep, the sheep dog, goats, pigs, horses, chickens, turkeys, ducks, quail, geese and guinea fowl.
-3. **Genes and breeding:** genes and traits, breeding and straws, growth.
-4. **Buildings:** the corral, barn, parlour, sheep shed, shearing shed, coop and run, hatchery, pig barn, stable and race track.
-5. **Fields and feed:** crops, the field gantry, the silo, conveyors, the feed mill.
-6. **Food and processing:** the creamery, wool mill and clothing, the curing room, the cold room, eggs, food.
-7. **Waste and power:** manure, compost, the digester and biogas.
+3. **Animal health:** diseases, the vet kit and herd check, treatment and withdrawal, vaccines and the footbath, the isolation pen
+   (docs/animal-health.md).
+4. **Genes and breeding:** genes and traits, breeding and straws, growth.
+5. **Buildings:** the corral, barn, parlour, sheep shed, shearing shed, coop and run, hatchery, pig barn, stable and race track.
+6. **Fields and feed:** crops, the field gantry, the silo, conveyors, the feed mill.
+7. **Food and processing:** the creamery, wool mill and clothing, the curing room, the cold room, eggs, food.
+8. **Waste and power:** manure, compost, the digester and biogas.
 
 That is about 45 pages.
 

@@ -1,0 +1,100 @@
+{
+ "id": "vet-kit",
+ "title": "The vet kit and the herd check",
+ "chapter": "health",
+ "order": 20,
+ "icon": "farmings:vet_kit",
+ "blocks": [
+  {
+   "type": "icons",
+   "items": [
+    "farmings:vet_kit",
+    "farmings:cmt_paddle",
+    "farmings:cmt_reagent"
+   ]
+  },
+  {
+   "type": "list",
+   "items": [
+    [
+     {
+      "t": "Use it on an animal:",
+      "b": true
+     },
+     {
+      "t": " its temperature against the normal range (a dairy cow "
+     },
+     {
+      "t": "38.0-39.3",
+      "b": true
+     },
+     {
+      "t": " C), what it has, its vaccines and when its milk and meat are clear."
+     }
+    ],
+    [
+     {
+      "t": "Sneak and use it on a sick animal:",
+      "b": true
+     },
+     {
+      "t": " to the nearest sick pen with room. On a notifiable disease it reports it instead."
+     }
+    ],
+    [
+     {
+      "t": "Use it on a housing controller:",
+      "b": true
+     },
+     {
+      "t": " the herd check, every animal that is sick, withheld, due a dose or in quarantine. With the "
+     },
+     {
+      "t": "herd book",
+      "link": "herd-book"
+     },
+     {
+      "t": " in the other hand the check is written into it."
+     }
+    ]
+   ]
+  },
+  {
+   "type": "heading",
+   "runs": [
+    {
+     "t": "The CMT paddle"
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
+     "t": "With a reagent bottle in your inventory, the paddle reads a cow's somatic cells: N under "
+    },
+    {
+     "t": "200,000",
+     "b": true
+    },
+    {
+     "t": " a mL, T, 1, 2 or 3. The parlor's readout gives the bulk tank's count and warns "
+    },
+    {
+     "t": "HIGH SCC",
+     "b": true
+    },
+    {
+     "t": " over "
+    },
+    {
+     "t": "750,000",
+     "b": true
+    },
+    {
+     "t": "."
+    }
+   ]
+  }
+ ]
+}
