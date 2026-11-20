@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.1 (unreleased): animal health, finished
+
+- **Signs you can see:** a sick animal stands and walks head low; a lame one limps, nodding its head; a treated animal wears a red band
+  on both hind legs until its withdrawal ends; a pig with erysipelas shows red-purple diamond patches. Nothing gory.
+- **Every housing counts dirt:** dirty shed and stable bedding, a full pig pit and full coop litter now raise disease risk, as a dirty
+  cow stall already did.
+- **Cold, weaning and the dam's vaccine:** cold piglets and chicks get scours twice as often; weaning a calf opens the shipping-fever
+  window; a cow, ewe or doe vaccinated in the 6 weeks before giving birth halves her young's scours risk.
+- **The footbath empties:** each animal through carries a litre out, and the liquid you see falls with it; top it up before 60 L.
+
 ## v0.2.0 (unreleased): animal health
 
 - **Disease:** twelve real diseases (mastitis, shipping fever, scours, foot rot, overeating disease, swine erysipelas, coccidiosis,

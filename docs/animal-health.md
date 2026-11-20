@@ -130,7 +130,9 @@ the parlor, the hatchery, the corral). Nine are endemic; three are notifiable (o
   - So **resting a pasture for 7 real days** (half a game day) cleans it, as on a real farm.
 - **Footbath:** "10% wt/vol zinc sulfate", at least 6 cm deep, sheep standing in it at least 10 minutes, "once every 14 days during the wet
   season" (MSD, above). Game: a pass through a charged footbath cures a case in 3 real days and protects for 14 real days *(protection
-  length proposed from the 14-day interval)*. Cattle use the same bath (real cattle baths often use copper sulfate or formalin instead;
+  length proposed from the 14-day interval)*. Each animal that takes a dose carries **1** L out on its feet and legs *(proposed)*, so a
+  full 100 L bath drops below the **60** L it needs after 40 animals and must be topped up (a water pump's pipe does it on its own); the
+  liquid drawn in the bath falls in eighths as it empties. Cattle use the same bath (real cattle baths often use copper sulfate or formalin instead;
   one solution keeps it simple, decided on recommendation).
 - **Signs:** a limp (walk speed x 0.7, a drawn limp), eats less. **Cost:** milk and growth x 0.9 *(proposed)*. Chronic if untreated
   for 21 real days *(proposed)*.
@@ -448,11 +450,23 @@ withdrawal, vaccines, the isolation pen, the footbath, notifiable diseases; each
   keep forming. Withheld cows are milked when their turn comes, not last.
 - **Chronic mastitis sits at 1,000,000 cells/mL** (was 700,000 in the first draft of `Scc`), so a herd's chronic cows can push a tank over
   the 750,000 limit *(proposed)*.
-- **Dirt** counts for cattle (the stall) and sheep (the bedding); goats, pigs, horses and birds have no per-animal dirt figure yet, so the
-  factor is 1 for them. **Cold** (piglets, chicks) and **a dam's vaccination** (the scours factor) are not wired: the factors exist in the
-  engine, the inputs are not read yet. **Weaning** does not open the BRD window; taming and a move to new housing do.
-- **Not drawn:** the head-low pose, the limp animation, the red leg band and the erysipelas marks. The slower walk, the cough and the
-  readout carry those signs for now (Known gaps).
+- **Dirt** (finished 2026-11-20, `finish-0.2`) counts for every species: cattle from the manure in front of the stall (`Hygiene`); sheep and
+  goats from the shed's bedding and horses from the stable's (the soiled share of the store, 1 when it reads DIRTY; 0 on pasture or
+  paddock); pigs from the pit under the slats (how full it is, 1 when FULL; 0 on pasture) *(proposed)*; birds from the coop's litter (the
+  share of the full store) *(proposed)*. (Until this build sheep read 0: the bedding never reached the sheep.)
+- **Cold** (2026-11-20): a piglet whose crate has no running heat lamp, and a chick or duckling out of a brooder's or its mother's warmth,
+  have scours and coccidiosis risk x2 (the existing cold rules).
+- **A dam's vaccination** (2026-11-20): a calf, lamb or kid whose dam had her vaccine (the respiratory vaccine for cows, CDT for ewes and
+  does) in the **6** weeks (42 real days) before the birth has its scours risk halved; the herd book records "dam vaccinated". Sows: no
+  vaccine in this build gives it (the erysipelas vaccine does not protect piglets from scours). Orphans are not doubled yet.
+- **Weaning** (2026-11-20) opens the 45-day BRD window: Farmings calves do not suckle, so a calf is weaned by age, dairy breeds at **56**
+  real days (8 weeks; the common 6-8 weeks, **TO VERIFY**) and beef breeds at **205** (the age beef weaning weights are adjusted to,
+  **TO VERIFY**). Lambs, kids and piglets wean too, but BRD is a cattle disease, so their weaning raises nothing.
+- **Drawn signs** (2026-11-20): a sick animal stands and walks **head low**; a lame one **limps** on its right fore (a short, stiff stride,
+  the foot held up at rest, the head nodding up as the lame foot lands); a treated animal wears a **red band round both hind legs** until
+  its withdrawals end (dairies band both so it shows from either side); a pig with erysipelas shows **raised red-purple diamond patches**
+  on its flanks. Birds show the head low only (no bird drug in this build has a withdrawal). Band and lesion textures come from Ludo
+  swatches (`tools/process_art.py`). Marek's sitting pose is still not drawn.
 - **`/farmings rule [name] [true|false]`** (operators) lists and sets the three rules, so a world saved before can turn disease on
   (game test `rule_command_sets_disease`).
 - **The footbath** is also checked in each animal's health step (the block under its feet), because a 3 px bath is thinner than the step

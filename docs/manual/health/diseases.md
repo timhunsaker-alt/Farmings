@@ -11,7 +11,10 @@ and by default no animal dies of disease: its health stops at a floor and it giv
 
 ## What to watch for
 - **Coughing** and walking slowly: shipping fever (BRD) in cattle, strangles in horses.
-- **Limping**: foot rot. Clots in the milk: mastitis.
+- **Head low**: any sick animal stands and walks with its head down.
+- **Limping**: foot rot (a short step on one foreleg, the head nodding). Clots in the milk: mastitis.
+- **Red diamond patches** on a pig: erysipelas.
+- A **red band** on both hind legs: treated, and its milk or meat withheld.
 - An animal off its feed, lying down more, a hen that stops laying.
 
 ## The diseases
@@ -20,6 +23,9 @@ and by default no animal dies of disease: its health stops at a floor and it giv
 - **Scours** (young under **30** days), **foot rot**, **overeating disease** (sheep and goats on a sudden grain rise), **erysipelas** (pigs),
   **coccidiosis** (young birds on dirty litter), **Marek's disease** (chickens), **strangles** (horses).
 - Three **notifiable** diseases (foot-and-mouth, avian influenza, African swine fever) are off unless the world rule turns them on.
+
+Dirty bedding, litter or a full pit raises the risk for every animal housed on it. Cold piglets and chicks get scours and coccidiosis
+twice as often. Weaning a calf (8 weeks for dairy breeds) opens the shipping-fever window, as taming and moving do.
 
 A healthier genome (the HEALTH score) halves the risk at 100 and doubles it at 0: a game rule, not a real-world figure.
 

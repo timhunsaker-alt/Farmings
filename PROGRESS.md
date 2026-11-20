@@ -418,9 +418,18 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   new (`HealthGameTests`), `herd_book_records` expects two pages an animal, `quests_valid` 18 quests; full suite 276 of 276. Client scene
   `health`, filmed. `/farmings rule` sets the rules in any world. Build decisions 9-11 in `docs/questions/animal-health.md`.
 
+- Finish-up 0.2.1 (2026-11-20, branch `finish-0.2`): the animal health gaps closed. Drawn signs (`HealthSigns`, `HealthSignsPose`,
+  `HealthSignsLayer`): head low, the limp, a red band on both hind legs under a withdrawal, erysipelas diamonds on pigs (Ludo swatches).
+  Dirt for every species (shed and stable bedding, the pig pit, coop litter), cold piglets and chicks, a dam's vaccine in the 6 weeks
+  before birth (scours x0.5), weaning opening the BRD window (calves by age). The footbath loses 1 L a dosed animal and draws its level in
+  eighths. Game tests: 5 new (`signs_synced_for_drawing`, `piglet_cold_and_dirty_pit`, `dam_vaccine_halves_scours`,
+  `weaning_opens_brd_window`, `footbath_level_drops`). Client films `healthFilms` (six real-time films for the trailer). Decisions 12-17 in
+  `docs/questions/animal-health.md`.
+
 ## Known gaps
-- **Animal health:** the head-low pose, limp, red leg band and erysipelas marks are not drawn (the walk, cough and readout show them);
-  dirt counts only for cattle and sheep; the cold and dam-vaccination factors and weaning stress are not wired.
+- **Animal health:** Marek's sitting pose is not drawn; an orphan's double scours risk is not wired (the young keep no dam link); the
+  calf weaning ages (56 and 205 real days) and the footbath's 1 L drag-out are proposed (`docs/questions/animal-health.md` 15-16). A
+  footbath placed before 0.2.1 draws empty until its next fill or pass.
 - **Quest book:** the Field Manual has no page on the quest book (it is Wildcatter's). `farmings:tamed` stays one key for every
   species, given to players within 64 blocks of the post (accepted by Tim 2026-11-19, C14).
 - **Wildcatter fertilizer bags:** a 1 t bag is 100 spreads in the gantry (built 2026-11-14). They still do nothing by hand (Wildcatter

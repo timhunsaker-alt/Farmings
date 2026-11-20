@@ -89,3 +89,47 @@ Logged while building the answered spec. Format as above.
 - **Chosen:** 1,000,000 (proposed), above the 750,000 tank limit, so chronic cows are what push a tank to HIGH SCC.
 - **Why:** with 700,000 no herd could ever reach the limit (clinical milk never goes in the tank).
 - **Alternatives:** 700,000 and a lower warning threshold.
+
+## Finish-up decisions (2026-11-20, branch `finish-0.2`, decided on recommendation; for Tim)
+Closing the Known gaps of decision 10 and the risk factors left unwired. Format as above.
+
+### 12. How the signs are drawn
+- **Chosen:** poses in each model after its own walk (head low 26 degrees and 1.5 px; the limp on the right fore: a 35% stride, the
+  sound fore 125%, the foot held up at rest, a head nod as the lame foot lands), and a layer that adds small cubes sized from the leg's
+  and body's own cube: a 2 px red band round **both** hind legs under a withdrawal, five raised diamond patches a flank on a pig with
+  erysipelas. Textures from two Ludo swatches (a red plastic band, red-purple skin), tiled by `tools/process_art.py`. The server syncs one
+  flags value per animal (`HealthSigns`).
+- **Why:** one layer fits all species and body shapes (beef, zebu, lambs, foals) with no per-model UV work; both hind legs so the band
+  shows from either side, as many dairies band them.
+- **Alternatives:** one band on one leg (truer to some farms, hidden half the time); painting marks into each coat texture (six texture
+  sets to redo).
+- Birds show the head low only; Marek's sitting pose is still not drawn.
+
+### 13. Dirt for goats, pigs, horses and birds
+- **Chosen:** the housing's own dirt state as a share: shed and stable bedding (soiled share, 1 when DIRTY), the pig barn's pit (how full,
+  1 when FULL), the coop's litter (share of the full store); 0 on pasture or paddock.
+- **Why:** each housing already has a dirt rule with its own health cost; this reads it rather than inventing a second figure.
+- **Alternatives:** binary (1 only when the housing reads DIRTY); a per-animal figure like the cattle stall.
+- Sheep read 0 until this build (their dirt field was never set); they now read the shed.
+
+### 14. Dam vaccination window and which vaccine
+- **Chosen:** any dose of the dam's vaccine (respiratory for cows, CDT for ewes and does) in the 42 real days before the birth halves the
+  young's scours risk, as the spec says. Sows have no such vaccine in this build. Orphans are not doubled (the spec's orphan rule needs
+  a dam link the young don't keep).
+- **Alternatives:** require a full, in-date course as well.
+
+### 15. Weaning ages for calves
+- **Chosen:** Farmings calves do not suckle, so weaning is by age: dairy breeds 56 real days (8 weeks), beef breeds 205 (the age beef
+  weaning weights are adjusted to). Crossing it opens the 45-day BRD window. Both **TO VERIFY**.
+- **Alternatives:** one age for all (56); a weaning act by the player (a new mechanic).
+
+### 16. Footbath drag-out
+- **Chosen:** 1 L carried out per dosed animal *(proposed, no source found)*; the bath needs 60 L to work, so a full bath serves 40
+  animals before a top-up. The block shows its level in eighths.
+- **Why:** the level visibly falls and the water pump has a job; 40 head between top-ups is a plausible working day.
+- **Alternatives:** 0.5 L (as built in 0.2.0, invisible: the readout rounded it away); dosing by concentration.
+
+### 17. The old footbath film
+- **Found:** the 0.2.0 health scene walked the lame cow and the well cow 12 blocks east, which left them standing at the end of the
+  footbath lane; they were what looked like cows in the footbath film (the three in the lane were Suffolk ewes). The new films stand
+  each set 20+ blocks apart and the footbath film shows only the three ewes.
