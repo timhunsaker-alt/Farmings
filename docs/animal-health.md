@@ -1,6 +1,7 @@
 # Animal health: disease, the vet cycle and quarantine
 
-**Status: spec, 2026-11-19 (Wave B, build 1; picked by Tim the same day). Nothing here is built.** Marks as in `docs/crops.md`:
+**Status: APPROVED by Tim 2026-11-19 (Wave B, build 1): all eight questions answered with the recommended option. Built on branch
+`animal-health-spec`; see "Built" at the end.** Marks as in `docs/crops.md`:
 real figures carry a source. *(proposed)* marks a game choice with no source. **TO VERIFY** marks a weak source (a trade page, a
 search snippet, a secondary summary). **NOT FOUND** means no source was found, so the game value is proposed. The open design
 choices are at the end and in `docs/questions/animal-health.md`. Everything else is decided on recommendation, and says so.

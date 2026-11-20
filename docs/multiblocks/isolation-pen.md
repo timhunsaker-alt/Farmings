@@ -1,6 +1,6 @@
 # The isolation pen (quarantine and hospital pen)
 
-**Status: spec, 2026-11-19 (Wave B, build 1; `docs/animal-health.md`). Nothing here is built.** Marks as in `docs/crops.md`.
+**Status: APPROVED by Tim 2026-11-19 with the animal health spec (`docs/animal-health.md`).** Marks as in `docs/crops.md`.
 
 ## Real counterpart
 - A **quarantine pen** for new or returning animals: "a minimum of 30 days in a separate pen with no over-the-fence contact with
