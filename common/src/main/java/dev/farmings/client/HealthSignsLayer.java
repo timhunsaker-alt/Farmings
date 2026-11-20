@@ -28,10 +28,10 @@ import net.minecraft.util.RandomSource;
 public class HealthSignsLayer<S extends LivingEntityRenderState & HealthSignsState, M extends EntityModel<? super S> & HealthSignsModel> extends RenderLayer<S, M> {
 	private static final RenderType BAND = RenderTypes.entityCutout(Farmings.id("textures/entity/health/leg_band.png"));
 	private static final RenderType MARKS = RenderTypes.entityCutout(Farmings.id("textures/entity/health/erysipelas.png"));
-	/** The band: 2 px tall, 0.4 px proud of the leg, its middle 3.5 px above the hoof (proposed). */
+	/** The band: 2 px tall, 0.4 px proud of the leg, its middle 40% of the way up from the hoof, about the hock or the pastern's top. */
 	private static final float BAND_PX = 2.0F;
 	private static final float BAND_PROUD = 0.4F;
-	private static final float BAND_ABOVE_HOOF = 3.5F;
+	private static final float BAND_UP = 0.4F;
 	/** A diamond 2.6 px across its points, 0.3 px raised (proposed). */
 	private static final float DIAMOND_PX = 2.6F;
 	/** Where the diamonds sit on each flank: (along the body, up the side), as shares of the body cube. */
@@ -65,7 +65,7 @@ public class HealthSignsLayer<S extends LivingEntityRenderState & HealthSignsSta
 				ModelPart.Cube c = leg.getRandomCube(ONE);
 				float w = c.maxX - c.minX + 2 * BAND_PROUD;
 				float d = c.maxZ - c.minZ + 2 * BAND_PROUD;
-				float y = c.maxY - BAND_ABOVE_HOOF - BAND_PX / 2;
+				float y = c.maxY - BAND_UP * (c.maxY - c.minY) - BAND_PX / 2;
 				pose.pushPose();
 				model.root().translateAndRotate(pose);
 				leg.translateAndRotate(pose);

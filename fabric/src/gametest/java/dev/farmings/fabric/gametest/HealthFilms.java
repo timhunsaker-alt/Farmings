@@ -205,10 +205,11 @@ final class HealthFilms {
 			log("parlor: " + ctl.readout(level));
 			// the footbath lane: fenced both sides, one bath in its middle, part used (89 of 100 L), charged
 			int lz = sz + 30;
-			for (int x = sx + 34; x <= sx + 46; x++) {
+			for (int x = sx + 30; x <= sx + 48; x++) {
 				level.setBlockAndUpdate(new BlockPos(x, g, lz - 1), Blocks.OAK_FENCE.defaultBlockState());
 				level.setBlockAndUpdate(new BlockPos(x, g, lz + 1), Blocks.OAK_FENCE.defaultBlockState());
 			}
+			level.setBlockAndUpdate(new BlockPos(sx + 30, g, lz), Blocks.OAK_FENCE.defaultBlockState());     // the lane's closed west end
 			bathAt = new BlockPos(sx + 40, g, lz);
 			level.setBlockAndUpdate(bathAt, HealthBlocks.FOOTBATH.defaultBlockState());
 			var bath = (HealthBlocks.FootbathEntity) level.getBlockEntity(bathAt);
@@ -287,6 +288,16 @@ final class HealthFilms {
 
 	// ---- camera and readout ----
 
+	/** The camera at (x, y, z) (feet; the eye is 1.62 higher) looking at the point (tx, ty, tz), the readout panel close below the line of sight. */
+	private void look(double x, double y, double z, double tx, double ty, double tz) {
+		double dx = tx - x;
+		double dy = ty - (y + 1.62);
+		double dz = tz - z;
+		float yaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
+		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+		cam(x, y, z, yaw, pitch, 1.35, 0.62, 0.40);
+	}
+
 	/** The camera: spectator at x, y, z looking yaw, pitch; then the readout panel placed `ahead` blocks in front, `down` below the line of sight. */
 	private void cam(double x, double y, double z, float yaw, float pitch, double ahead, double down, double scale) {
 		server.runCommand(String.format(Locale.ROOT, "tp @p %.2f %.2f %.2f %.1f %.1f", x, y, z, yaw, pitch));
@@ -295,12 +306,16 @@ final class HealthFilms {
 		double fx = -Math.sin(ry) * Math.cos(rp);
 		double fy = -Math.sin(rp);
 		double fz = Math.cos(ry) * Math.cos(rp);
+		// below the line of sight on screen: along the camera's own up vector, so a steep shot keeps the panel low in the frame
+		double ux = -Math.sin(ry) * Math.sin(rp);
+		double uy = Math.cos(rp);
+		double uz = Math.cos(ry) * Math.sin(rp);
 		double eye = y + 1.62;
-		double px = x + fx * ahead;
-		double py = eye + fy * ahead - down;
-		double pz = z + fz * ahead;
+		double px = x + fx * ahead - ux * down;
+		double py = eye + fy * ahead - uy * down;
+		double pz = z + fz * ahead - uz * down;
 		server.runCommand("kill @e[type=text_display,tag=readout]");
-		server.runCommand(String.format(Locale.ROOT, "summon text_display %.2f %.2f %.2f {Tags:[\"readout\"],billboard:\"center\",line_width:150,"
+		server.runCommand(String.format(Locale.ROOT, "summon text_display %.2f %.2f %.2f {Tags:[\"readout\"],billboard:\"center\",line_width:140,see_through:false,"
 				+ "background:-1440603614,brightness:{sky:15,block:15},alignment:\"left\",text:{text:\"\"},"
 				+ "transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[%.2ff,%.2ff,%.2ff]}}",
 				px, py, pz, scale, scale, scale));
@@ -347,25 +362,25 @@ final class HealthFilms {
 	/** 1. Daisy limps toward the camera, head low, along the walk; close at the end. */
 	private void lameCow() {
 		int z = sz + 4;
-		server.runOnServer(srv -> daisy.snapTo(sx + 0.5, g, z + 0.5, -90, 0));
-		// low, at her head's height, ahead of her and a little to the side: she walks into a close three-quarter view
-		cam(sx + 13.5, g - 0.3, z + 3.2, 120, 6, 2.4, 0.95, 0.42);
+		server.runOnServer(srv -> daisy.snapTo(sx + 4.0, g, z + 0.5, -90, 0));
+		// low, ahead of her and to the side: she limps into a close three-quarter view, head low
+		look(sx + 9.0, g - 0.4, z + 4.6, sx + 8.6, g + 0.5, z + 0.5);
 		context.waitTicks(40);
 		String sign = server.computeOnServer(srv -> signs(daisy.readout()));
 		readout("LAME", "foot rot: " + sign, "head low, walks 30% slower");
 		context.waitTicks(10);
 		Filming f = start("health-1-lame-cow");
-		event("start: Daisy far, walking toward the camera");
-		for (int t = 0; t < 20 * 12; t++) {
+		event("start: Daisy enters left, limping across the frame side-on");
+		for (int t = 0; t < 20 * 13; t++) {
 			if (t % 20 == 0) {
-				server.runOnServer(srv -> walk(daisy, sx + 12.5, z + 0.5, 1.0));
+				server.runOnServer(srv -> walk(daisy, sx + 14.0, z + 0.5, 1.0));
 			}
-			if (t == 20 * 6) {
+			if (t == 20 * 5) {
 				event("Daisy mid-frame, limp and head low clear");
 			}
 			context.waitTick();
 		}
-		event("Daisy close, end");
+		event("Daisy near the right edge, end");
 		f.stop();
 		double end = server.computeOnServer(srv -> daisy.getX());
 		log("lame cow ended at x " + (end - sx));
@@ -379,7 +394,7 @@ final class HealthFilms {
 			daisy.setYHeadRot(-90);
 			daisy.setNoAi(true);
 		});
-		cam(sx + 15.6, g - 0.1, sz + 6.6, 125, 10, 2.3, 0.9, 0.40);
+		look(sx + 15.0, g - 0.1, sz + 6.6, sx + 13.0, g + 0.4, sz + 4.6);
 		context.waitTicks(30);
 		readout("VET KIT", "...");
 		Filming f = start("health-2-exam");
@@ -408,9 +423,10 @@ final class HealthFilms {
 	private void sickPen() {
 		server.runOnServer(srv -> {
 			daisy.setNoAi(false);
-			daisy.snapTo(sx + 14.5, g, sz + 4.5, -90, 0);
+			daisy.snapTo(penCtl.getX() - 2.5, g, penCtl.getZ() + 1.5, -90, 0);
+			daisy.getNavigation().stop();
 		});
-		cam(penCtl.getX() + 7.2, g + 0.6, penCtl.getZ() + 6.2, 135, 14, 2.4, 0.95, 0.40);
+		look(penCtl.getX() + 0.2, g + 1.4, penCtl.getZ() + 5.4, penCtl.getX() + 1.6, g + 0.1, penCtl.getZ() + 1.0);
 		context.waitTicks(30);
 		readout("SICK PEN", "sneak + vet kit: isolate her");
 		Filming f = start("health-3-sick-pen");
@@ -421,8 +437,11 @@ final class HealthFilms {
 		readout("SICK PEN", msg.replaceFirst(" at .*$", ""), "she walks in on her own");
 		event("sent to the sick pen; she limps in");
 		boolean in = false;
-		for (int t = 0; t < 20 * 14 && !in; t++) {
+		for (int t = 0; t < 20 * 16 && !in; t++) {
 			context.waitTick();
+			if (t % 20 == 0) {
+				server.runOnServer(srv -> walk(daisy, penCtl.getX() + 2.5, penCtl.getZ() + 1.5, 1.0));
+			}
 			if (t % 10 == 0) {
 				in = server.computeOnServer(srv -> {
 					BlockPos p = daisy.blockPosition();
@@ -430,7 +449,7 @@ final class HealthFilms {
 				});
 			}
 		}
-		event(in ? "Daisy in the pen" : "Daisy NOT in the pen after 14 s");
+		event(in ? "Daisy in the pen" : "Daisy NOT in the pen after 16 s");
 		context.waitTicks(30);
 		String treat = server.computeOnServer(srv -> {
 			srv.overworld().playSound(null, daisy.blockPosition(), HealthSounds.VET_KIT, net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.2F);
@@ -459,16 +478,21 @@ final class HealthFilms {
 			daisy.snapTo(near.getX() + 0.5, near.getY() + 1, near.getZ() + 0.5, 0, 0);
 			daisy.settle(level);
 		});
-		// close on the stalls and the can, from the open side of the parlor
-		cam(parlorAt.getX() + 2.6, g + 0.9, parlorAt.getZ() - 3.6, 30, 18, 2.4, 0.95, 0.38);
+		server.runOnServer(srv -> ((ParlorControllerEntity) srv.overworld().getBlockEntity(parlorAt)).pump(srv.overworld()).forceRunning(false));
+		// close on the stalls and the can, from beyond the holding pen
+		look(parlorAt.getX() + 2.6, g + 1.5, parlorAt.getZ() + 5.4, parlorAt.getX() - 0.6, g - 0.1, parlorAt.getZ() + 1.6);
 		context.waitTicks(30);
 		readout("PARLOR", parlorLine(), "");
 		Filming f = start("health-4-parlor");
 		event("start: Daisy in the holding pen, red bands on");
 		double canBefore = server.computeOnServer(srv -> can(srv.overworld()).litres());
 		boolean done = false;
-		for (int t = 0; t < 20 * 20; t++) {
+		for (int t = 0; t < 20 * 22; t++) {
 			context.waitTick();
+			if (t == 60) {
+				server.runOnServer(srv -> ((ParlorControllerEntity) srv.overworld().getBlockEntity(parlorAt)).pump(srv.overworld()).forceRunning(true));
+				event("vacuum pump on: the parlor calls her");
+			}
 			if (t % 20 == 0) {
 				double[] st = server.computeOnServer(srv -> new double[] {can(srv.overworld()).litres(), ((ParlorControllerEntity) srv.overworld().getBlockEntity(parlorAt)).tank(srv.overworld()).tank().litres(), daisy.milkKg()});
 				readout("PARLOR", daisyId() + ": WITHHELD (red band)", String.format(Locale.ROOT, "waste can %.0f L", st[0]),
@@ -506,7 +530,7 @@ final class HealthFilms {
 	/** 5. Three ewes walk the lane, each held in the bath two seconds; the bath's litres and drawn level fall. */
 	private void footbath() {
 		int lz = bathAt.getZ();
-		cam(bathAt.getX() + 0.5, g + 1.0, lz + 4.3, 180, 22, 2.3, 0.95, 0.40);
+		look(bathAt.getX() + 0.5, g + 2.0, lz + 2.6, bathAt.getX() + 0.5, g - 0.4, lz - 0.6);
 		context.waitTicks(30);
 		readout("FOOTBATH", bathText());
 		server.runOnServer(srv -> {
@@ -519,24 +543,25 @@ final class HealthFilms {
 		int[] phase = new int[3];        // 0 waiting, 1 to the bath, 2 standing in it, 3 on out
 		int[] since = new int[3];
 		int lastPasses = server.computeOnServer(srv -> bath(srv.overworld()).passes());
-		for (int t = 0; t < 20 * 30; t++) {
+		for (int t = 0; t < 20 * 34; t++) {
 			context.waitTick();
 			int tt = t;
 			for (int i = 0; i < 3; i++) {
 				int k = i;
-				if (phase[k] == 0 && tt >= k * 20 * 5) {
+				if (phase[k] == 0 && tt >= k * 20 * 6) {
 					phase[k] = 1;
 					since[k] = tt;
 				}
-				if (tt % 10 == 0 && phase[k] > 0) {
+				if (tt % 5 == 0 && phase[k] > 0) {
 					boolean at = server.computeOnServer(srv -> {
 						SheepEntity s = ewes.get(k);
 						if (phase[k] == 1) {
 							walk(s, bathAt.getX() + 0.5, lz + 0.5, 1.0);
-							return s.blockPosition().getX() == bathAt.getX();
+							return Math.abs(s.getX() - (bathAt.getX() + 0.5)) < 0.6;
 						}
 						if (phase[k] == 2) {
 							s.getNavigation().stop();
+							s.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);     // stood in the bath, as a handler holds her
 							return false;
 						}
 						walk(s, bathAt.getX() + 6.5, lz + 0.5, 1.0);
@@ -582,7 +607,13 @@ final class HealthFilms {
 
 	/** 6. The coughing heifer in her pen: head low; each cough's second is logged (the recording has no sound). */
 	private void cough() {
-		cam(coughPen.getX() + 2.6, g + 0.4, coughPen.getZ() + 5.4, 175, 12, 2.3, 0.95, 0.40);
+		server.runOnServer(srv -> {
+			heifer.setNoAi(true);
+			heifer.snapTo(coughPen.getX() + 2.5, g + 0.15, coughPen.getZ() + 1.0, 25, 0);
+			heifer.setYBodyRot(25);
+			heifer.setYHeadRot(25);
+		});
+		look(coughPen.getX() + 2.0, g + 1.0, coughPen.getZ() + 4.4, coughPen.getX() + 2.5, g + 0.3, coughPen.getZ() + 1.0);
 		context.waitTicks(30);
 		String sign = server.computeOnServer(srv -> signs(heifer.readout()));
 		readout("SICK PEN", "BRD: " + sign, "cough every 15 s or so");
@@ -590,6 +621,9 @@ final class HealthFilms {
 		event("start: Jersey heifer with BRD, head low");
 		for (int t = 0; t < 20 * 32; t++) {
 			context.waitTick();
+			if (t % 20 == 0) {
+				server.runOnServer(srv -> heifer.settle(srv.overworld()));     // held still: its own bookkeeping (and cough) by hand
+			}
 			boolean c = server.computeOnServer(srv -> Math.floorMod(srv.overworld().getGameTime() + heifer.getId() * 7L, 300L) == 0);
 			if (c) {
 				event("cough (sound plays within 1 s: entity.cattle.cough)");
