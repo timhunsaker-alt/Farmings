@@ -3131,6 +3131,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			new GeneticsFilms(context).run();
 			return;
 		}
+		// the taming short: its own generated world, only when named
+		if ("tamingFilm".equals(System.getenv("FARMINGS_ONLY"))) {
+			new TamingFilms(context).run();
+			return;
+		}
 		if ("farmShort".equals(System.getenv("FARMINGS_ONLY"))) {
 			new FarmShort(context).run();
 			return;
