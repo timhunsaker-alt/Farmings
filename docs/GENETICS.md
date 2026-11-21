@@ -99,7 +99,8 @@ cream per dilution step.
 **Animals with no coat genes:** an animal saved before this, or a straw filled before it, gets coat genes drawn from its own breed mix,
 seeded by its genome hash, so they are always the same. New straws carry the bull's coat genes.
 
-**Where it shows:** the readout, the herd book page, and the renderer (cattle.md, "Models and coats").
+**Where it shows:** the readout, the herd book (a genes page per animal since 2026-11-21: both alleles at MC1R, horns, pattern, white
+and face, with what the pair shows and carries), and the renderer (cattle.md, "Models and coats").
 
 **Tests:**
 - `VisualGenomeTest`:

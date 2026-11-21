@@ -62,10 +62,55 @@ public class HerdBookItem extends Item {
 
 	/** Records the animal into the book; false if the book is full and she is not already in it. */
 	public static boolean record(ItemStack book, CattleEntity cow) {
-		return put(book, cow.herdId(), page(cow) + PAGE_BREAK + healthPage(cow));
+		return put(book, cow.herdId(), page(cow) + PAGE_BREAK + genesPage(cow) + PAGE_BREAK + healthPage(cow));
 	}
 
-	/** A page break inside one entry: the entry takes two book pages (the animal, then its health). */
+	/**
+	 * The coat genes (docs/GENETICS.md, "Coat genes"): both alleles at the loci a player can see, with what the pair shows and what it
+	 * hides (a black animal carrying red, a polled one carrying horns), so a surprise calf can be read back to its parents.
+	 */
+	public static String genesPage(CattleEntity cow) {
+		if (cow.genome() == null) {
+			return "Genes " + cow.herdId() + "\nnot recorded\n";
+		}
+		dev.farmings.genetics.VisualGenome g = cow.visualGenome();
+		StringBuilder b = new StringBuilder("Genes ").append(cow.herdId()).append('\n');
+		int[] e = g.pair(dev.farmings.genetics.VisualLocus.EXTENSION);
+		b.append("Color (MC1R) ").append(pair(dev.farmings.genetics.VisualLocus.EXTENSION, e)).append('\n');
+		String[] shown = {"black", "black", "brown", "red"};
+		int ex = g.expressed(dev.farmings.genetics.VisualLocus.EXTENSION);
+		b.append(" shows ").append(shown[ex]);
+		if (ex != 3 && (e[0] == 3 || e[1] == 3)) {
+			b.append(", carries red");
+		}
+		b.append('\n');
+		int[] h = g.pair(dev.farmings.genetics.VisualLocus.HORNS);
+		boolean polled = g.expressed(dev.farmings.genetics.VisualLocus.HORNS) == 0;
+		b.append("Horns ").append(pair(dev.farmings.genetics.VisualLocus.HORNS, h)).append('\n');
+		b.append(" shows ").append(polled ? "polled" : "horned").append(polled && (h[0] == 1 || h[1] == 1) ? ", carries horns" : "").append('\n');
+		b.append("Pattern ").append(pair(dev.farmings.genetics.VisualLocus.PATTERN, g.pair(dev.farmings.genetics.VisualLocus.PATTERN))).append('\n');
+		int[] w = g.pair(dev.farmings.genetics.VisualLocus.WHITE);
+		b.append(String.format(Locale.ROOT, "White %d%% (%d/%d)", Math.round(g.expressed(dev.farmings.genetics.VisualLocus.WHITE) / 10.0), w[0] / 10, w[1] / 10)).append('\n');
+		b.append("Face ").append(pair(dev.farmings.genetics.VisualLocus.FACE, g.pair(dev.farmings.genetics.VisualLocus.FACE))).append('\n');
+		int roan = g.sum(dev.farmings.genetics.VisualLocus.ROAN);
+		int pmel = g.sum(dev.farmings.genetics.VisualLocus.PMEL);
+		if (roan > 0) {
+			b.append("Roan ").append(pair(dev.farmings.genetics.VisualLocus.ROAN, g.pair(dev.farmings.genetics.VisualLocus.ROAN))).append('\n');
+		}
+		if (pmel > 0) {
+			b.append("Dilution ").append(pair(dev.farmings.genetics.VisualLocus.PMEL, g.pair(dev.farmings.genetics.VisualLocus.PMEL))).append('\n');
+		}
+		if (g.expressed(dev.farmings.genetics.VisualLocus.AGOUTI) == 1) {
+			b.append("Brindle ").append(pair(dev.farmings.genetics.VisualLocus.AGOUTI, g.pair(dev.farmings.genetics.VisualLocus.AGOUTI))).append('\n');
+		}
+		return b.toString();
+	}
+
+	private static String pair(dev.farmings.genetics.VisualLocus l, int[] p) {
+		return l.label(p[0]) + "/" + l.label(p[1]);
+	}
+
+	/** A page break inside one entry: a cattle entry takes three book pages (the animal, its genes, its health); others take two. */
 	public static final String PAGE_BREAK = "\f";
 
 	/** The health section (docs/animal-health.md, "What the player sees"): cases, treatments, vaccines, cells, quarantine. */

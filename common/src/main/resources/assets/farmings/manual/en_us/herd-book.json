@@ -116,6 +116,21 @@
    "type": "para",
    "runs": [
     {
+     "t": "Cattle get a "
+    },
+    {
+     "t": "genes page",
+     "b": true
+    },
+    {
+     "t": " next: both alleles at the coat genes (color, horns, pattern, white and face), what the pair shows, and what it hides. A black cow that reads `ED/e` shows black but carries red: bred to another red carrier, some of her calves come out red. A health page follows."
+    }
+   ]
+  },
+  {
+   "type": "para",
+   "runs": [
+    {
      "t": "Use it to pick sires and dams and to spot close relatives before you "
     },
     {

@@ -22,6 +22,10 @@ Each page is keyed by the animal's herd ID, the first **8** characters of its ge
 - calves, and whether a heifer is a freemartin;
 - the eight trait scores, dressing % and marbling grade.
 
+Cattle get a **genes page** next: both alleles at the coat genes (color, horns, pattern, white and face), what the pair shows, and
+what it hides. A black cow that reads `ED/e` shows black but carries red: bred to another red carrier, some of her calves come out red.
+A health page follows.
+
 Use it to pick sires and dams and to spot close relatives before you [breed](breeding). The scores are explained under [genes and traits](genes).
 
 ## The stud book

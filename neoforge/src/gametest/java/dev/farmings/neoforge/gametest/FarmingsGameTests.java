@@ -1882,8 +1882,13 @@ public class FarmingsGameTests {
 		helper.assertTrue(page.contains("Dam " + dam.herdId()) && page.contains("Sire " + bull.herdId()) && page.contains("milk yield"),
 				Component.literal("the calf's page names her parents and traits: " + page));
 		net.minecraft.world.item.component.WrittenBookContent content = held.get(net.minecraft.core.component.DataComponents.WRITTEN_BOOK_CONTENT);
-		// each animal takes two pages: who it is, then its health (docs/animal-health.md)
-		helper.assertTrue(content != null && content.pages().size() == 4, Component.literal("it reads as a four-page book"));
+		// each animal takes three pages: who it is, its coat genes, then its health (docs/animal-health.md)
+		helper.assertTrue(content != null && content.pages().size() == 6, Component.literal("it reads as a six-page book"));
+		String genes = entries.get(0)[1].split(dev.farmings.item.HerdBookItem.PAGE_BREAK)[1];
+		int[] e = calf.visualGenome().pair(dev.farmings.genetics.VisualLocus.EXTENSION);
+		String mc1r = dev.farmings.genetics.VisualLocus.EXTENSION.label(e[0]) + "/" + dev.farmings.genetics.VisualLocus.EXTENSION.label(e[1]);
+		helper.assertTrue(genes.startsWith("Genes " + calf.herdId()) && genes.contains("Color (MC1R) " + mc1r) && genes.contains("Horns "),
+				Component.literal("the genes page shows both alleles: " + genes));
 		for (String part : entries.get(0)[1].split(dev.farmings.item.HerdBookItem.PAGE_BREAK)) {
 			helper.assertTrue(part.length() <= net.minecraft.world.item.component.WrittenBookContent.PAGE_LENGTH, Component.literal("a page fits"));
 		}
