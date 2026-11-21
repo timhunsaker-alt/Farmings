@@ -3126,6 +3126,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			new HealthFilms(context).run();
 			return;
 		}
+		// the coat genetics short: its own generated world, only when named
+		if ("genetics".equals(System.getenv("FARMINGS_ONLY"))) {
+			new GeneticsFilms(context).run();
+			return;
+		}
 		if ("farmShort".equals(System.getenv("FARMINGS_ONLY"))) {
 			new FarmShort(context).run();
 			return;
