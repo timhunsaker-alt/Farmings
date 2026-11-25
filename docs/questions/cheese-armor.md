@@ -45,3 +45,7 @@ Brief: Tim's idea, "turning milk armor into cheese armor its weaker but lasts lo
 13. **No Field Manual page.** Milk armor has none; it is an easter egg.
 14. **Art from Ludo.** Two surfaces and four icons. The moldy icons are made by script (`process_art.py` `mould()`), the way the spoiled
     milk icons are. Prompts are in `art/source/PROMPTS.md`.
+15. **Colour pass (Tim, 2026-11-25: "reads brown, like cork").**
+    - The worn layers are now a bright cheddar yellow-orange with a subtle rind and a few large round, lighter-rimmed Swiss-style eyes.
+    - The moldy set is the same base with blue-green mould on top.
+    - The icons were redrawn by Ludo in the same style.

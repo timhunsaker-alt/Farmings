@@ -46,13 +46,15 @@ Surfaces (`texture`), laid by `tools/armor_textures.py` on the vanilla armor lay
 - `mat_cheese_armor.webp`: "Seamless tileable texture of the cut face of a young cheddar cheese: smooth firm orange-yellow cheese with a slight waxy sheen and a few small round holes (eyes) scattered sparsely, fine curd grain, no rind, no objects, no text, even lighting, top-down"
 - `mat_cheese_moldy.webp`: "Seamless tileable texture of the cut face of mouldy cheddar cheese: dull orange-yellow cheese with a few small round holes, covered in scattered fuzzy blue-green mould spots with white edges, some drying cracks, matte, no rind, no objects, no text, even lighting, top-down"
 
-Item icons (`item-icon`), in `item/`:
+Item icons (`item-icon`), in `item/`. These were redone the same day: the first icons and worn layers read brown, like cork (Tim).
 | File | Prompt |
 |---|---|
-| cheese_helmet / _chestplate | A single knight helmet (chestplate) made entirely of orange-yellow cheddar cheese, smooth waxy cheese surface with a few small round holes, blocky medieval shape, game item icon, plain grey background, no text |
-| cheese_leggings / _boots | A single pair of knight armor leggings (boots) made entirely of orange-yellow cheddar cheese, smooth waxy cheese surface with a few small round holes, blocky medieval shape, game item icon, plain grey background, no text |
+| cheese_helmet / _chestplate | A single knight helmet (chestplate) made entirely of bright light yellow-orange cheese, like a block of Swiss cheese: smooth pale golden cheese with a few large round shallow holes (eyes) with lighter rims, a thin slightly deeper orange rind along the edges, blocky medieval shape, bright even lighting, game item icon, plain grey background, no text |
+| cheese_leggings / _boots | A single pair of knight armor leggings (boots) made entirely of bright light yellow-orange cheese, like a block of Swiss cheese: smooth pale golden cheese with a few large round shallow holes (eyes) with lighter rims, a thin slightly deeper orange rind along the edges, blocky medieval shape, bright even lighting, game item icon, plain grey background, no text |
 
-The moldy icons are made from these in `tools/process_art.py` (`mould()`: duller, blue-green mould spots), not drawn again.
+- `tools/process_art.py` warms these icons a touch toward the worn cheddar colour (`warm()`).
+- It makes the moldy icons from them (`mould()`): the same cheese, slightly duller, with blue-green mould spots in a pale ring.
+- The worn layers take only the fine grain of `mat_cheese_armor.webp` and the mould colours of `mat_cheese_moldy.webp`. `tools/armor_textures.py` (`paint_cheese`) draws the cheddar colour, rind and eyes.
 
 ## 2026-11-09: whey, spoiled food, the walk-in fridge, the cow lane (Ludo createImage)
 Item icons (`item-icon`, Photorealistic 3D):

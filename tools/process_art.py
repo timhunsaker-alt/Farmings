@@ -104,8 +104,20 @@ def sour(img, seed):
 	return out
 
 
+def warm(img):
+	"""Cheese armor icons: the Ludo cheese warmed a touch toward the worn layers' cheddar yellow-orange (tools/armor_textures.py)."""
+	out = img.copy()
+	px = out.load()
+	for x in range(out.width):
+		for y in range(out.height):
+			r, g, b, a = px[x, y]
+			if a:
+				px[x, y] = (min(255, int(r * 1.02)), int(g * 0.95), int(b * 0.78), a)
+	return out
+
+
 def mould(img, seed):
-	"""Moldy cheese: a little duller and darker, with blue-green mould spots ringed paler. Keeps the alpha."""
+	"""Moldy cheese: the same cheese, only a little duller, with blue-green mould spots in a pale fuzzy ring. Keeps the alpha."""
 	rnd = random.Random(seed)
 	out = img.copy()
 	px = out.load()
@@ -113,14 +125,14 @@ def mould(img, seed):
 		for y in range(out.height):
 			r, g, b, a = px[x, y]
 			if a:
-				px[x, y] = (int(r * 0.85), int(g * 0.84), int(b * 0.8), a)
-	for _ in range(out.width * out.height // 70):
+				px[x, y] = (int(r * 0.95), int(g * 0.94), int(b * 0.92), a)
+	for _ in range(out.width * out.height // 60):
 		x, y = rnd.randrange(1, out.width - 1), rnd.randrange(1, out.height - 1)
 		if px[x, y][3]:
 			for dx, dy in ((0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)):
 				r, g, b, a = px[x + dx, y + dy]
 				if a:
-					px[x + dx, y + dy] = (70, 130, 120, a) if (dx, dy) == (0, 0) else (min(255, r + 30), min(255, g + 40), min(255, b + 50), a)
+					px[x + dx, y + dy] = (60, 128, 118, a) if (dx, dy) == (0, 0) else (176, 206, 186, a)
 	return out
 
 
@@ -194,6 +206,8 @@ def main():
 	items = sorted(f[:-5] for f in os.listdir(f"{SRC}/item") if f.endswith(".webp"))
 	for name in items:
 		img = icon(f"{SRC}/item/{name}.webp")
+		if name.startswith("cheese_"):
+			img = warm(img)
 		img.save(f"{ASSETS}/item/{name}.png")
 		if name.startswith("milk_"):
 			sour(img, name).save(f"{ASSETS}/item/{name}_spoiled.png")

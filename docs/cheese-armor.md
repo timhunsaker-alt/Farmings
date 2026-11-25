@@ -68,9 +68,17 @@ cut cheese: `cheddar` or `sheep_cheese` (tag `farmings:repairs_cheese_armor`).
 ## Art
 - **Surfaces:** two Ludo surfaces (`art/source/mat_cheese_armor.webp`, young cheddar with a few holes; `mat_cheese_moldy.webp`,
   with blue-green mould spots). Prompts are in `art/source/PROMPTS.md`.
-- **Worn look:** `tools/armor_textures.py` lays the surfaces face by face on the vanilla armor layout, as for milk armor. Cheese gets
-  firm edges and a few holes instead of drips; the moldy set gets more mould spots.
-- **Icons:** four Ludo icons. `tools/process_art.py` makes the moldy icons from them (`mould()`).
+- **Worn look (redone 2026-11-25; Tim: the first pass read brown, like cork):** `tools/armor_textures.py` (`paint_cheese`) draws each
+  face of the vanilla armor layout:
+  - a bright, warm cheddar yellow-orange (RGB 255, 202, 84), with the fine grain of the fresh surface;
+  - a subtle deeper-orange rind along the edges;
+  - a few large round eyes, drawn as shallow hollows with a lighter lower rim. Swiss-style eyes read better than cheddar's at this
+    scale.
+  
+  The moldy set is the same cheese, a little duller, with blue-green mould spots in a pale fuzzy ring. The mould colours are taken from
+  the moldy surface. The change reads as cheese gone bad.
+- **Icons:** four Ludo icons of bright cheese with large eyes, warmed a touch by `tools/process_art.py` (`warm()`). The moldy icons are
+  the same icons with mould added (`mould()`).
 
 ## Code and tests
 - **Code:**
