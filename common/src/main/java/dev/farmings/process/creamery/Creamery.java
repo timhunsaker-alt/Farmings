@@ -28,6 +28,11 @@ public final class Creamery {
 		MILK, CREAM, SKIM, BUTTERMILK, WHEY
 	}
 
+	/** A milk armor piece on its way to cheese armor (docs/cheese-armor.md): set in the vat, then pressed, then ready at the press. */
+	public enum ArmorStep {
+		NONE, VAT, PRESS, READY
+	}
+
 	public record Power(boolean heater, boolean separator, boolean churn, boolean vat) {
 		public static final Power ALL = new Power(true, true, true, true);
 	}
@@ -80,6 +85,9 @@ public final class Creamery {
 	private double chevreMilkKg;
 	private double chevreKg;
 	private String fault = "";
+	/** The milk armor piece being made into cheese armor (the item itself is kept by the controller). */
+	private ArmorStep armor = ArmorStep.NONE;
+	private long armorTicks;
 
 	// ---- milk in ----
 
@@ -171,6 +179,7 @@ public final class Creamery {
 		fault = "";
 		age(ticks);
 		drain(ticks, power);
+		pressArmor(ticks, power);
 		if (phase == Phase.IDLE && rawL >= 1) {
 			batchL = Math.min(BATCH_L, rawL);
 			batchFat = rawFat;
@@ -333,7 +342,7 @@ public final class Creamery {
 
 	/** The press makes a wheel from each 10 kg of curd (all whole wheels at once); each wheel then ages on the shelf. */
 	private void age(long ticks) {
-		if (pressing < 0 && curdKg >= WHEEL_KG) {
+		if (pressing < 0 && armor != ArmorStep.PRESS && curdKg >= WHEEL_KG) {
 			int n = (int) Math.min(Math.floor(curdKg / WHEEL_KG + 1e-9), SHELF_WHEELS - aging.size() - agedWheels);
 			if (n > 0) {
 				curdKg -= n * WHEEL_KG;
@@ -360,6 +369,68 @@ public final class Creamery {
 				aging.set(i, a);
 			}
 		}
+	}
+
+	// ---- cheese armor (docs/cheese-armor.md) ----
+
+	public ArmorStep armor() {
+		return armor;
+	}
+
+	/** A fresh milk armor piece goes into the vat; false if a piece is already in the vat or press, or a chèvre batch is draining there. */
+	public boolean setArmor() {
+		if (armor != ArmorStep.NONE || chevreTicks >= 0) {
+			return false;
+		}
+		armor = ArmorStep.VAT;
+		armorTicks = 0;
+		return true;
+	}
+
+	/**
+	 * The vat sets the piece's milk as it sets a cheddar batch (at once, with power), then it goes to the press when the press is free of
+	 * wheels, and is pressed for the press's own {@link #PRESS_TICKS}.
+	 */
+	private void pressArmor(long ticks, Power power) {
+		if (armor == ArmorStep.VAT) {
+			if (!power.vat()) {
+				fault = "NO POWER: cheese vat";
+				return;
+			}
+			if (pressing >= 0) {
+				fault = "PRESS BUSY: cheese armor waits in the vat";
+				return;
+			}
+			armor = ArmorStep.PRESS;
+			armorTicks = 0;
+			return;
+		}
+		if (armor == ArmorStep.PRESS) {
+			armorTicks = Math.min(PRESS_TICKS, armorTicks + ticks);
+			if (armorTicks >= PRESS_TICKS) {
+				armor = ArmorStep.READY;
+			}
+		}
+	}
+
+	public long armorTicks() {
+		return armorTicks;
+	}
+
+	/** Takes the pressed piece out of the press; false if none is ready. */
+	public boolean takeArmor() {
+		if (armor != ArmorStep.READY) {
+			return false;
+		}
+		armor = ArmorStep.NONE;
+		armorTicks = 0;
+		return true;
+	}
+
+	/** Empties the armor steps (the controller lost the piece, or a test). */
+	public void clearArmor() {
+		armor = ArmorStep.NONE;
+		armorTicks = 0;
 	}
 
 	// ---- products out ----
@@ -441,8 +512,19 @@ public final class Creamery {
 	private static final double SAVE_V2 = -2;
 	/** Version 3: version 2 with the chèvre vat's three numbers on the end. */
 	private static final double SAVE_V3 = -3;
+	/** Version 4: version 3 with the cheese armor's step and ticks on the end. */
+	private static final double SAVE_V4 = -4;
 
 	public double[] save() {
+		double[] v3 = saveV3();
+		double[] out = java.util.Arrays.copyOf(v3, v3.length + 2);
+		out[0] = SAVE_V4;
+		out[v3.length] = armor.ordinal();
+		out[v3.length + 1] = armorTicks;
+		return out;
+	}
+
+	private double[] saveV3() {
 		double[] v2 = saveV2();
 		double[] out = java.util.Arrays.copyOf(v2, v2.length + 3);
 		out[0] = SAVE_V3;
@@ -464,6 +546,16 @@ public final class Creamery {
 	}
 
 	public void load(double[] d) {
+		armor = ArmorStep.NONE;
+		armorTicks = 0;
+		if (d.length > 2 && d[0] == SAVE_V4) {
+			double[] v3 = java.util.Arrays.copyOf(d, d.length - 2);
+			v3[0] = SAVE_V3;
+			load(v3);
+			armor = ArmorStep.values()[Math.floorMod((int) d[d.length - 2], ArmorStep.values().length)];
+			armorTicks = (long) d[d.length - 1];
+			return;
+		}
 		if (d.length > 3 && d[0] == SAVE_V3) {
 			double[] v2 = java.util.Arrays.copyOf(d, d.length - 3);
 			v2[0] = SAVE_V2;
@@ -517,6 +609,13 @@ public final class Creamery {
 		String s = String.format(java.util.Locale.ROOT, "%s, %s milk, raw %.0f L (%.2f%% fat), pasteurizer %s; milk %.0f L, cream %.0f L, skim %.0f L, buttermilk %.0f L, whey %.0f L, butter %.1f kg, curd %.1f kg, wheels aging %d, aged %d",
 				mode, kind.label(), rawL, rawFat, phase.name().toLowerCase(java.util.Locale.ROOT), bottles[0], bottles[1], bottles[2], bottles[3], bottles[4], butterKg, curdKg,
 				aging.size() + inPress, agedWheels);
+		if (armor != ArmorStep.NONE) {
+			s += switch (armor) {
+				case VAT -> ", cheese armor in the vat";
+				case PRESS -> ", cheese armor pressing " + (100 * armorTicks / PRESS_TICKS) + "%";
+				default -> ", cheese armor ready at the press";
+			};
+		}
 		if (chevreTicks >= 0 || chevreKg > 0) {
 			s += String.format(java.util.Locale.ROOT, ", chevre %s, %.1f kg ready", chevreTicks >= 0 ? "draining " + (100 * chevreTicks / CHEVRE_TICKS) + "%" : "vat free", chevreKg);
 		}

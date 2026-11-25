@@ -1998,6 +1998,38 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
 		context.waitTicks(60);
 		context.takeScreenshot("farmings-armor-sick-first-person");
+		// cheese armor (docs/cheese-armor.md): pressed from fresh milk armor at the creamery; fresh, then 14 game days later moldy
+		actionbar(server, "Cheese armor, pressed at the creamery");
+		server.runOnServer(srv -> {
+			net.minecraft.server.level.ServerPlayer p = srv.getPlayerList().getPlayers().get(0);
+			p.removeAllEffects();
+			net.minecraft.world.entity.EquipmentSlot[] slots = {net.minecraft.world.entity.EquipmentSlot.HEAD, net.minecraft.world.entity.EquipmentSlot.CHEST,
+					net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET};
+			net.minecraft.world.item.Item[] items = {FarmingsItems.CHEESE_HELMET, FarmingsItems.CHEESE_CHESTPLATE, FarmingsItems.CHEESE_LEGGINGS, FarmingsItems.CHEESE_BOOTS};
+			for (int i = 0; i < 4; i++) {
+				ItemStack stack = new ItemStack(items[i]);
+				dev.farmings.item.CheeseArmorItem.setMade(stack, srv.overworld().getGameTime());
+				p.setItemSlot(slots[i], stack);
+			}
+			ItemStack spare = new ItemStack(FarmingsItems.CHEESE_HELMET);
+			dev.farmings.item.CheeseArmorItem.setMade(spare, srv.overworld().getGameTime());
+			p.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, spare);
+		});
+		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(80);
+		context.takeScreenshot("farmings-armor-cheese-fresh");
+		actionbar(server, "Fourteen game days later...");
+		server.runOnServer(srv -> {
+			net.minecraft.server.level.ServerPlayer p = srv.getPlayerList().getPlayers().get(0);
+			for (net.minecraft.world.entity.EquipmentSlot s : new net.minecraft.world.entity.EquipmentSlot[] {net.minecraft.world.entity.EquipmentSlot.HEAD,
+					net.minecraft.world.entity.EquipmentSlot.CHEST, net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET,
+					net.minecraft.world.entity.EquipmentSlot.MAINHAND}) {
+				dev.farmings.item.CheeseArmorItem.setMade(p.getItemBySlot(s), srv.overworld().getGameTime() - dev.farmings.item.CheeseArmorItem.SPOIL_TICKS);
+			}
+		});
+		context.waitTicks(80);
+		context.takeScreenshot("farmings-armor-cheese-moldy");
+		context.runOnClient(client -> client.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
 		film.stop();
 	}
 

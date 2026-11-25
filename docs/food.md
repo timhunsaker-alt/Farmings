@@ -47,6 +47,8 @@ Each figure is the middle of the source's range. Sources:
   compost later.
 - **Food in a chest outside a fridge** is not looked at until it is taken. Then it turns at once if its tick has passed.
 - The milk armor keeps its own clock (1 game day, milk-armor.md).
+- Cheese armor keeps as a cheddar wheel: 14 days out of the cold, 336,000 ticks. The walk-in fridge holds it back the same way. Once
+  moldy, it stays armor (cheese-armor.md).
 
 **Tests:**
 - `SpoilageTest`: a day out of the cold; 7 days for cold milk; the FoodKeeper figures.

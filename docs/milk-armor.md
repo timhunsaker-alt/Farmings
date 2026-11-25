@@ -40,3 +40,7 @@ The worn layers are drawn by `tools/armor_textures.py` from two Ludo surfaces (`
 `mat_milk_spoiled.webp` curdled yellow-green milk with mould spots; prompts in `art/source/PROMPTS.md`). They are laid face by face on the
 vanilla armor layout, with edge shading, a highlight along the top, drips at the bottom edges and a face opening in the helmet. Evidence:
 the `armor` client scene.
+
+## Cheese armor (2026-11-25)
+A fresh milk armor piece can be made into cheese armor in the creamery's cheese vat and press: iron's stats, a cheddar wheel's 14-day
+shelf life, and edible. Spoiled milk armor is refused. See [cheese-armor.md](cheese-armor.md).

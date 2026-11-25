@@ -57,6 +57,9 @@ public class CreameryPartBlock extends BigPartBlock {
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		boolean bucket = kind == CreameryParts.RECEIVING_TANK && stack.is(Items.MILK_BUCKET);
 		boolean bottle = kind == CreameryParts.BOTTLER && stack.is(Items.GLASS_BOTTLE);
+		if (kind == CreameryParts.CHEESE_VAT && stack.getItem() instanceof dev.farmings.item.MilkArmorItem) {
+			return level.isClientSide() ? InteractionResult.SUCCESS : setArmor(stack, level, pos, player);
+		}
 		if (!bucket && !bottle) {
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
@@ -88,6 +91,29 @@ public class CreameryPartBlock extends BigPartBlock {
 		return InteractionResult.SUCCESS;
 	}
 
+	/**
+	 * A fresh milk armor piece set in the cheese vat to be made into cheese armor (docs/cheese-armor.md). A spoiled piece is refused: sour
+	 * milk does not make cheddar.
+	 */
+	private static InteractionResult setArmor(ItemStack stack, Level level, BlockPos pos, Player player) {
+		CreameryControllerEntity c = CreameryWorld.controllerOf(level, pos);
+		if (c == null) {
+			player.sendOverlayMessage(Component.literal("This part is not in a formed creamery"));
+			return InteractionResult.FAIL;
+		}
+		if (dev.farmings.item.MilkArmorItem.spoiled(stack)) {
+			player.sendOverlayMessage(Component.literal("Spoiled milk does not make cheese"));
+			return InteractionResult.FAIL;
+		}
+		if (!c.putArmor(stack)) {
+			player.sendOverlayMessage(Component.literal("The vat or press is busy"));
+			return InteractionResult.FAIL;
+		}
+		stack.shrink(1);
+		player.sendOverlayMessage(Component.literal("Set in the vat; take the cheese armor from the press when it is pressed"));
+		return InteractionResult.SUCCESS;
+	}
+
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (level.isClientSide()) {
@@ -97,6 +123,10 @@ public class CreameryPartBlock extends BigPartBlock {
 		if (c != null && kind == CreameryParts.BUTTER_CHURN) {
 			give(player, dev.farmings.item.Perishables.stamp(new ItemStack(FarmingsItems.BUTTER, c.creamery().takeButter(64)), level.getGameTime()));
 			c.setChanged();
+			return InteractionResult.SUCCESS;
+		}
+		if (c != null && kind == CreameryParts.CHEESE_PRESS && c.creamery().armor() == Creamery.ArmorStep.READY) {
+			give(player, c.takeArmor(level.getGameTime()));
 			return InteractionResult.SUCCESS;
 		}
 		if (c != null && kind == CreameryParts.AGING_SHELF) {

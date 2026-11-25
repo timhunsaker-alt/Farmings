@@ -426,6 +426,19 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   `weaning_opens_brd_window`, `footbath_level_drops`); full suite 281 of 281. Client films `healthFilms` (six real-time films for the trailer). Decisions 12-17 in
   `docs/questions/animal-health.md`.
 
+- Cheese armor (2026-11-25, branch `cheese-armor`; Tim: "turning milk armor into cheese armor its weaker but lasts longer and is
+  edible"). Spec `docs/cheese-armor.md`, decisions 1-14 in `docs/questions/cheese-armor.md` (on recommendation, for Tim).
+  - A fresh milk armor piece is set in the creamery's cheese vat (with power) and pressed in the cheese press for `PRESS_TICKS`. It is
+    taken from the press as the matching cheese piece. Spoiled milk armor is refused.
+  - Stats are copied at load from vanilla iron. It is repaired with cheddar or sheep cheese.
+  - It keeps as a cheddar wheel, 14 days or 336,000 ticks, and the cold room chills it. Then it goes "Moldy Cheese …", with Hunger and
+    Nausea while worn.
+  - Sneak-use eats it: helmet 12, chestplate 20, leggings 17, boots 10 hunger, at 1.04 kg of cheddar a milk bucket and 2.4 hunger a kg.
+  - Art: two Ludo surfaces and four Ludo icons; the moldy icons are made by script.
+  - Game tests: 4 new (`cheese_armor_iron_stats`, `cheese_armor_from_milk_armor`, `cheese_armor_spoils_later_and_sickens`,
+    `cheese_armor_edible`); full suite 285 of 285.
+  - Client scene `armor`: adds cheese armor, fresh and moldy.
+
 ## Known gaps
 - **Animal health:** Marek's sitting pose is not drawn; an orphan's double scours risk is not wired (the young keep no dam link); the
   calf weaning ages (56 and 205 real days) and the footbath's 1 L drag-out are proposed (`docs/questions/animal-health.md` 15-16). A

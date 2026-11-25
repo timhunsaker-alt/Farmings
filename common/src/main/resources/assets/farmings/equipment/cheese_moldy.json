@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "farmings:cheese_moldy"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "farmings:cheese_moldy"
+   }
+  ]
+ }
+}

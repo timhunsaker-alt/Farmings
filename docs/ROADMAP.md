@@ -71,3 +71,4 @@ recommended option, `docs/questions/animal-health.md`); built the same day.
 - Seasons and pasture rotation; manure handling and fertilizer.
 - A plain-text genome code (see GENETICS.md; needs a rules check).
 - **Easter egg: milk armor** (Tim, 2026-11-07). See `docs/milk-armor.md`.
+- **Cheese armor** (Tim, 2026-11-25), milk armor pressed into cheese: built 2026-11-25. See `docs/cheese-armor.md`.

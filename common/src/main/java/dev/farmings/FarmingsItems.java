@@ -72,7 +72,8 @@ public final class FarmingsItems {
 			.food(food(1, 0.1F), net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)));
 	public static final Item BUTTER = item("butter", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.BUTTER, p.food(food(3, 0.6F))));
 	public static final Item CHEDDAR_WHEEL = item("cheddar_wheel", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL, p.stacksTo(16)));
-	public static final Item CHEDDAR = item("cheddar", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR, p.food(food(3, 0.7F))));
+	public static final Item CHEDDAR = item("cheddar", p -> new dev.farmings.item.PerishableItem(dev.farmings.process.food.Spoilage.Food.CHEDDAR,
+			p.food(food(dev.farmings.item.CheeseArmorItem.CHEDDAR_SLICE_HUNGER, dev.farmings.item.CheeseArmorItem.CHEDDAR_SATURATION))));
 
 	// Spoiled food (docs/food.md): eating it gives Hunger and Nausea, like spoiled milk armor; food values proposed.
 	private static net.minecraft.world.item.component.Consumable sickening(boolean drink) {
@@ -87,6 +88,12 @@ public final class FarmingsItems {
 	public static final Item RANCID_BUTTER = item("rancid_butter", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
 	public static final Item MOLDY_CHEESE = item("moldy_cheese", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
 	public static final Item SPOILED_STEAK = item("spoiled_steak", p -> new Item(p.food(food(1, 0.0F), sickening(false))));
+
+	// Cheese armor (docs/cheese-armor.md): milk armor pressed in the creamery; iron's stats, keeps as a cheddar wheel, edible.
+	public static final Item CHEESE_HELMET = item("cheese_helmet", p -> new dev.farmings.item.CheeseArmorItem(p, net.minecraft.world.item.equipment.ArmorType.HELMET));
+	public static final Item CHEESE_CHESTPLATE = item("cheese_chestplate", p -> new dev.farmings.item.CheeseArmorItem(p, net.minecraft.world.item.equipment.ArmorType.CHESTPLATE));
+	public static final Item CHEESE_LEGGINGS = item("cheese_leggings", p -> new dev.farmings.item.CheeseArmorItem(p, net.minecraft.world.item.equipment.ArmorType.LEGGINGS));
+	public static final Item CHEESE_BOOTS = item("cheese_boots", p -> new dev.farmings.item.CheeseArmorItem(p, net.minecraft.world.item.equipment.ArmorType.BOOTS));
 
 	// Sheep (docs/animals/sheep.md). Lamb chops from sheep under a year, mutton chops from older ones; food values are vanilla mutton's.
 	public static final Item FLEECE = item("fleece", p -> new dev.farmings.item.FleeceItem(p.stacksTo(16)));
@@ -317,6 +324,10 @@ public final class FarmingsItems {
 		ALL.put("milk_chestplate", MILK_CHESTPLATE);
 		ALL.put("milk_leggings", MILK_LEGGINGS);
 		ALL.put("milk_boots", MILK_BOOTS);
+		ALL.put("cheese_helmet", CHEESE_HELMET);
+		ALL.put("cheese_chestplate", CHEESE_CHESTPLATE);
+		ALL.put("cheese_leggings", CHEESE_LEGGINGS);
+		ALL.put("cheese_boots", CHEESE_BOOTS);
 		ALL.put("bottled_milk", BOTTLED_MILK);
 		ALL.put("cream_bottle", CREAM_BOTTLE);
 		ALL.put("skim_milk_bottle", SKIM_MILK_BOTTLE);

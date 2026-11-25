@@ -77,6 +77,12 @@ controller). The parlor's bulk tank now tracks fat and protein by volume, and th
 ## Not built
 Pipes for the products, other cheeses, yogurt, ice cream.
 
+## Cheese armor (built 2026-11-25)
+A fresh milk armor piece right-clicked onto the `cheese_vat` is set there with power, then pressed in the `cheese_press` for
+`PRESS_TICKS`, and taken from the press by hand as the matching cheese armor piece. One piece at a time. The press takes the piece or
+wheels in turn (`PRESS BUSY`). Spoiled milk armor is refused, and so is any piece while chèvre drains in the vat. The step is saved with
+the controller (save version 4). The whole spec is [../cheese-armor.md](../cheese-armor.md). Game test: cheese_armor_from_milk_armor.
+
 ## Whey (built 2026-11-09)
 - **How much:** a cheese make leaves whey: the milk's mass less the cheese's. This is the mass balance used in cheddar yield work
   ([SDSU](https://openprairie.sdstate.edu/etd/1291)), at the milk's 1.03 kg a litre *(proposed: whey is a little lighter)*. A paneer-whey study gives about

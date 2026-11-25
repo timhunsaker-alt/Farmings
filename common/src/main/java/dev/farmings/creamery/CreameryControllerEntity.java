@@ -32,6 +32,8 @@ public class CreameryControllerEntity extends BlockEntity {
 	private final Creamery creamery = new Creamery();
 	private CreameryCheck check;
 	private final Set<BlockPos> cells = new HashSet<>();
+	/** The milk armor piece being made into cheese armor (docs/cheese-armor.md); its steps are in the {@link Creamery}. */
+	private net.minecraft.world.item.ItemStack armorIn = net.minecraft.world.item.ItemStack.EMPTY;
 
 	public CreameryControllerEntity(BlockPos pos, BlockState state) {
 		super(FarmingsBlocks.CREAMERY_CONTROLLER_ENTITY, pos, state);
@@ -116,7 +118,7 @@ public class CreameryControllerEntity extends BlockEntity {
 				powered(level, CreameryPart.BATCH_PASTEURIZER, busy),
 				powered(level, CreameryPart.CREAM_SEPARATOR, busy && (mode == Creamery.Mode.CREAM || mode == Creamery.Mode.BUTTER)),
 				powered(level, CreameryPart.BUTTER_CHURN, busy && mode == Creamery.Mode.BUTTER),
-				powered(level, CreameryPart.CHEESE_VAT, busy && mode == Creamery.Mode.CHEESE));
+				powered(level, CreameryPart.CHEESE_VAT, busy && mode == Creamery.Mode.CHEESE || creamery.armor() == Creamery.ArmorStep.VAT));
 		creamery.step(ticks, power);
 		setChanged();
 	}
@@ -168,6 +170,41 @@ public class CreameryControllerEntity extends BlockEntity {
 		return 0;
 	}
 
+	// ---- cheese armor (docs/cheese-armor.md) ----
+
+	/** Sets a fresh milk armor piece in the vat; false if the vat or press already holds one, or the vat is draining chèvre. */
+	public boolean putArmor(net.minecraft.world.item.ItemStack milk) {
+		if (!armorIn.isEmpty() || !creamery.setArmor()) {
+			return false;
+		}
+		armorIn = milk.copyWithCount(1);
+		setChanged();
+		return true;
+	}
+
+	/** The cheese armor piece pressed from the milk piece, taken out of the press; empty if none is ready. */
+	public net.minecraft.world.item.ItemStack takeArmor(long now) {
+		if (armorIn.isEmpty() || !creamery.takeArmor()) {
+			return net.minecraft.world.item.ItemStack.EMPTY;
+		}
+		net.minecraft.world.item.ItemStack out = dev.farmings.item.CheeseArmorItem.pressed(armorIn, now);
+		armorIn = net.minecraft.world.item.ItemStack.EMPTY;
+		setChanged();
+		return out;
+	}
+
+	/** The piece in the vat or press drops, as it went in, when the controller is broken. */
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		super.preRemoveSideEffects(pos, state);
+		if (level != null && !armorIn.isEmpty()) {
+			net.minecraft.world.item.ItemStack drop = creamery.armor() == Creamery.ArmorStep.READY ? dev.farmings.item.CheeseArmorItem.pressed(armorIn, level.getGameTime()) : armorIn;
+			net.minecraft.world.Containers.dropItemStack(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop);
+			armorIn = net.minecraft.world.item.ItemStack.EMPTY;
+			creamery.clearArmor();
+		}
+	}
+
 	public String readout() {
 		if (check == null) {
 			return "Creamery: not checked yet";
@@ -183,6 +220,9 @@ public class CreameryControllerEntity extends BlockEntity {
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		output.putString("Milk", creamery.kind().name());
+		if (!armorIn.isEmpty()) {
+			output.store("CheeseArmorIn", net.minecraft.world.item.ItemStack.CODEC, armorIn);
+		}
 		double[] d = creamery.save();
 		output.putInt("CreameryN", d.length);
 		for (int i = 0; i < d.length; i++) {
@@ -199,6 +239,10 @@ public class CreameryControllerEntity extends BlockEntity {
 			d[i] = input.getDoubleOr("Creamery" + i, 0);
 		}
 		creamery.load(d);
+		armorIn = input.read("CheeseArmorIn", net.minecraft.world.item.ItemStack.CODEC).orElse(net.minecraft.world.item.ItemStack.EMPTY);
+		if (armorIn.isEmpty()) {
+			creamery.clearArmor();
+		}
 		creamery.setKind(dev.farmings.husbandry.parlor.MilkKind.load(input.getStringOr("Milk", ""), input.getBooleanOr("SheepMilk", false)));
 	}
 }

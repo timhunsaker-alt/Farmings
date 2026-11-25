@@ -58,7 +58,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 /** Headless scenes for the animals. {@code ./gradlew :neoforge:runGameTestServer} */
 @Mod("farmings_gametest")
 public class FarmingsGameTests {
-	private static final String[] SCENES = {"registers", "heat_lamp_is_resistive", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "ram_straw_inseminates_ewe", "bbw_hen_fertile_by_straw", "turkey_straw_goes_stale", "straw_wrong_species_refused", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "cold_room_warms_without_power", "warm_room_spoils_faster", "goat_spawns_and_survives_save", "goat_lifecycle", "doe_kids", "intersex_doe_does_not_breed", "goat_meat_drops", "wild_goat_replaces_vanilla", "wild_goat_rams", "goats_keep_their_own_pen", "goat_browses_beside_leaves", "dairy_doe_milked_goat_tank", "goat_milk_not_mixed_with_sheep", "dog_herds_goats", "buck_straw_inseminates_doe", "chevre_from_goat_milk", "cow_milk_refused_for_chevre", "goose_founders", "goose_lays_in_season", "goose_grazes_run", "goose_drops_down", "guard_goose_chases_zombie", "goose_egg_hatches", "guinea_colours_inherit", "guinea_lays_in_season", "guinea_alarm_on_zombie", "pig_spawns_and_survives_save", "pig_lifecycle", "sow_farrows_litter", "pig_cuts_drop", "wild_pig_replaces_vanilla", "boar_straw_goes_stale", "pig_barn_forms", "sow_goes_to_crate", "piglet_cold_without_lamp", "slurry_pumped_to_store", "pigs_root_pasture", "cure_makes_bacon", "lard_from_fat", "sausage_from_grinder", "horse_spawns_and_survives_save", "horse_lifecycle", "mare_foals", "wild_horse_replaces_vanilla", "horse_gallop_builds_fitness", "stallion_straw_inseminates_mare", "sprinter_and_stayer", "stable_forms", "stable_houses_feeds_beds", "underfed_horse_no_fitness", "track_forms", "race_two_horses", "race_ridden_run_timed", "stud_book_pedigree", "field_manual_given_once", "field_manual_recipe", "manual_pages_resolve", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age", "shed_forms", "shed_gap_named", "flock_goes_to_pasture_and_back", "ewe_moves_to_lambing_pen", "grazing_feeds", "shed_bedding_fills_and_empties", "lamb_stillborn_not_spawned", "ewe_anoestrous_out_of_season", "dog_gathers_flock", "dog_drives_flock_to_shed", "dog_commands_and_owners", "dog_tamed_in_corral", "shearing_shed_forms", "sheep_shorn_by_stand", "no_power_no_shearing", "press_makes_bale", "fleece_to_yarn", "scour_needs_water", "hopper_takes_cloth", "wool_clothing_stops_freezing", "yarn_to_wool_blocks", "ewe_milked_in_sheep_stall", "tank_refuses_mixed_milk", "sheep_cheese_from_creamery", "wild_spawn_is_wild", "wild_survives_save", "barn_skips_wild", "shed_skips_wild", "wild_follows_feed", "wild_biome_spawns_replaced", "wild_natural_spawn_needs_grass", "corral_forms", "corral_gate_is_one_way", "corral_bait_draws_wild", "corral_wild_settles_into_herd", "corral_unfed_wild_does_not_settle", "fowl_founders_per_breed", "fowl_save_survives", "hen_lays_floor_egg", "egg_carries_genes", "bbw_tom_cannot_mate", "fowl_spawn_is_wild", "fowl_biome_spawns_replaced", "fowl_follows_seeds", "fowl_settles_in_corral", "coop_forms", "coop_takes_tame_birds", "hen_lays_in_nest", "broody_hen_hatches", "birds_out_by_day_in_at_night", "duck_needs_pond", "litter_builds_up", "chick_cold_without_heat", "incubator_hatches", "incubator_no_power", "brooder_keeps_chicks", "grading_packs_cartons", "table_eggs_spoil_fertile_dont", "poultry_meat_and_down", "rotten_egg_thrown_nauseates", "farm_chicken_spoils", "male_serves_limited_hens", "quail_species_dont_cross", "hens_forage_on_run", "muscovy_colour_mutant_inherits", "crop_grows_on_clock", "crop_keeps_dry_farmland", "alfalfa_regrows_and_dies", "corn_ripens_for_grain", "ripe_oats_by_hand", "belt_carries_to_chest", "belt_blocked_head_holds", "auger_lifts_grain", "belt_climbs_slope", "gantry_plants_strip", "gantry_harvests_to_stop", "gantry_mows_rakes_bales", "gantry_runs_on_its_clock", "gantry_lifts_and_sets_down", "silo_ferments_and_unloads", "grain_bin_fills_and_empties", "silo_loss_over_storage", "hoe_rakes_swath", "mill_grinds", "mixer_makes_ration", "feeder_ration_feeds_cow", "belt_feeds_barn_feeder", "compost_matures", "compost_waits_for_turns", "spoiled_food_composts", "digester_fills_holder", "separator_splits", "genset_burns_farm_biogas", "genset_powers_digester_side_cell", "digester_multiblock_forms", "mixer_multiblock_forms", "quests_valid", "quest_biogas_milestone", "quest_tamed_milestone", "spreader_bag_gives_100", "health_state_survives_save", "cmt_reads_scc", "bulk_tank_scc_warning", "withdrawal_milk_diverted", "withdrawal_no_can_not_called", "withdrawal_ends_on_time", "withdrawal_meat_condemned", "teat_dip_used_at_milking", "brd_window_after_taming", "contagion_stays_in_group", "isolation_pen_forms", "isolation_pen_too_close", "quarantine_releases_after_30_days", "kit_sends_sick_to_hospital_pen", "vaccine_lowers_risk", "vaccine_spoils_out_of_cold_room", "footbath_treats_and_protects", "rested_pasture_clears_foot_rot", "hatchery_vaccinates_chicks", "strangles_carrier_found_by_swab", "disease_rule_off_no_cases", "notifiable_report_standstill", "standstill_lifts", "herd_check_lists_due", "sick_cow_walks_slower", "rule_command_sets_disease", "signs_synced_for_drawing", "piglet_cold_and_dirty_pit", "dam_vaccine_halves_scours", "weaning_opens_brd_window", "footbath_level_drops"};
+	private static final String[] SCENES = {"registers", "heat_lamp_is_resistive", "cattle_spawns", "cattle_state_survives_save", "calf_grows_up", "bull_does_not_milk", "barn_forms", "barn_missing_part", "barn_part_breaks_whole", "barn_usual_orientation", "barn_scraper_pass", "barn_scraper_no_power", "barn_scraper_blocked", "barn_scraper_pit_full", "manure_fork", "pit_gives_manure", "cows_take_stalls", "cow_eats_and_drinks", "cow_makes_manure", "cow_hungry_without_hay", "feeder_takes_hay_blocks", "trough_takes_bucket", "cow_walks_to_stall", "cow_walks_in_from_the_pit_end", "cow_stall_survives_save", "cow_gives_milk", "heifer_comes_into_heat", "bull_serves_cow_in_heat", "calf_is_born_beside_dam", "first_two_calves_are_heifers", "sire_survives_save", "calf_grows_to_heifer", "underfed_heifer_grows_slower", "grown_cow_stops_growing", "weight_survives_save", "straw_inseminates", "ram_straw_inseminates_ewe", "bbw_hen_fertile_by_straw", "turkey_straw_goes_stale", "straw_wrong_species_refused", "parlor_forms", "parlor_missing_part", "parlor_milks_cow", "parlor_no_power_no_milk", "tank_cools_and_warms", "bucket_takes_milk", "parlor_state_survives_save", "parlor_cow_walks_and_is_milked", "parlor_milks_a_herd", "first_lactation_lower", "twins_born", "stillbirth_no_calf", "freemartin_does_not_cycle", "dirty_stall_less_milk", "cow_readout_and_castration", "angus_wagyu_cross", "beef_drops_by_weight", "wagyu_more_steaks", "herd_book_records", "trough_filled_by_pipe", "milk_armor_spoils_and_sickens", "cheese_armor_iron_stats", "cheese_armor_from_milk_armor", "cheese_armor_spoils_later_and_sickens", "cheese_armor_edible", "creamery_forms", "creamery_missing_part", "pasteurizer_bottles", "separator_splits_fat", "churn_makes_butter", "cheese_yield_and_aging", "creamery_no_power", "milk_line_from_parlor", "creamery_state_survives_save", "recipes_cover_all_items", "lane_links_barn_and_parlor", "no_lane_no_milking", "cows_wait_in_pen", "cow_walks_lane_and_return", "coat_inherited", "hopper_takes_butter_and_wheels", "hopper_bottles_with_glass", "whey_from_cheese", "milk_spoils_at_room", "spoiled_food_sickens", "cold_room_forms", "cold_room_gap_named", "fridge_slows_spoilage", "cold_room_no_power_warms", "cold_room_warms_without_power", "warm_room_spoils_faster", "goat_spawns_and_survives_save", "goat_lifecycle", "doe_kids", "intersex_doe_does_not_breed", "goat_meat_drops", "wild_goat_replaces_vanilla", "wild_goat_rams", "goats_keep_their_own_pen", "goat_browses_beside_leaves", "dairy_doe_milked_goat_tank", "goat_milk_not_mixed_with_sheep", "dog_herds_goats", "buck_straw_inseminates_doe", "chevre_from_goat_milk", "cow_milk_refused_for_chevre", "goose_founders", "goose_lays_in_season", "goose_grazes_run", "goose_drops_down", "guard_goose_chases_zombie", "goose_egg_hatches", "guinea_colours_inherit", "guinea_lays_in_season", "guinea_alarm_on_zombie", "pig_spawns_and_survives_save", "pig_lifecycle", "sow_farrows_litter", "pig_cuts_drop", "wild_pig_replaces_vanilla", "boar_straw_goes_stale", "pig_barn_forms", "sow_goes_to_crate", "piglet_cold_without_lamp", "slurry_pumped_to_store", "pigs_root_pasture", "cure_makes_bacon", "lard_from_fat", "sausage_from_grinder", "horse_spawns_and_survives_save", "horse_lifecycle", "mare_foals", "wild_horse_replaces_vanilla", "horse_gallop_builds_fitness", "stallion_straw_inseminates_mare", "sprinter_and_stayer", "stable_forms", "stable_houses_feeds_beds", "underfed_horse_no_fitness", "track_forms", "race_two_horses", "race_ridden_run_timed", "stud_book_pedigree", "field_manual_given_once", "field_manual_recipe", "manual_pages_resolve", "sheep_spawns_and_survives_save", "sheep_lifecycle", "ewe_lambs_twins", "fleece_grows_and_shears", "dorper_sheds", "ewe_milk_by_breed", "sheep_meat_by_age", "shed_forms", "shed_gap_named", "flock_goes_to_pasture_and_back", "ewe_moves_to_lambing_pen", "grazing_feeds", "shed_bedding_fills_and_empties", "lamb_stillborn_not_spawned", "ewe_anoestrous_out_of_season", "dog_gathers_flock", "dog_drives_flock_to_shed", "dog_commands_and_owners", "dog_tamed_in_corral", "shearing_shed_forms", "sheep_shorn_by_stand", "no_power_no_shearing", "press_makes_bale", "fleece_to_yarn", "scour_needs_water", "hopper_takes_cloth", "wool_clothing_stops_freezing", "yarn_to_wool_blocks", "ewe_milked_in_sheep_stall", "tank_refuses_mixed_milk", "sheep_cheese_from_creamery", "wild_spawn_is_wild", "wild_survives_save", "barn_skips_wild", "shed_skips_wild", "wild_follows_feed", "wild_biome_spawns_replaced", "wild_natural_spawn_needs_grass", "corral_forms", "corral_gate_is_one_way", "corral_bait_draws_wild", "corral_wild_settles_into_herd", "corral_unfed_wild_does_not_settle", "fowl_founders_per_breed", "fowl_save_survives", "hen_lays_floor_egg", "egg_carries_genes", "bbw_tom_cannot_mate", "fowl_spawn_is_wild", "fowl_biome_spawns_replaced", "fowl_follows_seeds", "fowl_settles_in_corral", "coop_forms", "coop_takes_tame_birds", "hen_lays_in_nest", "broody_hen_hatches", "birds_out_by_day_in_at_night", "duck_needs_pond", "litter_builds_up", "chick_cold_without_heat", "incubator_hatches", "incubator_no_power", "brooder_keeps_chicks", "grading_packs_cartons", "table_eggs_spoil_fertile_dont", "poultry_meat_and_down", "rotten_egg_thrown_nauseates", "farm_chicken_spoils", "male_serves_limited_hens", "quail_species_dont_cross", "hens_forage_on_run", "muscovy_colour_mutant_inherits", "crop_grows_on_clock", "crop_keeps_dry_farmland", "alfalfa_regrows_and_dies", "corn_ripens_for_grain", "ripe_oats_by_hand", "belt_carries_to_chest", "belt_blocked_head_holds", "auger_lifts_grain", "belt_climbs_slope", "gantry_plants_strip", "gantry_harvests_to_stop", "gantry_mows_rakes_bales", "gantry_runs_on_its_clock", "gantry_lifts_and_sets_down", "silo_ferments_and_unloads", "grain_bin_fills_and_empties", "silo_loss_over_storage", "hoe_rakes_swath", "mill_grinds", "mixer_makes_ration", "feeder_ration_feeds_cow", "belt_feeds_barn_feeder", "compost_matures", "compost_waits_for_turns", "spoiled_food_composts", "digester_fills_holder", "separator_splits", "genset_burns_farm_biogas", "genset_powers_digester_side_cell", "digester_multiblock_forms", "mixer_multiblock_forms", "quests_valid", "quest_biogas_milestone", "quest_tamed_milestone", "spreader_bag_gives_100", "health_state_survives_save", "cmt_reads_scc", "bulk_tank_scc_warning", "withdrawal_milk_diverted", "withdrawal_no_can_not_called", "withdrawal_ends_on_time", "withdrawal_meat_condemned", "teat_dip_used_at_milking", "brd_window_after_taming", "contagion_stays_in_group", "isolation_pen_forms", "isolation_pen_too_close", "quarantine_releases_after_30_days", "kit_sends_sick_to_hospital_pen", "vaccine_lowers_risk", "vaccine_spoils_out_of_cold_room", "footbath_treats_and_protects", "rested_pasture_clears_foot_rot", "hatchery_vaccinates_chicks", "strangles_carrier_found_by_swab", "disease_rule_off_no_cases", "notifiable_report_standstill", "standstill_lifts", "herd_check_lists_due", "sick_cow_walks_slower", "rule_command_sets_disease", "signs_synced_for_drawing", "piglet_cold_and_dirty_pit", "dam_vaccine_halves_scours", "weaning_opens_brd_window", "footbath_level_drops"};
 
 	public FarmingsGameTests(IEventBus modBus) {
 		// test worlds start as existing worlds: no disease unless a health scene turns it on (docs/animal-health.md)
@@ -120,6 +120,10 @@ public class FarmingsGameTests {
 			helper.register(id("herd_book_records"), loaded(FarmingsGameTests::herdBookRecords));
 			helper.register(id("trough_filled_by_pipe"), loaded(FarmingsGameTests::troughFilledByPipe));
 			helper.register(id("milk_armor_spoils_and_sickens"), loaded(FarmingsGameTests::milkArmorSpoils));
+			helper.register(id("cheese_armor_iron_stats"), loaded(FarmingsGameTests::cheeseArmorIronStats));
+			helper.register(id("cheese_armor_from_milk_armor"), loaded(FarmingsGameTests::cheeseArmorFromMilkArmor));
+			helper.register(id("cheese_armor_spoils_later_and_sickens"), loaded(FarmingsGameTests::cheeseArmorSpoilsLater));
+			helper.register(id("cheese_armor_edible"), loaded(FarmingsGameTests::cheeseArmorEdible));
 			helper.register(id("creamery_forms"), loaded(FarmingsGameTests::creameryForms));
 			helper.register(id("creamery_missing_part"), loaded(FarmingsGameTests::creameryMissingPart));
 			helper.register(id("pasteurizer_bottles"), loaded(FarmingsGameTests::pasteurizerBottles));
@@ -1939,6 +1943,179 @@ public class FarmingsGameTests {
 		helper.succeed();
 	}
 
+	// ---- cheese armor (docs/cheese-armor.md, 2026-11-25) ----
+
+	/** The cheese pieces' protection, toughness, knockback resistance, durability and enchantability are vanilla iron's. */
+	private static void cheeseArmorIronStats(GameTestHelper helper) {
+		net.minecraft.world.item.Item[] cheese = {FarmingsItems.CHEESE_HELMET, FarmingsItems.CHEESE_CHESTPLATE, FarmingsItems.CHEESE_LEGGINGS, FarmingsItems.CHEESE_BOOTS};
+		net.minecraft.world.item.Item[] iron = {net.minecraft.world.item.Items.IRON_HELMET, net.minecraft.world.item.Items.IRON_CHESTPLATE,
+				net.minecraft.world.item.Items.IRON_LEGGINGS, net.minecraft.world.item.Items.IRON_BOOTS};
+		for (int i = 0; i < 4; i++) {
+			ItemStack c = new ItemStack(cheese[i]);
+			ItemStack v = new ItemStack(iron[i]);
+			helper.assertTrue(c.getMaxDamage() == v.getMaxDamage(), Component.literal(cheese[i] + " durability " + c.getMaxDamage() + " vs iron " + v.getMaxDamage()));
+			var cm = c.get(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS).modifiers();
+			var vm = v.get(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS).modifiers();
+			helper.assertTrue(cm.size() == vm.size(), Component.literal(cheese[i] + " modifier count"));
+			for (int k = 0; k < cm.size(); k++) {
+				helper.assertTrue(cm.get(k).attribute().equals(vm.get(k).attribute()) && cm.get(k).modifier().amount() == vm.get(k).modifier().amount(),
+						Component.literal(cheese[i] + " " + cm.get(k).attribute().getRegisteredName() + " " + cm.get(k).modifier().amount() + " vs iron " + vm.get(k).modifier().amount()));
+			}
+			helper.assertTrue(java.util.Objects.equals(c.get(net.minecraft.core.component.DataComponents.ENCHANTABLE), v.get(net.minecraft.core.component.DataComponents.ENCHANTABLE)),
+					Component.literal(cheese[i] + " enchantability"));
+			helper.assertTrue(c.isValidRepairItem(new ItemStack(FarmingsItems.CHEDDAR)) && !c.isValidRepairItem(new ItemStack(net.minecraft.world.item.Items.IRON_INGOT)),
+					Component.literal(cheese[i] + " repaired with cheddar, not iron"));
+		}
+		helper.succeed();
+	}
+
+	/** A fresh milk piece set in the vat and pressed in the press comes out as the cheese piece; a spoiled one is refused. */
+	private static void cheeseArmorFromMilkArmor(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		BlockPos c = helper.absolutePos(K);
+		buildCreamery(level, c);
+		dev.farmings.creamery.CreameryControllerEntity ctl = creamery(helper, K, true);
+		helper.assertTrue(ctl.formed(), Component.literal("creamery formed: " + ctl.readout()));
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		BlockPos vat = partPos(c, dev.farmings.creamery.CreameryParts.CHEESE_VAT);
+		BlockPos press = partPos(c, dev.farmings.creamery.CreameryParts.CHEESE_PRESS);
+		// a spoiled piece: sour milk does not make cheddar
+		ItemStack sour = new ItemStack(FarmingsItems.MILK_HELMET);
+		dev.farmings.item.MilkArmorItem.spoil(sour);
+		useOn(level, player, vat, sour);
+		helper.assertTrue(sour.getCount() == 1 && ctl.creamery().armor() == dev.farmings.process.creamery.Creamery.ArmorStep.NONE, Component.literal("spoiled milk armor refused"));
+		// a fresh, worn piece
+		ItemStack milk = new ItemStack(FarmingsItems.MILK_CHESTPLATE);
+		dev.farmings.item.MilkArmorItem.setMade(milk, level.getGameTime());
+		milk.setDamageValue(milk.getMaxDamage() / 4);
+		useOn(level, player, vat, milk);
+		helper.assertTrue(milk.isEmpty() && ctl.creamery().armor() == dev.farmings.process.creamery.Creamery.ArmorStep.VAT, Component.literal("fresh piece set in the vat"));
+		ItemStack second = new ItemStack(FarmingsItems.MILK_BOOTS);
+		useOn(level, player, vat, second);
+		helper.assertTrue(second.getCount() == 1, Component.literal("one piece at a time"));
+		ctl.run(level, 20);
+		helper.assertTrue(ctl.creamery().armor() == dev.farmings.process.creamery.Creamery.ArmorStep.PRESS, Component.literal("set, then to the press: " + ctl.readout()));
+		useOn(level, player, press, ItemStack.EMPTY);
+		helper.assertTrue(player.getInventory().countItem(FarmingsItems.CHEESE_CHESTPLATE) == 0, Component.literal("not ready before the press time"));
+		// the piece and its step survive a save of the controller
+		net.minecraft.nbt.CompoundTag tag = ctl.saveWithFullMetadata(level.registryAccess());
+		net.minecraft.world.level.block.entity.BlockEntity copy = net.minecraft.world.level.block.entity.BlockEntity.loadStatic(ctl.getBlockPos(), ctl.getBlockState(), tag, level.registryAccess());
+		helper.assertTrue(copy instanceof dev.farmings.creamery.CreameryControllerEntity k && k.creamery().armor() == dev.farmings.process.creamery.Creamery.ArmorStep.PRESS,
+				Component.literal("pressing survives a save"));
+		runFor(level, ctl, dev.farmings.process.creamery.Creamery.PRESS_TICKS);
+		helper.assertTrue(ctl.creamery().armor() == dev.farmings.process.creamery.Creamery.ArmorStep.READY, Component.literal("pressed after the press's own time: " + ctl.readout()));
+		useOn(level, player, press, ItemStack.EMPTY);
+		ItemStack got = ItemStack.EMPTY;
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (player.getInventory().getItem(i).is(FarmingsItems.CHEESE_CHESTPLATE)) {
+				got = player.getInventory().getItem(i);
+			}
+		}
+		helper.assertTrue(!got.isEmpty(), Component.literal("cheese chestplate from the press"));
+		helper.assertTrue(Math.abs(got.getDamageValue() - got.getMaxDamage() / 4.0) <= 1, Component.literal("same share of wear: " + got.getDamageValue() + "/" + got.getMaxDamage()));
+		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(got) != Long.MIN_VALUE && !dev.farmings.item.CheeseArmorItem.moldy(got), Component.literal("fresh, its clock started"));
+		helper.assertTrue(ctl.creamery().armor() == dev.farmings.process.creamery.Creamery.ArmorStep.NONE, Component.literal("press free again"));
+		helper.succeed();
+	}
+
+	/** Cheese armor keeps 14 times as long as milk armor, then goes moldy and sickens the wearer as spoiled milk armor does. */
+	private static void cheeseArmorSpoilsLater(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		helper.assertTrue(dev.farmings.item.CheeseArmorItem.SPOIL_TICKS == dev.farmings.process.food.Spoilage.Food.CHEDDAR_WHEEL.roomTicks()
+				&& dev.farmings.item.CheeseArmorItem.SPOIL_TICKS == 14 * dev.farmings.item.MilkArmorItem.SPOIL_TICKS,
+				Component.literal("clock " + dev.farmings.item.CheeseArmorItem.SPOIL_TICKS + " ticks, milk " + dev.farmings.item.MilkArmorItem.SPOIL_TICKS));
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+		player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(FarmingsItems.CHEESE_HELMET));
+		ItemStack worn = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD);
+		long now = level.getGameTime();
+		dev.farmings.item.CheeseArmorItem.setMade(worn, now - dev.farmings.item.MilkArmorItem.SPOIL_TICKS);
+		worn.inventoryTick(level, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
+		helper.assertTrue(!dev.farmings.item.CheeseArmorItem.moldy(worn) && !player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA),
+				Component.literal("still fresh when milk armor would have spoiled"));
+		dev.farmings.item.CheeseArmorItem.setMade(worn, now - dev.farmings.item.CheeseArmorItem.SPOIL_TICKS + 20);
+		worn.inventoryTick(level, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
+		helper.assertTrue(!dev.farmings.item.CheeseArmorItem.moldy(worn), Component.literal("fresh a second before its time"));
+		dev.farmings.item.CheeseArmorItem.setMade(worn, now - dev.farmings.item.CheeseArmorItem.SPOIL_TICKS);
+		worn.setDamageValue(9);
+		worn.inventoryTick(level, player, net.minecraft.world.entity.EquipmentSlot.HEAD);
+		helper.assertTrue(dev.farmings.item.CheeseArmorItem.moldy(worn), Component.literal("moldy at 14 game days"));
+		helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA) && player.hasEffect(net.minecraft.world.effect.MobEffects.HUNGER),
+				Component.literal("worn moldy: Hunger and Nausea"));
+		helper.assertTrue(player.getEffect(net.minecraft.world.effect.MobEffects.NAUSEA).getDuration() <= 100, Component.literal("wears off about 5 s after it comes off"));
+		helper.assertTrue(worn.getDamageValue() == 9, Component.literal("durability kept"));
+		helper.assertTrue(worn.getHoverName().getString().startsWith("Moldy"), Component.literal("moldy name: " + worn.getHoverName().getString()));
+		helper.assertTrue(worn.get(net.minecraft.core.component.DataComponents.EQUIPPABLE).assetId().orElseThrow().equals(dev.farmings.item.CheeseArmorItem.MOLDY),
+				Component.literal("moldy worn look"));
+		// a cold room holds a fresh piece back as it does a cheddar wheel
+		ItemStack fresh = new ItemStack(FarmingsItems.CHEESE_BOOTS);
+		dev.farmings.item.CheeseArmorItem.setMade(fresh, now);
+		long before = dev.farmings.item.Perishables.spoilsAt(fresh);
+		dev.farmings.item.Perishables.keepCold(fresh, now, 24_000);
+		helper.assertTrue(dev.farmings.item.Perishables.spoilsAt(fresh) > before, Component.literal("chilled: its clock is held back"));
+		helper.assertTrue(dev.farmings.item.Perishables.foodOf(worn) == null, Component.literal("a moldy piece is not chilled"));
+		helper.succeed();
+	}
+
+	/** Sneak-use eats a piece in the hand for its cheese's hunger; plain use puts it on; a worn piece is never eaten; moldy sickens. */
+	private static void cheeseArmorEdible(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		floor(helper);
+		net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+		player.getFoodData().setFoodLevel(2);
+		// sneak-use eats the boots
+		ItemStack boots = new ItemStack(FarmingsItems.CHEESE_BOOTS);
+		dev.farmings.item.CheeseArmorItem.setMade(boots, level.getGameTime());
+		player.setItemInHand(InteractionHand.MAIN_HAND, boots);
+		player.setShiftKeyDown(true);
+		boots.use(level, player, InteractionHand.MAIN_HAND);
+		helper.assertTrue(player.isUsingItem() && player.getUseItem() == boots, Component.literal("sneak-use starts eating"));
+		helper.assertTrue(boots.getUseAnimation() == net.minecraft.world.item.ItemUseAnimation.EAT, Component.literal("the eating animation"));
+		ItemStack left = boots.finishUsingItem(level, player);
+		player.stopUsingItem();
+		int expect = Math.min(20, 2 + dev.farmings.item.CheeseArmorItem.hunger(net.minecraft.world.item.equipment.ArmorType.BOOTS));
+		helper.assertTrue(player.getFoodData().getFoodLevel() == expect, Component.literal("hunger " + player.getFoodData().getFoodLevel() + ", expected " + expect));
+		helper.assertTrue(left.isEmpty(), Component.literal("the boots are eaten"));
+		// plain use puts the helmet on
+		player.setShiftKeyDown(false);
+		ItemStack helmet = new ItemStack(FarmingsItems.CHEESE_HELMET);
+		player.setItemInHand(InteractionHand.MAIN_HAND, helmet);
+		helmet.use(level, player, InteractionHand.MAIN_HAND);
+		ItemStack worn = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD);
+		helper.assertTrue(worn.is(FarmingsItems.CHEESE_HELMET) && !player.isUsingItem(), Component.literal("plain use equips it"));
+		// a worn piece is not eaten
+		player.getFoodData().setFoodLevel(2);
+		ItemStack after = worn.finishUsingItem(level, player);
+		helper.assertTrue(after == worn && worn.getCount() == 1 && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD) == worn
+				&& player.getFoodData().getFoodLevel() == 2, Component.literal("the worn helmet is not eaten"));
+		// eating a second helmet from the hand leaves the worn one on
+		ItemStack spare = new ItemStack(FarmingsItems.CHEESE_HELMET);
+		player.setItemInHand(InteractionHand.MAIN_HAND, spare);
+		player.setShiftKeyDown(true);
+		spare.use(level, player, InteractionHand.MAIN_HAND);
+		spare.finishUsingItem(level, player);
+		player.stopUsingItem();
+		helper.assertTrue(spare.isEmpty() && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(FarmingsItems.CHEESE_HELMET),
+				Component.literal("the helmet in hand eaten, the worn one kept"));
+		// a moldy piece eats as moldy cheese: Hunger and Nausea
+		player.removeAllEffects();
+		player.getFoodData().setFoodLevel(2);
+		ItemStack moldy = new ItemStack(FarmingsItems.CHEESE_LEGGINGS);
+		dev.farmings.item.CheeseArmorItem.mold(moldy);
+		player.setItemInHand(InteractionHand.MAIN_HAND, moldy);
+		moldy.use(level, player, InteractionHand.MAIN_HAND);
+		moldy.finishUsingItem(level, player);
+		player.stopUsingItem();
+		ItemStack cheese = new ItemStack(FarmingsItems.MOLDY_CHEESE);
+		helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA) && player.hasEffect(net.minecraft.world.effect.MobEffects.HUNGER),
+				Component.literal("moldy piece sickens"));
+		helper.assertTrue(player.getFoodData().getFoodLevel() == 2 + cheese.get(net.minecraft.core.component.DataComponents.FOOD).nutrition(),
+				Component.literal("moldy piece feeds as moldy cheese: " + player.getFoodData().getFoodLevel()));
+		helper.succeed();
+	}
+
 	// ---- the creamery (2026-11-09) ----
 
 	private static final BlockPos K = new BlockPos(2, 2, 4);   // the creamery controller, relative to the test
@@ -2575,7 +2752,7 @@ public class FarmingsGameTests {
 	/** Every block and every hand-made item has a recipe; animal and machine products (manure, filled straws, raw steaks, dairy) do not. */
 	private static void recipesCoverAllItems(GameTestHelper helper) {
 		java.util.Set<String> madeElsewhere = java.util.Set.of("manure", "semen_straw", "select_steak", "choice_steak", "prime_steak", "bottled_milk",
-				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel", "spoiled_bottle", "rancid_butter", "moldy_cheese", "spoiled_steak",
+				"cream_bottle", "skim_milk_bottle", "buttermilk_bottle", "whey_bottle", "butter", "cheddar_wheel", "spoiled_bottle", "rancid_butter", "moldy_cheese", "spoiled_steak", "cheese_helmet", "cheese_chestplate", "cheese_leggings", "cheese_boots",
 				"fleece", "loose_wool", "chicken_egg", "turkey_egg", "quail_egg", "duck_egg", "goose_egg", "guinea_egg", "poultry_litter", "chicken", "turkey", "duck", "goose", "guinea_fowl", "quail", "spoiled_poultry", "rotten_egg", "down", "egg_carton", "alfalfa_seeds", "timothy_seeds", "orchardgrass_seeds", "corn_seeds", "oats_seeds", "barley_seeds", "alfalfa_hay", "grass_hay", "alfalfa_bale", "grass_bale", "straw_bale", "corn_grain", "oat_grain", "barley_grain", "chopped_corn", "chopped_alfalfa", "corn_silage", "haylage", "compost", "separated_solids", "liquid_digestate", "corn_meal", "oat_meal", "barley_meal", "alfalfa_meal", "fish_meal", "ground_limestone", "ration", "lamb_chop", "mutton_chop", "spoiled_mutton", "skirtings", "wool_bale",
 				"clean_wool", "sliver", "lanolin", "wool_cloth", "felt", "yarn_white", "sheep_milk_bottle", "sheep_cheese_wheel", "kid_chop", "chevon_chop", "goat_milk_bottle", "chevre", "pork_chop", "pork_belly", "pork_shoulder", "pork_fat", "fresh_ham", "spoiled_pork", "country_ham", "bacon", "lard", "rancid_lard", "sausage", "spoiled_vaccine");
 		net.minecraft.world.item.crafting.RecipeManager recipes = helper.getLevel().getServer().getRecipeManager();

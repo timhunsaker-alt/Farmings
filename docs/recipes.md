@@ -47,6 +47,11 @@ and cheddar wheels (from the creamery). The game test `recipes_cover_all_items` 
 Cooking: each raw steak cooks to its cooked grade in a furnace (200 ticks), smoker (100) or campfire (600).
 Milk armor: the buckets come back empty (vanilla's milk-bucket remainder).
 
+Cheese armor (2026-11-25, docs/cheese-armor.md): no crafting recipe. A fresh milk armor piece set in the creamery's cheese vat is pressed in
+the cheese press into the matching piece (`cheese_helmet`, `cheese_chestplate`, `cheese_leggings`, `cheese_boots`); spoiled milk armor is
+refused. Repaired with `cheddar` or `sheep_cheese` (tag `farmings:repairs_cheese_armor`). `recipes_cover_all_items` lists the four as made
+elsewhere.
+
 ## The walk-in fridge (2026-11-09)
 | Block | Pattern | Key | Makes |
 |---|---|---|---|

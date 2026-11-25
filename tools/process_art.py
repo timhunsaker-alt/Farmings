@@ -5,6 +5,7 @@ Wildcatter's tools/process_materials.py).
   art/source/mat_*.webp   -> textures/block/mat/<name>.png, 32 px, the cleanest window made to tile
   art/source/item/*.webp  -> textures/item/<name>.png, 32 px icons (a plain background is made transparent)
   the spoiled milk armor  -> the fresh icons, soured: yellow-green, darker, with curdled spots
+  the moldy cheese armor  -> the fresh cheese icons, dulled, with blue-green mould spots (docs/cheese-armor.md)
   the worn milk armor     -> textures/entity/equipment/humanoid(_leggings)/milk(_spoiled).png, from the milk swatch
   the cow-hair swatch     -> art/final/hair.png, read by tools/cattle_textures.py
 Run from the repo root: python3 tools/process_art.py. Prompts: art/source/PROMPTS.md.
@@ -103,6 +104,26 @@ def sour(img, seed):
 	return out
 
 
+def mould(img, seed):
+	"""Moldy cheese: a little duller and darker, with blue-green mould spots ringed paler. Keeps the alpha."""
+	rnd = random.Random(seed)
+	out = img.copy()
+	px = out.load()
+	for x in range(out.width):
+		for y in range(out.height):
+			r, g, b, a = px[x, y]
+			if a:
+				px[x, y] = (int(r * 0.85), int(g * 0.84), int(b * 0.8), a)
+	for _ in range(out.width * out.height // 70):
+		x, y = rnd.randrange(1, out.width - 1), rnd.randrange(1, out.height - 1)
+		if px[x, y][3]:
+			for dx, dy in ((0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)):
+				r, g, b, a = px[x + dx, y + dy]
+				if a:
+					px[x + dx, y + dy] = (70, 130, 120, a) if (dx, dy) == (0, 0) else (min(255, r + 30), min(255, g + 40), min(255, b + 50), a)
+	return out
+
+
 def face(name, box=(0.0, 0.0, 0.5, 0.5)):
 	"""A block face from a Ludo picture: one window of it (a single fan), 32 px."""
 	img = Image.open(f"{SRC}/{name}.webp").convert("RGB")
@@ -165,7 +186,9 @@ def main():
 	os.makedirs(f"{ASSETS}/block/mat", exist_ok=True)
 	os.makedirs(f"{ASSETS}/item", exist_ok=True)
 	os.makedirs("art/final", exist_ok=True)
-	mats = sorted(f[:-5] for f in os.listdir(SRC) if f.startswith("mat_") and f.endswith(".webp") and f != "mat_cow_hair.webp")
+	# the armor surfaces are laid by tools/armor_textures.py, not made into block materials
+	mats = sorted(f[:-5] for f in os.listdir(SRC) if f.startswith("mat_") and f.endswith(".webp") and f != "mat_cow_hair.webp"
+	              and f not in ("mat_cheese_armor.webp", "mat_cheese_moldy.webp"))
 	for name in mats:
 		material(name).convert("RGBA").save(f"{ASSETS}/block/mat/{name}.png")
 	items = sorted(f[:-5] for f in os.listdir(f"{SRC}/item") if f.endswith(".webp"))
@@ -174,6 +197,8 @@ def main():
 		img.save(f"{ASSETS}/item/{name}.png")
 		if name.startswith("milk_"):
 			sour(img, name).save(f"{ASSETS}/item/{name}_spoiled.png")
+		if name.startswith("cheese_"):
+			mould(img, name).save(f"{ASSETS}/item/{name}_moldy.png")
 		if name == "yarn":
 			# one white skein, tinted to each of the sixteen dye colours (multiply, keeping its shading)
 			for colour, rgb in YARN_DYES.items():

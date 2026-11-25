@@ -19,6 +19,10 @@ public final class Perishables {
 	}
 
 	public static Spoilage.@Nullable Food foodOf(ItemStack stack) {
+		if (stack.getItem() instanceof CheeseArmorItem) {
+			// cheese armor keeps as a cheddar wheel, so a cold room holds its clock back too (docs/cheese-armor.md); a moldy piece is done
+			return CheeseArmorItem.moldy(stack) ? null : CheeseArmorItem.FOOD;
+		}
 		return stack.getItem() instanceof PerishableItem p ? p.food() : null;
 	}
 

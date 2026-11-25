@@ -67,6 +67,11 @@ ITEMS = [
     ("milk_chestplate", "Milk Chestplate", (246, 246, 240), "armor"),
     ("milk_leggings", "Milk Leggings", (246, 246, 240), "armor"),
     ("milk_boots", "Milk Boots", (246, 246, 240), "armor"),
+    # cheese armor (docs/cheese-armor.md): pressed from milk armor at the creamery; goes moldy
+    ("cheese_helmet", "Cheese Helmet", (236, 160, 40), "armor"),
+    ("cheese_chestplate", "Cheese Chestplate", (236, 160, 40), "armor"),
+    ("cheese_leggings", "Cheese Leggings", (236, 160, 40), "armor"),
+    ("cheese_boots", "Cheese Boots", (236, 160, 40), "armor"),
     ("bottled_milk", "Bottled Milk", (248, 248, 244), "bottle"),
     ("cream_bottle", "Cream", (250, 244, 220), "bottle"),
     ("skim_milk_bottle", "Skim Milk", (232, 238, 246), "bottle"),
@@ -368,12 +373,14 @@ def main():
         tex = "farmings:item/" + name + ("" if real else "_placeholder")
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": parent, "textures": {"layer0": tex}})
         if kind == "armor":
-            lang["item.farmings." + name + ".spoiled"] = "Spoiled " + title
+            # milk armor spoils; cheese armor goes moldy (docs/cheese-armor.md)
+            gone = "moldy" if name.startswith("cheese_") else "spoiled"
+            lang["item.farmings." + name + "." + gone] = gone.capitalize() + " " + title
             if not real:
-                item_texture(name + "_spoiled", SPOILED_COLOUR, "armor")
-            write(os.path.join(ASSETS, "models", "item", name + "_spoiled.json"), {"parent": parent, "textures": {"layer0": tex.replace(name, name + "_spoiled")}})
+                item_texture(name + "_" + gone, SPOILED_COLOUR, "armor")
+            write(os.path.join(ASSETS, "models", "item", name + "_" + gone + ".json"), {"parent": parent, "textures": {"layer0": tex.replace(name, name + "_" + gone)}})
             write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:condition", "property": "minecraft:custom_model_data", "index": 0,
-                  "on_true": {"type": "minecraft:model", "model": "farmings:item/%s_spoiled" % name},
+                  "on_true": {"type": "minecraft:model", "model": "farmings:item/%s_%s" % (name, gone)},
                   "on_false": {"type": "minecraft:model", "model": "farmings:item/" + name}}})
         else:
             write(os.path.join(ASSETS, "items", name + ".json"), {"model": {"type": "minecraft:model", "model": "farmings:item/" + name}})
@@ -390,6 +397,11 @@ def main():
             os.makedirs(os.path.dirname(path), exist_ok=True)
             img.save(path)
     write(os.path.join(DATA, "tags", "item", "repairs_milk_armor.json"), {"values": ["minecraft:milk_bucket"]})
+    # the worn cheese armor (docs/cheese-armor.md): layers drawn by tools/armor_textures.py; repaired with cut cheese
+    for asset in ("cheese", "cheese_moldy"):
+        write(os.path.join(ASSETS, "equipment", asset + ".json"),
+              {"layers": {"humanoid": [{"texture": "farmings:" + asset}], "humanoid_leggings": [{"texture": "farmings:" + asset}]}})
+    write(os.path.join(DATA, "tags", "item", "repairs_cheese_armor.json"), {"values": ["farmings:cheddar", "farmings:sheep_cheese"]})
     # wool clothing: its worn look (tools/wool_textures.py draws the layers), repairs and the freeze-immune tag (docs/wool.md)
     write(os.path.join(ASSETS, "equipment", "wool.json"),
           {"layers": {"humanoid": [{"texture": "farmings:wool"}], "humanoid_leggings": [{"texture": "farmings:wool"}]}})

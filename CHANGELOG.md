@@ -9,6 +9,9 @@
 - **Cold, weaning and the dam's vaccine:** cold piglets and chicks get scours twice as often; weaning a calf opens the shipping-fever
   window; a cow, ewe or doe vaccinated in the 6 weeks before giving birth halves her young's scours risk.
 - **The footbath empties:** each animal through carries a litre out, and the liquid you see falls with it; top it up before 60 L.
+- **Cheese armor:** set a fresh milk armor piece in the creamery's cheese vat and take it from the press as cheese armor. It has iron's
+  stats and keeps 14 game days before it goes moldy. Sneak-use one in your hand to eat it (helmet 12 hunger, chestplate 20, leggings
+  17, boots 10).
 
 ## v0.2.0 (unreleased): animal health
 
