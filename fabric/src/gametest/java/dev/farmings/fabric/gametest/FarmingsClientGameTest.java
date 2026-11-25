@@ -3169,6 +3169,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			return;
 		}
 		// the milk armor short: its own generated world, only when named
+		// the cheese armor short: its own generated world, only when named
+		if ("cheeseArmor".equals(System.getenv("FARMINGS_ONLY"))) {
+			new CheeseArmorFilms(context).run();
+			return;
+		}
 		if ("milkArmor".equals(System.getenv("FARMINGS_ONLY"))) {
 			new MilkArmorFilms(context).run();
 			return;
