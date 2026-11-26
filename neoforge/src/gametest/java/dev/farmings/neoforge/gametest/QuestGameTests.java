@@ -90,4 +90,16 @@ final class QuestGameTests {
 		Farmings.LOGGER.info("[quest_tamed_milestone] ok: {}", post.readout(level));
 		helper.succeed();
 	}
+
+	/**
+	 * Built From Scratch check (bfs-check branch): every item task in every loaded chapter can be made in a fresh survival world with only
+	 * its prerequisites done ({@link QuestReach}). Logs each problem, then fails if there is any.
+	 */
+	static void itemsReachable(GameTestHelper helper) {
+		List<String> problems = QuestReach.problems(helper.getLevel());
+		problems.forEach(p -> Farmings.LOGGER.warn("[quest_items_reachable] {}", p));
+		helper.assertTrue(problems.isEmpty(), Component.literal(problems.size() + " quest items cannot be made in order: " + problems));
+		Farmings.LOGGER.info("[quest_items_reachable] ok: {} quests", QuestTracker.book(helper.getLevel().getServer()).quests().size());
+		helper.succeed();
+	}
 }
