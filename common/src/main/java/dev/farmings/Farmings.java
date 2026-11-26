@@ -28,6 +28,7 @@ public final class Farmings {
 		dev.farmings.health.HealthSounds.register();
 		FarmingsBlocks.register();
 		FarmingsEntities.register();
+		FarmingsParticles.register();
 		dev.farmings.health.FarmingsRules.registerNewWorldSetup();
 		LOGGER.info("Farmings loaded; requires {}", requiredMod);
 	}

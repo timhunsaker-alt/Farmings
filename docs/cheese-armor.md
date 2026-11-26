@@ -16,7 +16,10 @@ edible.
    once a second). With no power the readout shows `NO POWER: cheese vat` and the piece waits.
 3. Then the piece goes to the `cheese_press` and is pressed for the press's own time, `PRESS_TICKS` (12 real hours at the creamery's
    15:1 scale, 800 ticks or 40 s; creamery.md). The press holds one load: the piece waits in the vat while wheels are pressing
-   (`PRESS BUSY`), and wheels wait while the piece is pressing.
+   (`PRESS BUSY`), and wheels wait while the piece is pressing. While the press holds a load (a piece or a wheel), drops of whey run
+   down the sides of its mold to the base plate, as whey runs out of a real press's mold into the tray: thin, translucent and a pale
+   yellow-green, as whey is (the mod's own `whey_drip` particle, vanilla's drip sprites tinted). The press's screw and follower are one
+   fixed model, so the drops are what shows it is pressing.
 4. Right-click the press with an empty hand to take the matching cheese piece: helmet to helmet, chestplate to chestplate, and so on.
    It keeps the same share of its durability and its enchantments. Its clock starts when it leaves the press, as creamery food does.
 

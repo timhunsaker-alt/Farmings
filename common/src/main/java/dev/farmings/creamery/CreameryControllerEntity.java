@@ -104,6 +104,28 @@ public class CreameryControllerEntity extends BlockEntity {
 		if (formed() && Math.floorMod(t, (long) CHECK_TICKS) == 1) {
 			run(level, CHECK_TICKS);
 		}
+		if (formed() && Math.floorMod(t, 4L) == 0 && (creamery.pressingWheel() || creamery.armor() == Creamery.ArmorStep.PRESS)) {
+			wheyDrips(level);
+		}
+	}
+
+	/**
+	 * While the cheese press holds a load (a wheel or a cheese armor piece), whey runs in drops down the sides of its mold to the base plate,
+	 * as whey runs out of a real press's mold into its tray: the only sign on the block that it is pressing (its screw and follower are one
+	 * model). The drops are the mod's own {@code whey_drip}, a translucent pale yellow-green.
+	 */
+	private void wheyDrips(Level level) {
+		Integer x = check.offsets().get(CreameryPart.CHEESE_PRESS);
+		if (x == null || !(level instanceof net.minecraft.server.level.ServerLevel server)) {
+			return;
+		}
+		BlockPos p = at(x, worldPosition.getY(), 0);
+		for (int i = 0; i < 3; i++) {
+			double a = level.getRandom().nextDouble() * Math.PI * 2;
+			double y = 0.2 + 0.25 * level.getRandom().nextDouble();   // anywhere down the mold's lower half
+			server.sendParticles(dev.farmings.FarmingsParticles.WHEY_DRIP, p.getX() + 0.5 + 0.23 * Math.cos(a), p.getY() + y,
+					p.getZ() + 0.5 + 0.23 * Math.sin(a), 1, 0, 0, 0, 0);
+		}
 	}
 
 	/** One second (or {@code ticks}) of work. Tests call it directly. */

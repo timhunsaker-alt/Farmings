@@ -16,6 +16,8 @@ public final class FarmingsFabricClient implements ClientModInitializer {
 			return mc.level == null ? 0L : mc.level.getGameTime();
 		};
 		dev.farmings.Farmings.openManual = () -> net.minecraft.client.Minecraft.getInstance().setScreenAndShow(new dev.farmings.client.manual.ManualScreen());
+		net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry.getInstance().register(dev.farmings.FarmingsParticles.WHEY_DRIP,
+				sprites -> new dev.farmings.client.WheyDripParticle.Provider(sprites));
 		ModelLayerRegistry.registerModelLayer(CattleModels.CATTLE, CattleModels::createLayer);
 		EntityRendererRegistry.register(FarmingsEntities.CATTLE, CattleRenderer::new);
 		ModelLayerRegistry.registerModelLayer(dev.farmings.client.SheepModels.SHEEP, dev.farmings.client.SheepModels::createLayer);
