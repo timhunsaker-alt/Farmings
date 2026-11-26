@@ -2,6 +2,12 @@
 
 ## v0.2.1 (unreleased): animal health, finished
 
+- **Quest book fixes (the Built From Scratch check, 2026-11-26):** built against Wildcatter 0.10.2. Teat dip crafts again: its recipe
+  made 64 bottles of an item that stacks to 16, so it made nothing; it makes 16. Milk quality needs `wildcatter:chlor_alkali` (the dip's
+  chlorine); the footbath needs only herd health (its zinc sulfate is zinc, salt-dome sulfur and water, nothing from the fertilizer
+  plant); the isolation pen's quest ticks for anyone near it while it stands, not only at the moment it first formed. New check scene
+  `quest_items_reachable`, and scenes for the teat dip clicked into a parlor and the isolation pen's milestone.
+
 - **Signs you can see:** a sick animal stands and walks head low; a lame one limps, nodding its head; a treated animal wears a red band
   on both hind legs until its withdrawal ends; a pig with erysipelas shows red-purple diamond patches. Nothing gory.
 - **Every housing counts dirt:** dirty shed and stable bedding, a full pig pit and full coop litter now raise disease risk, as a dirty

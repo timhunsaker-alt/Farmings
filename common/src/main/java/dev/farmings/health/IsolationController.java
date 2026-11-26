@@ -44,7 +44,6 @@ public class IsolationController extends BlockEntity {
 
 	private Mode mode = Mode.QUARANTINE;
 	private IsolationLayout.@Nullable Check check;
-	private boolean announced;
 
 	public IsolationController(BlockPos pos, BlockState state) {
 		super(HealthBlocks.ISOLATION_ENTITY, pos, state);
@@ -98,8 +97,7 @@ public class IsolationController extends BlockEntity {
 
 	public void refresh(ServerLevel level) {
 		check = IsolationLayout.check((x, y, z) -> cell(level, new BlockPos(x, y, z)), worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
-		if (formed() && !announced) {
-			announced = true;
+		if (formed()) {   // on each check while it stands, as Multiblock.formed does: a player who comes later still gets it
 			dev.wildcatter.quest.QuestEvents.milestone(level, worldPosition, dev.farmings.quest.Milestones.ISOLATION_PEN);
 		}
 		IsolationHold.track(level, worldPosition);
@@ -226,7 +224,6 @@ public class IsolationController extends BlockEntity {
 	protected void saveAdditional(ValueOutput out) {
 		super.saveAdditional(out);
 		out.putString("mode", mode.name());
-		out.putBoolean("announced", announced);
 	}
 
 	@Override
@@ -237,7 +234,6 @@ public class IsolationController extends BlockEntity {
 		} catch (IllegalArgumentException e) {
 			mode = Mode.QUARANTINE;
 		}
-		announced = in.getBooleanOr("announced", false);
 	}
 
 	/** The controller block: right-click reads it; sneak + right-click switches mode while it holds no animal. */

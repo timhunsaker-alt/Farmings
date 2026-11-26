@@ -407,10 +407,11 @@
       "id": "milk_quality",
       "title": "Milk quality",
       "icon": "farmings:teat_dip",
-      "text": "Test a cow's milk with the CMT paddle and its reagent, and load teat dip into the parlor controller: dipping every cow after milking cuts new mastitis by 70%. A waste milk can beside the parlor takes the milk of treated cows.",
+      "text": "Test a cow's milk with the CMT paddle and its reagent, and load teat dip (a glass bottle and a chlorine ton container from the chlor-alkali plant) into the parlor controller: dipping every cow after milking cuts new mastitis by 70%. A waste milk can beside the parlor takes the milk of treated cows.",
       "requires": [
         "herd_health",
-        "parlor"
+        "parlor",
+        "wildcatter:chlor_alkali"
       ],
       "tasks": [
         {
@@ -427,10 +428,9 @@
       "id": "footbath",
       "title": "Footbath",
       "icon": "farmings:footbath",
-      "text": "A footbath in a lane or a gate path, filled with water and charged with 10% zinc sulfate, treats foot rot in every animal that walks through and keeps it off for 14 real days. Zinc sulfate is made from zinc, sulfur and water.",
+      "text": "A footbath in a lane or a gate path, filled with water and charged with 10% zinc sulfate, treats foot rot in every animal that walks through and keeps it off for 14 real days. Zinc sulfate is made from zinc (smelted sphalerite), salt-dome sulfur and water.",
       "requires": [
-        "herd_health",
-        "wildcatter:fertilizer"
+        "herd_health"
       ],
       "tasks": [
         {

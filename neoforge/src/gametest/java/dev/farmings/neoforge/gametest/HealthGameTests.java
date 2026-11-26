@@ -83,6 +83,8 @@ final class HealthGameTests {
 		r.accept("dam_vaccine_halves_scours", HealthGameTests::damVaccineHalvesScours);
 		r.accept("weaning_opens_brd_window", HealthGameTests::weaningOpensBrdWindow);
 		r.accept("footbath_level_drops", HealthGameTests::footbathLevelDrops);
+		r.accept("isolation_pen_milestone_while_formed", HealthGameTests::isolationPenMilestoneWhileFormed);
+		r.accept("teat_dip_clicked_into_parlor", HealthGameTests::teatDipClickedIntoParlor);
 	}
 
 	static CattleEntity cow(GameTestHelper helper, long seed, BlockPos at) {
@@ -323,6 +325,48 @@ final class HealthGameTests {
 		IsolationController e = pen(helper, buildPen(helper));
 		helper.assertTrue(e.formed(), Component.literal(e.readout(helper.getLevel())));
 		helper.assertTrue(e.check().pen().size() == 9, Component.literal("9 cells"));
+		helper.succeed();
+	}
+
+	/**
+	 * The quest book's isolation_pen milestone fires on each check while the pen stands (as Multiblock.formed does), not only the first
+	 * time: a player who walks up after it formed still gets it.
+	 */
+	static void isolationPenMilestoneWhileFormed(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		IsolationController e = pen(helper, buildPen(helper));   // formed with nobody near
+		helper.assertTrue(e.formed(), Component.literal(e.readout(level)));
+		ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		BlockPos at = helper.absolutePos(new BlockPos(1, 1, 5));
+		player.teleportTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+		String key = dev.farmings.quest.Milestones.ISOLATION_PEN.toString();
+		helper.runAfterDelay(110, () -> {   // past the milestone's 5 s per position
+			e.refresh(level);
+			boolean reached = dev.wildcatter.quest.QuestData.get(level.getServer()).of(player.getStringUUID()).milestones.contains(key);
+			level.getServer().getPlayerList().remove(player);
+			helper.assertTrue(reached, Component.literal("a player who came after the pen formed should reach " + key));
+			helper.succeed();
+		});
+	}
+
+	/** Teat dip through the real click path: a bottle used on the parlor controller loads 50 dips and fires the teat_dip milestone. */
+	static void teatDipClickedIntoParlor(GameTestHelper helper) {
+		ServerLevel level = helper.getLevel();
+		var ctl = parlor(helper);
+		ServerPlayer player = helper.makeMockServerPlayerInLevel();
+		BlockPos c = ctl.getBlockPos();
+		player.teleportTo(c.getX() + 0.5, c.getY() + 1, c.getZ() + 2.5);
+		player.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);   // a creative stand-in keeps the bottle
+		player.setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(HealthItems.TEAT_DIP, 16));
+		helper.assertTrue(new net.minecraft.world.item.ItemStack(HealthItems.TEAT_DIP).getMaxStackSize() == 16, Component.literal("a teat dip bottle stacks to 16"));
+		net.minecraft.world.phys.BlockHitResult hit = new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(c), Direction.UP, c, false);
+		var result = HealthItems.TEAT_DIP.useOn(new net.minecraft.world.item.context.UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+		boolean reached = dev.wildcatter.quest.QuestData.get(level.getServer()).of(player.getStringUUID()).milestones.contains(dev.farmings.quest.Milestones.TEAT_DIP.toString());
+		int left = player.getItemInHand(InteractionHand.MAIN_HAND).getCount();
+		level.getServer().getPlayerList().remove(player);
+		helper.assertTrue(result.consumesAction() && ctl.teatDips() == HealthItems.DIPS_PER_BOTTLE, Component.literal("the bottle should load " + HealthItems.DIPS_PER_BOTTLE + " dips: " + ctl.teatDips()));
+		helper.assertTrue(left == 15, Component.literal("one bottle used: " + left + " left"));
+		helper.assertTrue(reached, Component.literal("clicking teat dip into the parlor should fire the teat_dip milestone"));
 		helper.succeed();
 	}
 

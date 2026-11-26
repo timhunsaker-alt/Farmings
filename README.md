@@ -21,7 +21,7 @@ License: [CC0](LICENSE).
 
 ## Building
 
-Needs a Java 25 JVM for Gradle (NeoForge's build tools also fetch a JDK 21). Requires Wildcatter 0.8.1, downloaded from its GitHub
+Needs a Java 25 JVM for Gradle (NeoForge's build tools also fetch a JDK 21). Requires Wildcatter 0.10.2, downloaded from its GitHub
 release as in Tailings.
 
 ```bash
