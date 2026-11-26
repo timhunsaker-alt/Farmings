@@ -47,7 +47,7 @@ Sneak-right-click the controller to change the mode: **BOTTLE**, **CREAM**, **BU
    - **CHEESE:** the vat makes cheddar curd by the Van Slyke formula: kg of cheese per 100 kg of milk = (0.93 x fat% + 0.78 x
      protein% - 0.1) x 1.09 / (1 - 0.38) (University of Guelph cheesemaking text; USDA AMS uses 38% moisture). Holstein milk gives
      about 10 kg per 100 kg. Whey is not kept *(proposed)*. The press makes 10 kg wheels *(proposed size)* after 12 hours real
-     *(proposed)* (whey drips from the press's base while it presses: a sign only, the whey is not kept), and each wheel ages on the shelf for 60 days real (the US minimum age for raw-milk cheese, used here as a cheddar
+     *(proposed)* (pale yellow-green whey drops run down the press's mold while it presses: a sign only, the whey is not kept), and each wheel ages on the shelf for 60 days real (the US minimum age for raw-milk cheese, used here as a cheddar
      age), which is 4 game days.
 3. A machine without power stops its step; the batch waits there. NO POWER names the part.
 

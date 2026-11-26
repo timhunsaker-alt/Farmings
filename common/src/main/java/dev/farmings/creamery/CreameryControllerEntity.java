@@ -110,8 +110,9 @@ public class CreameryControllerEntity extends BlockEntity {
 	}
 
 	/**
-	 * While the cheese press holds a load (a wheel or a cheese armor piece), whey drips from the edge of its base plate, as whey runs out of a
-	 * real press's mold into its tray: the only sign on the block that it is pressing (its screw and follower are one model).
+	 * While the cheese press holds a load (a wheel or a cheese armor piece), whey runs in drops down the sides of its mold to the base plate,
+	 * as whey runs out of a real press's mold into its tray: the only sign on the block that it is pressing (its screw and follower are one
+	 * model). The drops are the mod's own {@code whey_drip}, a translucent pale yellow-green.
 	 */
 	private void wheyDrips(Level level) {
 		Integer x = check.offsets().get(CreameryPart.CHEESE_PRESS);
@@ -119,10 +120,11 @@ public class CreameryControllerEntity extends BlockEntity {
 			return;
 		}
 		BlockPos p = at(x, worldPosition.getY(), 0);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 3; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
-			server.sendParticles(net.minecraft.core.particles.ParticleTypes.DRIPPING_WATER, p.getX() + 0.5 + 0.36 * Math.cos(a), p.getY() + 0.1,
-					p.getZ() + 0.5 + 0.32 * Math.sin(a), 1, 0, 0, 0, 0);
+			double y = 0.2 + 0.25 * level.getRandom().nextDouble();   // anywhere down the mold's lower half
+			server.sendParticles(dev.farmings.FarmingsParticles.WHEY_DRIP, p.getX() + 0.5 + 0.23 * Math.cos(a), p.getY() + y,
+					p.getZ() + 0.5 + 0.23 * Math.sin(a), 1, 0, 0, 0, 0);
 		}
 	}
 

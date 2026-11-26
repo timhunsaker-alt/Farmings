@@ -438,6 +438,8 @@ Phases 0-5 are done (docs/ROADMAP.md); the steps below are the history. Requires
   - Game tests: 4 new (`cheese_armor_iron_stats`, `cheese_armor_from_milk_armor`, `cheese_armor_spoils_later_and_sickens`,
     `cheese_armor_edible`); full suite 285 of 285.
   - Client scene `armor`: adds cheese armor, fresh and moldy.
+  - Whey drops (2026-11-26, branch `cheesearmor-film`): while the cheese press holds a load, translucent pale yellow-green drops run
+    down its mold (the mod's own `whey_drip` particle, vanilla's drip sprites tinted), so the press reads as pressing.
 
 ## Known gaps
 - **Animal health:** Marek's sitting pose is not drawn; an orphan's double scours risk is not wired (the young keep no dam link); the

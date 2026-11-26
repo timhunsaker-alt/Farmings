@@ -17,6 +17,8 @@ public final class FarmingsNeoForgeClient {
 			return mc.level == null ? 0L : mc.level.getGameTime();
 		};
 		dev.farmings.Farmings.openManual = () -> net.minecraft.client.Minecraft.getInstance().setScreenAndShow(new dev.farmings.client.manual.ManualScreen());
+		modBus.addListener(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent.class,
+				event -> event.registerSpriteSet(dev.farmings.FarmingsParticles.WHEY_DRIP, dev.farmings.client.WheyDripParticle.Provider::new));
 		modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
 				event -> {
 					event.registerLayerDefinition(CattleModels.CATTLE, CattleModels::createLayer);

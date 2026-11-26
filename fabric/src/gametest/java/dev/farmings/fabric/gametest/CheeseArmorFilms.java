@@ -696,9 +696,9 @@ final class CheeseArmorFilms {
 	 * 1. At the creamery, filmed side on from the west, a little north (the side camera): the player stands 0.9 blocks in front of the vat's
 	 * middle, a fresh milk chestplate in the right hand (toward the camera), and sets it in the cheese vat (the use on the vat); the vat
 	 * sets it on its next working second and it goes to the press; a cut to the press, close from the north-east, pushing in as it presses
-	 * for its own time (800 ticks), sped up 8x here (the card says so), whey dripping from its base; a cut back to the side, and the
-	 * player turns and takes the cheese chestplate from the press with an empty hand. CHEESE_CAM and CHEESE_PRESS_CAM (dx,dy,dz from what
-	 * each looks at) try other cameras.
+	 * for its own time (800 ticks), sped up 8x here (the card says so), whey running down its mold; a cut to the south-east, over the
+	 * row's back (the press in front, the player behind it), and the player turns to the press and takes the cheese chestplate from it
+	 * with an empty hand. CHEESE_CAM, CHEESE_PRESS_CAM and CHEESE_TAKE_CAM (dx,dy,dz from what each looks at) try other cameras.
 	 */
 	private void vat(boolean want) {
 		firstPerson(true);
@@ -709,6 +709,8 @@ final class CheeseArmorFilms {
 		placeAt(px, pz, v[0], v[1]);
 		double[] wide = poseAt(px, g + 0.8, vz - 0.3, env("CHEESE_CAM", -3.3, 1.1, -0.7));
 		double[] pressOff = env("CHEESE_PRESS_CAM", 0.9, 0.9, -2.0);
+		// the take: from the south-east, over the row's back, the press in front and the player behind it, turned to it (and so to the camera)
+		double[] take = poseAt((pressPos.getX() + 0.5 + px) / 2, g + 0.9, (pressPos.getZ() + 0.5 + pz) / 2, env("CHEESE_TAKE_CAM", 2.2, 1.6, 3.0));
 		double[] close = poseAt(pressPos.getX() + 0.5, g + 0.35, pressPos.getZ() + 0.3, pressOff);
 		double[] closer = poseAt(pressPos.getX() + 0.5, g + 0.35, pressPos.getZ() + 0.3, new double[] {pressOff[0] * 0.7, pressOff[1] * 0.7, pressOff[2] * 0.7});
 		ItemStack milk = new ItemStack(FarmingsItems.MILK_CHESTPLATE);
@@ -765,8 +767,8 @@ final class CheeseArmorFilms {
 		}
 		card("^CHEESE PRESS", stepLine());
 		context.waitTicks(20);
-		camTo(wide, true);
-		event("cut: back to the side");
+		camTo(take, true);
+		event("cut: to the take, the press in front of the player");
 		context.waitTicks(10);
 		lookTo(pr[0], pr[1], 12);
 		event("turned to the press");
