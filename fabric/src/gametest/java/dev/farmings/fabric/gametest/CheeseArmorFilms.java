@@ -37,8 +37,9 @@ import net.minecraft.world.level.block.Blocks;
 /**
  * {@code cheeseArmor} (FARMINGS_ONLY=cheeseArmor): the cheese armor short (docs/cheese-armor.md), in real time on the milk armor short's
  * set (the music videos' seed, the plains pasture) with a creamery built south of it, formed, its vat powered. Four films: 1 a fresh milk
- * chestplate put in the cheese vat (a real use-key press), the vat sets it, the press presses it (sped up 8x, on the card) and the cheese
- * chestplate is taken from the press with an empty hand (films 1 and 3 from behind the player, third person); 2 the full cheese set worn, third person, turning; 3 a spoiled milk helmet
+ * chestplate put in the cheese vat, filmed side on (a client-only camera, the player drawn by a double), the vat sets it, the press
+ * presses it (a cut to it close, sped up 8x on the card, whey dripping) and the cheese chestplate is taken from the press with an empty
+ * hand; 2 the full cheese set worn, third person, turning; 3 (third person from behind) a spoiled milk helmet
  * refused at the vat ("Spoiled milk does not make cheese"); 4 hungry, a cheese chestplate sneak-eaten, the hunger bar filling. Events are
  * logged as {@code [farmings-films] event <film> <what> at <s> s}, in video seconds. FARMINGS_FILMS picks films by number (1 makes the
  * chestplate 2 wears; without it the scene makes one).
@@ -509,18 +510,207 @@ final class CheeseArmorFilms {
 
 	// ---- the films ----
 
+	// ---- the side camera ----
+
 	/**
-	 * 1. At the creamery: a fresh milk chestplate put in the cheese vat (the use key); the vat sets it on its next working second and it
-	 * goes to the press; the press presses it for its own time (800 ticks), sped up 8x here (the card says so); then the use key with an
-	 * empty hand takes the cheese chestplate from the press.
+	 * The side camera: a client-only armor stand (never added to the world, so never ticked, drawn or sent to the server) that the client
+	 * films from, so the player is seen side on with the vat or press beyond (from behind, the player's body hid them).
+	 */
+	private net.minecraft.world.entity.decoration.ArmorStand cam;
+	private double[] camPose;
+	/**
+	 * The player's double: the game never draws the local player for another camera entity, so while the side camera films, a client-only
+	 * copy of the player (its profile and so its skin, a UUID of its own) is drawn in its place, set each tick to the player's position,
+	 * view, body turn and what it holds and wears, and swung when the player's arm swings.
+	 */
+	private static volatile net.minecraft.client.player.RemotePlayer twin;
+	private static boolean twinHooked;
+	private static final int TWIN_ID = -4242;
+	private static final EquipmentSlot[] TWIN_SLOTS = {EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST,
+			EquipmentSlot.LEGS, EquipmentSlot.FEET};
+
+	private static void followPlayer(net.minecraft.client.Minecraft client) {
+		var d = twin;
+		var p = client.player;
+		if (d == null || p == null) {
+			return;
+		}
+		d.setPos(p.getX(), p.getY(), p.getZ());
+		d.setYRot(p.getYRot());
+		d.setXRot(p.getXRot());
+		d.setYHeadRot(p.getYHeadRot());
+		d.setYBodyRot(p.yBodyRot);
+		for (EquipmentSlot slot : TWIN_SLOTS) {
+			ItemStack want = p.getItemBySlot(slot);
+			if (!ItemStack.matches(want, d.getItemBySlot(slot))) {
+				d.setItemSlot(slot, want.copy());
+			}
+		}
+	}
+
+	private void showTwin(boolean on) {
+		if (!twinHooked) {
+			twinHooked = true;
+			ClientTickEvents.END_CLIENT_TICK.register(CheeseArmorFilms::followPlayer);
+		}
+		context.runOnClient(client -> {
+			if (twin != null) {
+				client.level.removeEntity(TWIN_ID, net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
+				twin = null;
+			}
+			if (on) {
+				var me = client.player.getGameProfile();
+				java.util.UUID id = me.id();
+				// flipped by the same bits in both halves: a new UUID with the same hash, so the same default skin and arms
+				long x = 0x5a5a5a5a5a5a5a5aL;
+				var d = new net.minecraft.client.player.RemotePlayer(client.level, new com.mojang.authlib.GameProfile(
+						new java.util.UUID(id.getMostSignificantBits() ^ x, id.getLeastSignificantBits() ^ x), me.name()));
+				d.setId(TWIN_ID);
+				var p = client.player;
+				d.snapTo(p.getX(), p.getY(), p.getZ(), p.getYRot(), p.getXRot());
+				client.level.addEntity(d);
+				twin = d;
+				followPlayer(client);
+			}
+		});
+	}
+
+	private static double[] env(String name, double... fallback) {
+		String v = System.getenv(name);
+		if (v == null || v.isBlank()) {
+			return fallback;
+		}
+		String[] parts = v.split(",");
+		double[] out = new double[parts.length];
+		for (int i = 0; i < parts.length; i++) {
+			out[i] = Double.parseDouble(parts[i].trim());
+		}
+		return out;
+	}
+
+	/** The camera's eye at (x, y, z) looking at (tx, ty, tz), as a pose {x, y, z, yaw, pitch}. */
+	private static double[] pose(double x, double y, double z, double tx, double ty, double tz) {
+		double dx = tx - x, dy = ty - y, dz = tz - z;
+		return new double[] {x, y, z, Math.toDegrees(Math.atan2(-dx, dz)), -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)))};
+	}
+
+	/** A pose looking at (tx, ty, tz) from {@code off} = {dx, dy, dz} away. */
+	private static double[] poseAt(double tx, double ty, double tz, double[] off) {
+		return pose(tx + off[0], ty + off[1], tz + off[2], tx, ty, tz);
+	}
+
+	/** Films from the side camera at {@code p} (first person on it, fov 60, no HUD: the card is a screen and stays). */
+	private void sideCamera(double[] p) {
+		context.runOnClient(client -> {
+			cam = new net.minecraft.world.entity.decoration.ArmorStand(client.level, p[0], p[1], p[2]);
+			client.options.setCameraType(CameraType.FIRST_PERSON);
+			client.options.fov().set(60);
+			client.setCameraEntity(cam);
+		});
+		showTwin(true);
+		hud(false);
+		camTo(p, true);
+	}
+
+	private void camTo(double[] p, boolean snap) {
+		context.runOnClient(client -> {
+			var e = cam;
+			double eye = e.getEyeHeight();
+			if (snap) {
+				e.setPos(p[0], p[1] - eye, p[2]);
+				e.xo = e.xOld = p[0];
+				e.yo = e.yOld = p[1] - eye;
+				e.zo = e.zOld = p[2];
+				e.yRotO = (float) p[3];
+				e.xRotO = (float) p[4];
+			} else {
+				e.xo = e.xOld = e.getX();
+				e.yo = e.yOld = e.getY();
+				e.zo = e.zOld = e.getZ();
+				e.yRotO = e.getYRot();
+				e.xRotO = e.getXRot();
+				e.setPos(p[0], p[1] - eye, p[2]);
+			}
+			// a living entity's view turns with its head, not its yaw
+			float headO = snap ? (float) p[3] : e.getYHeadRot();
+			e.setYRot((float) p[3]);
+			e.setXRot((float) p[4]);
+			e.setYHeadRot((float) p[3]);
+			e.yHeadRotO = headO;
+			e.setYBodyRot((float) p[3]);
+			e.yBodyRotO = headO;
+		});
+		camPose = p;
+	}
+
+	/** The camera eased from where it is to {@code to} over {@code ticks}. */
+	private void camMove(double[] to, int ticks) {
+		camMove(to, ticks, () -> {});
+	}
+
+	/** The camera eased to {@code to} over {@code ticks}, {@code each} run every tick of the move. */
+	private void camMove(double[] to, int ticks, Runnable each) {
+		double[] from = camPose;
+		double turn = Math.IEEEremainder(to[3] - from[3], 360);
+		for (int t = 1; t <= ticks; t++) {
+			double s = t / (double) ticks;
+			s = s * s * (3 - 2 * s);
+			double[] p = new double[5];
+			for (int i = 0; i < 5; i++) {
+				p[i] = from[i] + (to[i] - from[i]) * s;
+			}
+			p[3] = from[3] + turn * s;
+			camTo(p, false);
+			each.run();
+			context.waitTick();
+		}
+		camTo(to, true);
+	}
+
+	private void playerCamera() {
+		showTwin(false);
+		context.runOnClient(client -> client.setCameraEntity(client.player));
+		cam = null;
+	}
+
+	/**
+	 * The use key's own work on a block, without its aim: the client's game mode uses the hand on the block's north face (as the use key
+	 * does when the crosshair is on it), and the arm swings. Filmed from the side camera, the crosshair's ray would start at the camera.
+	 */
+	private void useOn(BlockPos pos) {
+		context.runOnClient(client -> {
+			var hit = new net.minecraft.world.phys.BlockHitResult(new net.minecraft.world.phys.Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ()),
+					net.minecraft.core.Direction.NORTH, pos, false);
+			client.gameMode.useItemOn(client.player, net.minecraft.world.InteractionHand.MAIN_HAND, hit);
+			client.player.swing(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			if (twin != null) {
+				twin.swing(net.minecraft.world.InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
+			}
+		});
+		context.waitTick();
+	}
+
+	// ---- the films ----
+
+	/**
+	 * 1. At the creamery, filmed side on from the west, a little north (the side camera): the player stands 0.9 blocks in front of the vat's
+	 * middle, a fresh milk chestplate in the right hand (toward the camera), and sets it in the cheese vat (the use on the vat); the vat
+	 * sets it on its next working second and it goes to the press; a cut to the press, close from the north-east, pushing in as it presses
+	 * for its own time (800 ticks), sped up 8x here (the card says so), whey dripping from its base; a cut back to the side, and the
+	 * player turns and takes the cheese chestplate from the press with an empty hand. CHEESE_CAM and CHEESE_PRESS_CAM (dx,dy,dz from what
+	 * each looks at) try other cameras.
 	 */
 	private void vat(boolean want) {
 		firstPerson(true);
-		backView();
-		double[] at = vatSpot();
-		float[] v = aim(at[0], at[1], vatPos.getX() + 1.0, g + 0.7, vatPos.getZ() + 0.5);
-		float[] pr = aim(at[0], at[1], pressPos.getX() + 0.5, g + 0.7, pressPos.getZ() + 0.5);
-		placeAt(at[0], at[1], v[0], v[1]);
+		double vx = vatPos.getX() + 1.0, vz = vatPos.getZ();
+		double px = vatPos.getX() + 1.0, pz = vatPos.getZ() - 0.9;
+		float[] v = aim(px, pz, vx, g + 0.5, vz + 0.5);
+		float[] pr = aim(px, pz, pressPos.getX() + 0.5, g + 0.7, pressPos.getZ() + 0.5);
+		placeAt(px, pz, v[0], v[1]);
+		double[] wide = poseAt(px, g + 0.8, vz - 0.3, env("CHEESE_CAM", -3.3, 1.1, -0.7));
+		double[] pressOff = env("CHEESE_PRESS_CAM", 0.9, 0.9, -2.0);
+		double[] close = poseAt(pressPos.getX() + 0.5, g + 0.35, pressPos.getZ() + 0.3, pressOff);
+		double[] closer = poseAt(pressPos.getX() + 0.5, g + 0.35, pressPos.getZ() + 0.3, new double[] {pressOff[0] * 0.7, pressOff[1] * 0.7, pressOff[2] * 0.7});
 		ItemStack milk = new ItemStack(FarmingsItems.MILK_CHESTPLATE);
 		server.runOnServer(srv -> {
 			MilkArmorItem.setMade(milk, srv.overworld().getGameTime());
@@ -529,19 +719,17 @@ final class CheeseArmorFilms {
 			p.getFoodData().setFoodLevel(20);
 		});
 		inHand(milk);
+		sideCamera(wide);
 		card("^CHEESE VAT", stepLine());
 		showCard();
 		context.waitTicks(10);
 		String name = "cheesearmor-1-vat";
 		Filming f = start(name, want);
-		event("start: a fresh milk chestplate in hand, the vat ahead, the press beside it | " + server.computeOnServer(srv -> controller(srv.overworld()).readout()));
+		event("start: a fresh milk chestplate in hand, the vat ahead, the press beside it, side on | " + server.computeOnServer(srv -> controller(srv.overworld()).readout()));
 		context.waitTicks(30);
-		closeScreen();     // the card is a screen: the use key needs the game, not a screen
-		use();
-		showCard();
-		event("use key on the vat: " + step() + " | in hand " + server.computeOnServer(srv -> player(srv).getMainHandItem().getHoverName().getString()));
+		useOn(vatPos);
+		event("use on the vat: " + step() + " | in hand " + server.computeOnServer(srv -> player(srv).getMainHandItem().isEmpty() ? "nothing" : player(srv).getMainHandItem().getHoverName().getString()));
 		int pressAt = -1;
-		int readyAt = -1;
 		for (int t = 0; t < 20 * 20; t++) {
 			var s = step();
 			card("^CHEESE VAT AND PRESS", stepLine(), s == dev.farmings.process.creamery.Creamery.ArmorStep.PRESS ? "(press time sped up 8x)" : "");
@@ -550,16 +738,26 @@ final class CheeseArmorFilms {
 				event("set: to the press");
 			}
 			if (pressAt >= 0 && t == pressAt + 10) {
-				// the view turns to the press while it works
+				// a cut to the press, close, while it works (a move would pass through the player)
 				card("^CHEESE PRESS", stepLine(), "(press time sped up 8x)");
-				lookTo(pr[0], pr[1], 20);
-				t += 20;
+				camTo(close, true);
+				event("cut: on the press");
+			}
+			if (pressAt >= 0 && t > pressAt + 10 && s == dev.farmings.process.creamery.Creamery.ArmorStep.PRESS) {
+				// pushing in slowly as it presses
+				double k = Math.min(1.0, (t - pressAt - 10) / 90.0);
+				k = k * k * (3 - 2 * k);
+				double[] at = new double[5];
+				for (int i = 0; i < 5; i++) {
+					at[i] = close[i] + (closer[i] - close[i]) * k;
+				}
+				camTo(at, false);
+				card("^CHEESE PRESS", stepLine(), "(press time sped up 8x)");
 			}
 			if (s == dev.farmings.process.creamery.Creamery.ArmorStep.PRESS) {
 				server.runOnServer(srv -> controller(srv.overworld()).run(srv.overworld(), 7));
 			}
 			if (s == dev.farmings.process.creamery.Creamery.ArmorStep.READY) {
-				readyAt = t;
 				event("pressed: ready at the press");
 				break;
 			}
@@ -567,15 +765,20 @@ final class CheeseArmorFilms {
 		}
 		card("^CHEESE PRESS", stepLine());
 		context.waitTicks(20);
-		closeScreen();
-		use();
-		showCard();
+		camTo(wide, true);
+		event("cut: back to the side");
+		context.waitTicks(10);
+		lookTo(pr[0], pr[1], 12);
+		event("turned to the press");
+		context.waitTicks(4);
+		useOn(pressPos);
 		String got = server.computeOnServer(srv -> player(srv).getMainHandItem().getHoverName().getString());
-		event("use key, empty hand, on the press: in hand " + got);
+		event("use on the press, empty hand: in hand " + got);
 		card("+CHEESE CHESTPLATE", "From the press");
 		context.waitTicks(55);
 		event("end");
 		stop(f);
+		playerCamera();
 		card();
 		closeScreen();
 	}
