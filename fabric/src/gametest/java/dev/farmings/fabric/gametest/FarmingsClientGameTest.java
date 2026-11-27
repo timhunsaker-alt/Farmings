@@ -106,7 +106,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		int cz = 60;
 		server.runOnServer(srv -> {
 			ServerLevel level = srv.overworld();
-			for (int x = cx - 16; x <= cx + 6; x++) {
+			for (int x = cx - 22; x <= cx + 6; x++) {
 				for (int z = cz - 10; z <= cz + 10; z++) {
 					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
 					for (int h = 0; h < 6; h++) {
@@ -123,11 +123,12 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		server.runCommand("tp @p " + (cx + 3) + " " + (y + 3) + " " + cz + " 90 12");
 		context.waitTicks(40);
 		context.takeScreenshot("farmings-barn-alley");
-		server.runCommand("tp @p " + (cx - 13) + " " + (y + 4) + " " + (cz - 8) + " -50 25");
+		server.runCommand("tp @p " + (cx - 18) + " " + (y + 4) + " " + (cz - 8) + " -50 25");
 		context.waitTicks(40);
 		context.takeScreenshot("farmings-barn-corner");
 		// one divider gone: the status the controller would show is checked by the NeoForge game test; here, how it looks
-		server.runOnServer(srv -> srv.overworld().destroyBlock(new BlockPos(cx - 9 + 4, y, cz - 4), false));
+		int row = cx - dev.farmings.husbandry.barn.BarnLayout.alleyLength(4) + 4;
+		server.runOnServer(srv -> srv.overworld().destroyBlock(new BlockPos(row + 4, y, cz - 4), false));
 		context.waitTicks(20);
 		server.runCommand("tp @p " + (cx - 6) + " " + (y + 9) + " " + (cz + 11) + " 180 50");
 		context.waitTicks(40);
@@ -141,7 +142,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		BlockPos controller = new BlockPos(cx, y + 1, cz);
 		server.runOnServer(srv -> {
 			ServerLevel level = srv.overworld();
-			for (int x = cx - 16; x <= cx + 6; x++) {
+			for (int x = cx - 22; x <= cx + 6; x++) {
 				for (int z = cz - 10; z <= cz + 10; z++) {
 					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
 					for (int h = 0; h < 6; h++) {
@@ -150,8 +151,10 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 				}
 			}
 			buildBarn(level, controller, 4);
-			((DriveEntity) BigParts.entity(level, new BlockPos(cx - 9, y + 1, cz))).forceRunning(true);
-			int[][] spots = {{-7, 0}, {-6, -1}, {-5, 1}, {-5, 0}, {-4, -1}, {-3, 1}, {-3, 0}, {-2, -1}, {-2, 1}};
+			// the drive at the alley's far end (BarnLayout.alleyLength: twice the stall rows, open stretches at both ends)
+			int xd = cx - dev.farmings.husbandry.barn.BarnLayout.alleyLength(4);
+			((DriveEntity) BigParts.entity(level, new BlockPos(xd, y + 1, cz))).forceRunning(true);
+			int[][] spots = {{-15, 0}, {-13, -1}, {-11, 1}, {-10, 0}, {-8, -1}, {-7, 1}, {-5, 0}, {-4, -1}, {-3, 1}};
 			for (int[] s : spots) {
 				ItemEntity e = new ItemEntity(level, cx + s[0] + 0.5, y + 0.3, cz + s[1] + 0.5, new ItemStack(FarmingsItems.MANURE, 8));
 				e.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
@@ -165,17 +168,18 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		context.waitTicks(30);
 		context.takeScreenshot("farmings-scraper-before");
 		server.runOnServer(srv -> ((BarnControllerEntity) srv.overworld().getBlockEntity(controller)).startPass(srv.overworld()));
-		for (int i = 0; i < 22; i++) {
+		// a cell a second (ScraperPass.TICKS_PER_CELL) down the 18-cell alley to the pit and back: about 36 s
+		for (int i = 0; i < 38; i++) {
 			context.waitTicks(20);
 			String text = server.computeOnServer(srv -> {
 				BarnControllerEntity c = (BarnControllerEntity) srv.overworld().getBlockEntity(controller);
 				return c.readout() + "   |   pit " + c.pit(srv.overworld()).manure() + " / " + PitEntity.CAPACITY;
 			});
 			server.runCommand("title @p actionbar \"" + text + "\"");
-			if (i == 3) {
+			if (i == 9) {
 				context.takeScreenshot("farmings-scraper-pushing");
 			}
-			if (i == 11) {
+			if (i == 24) {
 				context.takeScreenshot("farmings-scraper-returning");
 			}
 		}
@@ -191,7 +195,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 		CattleEntity[] cows = new CattleEntity[6];
 		server.runOnServer(srv -> {
 			ServerLevel level = srv.overworld();
-			for (int x = cx - 16; x <= cx + 6; x++) {
+			for (int x = cx - 22; x <= cx + 6; x++) {
 				for (int z = cz - 10; z <= cz + 10; z++) {
 					level.setBlockAndUpdate(new BlockPos(x, y - 1, z), net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState());
 					for (int h = 0; h < 6; h++) {
@@ -203,7 +207,9 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			for (int dir = -1; dir <= 1; dir += 2) {
 				((TroughEntity) BigParts.entity(level, new BlockPos(cx + 1, y, cz + dir * 2))).pourBucket();
 				for (int i = 0; i < 4; i++) {
-					FeederEntity f = (FeederEntity) BigParts.entity(level, new BlockPos(cx - 8 + 2 * i, y + 1, cz + dir * 5));
+					// the feeders over the stall rows, which start alleyLength - 4 = 14 west of the controller
+					int row = cx - dev.farmings.husbandry.barn.BarnLayout.alleyLength(4) + 4;
+					FeederEntity f = (FeederEntity) BigParts.entity(level, new BlockPos(row + 1 + 2 * i, y + 1, cz + dir * 5));
 					f.addBlock();
 					f.addBlock();
 				}
@@ -236,7 +242,7 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 			}
 		}
 		context.takeScreenshot("farmings-herd-in-stalls");
-		server.runCommand("tp @p " + (cx - 12) + " " + (y + 4) + " " + (cz - 9) + " -50 28");
+		server.runCommand("tp @p " + (cx - 17) + " " + (y + 4) + " " + (cz - 9) + " -50 28");
 		context.waitTicks(40);
 		context.takeScreenshot("farmings-herd-in-stalls-corner");
 		film.stop();
