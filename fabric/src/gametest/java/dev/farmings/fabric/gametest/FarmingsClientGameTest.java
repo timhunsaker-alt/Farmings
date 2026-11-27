@@ -3141,6 +3141,11 @@ public class FarmingsClientGameTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		// the 60 fps recorder's proof film (film60): its own world, only when named
+		if ("film60".equals(System.getenv("FARMINGS_ONLY"))) {
+			new Film60Proof(context).run();
+			return;
+		}
 		dev.farmings.health.FarmingsRules.testWorldsAsExisting = true;     // the health scene turns disease on itself
 		// the trailer's shots: their own generated world, only when named
 		if ("trailer".equals(System.getenv("FARMINGS_ONLY"))) {

@@ -9,6 +9,9 @@
 			"dev.farmings.fabric.gametest.FarmingsClientGameTest"
 		]
 	},
+	"mixins": [
+		"farmings-gametest.mixins.json"
+	],
 	"depends": {
 		"farmings": "*",
 		"wildcatter": "*",
